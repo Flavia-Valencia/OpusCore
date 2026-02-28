@@ -1,7 +1,7 @@
-#Version del Sistema:
+# Version del Sistema:
 v0.1
 
-#Autor
+# Autor
 OpusCore 
 
 # Sistema para Academia Futuro Digital
@@ -9,11 +9,11 @@ Aplicacion web para una academia optimizando procesos internos como: Inscripcion
 el sistema permitira el ingreso de distintos roles: Administrador, Docente, Estudiante. Utilizando las siguientes herramientas:
 
 # Tecnologías que vamos a usar:
--PHP/HTML 
--JS
--CSS
--MySQL
--XAMMP
+- PHP/HTML 
+- JS
+- CSS
+- MySQL
+- XAMMP
 
 
 
