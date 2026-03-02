@@ -25,10 +25,20 @@
                         <label for="correo-inicio">Correo electrónico</label>
                         <input id="correo-inicio" name="correo" type="email" placeholder="correo@gmail.com" required />
                     </div>
-
+                    
                     <div class="fila">
-                        <label for="clave-inicio">Contraseña</label>
-                        <input id="clave-inicio" name="clave" type="password" placeholder="********" required />
+                        <label for="contrasena">Contraseña</label>
+                        <div class="input-password">
+                            <input id="contrasena" name="contrasena" type="password" placeholder="••••••••" required />
+                            <span class="ver-contrasena" onclick="verContrasena()">👁</span>
+                        </div>
+                    </div>
+
+                    <div class="opcion-recordar">
+                        <label class="recordar-contrasena">
+                            <input type="checkbox" name="recordar-contrasena"/>
+                            Recordar contraseña
+                        </label>
                     </div>
 
                     <div class="pie">
@@ -40,6 +50,6 @@
             </div>
         </div>
     </div>
-    
+    <script src="js/scriptLogin.js"></script>
 </body>
 </html>
