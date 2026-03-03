@@ -20,7 +20,7 @@
             <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav active">Docentes</a>
             
-            <div class="user-profile" onclick="cerrarSesion()">
+            <div class="user-profile">
                 <div class="user-info">
                     <span class="user-role">Admin</span>
                     <span class="user-email">admin@academia.com</span>
