@@ -15,7 +15,7 @@
             <span class="logo-big">FUTURO DIGITAL</span>
         </div>
         <nav class="nav">
-            <a href="#" class="btn-nav">Inicio</a>
+            <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
             <a href="./admin-estudiantes.php" class="btn-nav active">Estudiantes</a>
             <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
