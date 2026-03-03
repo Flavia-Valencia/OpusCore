@@ -1,0 +1,120 @@
+/*Estilos para el login*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+/*Pantalla completa*/
+.contenedor {
+    display: flex;
+    height: 100vh;
+}
+/*Lado izquierdo: donde está el degradado*/
+.izquierda {
+    width: 50%;
+    background: linear-gradient(180deg,#053170, #069DBF,  #ffffff5e);
+  /*background-size: 100% 200%; PARA MOVIMIENTO
+    animation: moverDegradado 8s ease-in-out infinite alternate;*/
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px;
+}
+.izquierda h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+.izquierda p {
+    font-size: 20px;
+}
+/*Lado derecho: donde está el formulario*/
+.derecha {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f0;
+}
+.contenedor-formulario {
+    background: #FFFFFF;
+    padding: 40px;
+    width: 380px;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+.leyenda {
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+.fila {
+    margin-bottom: 20px;
+}
+.fila input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #b2b2b2;
+}
+.opcion-recordar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.recordar-contrasena {
+    display: flex;
+    font-size: 14px;
+    cursor: pointer;
+}
+.recordar-contrasena input {
+    margin-right: 6px;
+}
+
+.input-password {
+    position: relative;
+}
+
+.input-password input {
+    width: 100%;
+    padding: 12px;
+    padding-right: 40px;
+    border-radius: 8px;
+    border: 1px solid #dcdcdc;
+}
+
+.ver-contrasena {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-entrar {
+    width: 100%;
+    padding: 12px;
+    background-color: #053170;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.4s;
+}
+.btn-entrar:hover {
+    background-color: #1D4B73;
+    transform: translateY(2px);
+}
+/* PARA MOVIMIENTO DEL DEGRADADO
+@keyframes moverDegradado {
+    0% {
+        background-position: top;
+    }
+    100% {
+        background-position: bottom;
+    }
+}
+}*/
