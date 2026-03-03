@@ -48,26 +48,24 @@ body {
     align-items: center;
     gap: 10px;
 }
-
-/* cada boton del menu */
-.nav-btn {
+.btn-nav {
+    width: 100%;
+    padding: 10px 20px;
     background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    color:#FFFFFF;
     text-decoration: none;
-    padding: 10px 25px;
-    border-radius: 4px;
+    border-radius: 5px;
     font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s;
+    font-weight: 600;
+    transition: 0.4s;
+    cursor: pointer;
 }
-
-/* cuando paso el mouse por encima del boton */
-.nav-btn:hover {
+.btn-nav:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
 /* boton activo (el que esta seleccionado) */
-.nav-btn.active {
+.btn-nav.active {
     background-color: #069DBF;
 }
 

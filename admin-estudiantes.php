@@ -15,11 +15,10 @@
             <span class="logo-big">FUTURO DIGITAL</span>
         </div>
         <nav class="nav">
-            <a href="#" class="nav-btn">Inicio</a>
-            <a href="./admin-estudiantes.php" class="nav-btn active">Estudiantes</a>
-            <a href="./admin-cursos.php" class="nav-btn">Cursos</a>
-            <a href="./admin-docentes.php" class="nav-btn">Docentes</a>
-            
+            <a href="#" class="btn-nav">Inicio</a>
+            <a href="./admin-estudiantes.php" class="btn-nav active">Estudiantes</a>
+            <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
+            <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
         
             <div class="user-profile">
                 <div class="user-info">
