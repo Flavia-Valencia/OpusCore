@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/stylesLogin.css">
-    <title>Document</title>
+    <title>login</title>
 </head>
 
 <body>
@@ -41,7 +41,7 @@
                         <label for="contrasena">Contraseña</label>
                         <div class="input-password">
                             <input id="contrasena" name="contrasena" type="password" placeholder="••••••••" required />
-                            <span class="ver-contrasena" onclick="verContrasena()">👁️‍🗨️</span>
+                            <span class="ver-contrasena" onclick="verContrasena()">👁️</span>
                         </div>
                     </div>
 
@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="pie">
-                        <p>Olvidaste tu contraseña</p><a href="#" class="enlace">Enviar solicitud de reestablecimiento</a>
+                        <p>Olvidaste tu contraseña?</p><a href="#" class="enlace">Enviar solicitud de reestablecimiento</a>
                     </div>
 
                     <button class="btn-entrar" type="submit">Entrar</button>
