@@ -29,7 +29,7 @@
         <!--Lado del formulario-->
         <div class="derecha">
             <div class="contenedor-formulario">
-                <form id="formulario-inicio" role="tabpanel" aria-labelledby="leyenda-inicio" autocomplete="on">
+                <form id="formulario-inicio" role="tabpanel" action="includes/procesar_login.php" method="POST" aria-labelledby="leyenda-inicio" autocomplete="on">
                     <h2 id="inicio-sesion" class="leyenda">Inicia sesión</h2>
                     
                     <div class="fila">
@@ -64,3 +64,4 @@
     <script src="js/script.js"></script>
 </body>
 </html>
+
