@@ -23,39 +23,55 @@
     position: relative;
     padding: 80px;
 }
-.izquierda h1 {
+
+.texto-arriba h2 {
+    font-size: 18px;
+    font-weight: 400;
+    opacity: 0.85;
+    margin-bottom: 10px;
+}
+
+.texto-arriba h1 {
     font-size: 48px;
-    margin-bottom: 20px;
+    line-height: 1.1;
 }
-.izquierda p {
-    font-size: 20px;
-}
+
+
 .redes {
     position: absolute;
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;
-    opacity: 0.8;
     font-size: 14px;
 }
-.redes a {
-    margin: 0 10px;
-    color: #FFFFFF;
-    text-decoration: none;
-}
+
 .redes p {
-    margin-bottom: 8px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 10px;
 }
+
+.iconos {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
 .iconos a {
-    margin-right: 15px;
     color: #FFFFFF;
     text-decoration: none;
-    transition: 0.3s;
+    font-size: 12px;
+    padding: 5px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    transition: all 0.25s;
 }
 .iconos a:hover {
-    opacity: 1;
-    text-decoration: underline;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 /*Lado derecho: donde está el formulario*/
@@ -67,38 +83,67 @@
     background: #f0f0f0;
 }
 .contenedor-formulario {
+    animation: fadeUp 0.8s ease 0.3s both;
     background: #FFFFFF;
-    padding: 40px;
-    width: 380px;
-    border-radius: 12px;
+    padding: 44px 40px;
+    width: 390px;
+    border-radius: 14px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
 }
 .leyenda {
+    color: #041E42;
     margin-bottom: 30px;
-    font-size: 24px;
+    font-size: 26px;
 }
 .fila {
     margin-bottom: 20px;
 }
 .fila input {
     width: 100%;
-    padding: 10px;
-    border-radius: 6px;
+    padding: 11px 14px;
+    border-radius: 8px;
     border: 1px solid #b2b2b2;
+    font-size: 14px;
+    color: #334155;
+    background: #f9fafb;
+    outline: none;
+    transition: border 0.2s, box-shadow 0.2s;
 }
+
+.fila label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 7px;
+}
+
+.fila input:focus {
+    border-color: #069DBF;
+    box-shadow: 0 0 0 3px rgba(6, 157, 191, 0.2);
+}
+
+
+/*Campos de la contrasenia*/
+
 .opcion-recordar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+
+    margin-bottom: 14px;
 }
 .recordar-contrasena {
     display: flex;
+    align-items: center;
+    gap: 7px;
     font-size: 14px;
+    color: #64748b;
     cursor: pointer;
 }
-.recordar-contrasena input {
-    margin-right: 6px;
+.recordar-contrasena input[type="checkbox"]{
+    accent-color: #053170;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    margin-right: 14px;
 }
 
 .input-password {
@@ -106,11 +151,7 @@
 }
 
 .input-password input {
-    width: 100%;
-    padding: 12px;
-    padding-right: 40px;
-    border-radius: 8px;
-    border: 1px solid #dcdcdc;
+    padding-right: 42px;
 }
 
 .ver-contrasena {
@@ -120,22 +161,64 @@
     transform: translateY(-50%);
     cursor: pointer;
     font-size: 16px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    user-select: none;
 }
+
+.ver-contrasena:hover {
+    opacity: 1;
+}
+
+
+/*olvidar passwd*/
+
+.pie {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.pie p {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.enlace {
+    font-size: 13px;
+    color: #069DBF;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.enlace:hover {
+    text-decoration: underline;
+}
+
 
 .btn-entrar {
     width: 100%;
-    padding: 12px;
+    padding: 13px;
     background-color: #053170;
     color: #FFFFFF;
     border: none;
     border-radius: 8px;
+    font-size: 14px;
     cursor: pointer;
     font-weight: 600;
-    transition: 0.4s;
+    transition: all 0.4s;
 }
+
 .btn-entrar:hover {
-    background-color: #1D4B73;
-    transform: translateY(2px);
+    background-color: #069DBF;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(5, 49, 112, 0.3);
+}
+
+.btn-entrar:active {
+    transform: translateY(0);
 }
 /*PARA MOVIMIENTO DEL DEGRADADO*/
 @keyframes moverDegradado {
@@ -146,4 +229,14 @@
         background-position: bottom;
     }
 }
-
+/*SLIDE UP PARA QUE SE VEA ESTETICO*/
+@keyframes fadeUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(24px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
