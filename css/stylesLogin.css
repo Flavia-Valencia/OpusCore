@@ -57,13 +57,14 @@
     opacity: 1;
     text-decoration: underline;
 }
+
 /*Lado derecho: donde está el formulario*/
 .derecha {
     width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #e6baba;
+    background: #f0f0f0;
 }
 .contenedor-formulario {
     background: #FFFFFF;
