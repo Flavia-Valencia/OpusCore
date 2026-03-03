@@ -13,13 +13,14 @@
 /*Lado izquierdo: donde está el degradado*/
 .izquierda {
     width: 50%;
-    background: linear-gradient(180deg,#053170, #069DBF,  #ffffff5e);
-  /*background-size: 100% 200%; PARA MOVIMIENTO
-    animation: moverDegradado 8s ease-in-out infinite alternate;*/
+    background: linear-gradient(400deg,#053170, #069DBF,  #ffffff30);
+    background-size: 100% 200%;
+    animation: moverDegradado 10s ease-in-out infinite alternate;
     color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: relative;
     padding: 80px;
 }
 .izquierda h1 {
@@ -28,6 +29,33 @@
 }
 .izquierda p {
     font-size: 20px;
+}
+.redes {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0.8;
+    font-size: 14px;
+}
+.redes a {
+    margin: 0 10px;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+.redes p {
+    margin-bottom: 8px;
+}
+.iconos a {
+    margin-right: 15px;
+    color: #FFFFFF;
+    text-decoration: none;
+    transition: 0.3s;
+}
+.iconos a:hover {
+    opacity: 1;
+    text-decoration: underline;
 }
 /*Lado derecho: donde está el formulario*/
 .derecha {
@@ -108,7 +136,7 @@
     background-color: #1D4B73;
     transform: translateY(2px);
 }
-/* PARA MOVIMIENTO DEL DEGRADADO
+/*PARA MOVIMIENTO DEL DEGRADADO*/
 @keyframes moverDegradado {
     0% {
         background-position: top;
@@ -117,4 +145,4 @@
         background-position: bottom;
     }
 }
-}*/
+

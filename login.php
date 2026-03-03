@@ -12,9 +12,20 @@
     <div class="contenedor">
         <!--Lado del degradado-->
         <div class="izquierda">
-            <h2>Bienvenido/a</h2>
-            <h1>Academia Futuro Digital</h1>
+            <div class="texto-arriba">
+                <h2>Bienvenido/a</h2>
+                <h1>Academia Futuro Digital</h1>
+            </div>
+            <div class="redes">
+                <p>Contactos</p>
+                <div class="iconos">
+                    <a href="#">Facebook</a>
+                    <a href="#">WhatsApp</a>
+                    <a href="#">Instagram</a>
+                </div>
+            </div>
         </div>
+
         <!--Lado del formulario-->
         <div class="derecha">
             <div class="contenedor-formulario">
