@@ -1,3 +1,4 @@
+/// Función para mostrar u ocultar la contraseña
 function verContrasena() {
     const input = document.getElementById("contrasena");
 

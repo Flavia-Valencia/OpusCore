@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrar Estudiantes | Academia Futuro Digital</title>
+    <title>Administrar Estudiantes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/stylesAdmin.css">
 </head>
@@ -20,7 +20,7 @@
             <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
         
-            <div class="user-profile">
+            <div class="user-profile" onclick="cerrarSesion()">
                 <div class="user-info">
                     <span class="user-role">Admin</span>
                     <span class="user-email">admin@academia.com</span>
@@ -31,7 +31,6 @@
     </header>
 
     <main class="main">
-    
         <div class="page-header">
             <h1 class="titulo">ADMINISTRAR ESTUDIANTES</h1>
             <button class="btn-nuevo">+ Nuevo Estudiante</button>
@@ -39,12 +38,11 @@
 
         <div class="card">
             <div class="toolbar">
-                <input type="text" placeholder="Buscar un estudiante" class="input-buscar">
+                <input type="text" placeholder="🔎 Buscar un estudiante" class="input-buscar">
             </div>
             <div class="tabla-placeholder">
 
             </div>
-
         </div>
     </main>
 </body>

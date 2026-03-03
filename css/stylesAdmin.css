@@ -3,13 +3,14 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: Arial, sans-serif;
 }
 
 /* fuente y color de fondo de la pagina */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5f5;
+    background: linear-gradient(180deg, #fafafa, #add0ef);
+    background-size: 100% 200%;
 }
 
 /* barra azul de arriba con el logo y el menu */
@@ -61,7 +62,8 @@ body {
     cursor: pointer;
 }
 .btn-nav:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #213e7d;
+    transform: translateY(-1px);
 }
 
 /* boton activo (el que esta seleccionado) */
@@ -73,17 +75,18 @@ body {
 .user-profile {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
     background-color: rgba(255, 255, 255, 0.1);
-    padding: 8px 15px;
-    border-radius: 6px;
+    padding: 8px 12px;
+    border-radius: 5px;
     margin-left: 20px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.4s;
 }
 
 .user-profile:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #213e7d;    
+    transform: translateY(-1px);
 }
 
 /* info del usuario: rol y email */
@@ -150,6 +153,8 @@ body {
 /* cuando paso el mouse por el boton nuevo */
 .btn-nuevo:hover {
     background-color: #2471a3;
+    transform: translateX(-1px);
+    transition: 0.4s;
 }
 
 /* caja blanca que contiene el buscador y la tabla */
@@ -165,6 +170,7 @@ body {
     padding: 20px;
     border-bottom: 1px solid #e5e5e5;
 }
+
 
 /* campo de texto para buscar estudiante */
 .input-buscar {
