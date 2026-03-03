@@ -41,6 +41,7 @@
                 <input type="text" placeholder="🔎 Buscar un estudiante" class="input-buscar">
             </div>
             <div class="tabla-placeholder">
+                <?php include('mostrar-tabla-estudiantes.php'); ?>
 
             </div>
         </div>
