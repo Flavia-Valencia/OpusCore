@@ -9,13 +9,13 @@
 /* fuente y color de fondo de la pagina */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(180deg, #fafafa, #add0ef);
+    background: radial-gradient(circle at top left, #c7e0ff, #eaf4ff, #ffffff); 
     background-size: 100% 200%;
 }
 
-/* barra azul de arriba con el logo y el menu */
 .header {
-    background-color: #053170;
+    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+    backdrop-filter: blur(10px);
     color: white;
     padding: 15px 40px;
     display: flex;
@@ -120,6 +120,7 @@ body {
     padding: 30px 40px;
     max-width: 1200px;
     margin: 0 auto;
+    
 }
 
 /* parte de arriba con el titulo y el boton nuevo */
@@ -139,7 +140,7 @@ body {
 
 /* boton azul de + nuevo estudiante */
 .btn-nuevo {
-    background-color: #1a5276;
+    background: linear-gradient(135deg, #1a5276, #053170);
     color: white;
     border: none;
     padding: 12px 20px;
@@ -149,29 +150,26 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
 }
-
 /* cuando paso el mouse por el boton nuevo */
 .btn-nuevo:hover {
-    background-color: #2471a3;
+    background: linear-gradient(135deg, #1a5276, #053170);
+    box-shadow: 0 10px 20px #c9c9c9;
+    transition: all 0.3s ease;
     transform: translateX(-1px);
-    transition: 0.4s;
 }
-
 /* caja blanca que contiene el buscador y la tabla */
 .card {
     background-color: white;
-    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    border-radius: 16px;
 }
-
 /* parte de arriba de la caja blanca con el input de buscar */
 .toolbar {
     padding: 20px;
     border-bottom: 1px solid #e5e5e5;
 }
-
-
 /* campo de texto para buscar estudiante */
 .input-buscar {
     width: 100%;
@@ -181,12 +179,10 @@ body {
     border-radius: 6px;
     font-size: 14px;
 }
-
 /* color del texto gris cuando esta vacio */
 .input-buscar::placeholder {
     color: #999;
 }
-
 /* espacio donde el backend va a poner la tabla */
 .tabla-placeholder {
     min-height: 300px;
