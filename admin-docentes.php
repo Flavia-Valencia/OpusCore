@@ -38,7 +38,7 @@
 
         <div class="card">
             <div class="toolbar">
-                <input type="text" placeholder="🔎 Buscar un estudiante" class="input-buscar">
+                <input type="text" placeholder="🔎 Buscar docente" class="input-buscar">
             </div>
             <div class="tabla-placeholder">
             </div>
