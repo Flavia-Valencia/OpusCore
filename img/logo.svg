@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="shield" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A1F3D"/>
+      <stop offset="100%" style="stop-color:#1A4A8A"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="50%" style="stop-color:#F7C948"/>
+      <stop offset="100%" style="stop-color:#C8960C"/>
+    </linearGradient>
+    <linearGradient id="glowBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#38BDF8"/>
+      <stop offset="100%" style="stop-color:#0EA5E9"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="goldglow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Sombra -->
+  <path d="M100,8 L172,36 L172,114 Q172,162 100,194 Q28,162 28,114 L28,36 Z"
+        fill="#000" opacity="0.25" transform="translate(3,4)"/>
+
+  <!-- Escudo -->
+  <path d="M100,8 L172,36 L172,114 Q172,162 100,194 Q28,162 28,114 L28,36 Z"
+        fill="url(#shield)"/>
+
+  <!-- Borde dorado exterior -->
+  <path d="M100,8 L172,36 L172,114 Q172,162 100,194 Q28,162 28,114 L28,36 Z"
+        fill="none" stroke="url(#gold)" stroke-width="3.5"/>
+
+  <!-- Borde interior — bien separado del exterior y del contenido -->
+  <path d="M100,22 L158,46 L158,114 Q158,154 100,182 Q42,154 42,114 L42,46 Z"
+        fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.45"/>
+
+  <!-- ══ GLOBO DIGITAL — centrado y que no tope con borde interno ══ -->
+  <circle cx="100" cy="86" r="30" fill="none" stroke="white" stroke-width="1.8" opacity="0.9" filter="url(#glow)"/>
+  <ellipse cx="100" cy="86" rx="30" ry="11" fill="none" stroke="white" stroke-width="1" opacity="0.4"/>
+  <ellipse cx="100" cy="86" rx="30" ry="20" fill="none" stroke="white" stroke-width="1" opacity="0.25"/>
+  <line x1="100" y1="56" x2="100" y2="116" stroke="white" stroke-width="1" opacity="0.4"/>
+  <line x1="70" y1="86" x2="130" y2="86" stroke="white" stroke-width="1" opacity="0.4"/>
+
+  <!-- Puntos digitales -->
+  <circle cx="84" cy="75" r="3" fill="url(#glowBlue)" filter="url(#glow)"/>
+  <circle cx="116" cy="81" r="3" fill="url(#glowBlue)" filter="url(#glow)"/>
+  <circle cx="100" cy="62" r="3" fill="url(#gold)" filter="url(#goldglow)"/>
+  <circle cx="88" cy="100" r="2" fill="url(#glowBlue)" opacity="0.8"/>
+  <circle cx="112" cy="97" r="2" fill="url(#glowBlue)" opacity="0.8"/>
+
+  <!-- ══ LIBRO — centrado y separado del borde interno ══ -->
+  <path d="M54,132 Q77,122 100,126 L100,152 Q77,148 54,156 Z"
+        fill="none" stroke="white" stroke-width="2" stroke-linejoin="round" opacity="0.9"/>
+  <path d="M146,132 Q123,122 100,126 L100,152 Q123,148 146,156 Z"
+        fill="none" stroke="white" stroke-width="2" stroke-linejoin="round" opacity="0.9"/>
+  <line x1="100" y1="126" x2="100" y2="152" stroke="url(#gold)" stroke-width="2.5"/>
+  <path d="M54,156 Q100,163 146,156" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+  <line x1="64" y1="136" x2="92" y2="134" stroke="white" stroke-width="0.8" opacity="0.3"/>
+  <line x1="64" y1="142" x2="92" y2="140" stroke="white" stroke-width="0.8" opacity="0.3"/>
+  <line x1="64" y1="148" x2="92" y2="146" stroke="white" stroke-width="0.8" opacity="0.3"/>
+  <line x1="108" y1="134" x2="136" y2="136" stroke="white" stroke-width="0.8" opacity="0.3"/>
+  <line x1="108" y1="140" x2="136" y2="142" stroke="white" stroke-width="0.8" opacity="0.3"/>
+  <line x1="108" y1="146" x2="136" y2="148" stroke="white" stroke-width="0.8" opacity="0.3"/>
+
+  <!-- Diamante superior -->
+  <polygon points="100,1 105,8 100,15 95,8" fill="url(#gold)" filter="url(#goldglow)"/>
+  <polygon points="89,4 92,8 89,12 86,8" fill="url(#gold)" opacity="0.55"/>
+  <polygon points="111,4 114,8 111,12 108,8" fill="url(#gold)" opacity="0.55"/>
+
+</svg>

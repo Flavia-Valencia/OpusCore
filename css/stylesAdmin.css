@@ -3,7 +3,7 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: Arial, sans-serif;
+    box-sizing: border-box;
 }
 
 /* fuente y color de fondo de la pagina */
@@ -14,7 +14,7 @@ body {
 }
 
 .header {
-    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF); /*APLICA DEGRADADO*/ 
     backdrop-filter: blur(10px);
     color: white;
     padding: 15px 40px;
@@ -26,36 +26,50 @@ body {
 /* logo en columna (academia arriba, futuro digital abajo) */
 .logo {
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-text {
+    display: flex;
     flex-direction: column;
+    line-height: 1.1;
+}
+
+/* tamaño del icono del logo */
+
+.logo img {
+    width: 40px;
+    height: 40px;
 }
 
 /* texto chico del logo */
 .logo-small {
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 1px;
+
 }
 
 /* texto grande del logo */
 .logo-big {
     font-size: 24px;
     font-weight: 700;
-    letter-spacing: 1px;
 }
 
-/* menu de navegacion (inicio, estudiantes, cursos, etc) */
+/* menu de navegacion*/
 .nav {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 .btn-nav {
-    width: 100%;
     padding: 10px 20px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
     color:#FFFFFF;
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 20px;
     font-size: 14px;
     font-weight: 600;
     transition: 0.4s;
@@ -66,7 +80,7 @@ body {
     transform: translateY(-1px);
 }
 
-/* boton activo (el que esta seleccionado) */
+/* boton activo (el que esté seleccionado) */
 .btn-nav.active {
     background-color: #069DBF;
 }
@@ -76,9 +90,10 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
     padding: 8px 12px;
-    border-radius: 5px;
+    border-radius: 20px;
     margin-left: 20px;
     cursor: pointer;
     transition: background-color 0.4s;
@@ -93,7 +108,7 @@ body {
 .user-info {
     display: flex;
     flex-direction: column;
-    text-align: right;
+    text-align: left;
 }
 
 /* rol: Admin */
@@ -188,3 +203,6 @@ body {
     min-height: 300px;
     padding: 20px;
 }
+
+
+/*modo responsivo para cel*/

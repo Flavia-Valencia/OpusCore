@@ -6,13 +6,17 @@
     <title>Administrar Estudiantes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/stylesAdmin.css">
+    <link rel="icon" type="image/svg+xml" href="img/logo.svg">
 </head>
 <body>
    
     <header class="header">
         <div class="logo">
-            <span class="logo-small">ACADEMIA</span>
-            <span class="logo-big">FUTURO DIGITAL</span>
+            <img src ="img/logo.svg" alt="Logo Academia Futuro Digital" class="logo">
+            <div class="logo-text">
+                <span class="logo-small">ACADEMIA</span>
+                <span class="logo-big">FUTURO DIGITAL</span>
+            </div>
         </div>
         <nav class="nav">
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
