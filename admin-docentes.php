@@ -56,6 +56,8 @@ if(!isset($_SESSION["usuario"])){
                 <input type="text" placeholder="🔎 Buscar un docente" class="input-buscar">
             </div>
             <div class="tabla-placeholder">
+                <?php include('mostrar-tabla-docentes.php'); ?>
+
             </div>
         </div>
     </main>
