@@ -5,14 +5,12 @@
     padding: 0;
     box-sizing: border-box;
 }
-
 /* fuente y color de fondo de la pagina */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: radial-gradient(circle at top left, #c7e0ff, #eaf4ff, #ffffff); 
     background-size: 100% 200%;
 }
-
 .header {
     background: linear-gradient(135deg, #053170, #1D4B73, #069DBF); /*APLICA DEGRADADO*/ 
     backdrop-filter: blur(10px);
@@ -22,7 +20,6 @@ body {
     justify-content: space-between;
     align-items: center;
 }
-
 /* logo en columna (academia arriba, futuro digital abajo) */
 .logo {
     display: flex;
@@ -30,7 +27,6 @@ body {
     align-items: center;
     gap: 12px;
 }
-
 .logo-text {
     display: flex;
     flex-direction: column;
@@ -38,12 +34,10 @@ body {
 }
 
 /* tamaño del icono del logo */
-
 .logo img {
     width: 40px;
     height: 40px;
 }
-
 /* texto chico del logo */
 .logo-small {
     font-size: 12px;
@@ -103,7 +97,6 @@ body {
     background-color: #213e7d;    
     transform: translateY(-1px);
 }
-
 /* info del usuario: rol y email */
 .user-info {
     display: flex;
@@ -204,16 +197,12 @@ body {
     padding: 20px;
 }
 
-
-/*modo responsivo para cell*/
-
-/*MODO RESPONSIVE PARA TODAS LAS PÁGINAS*/
+/*MODO RESPONSIVE PARA TODAS LAS PÁGINAS DE ADMIN*/
 
 /*checkbox escondido que controla todo el menú*/
 .menu-checkbox {
     display: none;
 }
-
 /*botón de hamburguesa - solo aparece en pantallas chicas*/
 .menu-btn {
     display: none;
