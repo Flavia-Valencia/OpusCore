@@ -204,9 +204,10 @@ body {
     padding: 20px;
 }
 
-/*HOLA*/
-/*modo responsivo para cel*/
 
+/*modo responsivo para cell*/
+
+/*MODO RESPONSIVE PARA TODAS LAS PÁGINAS*/
 
 /*checkbox escondido que controla todo el menú*/
 .menu-checkbox {
@@ -237,7 +238,7 @@ body {
     z-index: 998;
 }
 
-/*MEDIA QUERY MÓVIL (max-width: 768px)*/
+/*MEDIA QUERY MÓVIL (max-width: 768px*/
 
 @media (max-width: 768px) {
     
@@ -277,7 +278,7 @@ body {
     .nav {
         position: fixed;
         top: 0;
-        right: -250px; /*lo saco a la derecha para que no se vea*/
+        right: -250px;
         width: 250px;
         height: 100vh;
         background: linear-gradient(180deg, #053170 0%, #1D4B73 100%);
@@ -286,7 +287,7 @@ body {
         align-items: stretch;
         padding: 70px 0 20px;
         gap: 0;
-        transition: right 0.3s ease; /*animación suave al entrar/salir*/
+        transition: right 0.3s ease;
         z-index: 999;
         box-shadow: -5px 0 20px rgba(0,0,0,0.4);
     }
@@ -303,7 +304,7 @@ body {
     
     /*cambio el icono de hamburguesa a X cuando está abierto*/
     .menu-checkbox:checked ~ .menu-btn i::before {
-        content: "\f00d"; /*icono de cerrar de FontAwesome*/
+        content: "\f00d";
     }
     
     /*botones del menú en formato vertical para móvil*/
@@ -339,7 +340,7 @@ body {
     /*dejo espacio arriba porque el header está fijo*/
     .main {
         padding: 80px 15px 20px;
-        margin-top: 60px;
+        margin-top: 0;
     }
     
     /*título más chico para que no se desborde*/
@@ -375,68 +376,72 @@ body {
         font-size: 14px;
     }
     
-    /* TARJETAS DE DATOS*/
+    /*CARD PRINCIPAL - VISIBLE EN TODAS LAS PÁGINAS*/
     
-    /*quito el fondo blanco y sombra de la card contenedora*/
+    /*IMPORTANTE: La card principal MANTIENE fondo blanco para todas las páginas*/
     .card {
-        background: transparent;
-        box-shadow: none;
-        border-radius: 0;
-    }
-    
-    /*cada estudiante se ve como una tarjeta blanca individual*/
-    .estudiante-card {
         background: white;
         border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 15px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        padding: 15px;
+        margin-bottom: 15px;
     }
     
-    /*filas de datos: etiqueta a la izquierda, valor a la derecha*/
-    .dato-fila {
+    /*TABLAS - CONVERTIR A CARDS VERTICALES */
+    
+    /*Convertir tabla a layout vertical tipo cards*/
+    table {
+        display: block;
+        width: 100%;
+    }
+    
+    thead {
+        display: none; /*ocultar header de tabla en móvil*/
+    }
+    
+    tbody {
+        display: block;
+        width: 100%;
+    }
+    
+    tbody tr {
+        display: block;
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #e0e0e0;
+    }
+    
+    td {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 0;
+        padding: 8px 0;
         border-bottom: 1px solid #f0f0f0;
+        text-align: right;
     }
     
-    /*quito la línea divisoria del último dato*/
-    .dato-fila:last-child {
+    td:last-child {
         border-bottom: none;
+        border-top: 2px solid #f5f5f5;
+        margin-top: 10px;
+        padding-top: 15px;
+        justify-content: center;
+        gap: 20px;
     }
     
-    /*nombre del campo en negrita (Nombre, Contacto, etc)*/
-    .dato-label {
+    /*Si las celdas tienen data-label, mostrarlo como etiqueta*/
+    td::before {
+        content: attr(data-label);
         font-weight: 600;
         color: #1a1a1a;
-        font-size: 14px;
-    }
-    
-    /*valor del campo en gris*/
-    .dato-valor {
-        color: #555;
-        font-size: 14px;
-    }
-    
-    /*estado activo en verde para que resalte*/
-    .estado-activo {
-        color: #27ae60;
-        font-weight: 500;
+        text-align: left;
+        flex: 1;
     }
     
     /*BOTONES DE ACCIÓN (Editar/Eliminar)*/
-    
-    /*contenedor de los botones centrado con espacio entre ellos*/
-    .acciones-card {
-        display: flex;
-        justify-content: center;
-        gap: 40px;
-        margin-top: 15px;
-        padding-top: 15px;
-        border-top: 2px solid #f5f5f5;
-    }
     
     /*estilo base de los botones de acción*/
     .btn-accion {
@@ -455,20 +460,12 @@ body {
         color: #069DBF;
     }
     
-    /*fondo clarito al pasar el mouse por editar*/
     .btn-editar:hover {
         background: #e0f2fe;
     }
     
     /*botón eliminar en rojo*/
     .btn-eliminar {
-        color: #e74c3c;
-    }
-    
-    /*fondo clarito al pasar el mouse por eliminar*/
-    .btn-eliminar:hover {
-        background: #fee2e2;
-    }
-} 
-
-/*OJala este si*/
+        color: #e74c3c 
+     }
+}
