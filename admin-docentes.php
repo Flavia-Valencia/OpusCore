@@ -1,6 +1,10 @@
 <?php                   #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
 session_start();
 
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 if(!isset($_SESSION["usuario"])){
     header("Location: login.php");
     exit();
