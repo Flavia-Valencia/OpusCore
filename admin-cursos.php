@@ -21,6 +21,9 @@ if(!isset($_SESSION["usuario"])){
     <link rel="stylesheet" href="css/stylesAdmin.css">
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
 </head>
+
+<script src="js/admin.js"></script>
+
 <body>
    
     <header class="header">

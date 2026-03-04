@@ -22,6 +22,9 @@ if(!isset($_SESSION["usuario"])){
     <link rel="stylesheet" href="css/stylesAdmin.css">
     
 </head>
+
+<script src="js/admin.js"></script>
+
 <body>
    
     <header class="header">
