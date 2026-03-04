@@ -3,19 +3,19 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: Arial, sans-serif;
+    box-sizing: border-box;
 }
 
 /* fuente y color de fondo de la pagina */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(180deg, #fafafa, #add0ef);
+    background: radial-gradient(circle at top left, #c7e0ff, #eaf4ff, #ffffff); 
     background-size: 100% 200%;
 }
 
-/* barra azul de arriba con el logo y el menu */
 .header {
-    background-color: #053170;
+    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF); /*APLICA DEGRADADO*/ 
+    backdrop-filter: blur(10px);
     color: white;
     padding: 15px 40px;
     display: flex;
@@ -26,36 +26,50 @@ body {
 /* logo en columna (academia arriba, futuro digital abajo) */
 .logo {
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-text {
+    display: flex;
     flex-direction: column;
+    line-height: 1.1;
+}
+
+/* tamaño del icono del logo */
+
+.logo img {
+    width: 40px;
+    height: 40px;
 }
 
 /* texto chico del logo */
 .logo-small {
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 1px;
+
 }
 
 /* texto grande del logo */
 .logo-big {
     font-size: 24px;
     font-weight: 700;
-    letter-spacing: 1px;
 }
 
-/* menu de navegacion (inicio, estudiantes, cursos, etc) */
+/* menu de navegacion*/
 .nav {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 .btn-nav {
-    width: 100%;
     padding: 10px 20px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
     color:#FFFFFF;
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 20px;
     font-size: 14px;
     font-weight: 600;
     transition: 0.4s;
@@ -66,7 +80,7 @@ body {
     transform: translateY(-1px);
 }
 
-/* boton activo (el que esta seleccionado) */
+/* boton activo (el que esté seleccionado) */
 .btn-nav.active {
     background-color: #069DBF;
 }
@@ -76,9 +90,10 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
     padding: 8px 12px;
-    border-radius: 5px;
+    border-radius: 20px;
     margin-left: 20px;
     cursor: pointer;
     transition: background-color 0.4s;
@@ -93,7 +108,7 @@ body {
 .user-info {
     display: flex;
     flex-direction: column;
-    text-align: right;
+    text-align: left;
 }
 
 /* rol: Admin */
@@ -120,6 +135,7 @@ body {
     padding: 30px 40px;
     max-width: 1200px;
     margin: 0 auto;
+    
 }
 
 /* parte de arriba con el titulo y el boton nuevo */
@@ -139,7 +155,7 @@ body {
 
 /* boton azul de + nuevo estudiante */
 .btn-nuevo {
-    background-color: #1a5276;
+    background: linear-gradient(135deg, #1a5276, #053170);
     color: white;
     border: none;
     padding: 12px 20px;
@@ -149,29 +165,26 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
 }
-
 /* cuando paso el mouse por el boton nuevo */
 .btn-nuevo:hover {
-    background-color: #2471a3;
+    background: linear-gradient(135deg, #1a5276, #053170);
+    box-shadow: 0 10px 20px #c9c9c9;
+    transition: all 0.3s ease;
     transform: translateX(-1px);
-    transition: 0.4s;
 }
-
 /* caja blanca que contiene el buscador y la tabla */
 .card {
     background-color: white;
-    border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    border-radius: 16px;
 }
-
 /* parte de arriba de la caja blanca con el input de buscar */
 .toolbar {
     padding: 20px;
     border-bottom: 1px solid #e5e5e5;
 }
-
-
 /* campo de texto para buscar estudiante */
 .input-buscar {
     width: 100%;
@@ -181,14 +194,278 @@ body {
     border-radius: 6px;
     font-size: 14px;
 }
-
 /* color del texto gris cuando esta vacio */
 .input-buscar::placeholder {
     color: #999;
 }
-
 /* espacio donde el backend va a poner la tabla */
 .tabla-placeholder {
     min-height: 300px;
     padding: 20px;
+}
+
+
+/*modo responsivo para cell*/
+
+/*MODO RESPONSIVE PARA TODAS LAS PÁGINAS*/
+
+/*checkbox escondido que controla todo el menú*/
+.menu-checkbox {
+    display: none;
+}
+
+/*botón de hamburguesa - solo aparece en pantallas chicas*/
+.menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 1000;
+}
+
+/*fondo oscuro semitransparente cuando abro el menú*/
+.menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+}
+
+/*MEDIA QUERY MÓVIL (max-width: 768px*/
+
+@media (max-width: 768px) {
+    
+    /*header pegado arriba para que no se pierda al hacer scroll*/
+    .header {
+        padding: 15px 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 997;
+    }
+    
+    /*logo más chico para que quepa todo*/
+    .logo-big {
+        font-size: 16px;
+    }
+    
+    .logo-small {
+        font-size: 9px;
+    }
+    
+    /*muestro el botón de hamburguesa*/
+    .menu-btn {
+        display: block;
+        margin-left: auto;
+    }
+    
+    /*oculto el perfil del admin del header, el salir va dentro del menú*/
+    .user-profile {
+        display: none;
+    }
+    
+    /*MENÚ DESPLEGABLE DESDE LA DERECHA*/
+    
+    /*menú escondido fuera de la pantalla por defecto*/
+    .nav {
+        position: fixed;
+        top: 0;
+        right: -250px;
+        width: 250px;
+        height: 100vh;
+        background: linear-gradient(180deg, #053170 0%, #1D4B73 100%);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 70px 0 20px;
+        gap: 0;
+        transition: right 0.3s ease;
+        z-index: 999;
+        box-shadow: -5px 0 20px rgba(0,0,0,0.4);
+    }
+    
+    /*cuando el checkbox está marcado, traigo el menú a la vista*/
+    .menu-checkbox:checked ~ .nav {
+        right: 0;
+    }
+    
+    /*muestro el fondo oscuro cuando el menú está abierto*/
+    .menu-checkbox:checked ~ .menu-overlay {
+        display: block;
+    }
+    
+    /*cambio el icono de hamburguesa a X cuando está abierto*/
+    .menu-checkbox:checked ~ .menu-btn i::before {
+        content: "\f00d";
+    }
+    
+    /*botones del menú en formato vertical para móvil*/
+    .btn-nav {
+        width: 100%;
+        text-align: left;
+        padding: 18px 25px;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        font-size: 15px;
+    }
+    
+    /*botón activo resaltado en turquesa con borde izquierdo*/
+    .btn-nav.active {
+        background-color: #069DBF;
+        border-left: 4px solid #55D9D9;
+    }
+    
+    /*efecto hover en los botones del menú*/
+    .btn-nav:hover {
+        background-color: rgba(6, 157, 191, 0.3);
+    }
+    
+    /*botón de salir al final del menú con color rojito*/
+    .btn-salir {
+        margin-top: auto;
+        border-top: 2px solid rgba(255,255,255,0.2);
+        color: #ff6b6b;
+    }
+    
+    /*CONTENIDO PRINCIPAL*/
+    
+    /*dejo espacio arriba porque el header está fijo*/
+    .main {
+        padding: 80px 15px 20px;
+        margin-top: 0;
+    }
+    
+    /*título más chico para que no se desborde*/
+    .titulo {
+        font-size: 18px;
+        font-weight: 700;
+    }
+    
+    /*título y botón uno arriba del otro en vez de lado a lado*/
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+    
+    /*botón nuevo ocupa todo el ancho disponible*/
+    .btn-nuevo {
+        width: 100%;
+        padding: 14px;
+        font-size: 14px;
+    }
+    
+    /*barra de búsqueda con menos padding*/
+    .toolbar {
+        padding: 15px;
+    }
+    
+    /*campo de búsqueda full width en móvil*/
+    .input-buscar {
+        max-width: 100%;
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+    
+    /*CARD PRINCIPAL - VISIBLE EN TODAS LAS PÁGINAS*/
+    
+    /*IMPORTANTE: La card principal MANTIENE fondo blanco para todas las páginas*/
+    .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    /*TABLAS - CONVERTIR A CARDS VERTICALES */
+    
+    /*Convertir tabla a layout vertical tipo cards*/
+    table {
+        display: block;
+        width: 100%;
+    }
+    
+    thead {
+        display: none; /*ocultar header de tabla en móvil*/
+    }
+    
+    tbody {
+        display: block;
+        width: 100%;
+    }
+    
+    tbody tr {
+        display: block;
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #e0e0e0;
+    }
+    
+    td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+        text-align: right;
+    }
+    
+    td:last-child {
+        border-bottom: none;
+        border-top: 2px solid #f5f5f5;
+        margin-top: 10px;
+        padding-top: 15px;
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    /*Si las celdas tienen data-label, mostrarlo como etiqueta*/
+    td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #1a1a1a;
+        text-align: left;
+        flex: 1;
+    }
+    
+    /*BOTONES DE ACCIÓN (Editar/Eliminar)*/
+    
+    /*estilo base de los botones de acción*/
+    .btn-accion {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: all 0.2s;
+    }
+    
+    /*botón editar en color turquesa*/
+    .btn-editar {
+        color: #069DBF;
+    }
+    
+    .btn-editar:hover {
+        background: #e0f2fe;
+    }
+    
+    /*botón eliminar en rojo*/
+    .btn-eliminar {
+        color: #e74c3c 
+     }
 }

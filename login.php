@@ -1,9 +1,15 @@
+<?php
+session_start();
+$error = isset($_GET['error']) ? $_GET['error'] : '';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/stylesLogin.css">
+    <link rel="icon" type="image/svg+xml" href="img/logo.svg">
     <title>login</title>
 </head>
 
@@ -29,7 +35,7 @@
         <!--Lado del formulario-->
         <div class="derecha">
             <div class="contenedor-formulario">
-                <form id="formulario-inicio" role="tabpanel" aria-labelledby="leyenda-inicio" autocomplete="on">
+                <form id="formulario-inicio" role="tabpanel" action="includes/procesar_login.php" method="POST" aria-labelledby="leyenda-inicio" autocomplete="on">
                     <h2 id="inicio-sesion" class="leyenda">Inicia sesión</h2>
                     
                     <div class="fila">
@@ -56,6 +62,12 @@
                         <p>Olvidaste tu contraseña?</p><a href="#" class="enlace">Enviar solicitud de reestablecimiento</a>
                     </div>
 
+                      <?php if ($error == 1): ?>
+                        <div class="mensaje-error">
+                            Correo o contraseña incorrecta. Inténtalo de nuevo.
+                        </div>
+                    <?php endif; ?>
+
                     <button class="btn-entrar" type="submit">Entrar</button>
                 </form>
             </div>
@@ -64,3 +76,4 @@
     <script src="js/script.js"></script>
 </body>
 </html>
+

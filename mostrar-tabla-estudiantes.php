@@ -1,8 +1,7 @@
 <?php
 include('includes/conexion.php'); 
 
-
- $sql = "SELECT
+$sql = "SELECT
     u.id AS usuario_id,
     u.nombre, 
     u.apellido, 
@@ -13,7 +12,6 @@ include('includes/conexion.php');
     FROM estudiantes e 
     INNER JOIN usuarios u ON e.usuario_id = u.id
     WHERE u.rol_id = 2";
-
 
 $resultado = mysqli_query($conexion, $sql);
  if (mysqli_num_rows($resultado) > 0 ){
@@ -48,7 +46,7 @@ $resultado = mysqli_query($conexion, $sql);
         <?php } ?>
     </table>
 <?php 
- }else{
-    echo "No hay estudiantes registrados.";
- }
- ?>
+    }else{
+        echo "No hay estudiantes registrados.";
+    }
+?>

@@ -1,3 +1,12 @@
+<?php                   #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
+session_start();
+
+if(!isset($_SESSION["usuario"])){
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,13 +15,17 @@
     <title>Administrar Estudiantes</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/stylesAdmin.css">
+    <link rel="icon" type="image/svg+xml" href="img/logo.svg">
 </head>
 <body>
    
     <header class="header">
         <div class="logo">
-            <span class="logo-small">ACADEMIA</span>
-            <span class="logo-big">FUTURO DIGITAL</span>
+            <img src ="img/logo.svg" alt="Logo Academia Futuro Digital" class="logo">
+            <div class="logo-text">
+                <span class="logo-small">ACADEMIA</span>
+                <span class="logo-big">FUTURO DIGITAL</span>
+            </div>
         </div>
         <nav class="nav">
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
@@ -23,7 +36,7 @@
             <div class="user-profile">
                 <div class="user-info">
                     <span class="user-role">Admin</span>
-                    <span class="user-email">admin@academia.com</span>
+                    <span class="user-email"><?php echo $_SESSION["usuario"]; ?></span>
                 </div>
                 <i class="fas fa-arrow-right-from-bracket logout-icon"></i>
             </div>
