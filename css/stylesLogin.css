@@ -178,6 +178,15 @@
     user-select: none;
 }
 
+#icono-ojo {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+#icono-ojo.animando {
+    transform: scale(0);
+    opacity: 0;
+}
+
 .ver-contrasena:hover {
     opacity: 1;
 }
