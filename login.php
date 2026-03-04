@@ -47,7 +47,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                         <label for="contrasena">Contraseña</label>
                         <div class="input-password">
                             <input id="contrasena" name="contrasena" type="password" placeholder="••••••••" required />
-                            <span class="ver-contrasena" onclick="verContrasena()">👁️</span>
+                           <span class="ver-contrasena" onclick="verContrasena()">👁️</span>
                         </div>
                     </div>
 
