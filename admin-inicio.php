@@ -31,6 +31,19 @@ if(!isset($_SESSION["usuario"])){
                 <span class="logo-big">FUTURO DIGITAL</span>
             </div>
         </div>
+
+        <input type="checkbox" id="menu-toggle" class="menu-checkbox">
+        
+     
+        <label for="menu-toggle" class="menu-btn">
+            <i class="fas fa-bars hamburguesa"></i>
+            <i class="fas fa-times cerrar"></i>
+        </label>
+        
+      
+        <label for="menu-toggle" class="menu-overlay"></label>
+        
+
         <nav class="nav">
             <a href="./admin-inicio.php" class="btn-nav active">Inicio</a>
             <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
