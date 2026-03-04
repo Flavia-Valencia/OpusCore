@@ -9,7 +9,7 @@ function verContrasena() {
     }
 }
 
-// Mandar datos
+// Este codigo es para que se envien los datos de el formulario de login.php y valida que no quede ningun campo vacio.
 const formulario = document.getElementById("formulario-inicio");
 const btnEntrar = document.querySelector(".btn-entrar");
 
