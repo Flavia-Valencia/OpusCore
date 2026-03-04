@@ -196,14 +196,28 @@ body {
     min-height: 300px;
     padding: 20px;
 }
+/* MODO RESPONSIVE  (max-width: 768px)*/
 
-/*MODO RESPONSIVE PARA TODAS LAS PÁGINAS DE ADMIN*/
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-/*checkbox escondido que controla todo el menú*/
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #E8F4FC;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Checkbox escondido que controla todo el menú */
 .menu-checkbox {
     display: none;
 }
-/*botón de hamburguesa - solo aparece en pantallas chicas*/
+
+/* Botón de hamburguesa - solo aparece en pantallas chicas */
 .menu-btn {
     display: none;
     background: none;
@@ -215,7 +229,7 @@ body {
     z-index: 1000;
 }
 
-/*fondo oscuro semitransparente cuando abro el menú*/
+/* Fondo oscuro semitransparente cuando abro el menú */
 .menu-overlay {
     display: none;
     position: fixed;
@@ -227,76 +241,155 @@ body {
     z-index: 998;
 }
 
-/*MEDIA QUERY MÓVIL (max-width: 768px*/
+/*MEDIA QUERY MÓVIL (max-width: 768px)*/
 
 @media (max-width: 768px) {
     
-    /*header pegado arriba para que no se pierda al hacer scroll*/
+    /* HEADER - Fijo arriba */
     .header {
-        padding: 15px 20px;
+        padding: 12px 15px;
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
         z-index: 997;
+        background: linear-gradient(90deg, #053170 0%, #1D4B73 100%);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 60px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
     
-    /*logo más chico para que quepa todo*/
+    /* Logo */
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .logo-img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .logo-icon {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .logo-icon svg {
+        width: 100%;
+        height: 100%;
+    }
+    
+    .logo-text {
+        display: flex;
+        flex-direction: column;
+    }
+    
     .logo-big {
         font-size: 16px;
+        font-weight: bold;
+        color: white;
+        line-height: 1.2;
     }
     
     .logo-small {
         font-size: 9px;
+        color: rgba(255,255,255,0.8);
+        letter-spacing: 1px;
     }
     
-    /*muestro el botón de hamburguesa*/
+    /* Muestro el botón de hamburguesa */
     .menu-btn {
         display: block;
-        margin-left: auto;
+        order: 2;
     }
     
-    /*oculto el perfil del admin del header, el salir va dentro del menú*/
+    /* Iconos de menú */
+    .menu-btn .hamburguesa {
+        display: block;
+    }
+    
+    .menu-btn .cerrar {
+        display: none;
+        font-size: 28px;
+    }
+    
+    /* Cambio a X cuando está abierto */
+    .menu-checkbox:checked ~ .menu-btn .hamburguesa {
+        display: none;
+    }
+    
+    .menu-checkbox:checked ~ .menu-btn .cerrar {
+        display: block;
+    }
+    
+    /* Oculto el perfil del admin del header en móvil */
     .user-profile {
         display: none;
     }
     
     /*MENÚ DESPLEGABLE DESDE LA DERECHA*/
     
-    /*menú escondido fuera de la pantalla por defecto*/
+    /* Menú escondido fuera de la pantalla por defecto */
     .nav {
         position: fixed;
         top: 0;
-        right: -250px;
-        width: 250px;
+        right: -280px;
+        width: 280px;
         height: 100vh;
         background: linear-gradient(180deg, #053170 0%, #1D4B73 100%);
         flex-direction: column;
         justify-content: flex-start;
         align-items: stretch;
-        padding: 70px 0 20px;
+        padding: 20px 0;
         gap: 0;
         transition: right 0.3s ease;
         z-index: 999;
         box-shadow: -5px 0 20px rgba(0,0,0,0.4);
+        display: flex;
+        overflow-y: auto;
     }
     
-    /*cuando el checkbox está marcado, traigo el menú a la vista*/
+    /* Cuando el checkbox está marcado, traigo el menú a la vista */
     .menu-checkbox:checked ~ .nav {
         right: 0;
     }
     
-    /*muestro el fondo oscuro cuando el menú está abierto*/
+    /* Muestro el fondo oscuro cuando el menú está abierto */
     .menu-checkbox:checked ~ .menu-overlay {
         display: block;
     }
     
-    /*cambio el icono de hamburguesa a X cuando está abierto*/
-    .menu-checkbox:checked ~ .menu-btn i::before {
-        content: "\f00d";
+    /* Info de usuario en el menú */
+    .menu-user {
+        padding: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+        margin-bottom: 10px;
+        color: white;
     }
     
-    /*botones del menú en formato vertical para móvil*/
+    .menu-user-name {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+    
+    .menu-user-email {
+        font-size: 12px;
+        color: rgba(255,255,255,0.7);
+        word-break: break-all;
+    }
+    
+    /* Botones del menú en formato vertical para móvil */
     .btn-nav {
         width: 100%;
         text-align: left;
@@ -304,157 +397,368 @@ body {
         border-radius: 0;
         border-bottom: 1px solid rgba(255,255,255,0.1);
         font-size: 15px;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.2s;
+        background: none;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        cursor: pointer;
     }
     
-    /*botón activo resaltado en turquesa con borde izquierdo*/
+    /* Botón activo resaltado en turquesa con borde izquierdo */
     .btn-nav.active {
         background-color: #069DBF;
         border-left: 4px solid #55D9D9;
     }
     
-    /*efecto hover en los botones del menú*/
+    /* Efecto hover en los botones del menú */
     .btn-nav:hover {
         background-color: rgba(6, 157, 191, 0.3);
     }
     
-    /*botón de salir al final del menú con color rojito*/
+    /* Iconos en el menú */
+    .btn-nav i {
+        width: 20px;
+        text-align: center;
+    }
+    
+    /* Botón de salir al final del menú */
     .btn-salir {
         margin-top: auto;
         border-top: 2px solid rgba(255,255,255,0.2);
         color: #ff6b6b;
+        padding: 18px 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        font-size: 15px;
+        transition: all 0.2s;
+    }
+    
+    .btn-salir:hover {
+        background-color: rgba(255, 107, 107, 0.2);
+    }
+    
+    .btn-salir i {
+        width: 20px;
     }
     
     /*CONTENIDO PRINCIPAL*/
     
-    /*dejo espacio arriba porque el header está fijo*/
+    /* Dejo espacio arriba porque el header está fijo */
     .main {
         padding: 80px 15px 20px;
         margin-top: 0;
+        min-height: 100vh;
     }
     
-    /*título más chico para que no se desborde*/
-    .titulo {
-        font-size: 18px;
-        font-weight: 700;
+    .container {
+        max-width: 100%;
     }
     
-    /*título y botón uno arriba del otro en vez de lado a lado*/
+    /* Header de página */
     .page-header {
+        display: flex;
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
-        margin-bottom: 15px;
+        gap: 15px;
+        margin-bottom: 20px;
     }
     
-    /*botón nuevo ocupa todo el ancho disponible*/
+    /* Título de página */
+    .titulo {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 5px;
+        line-height: 1.3;
+    }
+    
+    .subtitulo {
+        font-size: 13px;
+        color: #666;
+    }
+    
+    /* Botón nuevo - estilo completo */
     .btn-nuevo {
         width: 100%;
-        padding: 14px;
+        padding: 14px 20px;
         font-size: 14px;
+        font-weight: 600;
+        background: #069DBF;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+        text-decoration: none;
     }
     
-    /*barra de búsqueda con menos padding*/
+    .btn-nuevo:hover {
+        background: #057a96;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(6, 157, 191, 0.3);
+    }
+    
+    .btn-nuevo i {
+        font-size: 16px;
+    }
+    
+    /*TOOLBAR DE BÚSQUEDA*/
+    
     .toolbar {
+        background: white;
         padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     
-    /*campo de búsqueda full width en móvil*/
+    /* Campo de búsqueda */
     .input-buscar {
+        width: 100%;
         max-width: 100%;
         padding: 12px 15px;
         font-size: 14px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        outline: none;
+        transition: all 0.2s;
+        background: #f8f9fa;
     }
     
-    /*CARD PRINCIPAL - VISIBLE EN TODAS LAS PÁGINAS*/
+    .input-buscar:focus {
+        border-color: #069DBF;
+        box-shadow: 0 0 0 3px rgba(6, 157, 191, 0.1);
+        background: white;
+    }
     
-    /*IMPORTANTE: La card principal MANTIENE fondo blanco para todas las páginas*/
+    /*CARD PRINCIPAL */
+    
     .card {
         background: white;
         border-radius: 12px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         padding: 15px;
         margin-bottom: 15px;
+        overflow: hidden;
     }
     
-    /*TABLAS - CONVERTIR A CARDS VERTICALES */
+    /* Mensaje cuando no hay datos */
+    .mensaje-vacio {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+        font-size: 14px;
+    }
     
-    /*Convertir tabla a layout vertical tipo cards*/
-    table {
+    /*TABLAS - CONVERTIR A CARDS VERTICALES*/
+    
+    /* Contenedor de tabla con scroll horizontal si es necesario */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: -15px;
+        padding: 15px;
+    }
+    
+    /* Tabla base */
+    table.data-table,
+    table.mobile-cards {
+        display: block;
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 100%;
+    }
+    
+    /* Ocultar header de tabla en móvil */
+    table.mobile-cards thead {
+        display: none;
+    }
+    
+    table.mobile-cards tbody {
         display: block;
         width: 100%;
     }
     
-    thead {
-        display: none; /*ocultar header de tabla en móvil*/
-    }
-    
-    tbody {
-        display: block;
-        width: 100%;
-    }
-    
-    tbody tr {
+    /* Cada fila se convierte en una card */
+    table.mobile-cards tbody tr {
         display: block;
         background: white;
         border-radius: 12px;
         padding: 15px;
         margin-bottom: 15px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        border: 1px solid #e0e0e0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 1px solid #e8e8e8;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
     
-    td {
+    table.mobile-cards tbody tr:active {
+        transform: scale(0.98);
+    }
+    
+    table.mobile-cards tbody tr:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Celdas como filas flex */
+    table.mobile-cards td {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
+        padding: 10px 0;
         border-bottom: 1px solid #f0f0f0;
         text-align: right;
+        font-size: 14px;
     }
     
-    td:last-child {
+    table.mobile-cards td:last-child {
         border-bottom: none;
+    }
+    
+    /* Etiqueta del campo (usando data-label) */
+    table.mobile-cards td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #053170;
+        text-align: left;
+        flex: 1;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-right: 10px;
+    }
+    
+    /* Celda de acciones especial */
+    td.acciones-cell {
         border-top: 2px solid #f5f5f5;
         margin-top: 10px;
         padding-top: 15px;
-        justify-content: center;
-        gap: 20px;
+        flex-direction: column;
+        gap: 10px;
     }
     
-    /*Si las celdas tienen data-label, mostrarlo como etiqueta*/
-    td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: #1a1a1a;
-        text-align: left;
-        flex: 1;
+    td.acciones-cell::before {
+        display: none;
     }
     
-    /*BOTONES DE ACCIÓN (Editar/Eliminar)*/
+    /* BOTONES DE ACCIÓN (Editar/Eliminar) */
     
-    /*estilo base de los botones de acción*/
-    .btn-accion {
+    /* Contenedor de acciones */
+    .acciones {
         display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 14px;
-        text-decoration: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        transition: all 0.2s;
+        gap: 10px;
+        justify-content: center;
+        width: 100%;
     }
     
-    /*botón editar en color turquesa*/
+    /* Estilo base de los botones de acción */
+    .btn-accion {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        font-size: 13px;
+        text-decoration: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        transition: all 0.2s;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        flex: 1;
+        max-width: 130px;
+    }
+    
+    .btn-accion i {
+        font-size: 14px;
+    }
+    
+    /* Botón editar en color turquesa */
     .btn-editar {
         color: #069DBF;
+        background: #e0f7fa;
     }
     
     .btn-editar:hover {
-        background: #e0f2fe;
+        background: #069DBF;
+        color: white;
+        transform: translateY(-2px);
     }
     
-    /*botón eliminar en rojo*/
+    /* Botón eliminar en rojo */
     .btn-eliminar {
-        color: #e74c3c 
-     }
+        color: #e74c3c;
+        background: #fee2e2;
+    }
+    
+    .btn-eliminar:hover {
+        background: #e74c3c;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* BADGES Y ESTADOS */
+    
+    .badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    .badge-activo {
+        background: #d1fae5;
+        color: #065f46;
+    }
+    
+    .badge-inactivo {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .badge-pendiente {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    /* CROLLBAR PERSONALIZADO*/
+    
+    .nav::-webkit-scrollbar {
+        width: 5px;
+    }
+    
+    .nav::-webkit-scrollbar-track {
+        background: rgba(255,255,255,0.1);
+    }
+    
+    .nav::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.3);
+        border-radius: 3px;
+    }
+    
+    /* ANIMACIONES */
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card {
+        animation: fadeIn 0.3s ease;
+    }
+    
+    table.mobile-cards tbody tr {
+        animation: fadeIn 0.3s ease;
+    }
 }
