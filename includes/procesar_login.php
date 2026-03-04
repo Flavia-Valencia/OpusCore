@@ -26,17 +26,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit(); 
         
         } else {
-            echo "<script>
-                    alert('Correo o contraseña incorrecta');
-                    window.history.back();
-                  </script>";
+            header("Location: ../login.php?error=1");
             exit();
         } 
     } else {
-        echo "<script>
-                alert('Correo o contraseña incorrecta');
-                window.history.back();
-              </script>";
+        header("Location: ../login.php?error=1");
         exit();
     }
 }

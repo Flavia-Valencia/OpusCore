@@ -1,3 +1,12 @@
+<?php                   #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
+session_start();
+
+if(!isset($_SESSION["usuario"])){
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -24,13 +33,15 @@
             <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav active">Docentes</a>
             
-            <div class="user-profile">
-                <div class="user-info">
-                    <span class="user-role">Admin</span>
-                    <span class="user-email">admin@academia.com</span>
+            <a href="includes/logout.php" style="text-decoration:none;">
+                <div class="user-profile">
+                    <div class="user-info">
+                        <span class="user-role">Admin</span>
+                        <span class="user-email"><?php echo $_SESSION["usuario"]; ?></span>
+                    </div>
+                    <i class="fas fa-arrow-right-from-bracket logout-icon"></i>
                 </div>
-                <i class="fas fa-arrow-right-from-bracket logout-icon"></i>
-            </div>
+            </a>
         </nav>
     </header>
 

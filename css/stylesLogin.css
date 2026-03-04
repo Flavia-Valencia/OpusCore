@@ -123,6 +123,18 @@
     box-shadow: 0 0 0 3px rgba(6, 157, 191, 0.2);
 }
 
+/*mensaje de error al introducir usario mal o inexistente*/
+
+.mensaje-error {
+    background-color: #ffe0e0;
+    color: #c0392b;
+    border: 1px solid #e74c3c;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+    text-align: center;
+}
 
 /*Campos de la contrasenia*/
 
