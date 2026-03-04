@@ -1,3 +1,8 @@
+<?php
+session_start();
+$error = isset($_GET['error']) ? $_GET['error'] : '';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,6 +61,12 @@
                     <div class="pie">
                         <p>Olvidaste tu contraseña?</p><a href="#" class="enlace">Enviar solicitud de reestablecimiento</a>
                     </div>
+
+                      <?php if ($error == 1): ?>
+                        <div class="mensaje-error">
+                            Correo o contraseña incorrecta. Inténtalo de nuevo.
+                        </div>
+                    <?php endif; ?>
 
                     <button class="btn-entrar" type="submit">Entrar</button>
                 </form>

@@ -1,3 +1,12 @@
+<?php                   #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
+session_start();
+
+if(!isset($_SESSION["usuario"])){
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,7 +36,7 @@
             <div class="user-profile">
                 <div class="user-info">
                     <span class="user-role">Admin</span>
-                    <span class="user-email">admin@academia.com</span>
+                    <span class="user-email"><?php echo $_SESSION["usuario"]; ?></span>
                 </div>
                 <i class="fas fa-arrow-right-from-bracket logout-icon"></i>
             </div>
