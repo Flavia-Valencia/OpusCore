@@ -13,7 +13,7 @@
     <header class="header">
         <div class="logo">
             <img src ="img/logo.svg" alt="Logo Academia Futuro Digital" class="logo">
-           <div class="logo-text">
+            <div class="logo-text">
                 <span class="logo-small">ACADEMIA</span>
                 <span class="logo-big">FUTURO DIGITAL</span>
             </div>
