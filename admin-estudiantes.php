@@ -33,13 +33,15 @@ if(!isset($_SESSION["usuario"])){
             <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
         
-            <div class="user-profile">
-                <div class="user-info">
-                    <span class="user-role">Admin</span>
-                    <span class="user-email"><?php echo $_SESSION["usuario"]; ?></span>
+            <a href="includes/logout.php" style="text-decoration:none;">
+                <div class="user-profile">
+                    <div class="user-info">
+                        <span class="user-role">Admin</span>
+                        <span class="user-email"><?php echo $_SESSION["usuario"]; ?></span>
+                    </div>
+                    <i class="fas fa-arrow-right-from-bracket logout-icon"></i>
                 </div>
-                <i class="fas fa-arrow-right-from-bracket logout-icon"></i>
-            </div>
+            </a>
         </nav>
     </header>
 
