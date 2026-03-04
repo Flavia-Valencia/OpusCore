@@ -35,7 +35,7 @@
         
      
         <label for="menu-toggle" class="menu-btn">
-            <i class="fas fa-bars hamburguesa"></i>
+            <i class="fas fa-bars hamburguesa">☰</i>
             <i class="fas fa-times cerrar"></i>
         </label>
         
