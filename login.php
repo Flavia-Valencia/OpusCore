@@ -8,7 +8,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/stylesLogin.css">
+    <link rel="stylesheet" href="./css/stylesLogin.css">
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
     <title>login</title>
 </head>
