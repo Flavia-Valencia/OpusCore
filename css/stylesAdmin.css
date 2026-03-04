@@ -1,1 +1,190 @@
 /*DISEÑO PARA LA MAYORÍA DE PANTALLAS*/
+/* reseteo de estilos para que todo se vea igual en todos los navegadores */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: Arial, sans-serif;
+}
+
+/* fuente y color de fondo de la pagina */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at top left, #c7e0ff, #eaf4ff, #ffffff); 
+    background-size: 100% 200%;
+}
+
+.header {
+    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* logo en columna (academia arriba, futuro digital abajo) */
+.logo {
+    display: flex;
+    flex-direction: column;
+}
+
+/* texto chico del logo */
+.logo-small {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* texto grande del logo */
+.logo-big {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* menu de navegacion (inicio, estudiantes, cursos, etc) */
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.btn-nav {
+    width: 100%;
+    padding: 10px 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color:#FFFFFF;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.4s;
+    cursor: pointer;
+}
+.btn-nav:hover {
+    background-color: #213e7d;
+    transform: translateY(-1px);
+}
+
+/* boton activo (el que esta seleccionado) */
+.btn-nav.active {
+    background-color: #069DBF;
+}
+
+/* perfil de usuario en la esquina (rol, email y salir) */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-left: 20px;
+    cursor: pointer;
+    transition: background-color 0.4s;
+}
+
+.user-profile:hover {
+    background-color: #213e7d;    
+    transform: translateY(-1px);
+}
+
+/* info del usuario: rol y email */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+/* rol: Admin */
+.user-role {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+}
+
+/* email del admin */
+.user-email {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* icono de cerrar sesion (flecha saliendo) */
+.logout-icon {
+    font-size: 20px;
+    color: white;
+}
+
+/* caja principal donde va todo el contenido */
+.main {
+    padding: 30px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    
+}
+
+/* parte de arriba con el titulo y el boton nuevo */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* titulo "administrar estudiantes" */
+.titulo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+/* boton azul de + nuevo estudiante */
+.btn-nuevo {
+    background: linear-gradient(135deg, #1a5276, #053170);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+/* cuando paso el mouse por el boton nuevo */
+.btn-nuevo:hover {
+    background: linear-gradient(135deg, #1a5276, #053170);
+    box-shadow: 0 10px 20px #c9c9c9;
+    transition: all 0.3s ease;
+    transform: translateX(-1px);
+}
+/* caja blanca que contiene el buscador y la tabla */
+.card {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    border-radius: 16px;
+}
+/* parte de arriba de la caja blanca con el input de buscar */
+.toolbar {
+    padding: 20px;
+    border-bottom: 1px solid #e5e5e5;
+}
+/* campo de texto para buscar estudiante */
+.input-buscar {
+    width: 100%;
+    max-width: 350px;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+/* color del texto gris cuando esta vacio */
+.input-buscar::placeholder {
+    color: #999;
+}
+/* espacio donde el backend va a poner la tabla */
+.tabla-placeholder {
+    min-height: 300px;
+    padding: 20px;
+}
