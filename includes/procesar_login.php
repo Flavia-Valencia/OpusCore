@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($usuario["rol_id"] == 1) {
                 header("Location: ../admin-inicio.php");
             } elseif ($usuario["rol_id"] == 2) {
-                header("Location: ../admin-estudiantes.php"); 
+                header("Location: ../estudiantes.php"); 
             } elseif ($usuario["rol_id"] == 3) {
                 header("Location: ../admin-estudiantes.php"); 
             }
