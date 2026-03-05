@@ -1,12 +1,11 @@
-/*DISEÑO PARA LA MAYORÍA DE PANTALLAS*/
-/* reseteo de estilos para que todo se vea igual en todos los navegadores */
+/*Diseño de pantallas del administrador*/
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-/* fuente y color de fondo de la pagina */
 
+/*Fuente importada de google fonts*/
 .raleway-all {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;

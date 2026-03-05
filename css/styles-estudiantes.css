@@ -3,7 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+/*Fuente importada de google fonts*/
 .raleway-all {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
@@ -16,7 +16,6 @@ body {
     background-size: 200% 200%;
 }
 
-/* HEADER */
 .header {
     display: flex;
     justify-content: space-between;
@@ -25,7 +24,7 @@ body {
     background: linear-gradient(135deg,#069DBF,#1D4B73, #053170, #5624cc);
     color: white;
 }
-/* LOGO */
+
 .logo {
     display: flex;
     align-items: center;
@@ -91,7 +90,6 @@ body {
     font-size: 18px;
 }
 
-/* MAIN */
 .main {
     padding: 40px;
 }
@@ -100,7 +98,7 @@ body {
     font-size: 28px;
     margin-bottom: 30px;
 }
-/* CARDS */
+/* Las tarjetas (botones de opciones con iconos) */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -125,6 +123,10 @@ body {
     transform: translateY(-4px);
 }
 
-.icono {
-    font-size: 22px;
+.icono{
+    font-size:22px;
+    background: linear-gradient(135deg,#053170,#069DBF);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
 }

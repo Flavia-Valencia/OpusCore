@@ -4,7 +4,7 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+/*Fuente importada de google fonts*/
 .raleway-all {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
@@ -42,7 +42,6 @@
     font-size: 48px;
     line-height: 1.1;
 }
-
 
 .redes {
     position: absolute;
@@ -131,7 +130,6 @@
 }
 
 /*mensaje de error al introducir usario mal o inexistente*/
-
 .mensaje-error {
     background-color: #ffe0e0;
     color: #c0392b;
@@ -144,9 +142,7 @@
 }
 
 /*Campos de la contrasenia*/
-
 .opcion-recordar {
-
     margin-bottom: 14px;
 }
 .recordar-contrasena {
@@ -168,7 +164,6 @@
 .input-password {
     position: relative;
 }
-
 .input-password input {
     padding-right: 42px;
 }
@@ -222,7 +217,6 @@
 .enlace:hover {
     text-decoration: underline;
 }
-
 
 .btn-entrar {
     width: 100%;

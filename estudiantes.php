@@ -1,4 +1,4 @@
-<?php                   #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
+<?php #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -34,7 +34,7 @@ if(!isset($_SESSION["usuario"])){
         <div class="logo">
             <img src="img/logo.svg" alt="Logo" class="logo-img">
             <div class="logo-text">
-                <span><h3>¡Bienvenido/a!</h3></span>
+                <span>¡Bienvenido/a!</span>
                 <!--Para que se coloque el nombre del usuario de la credencial-->
                 <h2>Debería ir nombre de usuario aquí</h2> 
             </div>
