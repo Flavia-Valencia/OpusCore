@@ -261,3 +261,129 @@
     }
 }
 
+/* tablet */
+@media (max-width: 900px) {
+    .izquierda {
+        padding: 50px 40px;
+    }
+
+    .texto-arriba h1 {
+        font-size: 36px;
+    }
+
+    .contenedor-formulario {
+        max-width: 85%;
+        width: 360px;
+        padding: 36px 28px;
+        border-radius: 16px;
+        background: #ffffffF2;
+        box-shadow:
+            0 8px 32px rgba(5, 49, 112, 0.25),
+            0 2px 8px rgba(0, 0, 0, 0.12);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
+}
+
+/* movil: degradado cubre toda la pantalla, formulario flota encima */
+@media (max-width: 640px) {
+
+    .contenedor {
+        position: relative;
+        flex-direction: column;
+        height: 100vh;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    .izquierda {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        padding: 44px 28px 80px;
+        justify-content: flex-start;
+        background: linear-gradient(400deg, #053170, #069DBF, #ffffff30);
+        background-size: 100% 300%;
+        animation: moverDegradado 10s ease-in-out infinite alternate;
+        z-index: 0;
+    }
+
+    .texto-arriba h2 {
+        font-size: 15px;
+    }
+
+    .texto-arriba h1 {
+        font-size: 26px;
+    }
+
+    .redes {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+        z-index: 1;
+    }
+
+    .iconos a {
+        font-size: 11px;
+        padding: 4px 10px;
+    }
+
+    .derecha {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px 20px;
+        z-index: 2;
+    }
+
+    .contenedor-formulario {
+        width: 90%;
+        max-width: 340px;
+        padding: 28px 22px;
+        border-radius: 16px;
+        background: #ffffffF2;
+        box-shadow:
+            0 8px 32px rgba(5, 49, 112, 0.25),
+            0 2px 8px rgba(0, 0, 0, 0.12);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
+
+    .leyenda {
+        font-size: 22px;
+        margin-bottom: 24px;
+    }
+
+    .pie {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+}
+
+/* movil pequeño: ajustes de fuente y padding */
+@media (max-width: 380px) {
+    .texto-arriba h1 {
+        font-size: 22px;
+    }
+
+    .contenedor-formulario {
+        padding: 28px 18px;
+    }
+
+    .iconos {
+        gap: 4px;
+    }
+
+    .iconos a {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+}
