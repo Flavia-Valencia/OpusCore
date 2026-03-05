@@ -46,7 +46,7 @@ if(!isset($_SESSION["usuario"])){
             <i class="fas fa-times cerrar"></i>
         </label>
 
-         <label for="menu-toggle" class="menu-overlay"></label>
+        <label for="menu-toggle" class="menu-overlay"></label>
         
         <nav class="nav">
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
