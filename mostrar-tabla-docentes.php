@@ -50,7 +50,7 @@ $resultado = mysqli_query($conexion, $sql);
                         <a href="editar-docente.php?id=<?php echo $fila['usuario_id']; ?>" class="btn-accion btn-editar">
                             <i class="fas fa-edit"></i> Editar
                         </a>
-                        <a href="eliminar-docente.php?id=<?php echo $fila['usuario_id']; ?>" class="btn-accion btn-eliminar" onclick="return confirm('¿Eliminar docente?')">
+                        <a href="eliminar-docentes.php?id=<?php echo $fila['usuario_id']; ?>" class="btn-accion btn-eliminar" onclick="return confirm('¿Eliminar docente?')">
                             <i class="fas fa-trash"></i> Eliminar
                         </a>
                     </div>
