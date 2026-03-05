@@ -6,8 +6,15 @@
     box-sizing: border-box;
 }
 /* fuente y color de fondo de la pagina */
+
+.raleway-all {
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: radial-gradient(circle at top left, #c7e0ff, #eaf4ff, #ffffff); 
     background-size: 100% 200%;
 }
