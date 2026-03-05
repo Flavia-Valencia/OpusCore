@@ -47,13 +47,23 @@ if(!isset($_SESSION["usuario"])){
 
         <label for="menu-toggle" class="menu-overlay"></label>
 
-        
         <nav class="nav">
+            <!--Funciona para nombre el celu -->
+            <div class="menu-user">
+                <div class="menu-user-role">Admin</div>
+                <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
+            </div>
+            <!-------------->
+
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
             <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
             <a href="./admin-cursos.php" class="btn-nav active">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
         
+            <!--Boton para cerrar sesión en celu-->
+            <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
+            <!-------------->
+
             <a href="includes/logout.php" style="text-decoration:none;">
                 <div class="user-profile">
                     <div class="user-info">

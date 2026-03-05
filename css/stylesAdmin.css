@@ -247,10 +247,18 @@ body {
     z-index: 998;
 }
 
-/*MEDIA QUERY MÓVIL (max-width: 768px)*/
+/*Desactiva el usuario y boton salir en pantalla pc*/
+.menu-user{
+    display:none;
+}
 
+.btn-salir{
+    display:none;
+}
+
+/*MEDIA QUERY MÓVIL (max-width: 768px)*/
 @media (max-width: 768px) {
-    
+
     /* HEADER - Fijo arriba */
     .header {
         padding: 12px 15px;
@@ -377,22 +385,21 @@ body {
     
     /* Info de usuario en el menú */
     .menu-user {
+        display:block;
         padding: 20px;
         border-bottom: 1px solid rgba(255,255,255,0.2);
         margin-bottom: 10px;
-        color: white;
+        color: #FFFFFF;
     }
-    
-    .menu-user-name {
-        font-weight: bold;
-        font-size: 16px;
-        margin-bottom: 5px;
-    }
-    
     .menu-user-email {
         font-size: 12px;
         color: rgba(255,255,255,0.7);
         word-break: break-all;
+    }
+    .menu-user-role{
+        font-size:18px;
+        color:rgba(255,255,255,0.6);
+        margin-top:3px;
     }
     
     /* Botones del menú en formato vertical para móvil */
@@ -403,7 +410,7 @@ body {
         border-radius: 0;
         border-bottom: 1px solid rgba(255,255,255,0.1);
         font-size: 15px;
-        color: white;
+        color: #FFFFFF;
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -436,7 +443,7 @@ body {
     .btn-salir {
         margin-top: auto;
         border-top: 2px solid rgba(255,255,255,0.2);
-        color: #ff6b6b;
+        color: #ff3a3a;
         padding: 18px 25px;
         display: flex;
         align-items: center;
@@ -447,11 +454,20 @@ body {
     }
     
     .btn-salir:hover {
-        background-color: rgba(255, 107, 107, 0.2);
+        background-color: rgba(175, 40, 40, 0.2);
     }
     
     .btn-salir i {
         width: 20px;
+    }
+    /*Agregar el boton de cerrar sesion*/
+
+    .btn-salir{
+        display:flex;
+    }
+
+    .nav .user-profile{
+        display:none;
     }
     
     /*CONTENIDO PRINCIPAL*/
@@ -714,7 +730,6 @@ body {
     }
     
     /* BADGES Y ESTADOS */
-    
     .badge {
         padding: 4px 12px;
         border-radius: 20px;
@@ -739,7 +754,6 @@ body {
     }
     
     /* CROLLBAR PERSONALIZADO*/
-    
     .nav::-webkit-scrollbar {
         width: 5px;
     }

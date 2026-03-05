@@ -27,8 +27,8 @@ if(!isset($_SESSION["usuario"])){
     <link rel="stylesheet" href="css/stylesAdmin.css">
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
 </head>
+
 <body class="raleway-all">
-   
     <header class="header">
         <div class="logo">
             <img src ="img/logo.svg" alt="Logo Academia Futuro Digital" class="logo">
@@ -38,24 +38,32 @@ if(!isset($_SESSION["usuario"])){
             </div>
         </div>
 
-        <input type="checkbox" id="menu-toggle" class="menu-checkbox">
-        
+        <input type="checkbox" id="menu-toggle" class="menu-checkbox"> 
      
         <label for="menu-toggle" class="menu-btn">
             <i class="fas fa-bars hamburguesa"></i>
             <i class="fas fa-times cerrar"></i>
         </label>
         
-      
         <label for="menu-toggle" class="menu-overlay"></label>
         
-
         <nav class="nav">
+            <!--Funciona para nombre el celu -->
+            <div class="menu-user">
+                <div class="menu-user-role">Admin</div>
+                <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
+            </div>
+            <!-------------->
+
             <a href="./admin-inicio.php" class="btn-nav active">Inicio</a>
             <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
             <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
         
+            <!--Boton para cerrar sesión en celu-->
+            <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
+            <!-------------->
+
             <a href="includes/logout.php" style="text-decoration:none;">
                 <div class="user-profile">
                     <div class="user-info">
