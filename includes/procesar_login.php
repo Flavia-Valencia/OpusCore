@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } elseif ($usuario["rol_id"] == 2) {
                 header("Location: ../estudiantes.php"); 
             } elseif ($usuario["rol_id"] == 3) {
-                header("Location: ../admin-estudiantes.php"); 
+                header("Location: ../docentes.php"); 
             }
             exit(); 
         
