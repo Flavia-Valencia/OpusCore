@@ -16,7 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($contrasena === $usuario['password_hash']) {
             $_SESSION["usuario"] = $usuario["correo"];
             $_SESSION["rol_id"] = $usuario["rol_id"];
-
+            $_SESSION["nombre"] = $usuario["nombre"];
+ 
             if ($usuario["rol_id"] == 1) {
                 header("Location: ../admin-inicio.php");
             } elseif ($usuario["rol_id"] == 2) {

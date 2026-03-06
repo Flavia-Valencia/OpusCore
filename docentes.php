@@ -26,7 +26,7 @@ if(!isset($_SESSION["usuario"])){
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
     <link rel="stylesheet" href="./css/styles-docentes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+</head> 
 
 <body class="raleway-all">
 
@@ -36,7 +36,7 @@ if(!isset($_SESSION["usuario"])){
             <div class="logo-text">
                 <span>¡Bienvenido/a!</span>
                 <!--Para que se coloque el nombre del usuario de la credencial-->
-                <h2>Debería ir nombre de usuario aquí</h2> 
+                <h2 class="user-nombre"><?php echo $_SESSION["nombre"];?></h2>
             </div>
         </div>
 

@@ -21,7 +21,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background: linear-gradient(135deg,#069DBF,#1D4B73, #053170, #5624cc);
+    background: linear-gradient(135deg,#069DBF,#1D4B73, #053170);
     color: white;
 }
 
