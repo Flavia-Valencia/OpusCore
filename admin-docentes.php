@@ -101,7 +101,7 @@ if(!isset($_SESSION["usuario"])){
             <button class="modal-cerrar" onclick="cerrarModalDocente()"><i class="fas fa-times"></i></button>
             <h2 class="modal-titulo"><i class="fas fa-user-edit"></i> Editar Docente</h2>
 
-            <form method="POST" action="includes/editar-docente.php">
+            <form method="POST" action="editar-docente.php">
                 <input type="hidden" name="id" id="editd-id">
 
                 <h3 class="modal-subtitulo">Detalles del docente</h3>
@@ -141,7 +141,7 @@ if(!isset($_SESSION["usuario"])){
             <button class="modal-cerrar" onclick="cerrarModalNuevoDocente()"><i class="fas fa-times"></i></button>
             <h2 class="modal-titulo"><i class="fas fa-user-plus"></i> Nuevo Docente</h2>
 
-            <form method="POST" action="includes/crear-docente.php">
+            <form method="POST" action="crear-docente.php">
 
                 <h3 class="modal-subtitulo">Detalles del docente</h3>
                 <div class="modal-grid">

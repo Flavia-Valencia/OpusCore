@@ -69,7 +69,7 @@ if (mysqli_num_rows($resultado) > 0 ){
                         <span class="separador-acciones">|</span>
 
                         <a 
-                            href="eliminar-docente.php?id=<?php echo $fila['usuario_id']; ?>" 
+                            href="eliminar-docentes.php?id=<?php echo $fila['usuario_id']; ?>" 
                             class="link-accion eliminar"
                             onclick="return confirm('¿Eliminar docente?')"
                         >

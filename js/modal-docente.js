@@ -10,6 +10,7 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
         document.getElementById('editd-telefono').value         = this.dataset.telefono;
         document.getElementById('editd-direccion').value        = this.dataset.direccion;
         document.getElementById('editd-correo').value           = this.dataset.correo;
+         document.getElementById('editd-password_hash').value   = this.dataset.password_hash;
         document.getElementById('modalEditarDocente').classList.add('activo');
         document.body.style.overflow = 'hidden';
     });
