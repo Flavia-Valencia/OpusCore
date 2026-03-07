@@ -21,3 +21,19 @@ document.getElementById('modalEditar').addEventListener('click', function(e) {
 });
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+
+
+// Nuevo estudiante
+document.querySelector('.btn-nuevo').addEventListener('click', function() {
+    document.getElementById('modalNuevo').classList.add('activo');
+    document.body.style.overflow = 'hidden';
+});
+
+function cerrarModalNuevo() {
+    document.getElementById('modalNuevo').classList.remove('activo');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('modalNuevo').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModalNuevo();
+});
