@@ -113,7 +113,7 @@ if(!isset($_SESSION["usuario"])){
 
                 <h3 class="modal-subtitulo">Detalles del usuario</h3>
                 <div class="modal-grid">
-                    <div class="modal-campo"><label>Usuario</label><input type="text" name="correo" id="edit-usuario"></div>
+                    <div class="modal-campo"><label>Correo</label><input type="text" name="correo" id="edit-correo"></div>
                     <div class="modal-campo"><label>Contraseña</label><input type="password" name="contrasena" id="edit-contrasena"></div>
                 </div>
 
