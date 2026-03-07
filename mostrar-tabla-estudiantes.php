@@ -31,6 +31,8 @@ if (mysqli_num_rows($resultado) > 0 ){
                 <th>Acciones</th>
             </tr>
         </thead>
+
+        <!-- Editar estudiante-->
         <tbody>
             <?php while($fila = mysqli_fetch_assoc($resultado)){ ?>
             <tr>
@@ -46,11 +48,13 @@ if (mysqli_num_rows($resultado) > 0 ){
                         <a 
                             href="#"
                             class="link-accion abrir-modal-estudiante"
-                            data-nombre="<?php echo htmlspecialchars($fila['nombre'] . ' ' . $fila['apellido']); ?>"
-                            data-contacto="<?php echo htmlspecialchars($fila['telefono']); ?>"
+                            data-id="<?php echo $fila['usuario_id']; ?>"
+                            data-nombre="<?php echo htmlspecialchars($fila['nombre']); ?>"
+                            data-apellido="<?php echo htmlspecialchars($fila['apellido']); ?>"
+                            data-telefono="<?php echo htmlspecialchars($fila['telefono']); ?>"
                             data-curso="Desarrollo Web"
                             data-estado="Activo"
-                            data-usuario="<?php echo htmlspecialchars($fila['correo']); ?>"
+                            data-correo="<?php echo htmlspecialchars($fila['correo']); ?>"
                             data-contrasena="123456"
                             onclick="return false;"
                         >

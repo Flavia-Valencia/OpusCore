@@ -100,21 +100,20 @@ if(!isset($_SESSION["usuario"])){
             <button class="modal-cerrar" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
              <h2 class="modal-titulo"><i class="fas fa-user-edit"></i> Editar Estudiante</h2>
 
-            <form method="POST" action="includes/editar-estudiante.php">
-                <input type="hidden" name="id" id="edit-id">
+            <form method="POST" action="editar-estudiante.php">
+                <input type="hidden" name="usuario_id" id="edit-id">
 
                 <h3 class="modal-subtitulo">Detalles del estudiante</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" id="edit-nombre"></div>
                     <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido" ></div>
-                    <div class="modal-campo"><label>Contacto</label><input type="text" name="contacto" id="edit-contacto"></div>
-                    <div class="modal-campo"><label>Curso</label><input type="text" name="curso" id="edit-curso"></div>
+                    <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" id="edit-telefono"></div>
                     <div class="modal-campo"><label>Estado</label><input type="text" name="estado" id="edit-estado"></div>
                 </div>
 
                 <h3 class="modal-subtitulo">Detalles del usuario</h3>
                 <div class="modal-grid">
-                    <div class="modal-campo"><label>Usuario</label><input type="text" name="usuario" id="edit-usuario"></div>
+                    <div class="modal-campo"><label>Usuario</label><input type="text" name="correo" id="edit-usuario"></div>
                     <div class="modal-campo"><label>Contraseña</label><input type="password" name="contrasena" id="edit-contrasena"></div>
                 </div>
 
