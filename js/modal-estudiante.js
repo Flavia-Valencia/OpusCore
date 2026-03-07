@@ -12,6 +12,7 @@ document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
     });
 });
 
+ //Editar estudiante
 function cerrarModal() {
     document.getElementById('modalEditar').classList.remove('activo');
     document.body.style.overflow = '';

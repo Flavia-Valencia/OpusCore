@@ -131,7 +131,7 @@ if(!isset($_SESSION["usuario"])){
             <button class="modal-cerrar" onclick="cerrarModalNuevo()"><i class="fas fa-times"></i></button>
             <h2 class="modal-titulo"><i class="fas fa-user-plus"></i> Nuevo Estudiante</h2>
 
-            <form method="POST" action="includes/crear-estudiante.php">
+            <form method="POST" action="crear-estudiante.php">
 
                 <h3 class="modal-subtitulo">Detalles del estudiante</h3>
                 <div class="modal-grid">
