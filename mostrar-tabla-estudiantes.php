@@ -1,10 +1,11 @@
 <?php
-include('includes/conexion.php'); 
+include('includes/conexion.php');   
 
 $sql = "SELECT
     u.id AS usuario_id,
     u.nombre, 
-    u.apellido, 
+    u.apellido,
+    u.correo,
     e.fecha_nacimiento,
     e.genero,
     e.telefono,
@@ -12,10 +13,11 @@ $sql = "SELECT
     FROM estudiantes e 
     INNER JOIN usuarios u ON e.usuario_id = u.id
     WHERE u.rol_id = 2";
-
+    
 $resultado = mysqli_query($conexion, $sql);
- if (mysqli_num_rows($resultado) > 0 ){
-    ?>
+
+if (mysqli_num_rows($resultado) > 0 ){
+?>
     <table class="data-table mobile-cards">
         <thead>
             <tr>
@@ -33,19 +35,36 @@ $resultado = mysqli_query($conexion, $sql);
             <?php while($fila = mysqli_fetch_assoc($resultado)){ ?>
             <tr>
                 <td data-label="ID"><?php echo $fila['usuario_id']; ?></td>
-                <td data-label="Nombre"><?php echo $fila['nombre']; ?></td>
-                <td data-label="Apellido"><?php echo $fila['apellido']; ?></td>
-                <td data-label="Fecha Nac."><?php echo $fila['fecha_nacimiento']; ?></td>
-                <td data-label="Género"><?php echo $fila['genero']; ?></td>
-                <td data-label="Teléfono"><?php echo $fila['telefono']; ?></td>
-                <td data-label="Dirección"><?php echo $fila['direccion']; ?></td>
+                <td data-label="Nombre"><?php echo htmlspecialchars($fila['nombre']); ?></td>
+                <td data-label="Apellido"><?php echo htmlspecialchars($fila['apellido']); ?></td>
+                <td data-label="Fecha Nac."><?php echo htmlspecialchars($fila['fecha_nacimiento']); ?></td>
+                <td data-label="Género"><?php echo htmlspecialchars($fila['genero']); ?></td>
+                <td data-label="Teléfono"><?php echo htmlspecialchars($fila['telefono']); ?></td>
+                <td data-label="Dirección"><?php echo htmlspecialchars($fila['direccion']); ?></td>
                 <td data-label="Acciones" class="acciones-cell">
-                    <div class="acciones">
-                        <a href="editar-estudiante.php?id=<?php echo $fila['usuario_id']; ?>" class="btn-accion btn-editar">
-                            <i class="fas fa-edit"></i> Editar
+                    <div class="acciones-texto">
+                        <a 
+                            href="#"
+                            class="link-accion abrir-modal-estudiante"
+                            data-nombre="<?php echo htmlspecialchars($fila['nombre'] . ' ' . $fila['apellido']); ?>"
+                            data-contacto="<?php echo htmlspecialchars($fila['telefono']); ?>"
+                            data-curso="Desarrollo Web"
+                            data-estado="Activo"
+                            data-usuario="<?php echo htmlspecialchars($fila['correo']); ?>"
+                            data-contrasena="123456"
+                            onclick="return false;"
+                        >
+                            Editar
                         </a>
-                        <a href="eliminar-estudiantes.php?id=<?php echo $fila['usuario_id']; ?>" class="btn-accion btn-eliminar" onclick="return confirm('¿Eliminar estudiante?')">
-                            <i class="fas fa-trash"></i> Eliminar
+
+                        <span class="separador-acciones">|</span>
+
+                        <a 
+                            href="eliminar-estudiantes.php?id=<?php echo $fila['usuario_id']; ?>" 
+                            class="link-accion eliminar"
+                            onclick="return confirm('¿Eliminar estudiante?')"
+                        >
+                            Eliminar
                         </a>
                     </div>
                 </td>
@@ -54,7 +73,7 @@ $resultado = mysqli_query($conexion, $sql);
         </tbody>
     </table>
 <?php 
-    }else{
-        echo '<div class="mensaje-vacio">No hay estudiantes registrados.</div>';
-    }
+} else {
+    echo '<div class="mensaje-vacio">No hay estudiantes registrados.</div>';
+}
 ?>
