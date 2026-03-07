@@ -106,6 +106,7 @@ if(!isset($_SESSION["usuario"])){
                 <h3 class="modal-subtitulo">Detalles del estudiante</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" id="edit-nombre"></div>
+                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido" ></div>
                     <div class="modal-campo"><label>Contacto</label><input type="text" name="contacto" id="edit-contacto"></div>
                     <div class="modal-campo"><label>Curso</label><input type="text" name="curso" id="edit-curso"></div>
                     <div class="modal-campo"><label>Estado</label><input type="text" name="estado" id="edit-estado"></div>

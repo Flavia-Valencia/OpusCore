@@ -1,6 +1,7 @@
 document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
     btn.addEventListener('click', function() {
         document.getElementById('edit-nombre').value     = this.dataset.nombre;
+        document.getElementById('edit-apellido').value   = this.dataset.apellido;
         document.getElementById('edit-contacto').value   = this.dataset.contacto;
         document.getElementById('edit-curso').value      = this.dataset.curso;
         document.getElementById('edit-estado').value     = this.dataset.estado;
