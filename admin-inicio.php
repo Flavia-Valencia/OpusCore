@@ -75,5 +75,46 @@ if(!isset($_SESSION["usuario"])){
             </a>
         </nav>
     </header>
+
+    <main class="main">
+        <!-- Banner -->
+        <div class="banner">
+            <div class="banner-texto">
+                <h1>¡Bienvenido, Admin! 👋</h1>
+                <p>Panel de administración · Academia Futuro Digital</p>
+            </div>
+            <div class="banner-fecha">
+                <strong id="fecha-hoy"></strong>
+            </div>
+        </div>
+
+        <!-- estadisticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-left">
+                    <h3>0</h3>
+                    <p>Estudiantes</p>
+                </div>
+                <div class="stat-icon blue"><i class="fas fa-user-graduate"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-left">
+                    <h3>0</h3>
+                    <p>Docentes</p>
+                </div>
+                <div class="stat-icon teal"><i class="fas fa-chalkboard-teacher"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-left">
+                    <h3>0</h3>
+                    <p>Cursos activos</p>
+                </div>
+                <div class="stat-icon green"><i class="fas fa-book-open"></i></div>
+            </div>
+        </div>
+    </main>
+
+    <script src ="js/inicio.js"></script>
+
 </body>
 </html>

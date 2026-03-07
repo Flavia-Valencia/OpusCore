@@ -858,3 +858,45 @@ body {
     color: white;
 }
 
+
+
+/* admin inicio */
+.banner {
+    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+    border-radius: 20px;
+    padding: 36px 40px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+.banner-texto h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+.banner-texto p { font-size: 14px; opacity: 0.8; }
+.banner-fecha { text-align: right; font-size: 14px; opacity: 0.85; text-transform: capitalize; }
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.stat-left h3 { font-size: 32px; font-weight: 700; color: #053170; }
+.stat-left p { font-size: 13px; color: #666; font-weight: 600; margin-top: 2px; }
+.stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.stat-icon.blue { background: #e0f0ff; color: #053170; }
+.stat-icon.teal { background: #e0f7fa; color: #069DBF; }
+.stat-icon.green { background: #d1fae5; color: #065f46; }
+
+@media (max-width: 768px) {
+    .banner { flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px; }
+    .stats-grid { grid-template-columns: 1fr; }
+}
