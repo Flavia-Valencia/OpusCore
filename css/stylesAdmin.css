@@ -770,3 +770,77 @@ body {
     .modal-contenido { padding: 20px; }
     .modal-grid { grid-template-columns: 1fr; }
 }
+
+
+
+
+/* arreglo de diseno para tabla estudiante */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.data-table thead th {
+    background: #f0f6ff;
+    color: #053170;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 2px solid #dde8f5;
+}
+
+.data-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s;
+}
+
+.data-table tbody tr:hover {
+    background: #f5f9ff;
+}
+
+.data-table tbody td {
+    padding: 14px 16px;
+    color: #333;
+    vertical-align: middle;
+}
+
+/* BOTONES EDITAR / ELIMINAR */
+.link-accion {
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.link-accion.abrir-modal-estudiante {
+    color: #069DBF;
+    background: #e0f7fa;
+}
+
+.link-accion.abrir-modal-estudiante:hover {
+    background: #069DBF;
+    color: white;
+}
+
+.link-accion.eliminar {
+    color: #e74c3c;
+    background: #fee2e2;
+}
+
+.link-accion.eliminar:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+.separador-acciones { display: none; }
+
+.acciones-texto {
+    display: flex;
+    gap: 8px;
+}
