@@ -63,9 +63,9 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                         </label>
                     </div>
 
-                    <div class="pie">
+                    <!-- <div class="pie">
                         <p>Olvidaste tu contraseña?</p><a href="#" class="enlace">Enviar solicitud de reestablecimiento</a>
-                    </div>
+                    </div> -->
 
                       <?php if ($error == 1): ?>
                         <div class="mensaje-error">
