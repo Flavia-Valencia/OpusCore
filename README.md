@@ -15,6 +15,8 @@ el sistema permitira el ingreso de distintos roles: Administrador, Docente, Estu
 - MySQL
 - XAMMP
 
+Entrega Sprint 1
+
 
 
 
