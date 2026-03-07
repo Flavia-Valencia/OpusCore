@@ -844,3 +844,17 @@ body {
     display: flex;
     gap: 8px;
 }
+
+/* BOTONES EDITAR / ELIMINAR  PARA DOCENTE*/
+
+
+.link-accion.abrir-modal-docente {
+    color: #069DBF;
+    background: #e0f7fa;
+}
+
+.link-accion.abrir-modal-docente:hover {
+    background: #069DBF;
+    color: white;
+}
+
