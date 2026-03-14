@@ -1,4 +1,4 @@
-<!-- Este archivo sirve para el inicio de sesion por rol, cuando el usuario inicie sesion lo enviara a el rol correspondiente que el admin le haya -->
+<!-- Este archivo sirve para el inicio de sesion por rol, cuando el usuario inicie sesion lo enviara a el rol correspondiente que el admin le haya asignado previamente -->
 <?php
 session_start();
 include("conexion.php");
