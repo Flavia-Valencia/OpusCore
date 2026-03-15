@@ -114,7 +114,7 @@ if(!isset($_SESSION["usuario"])){
         </div>
     </main>
 
-    <script src ="js/inicio.js"></script>
+    <script src ="js/script.js"></script>
 
 </body>
 </html>

@@ -174,7 +174,7 @@ if(!isset($_SESSION["usuario"])){
         </div>
     </div>
 
-    <script src="js/modal-docente.js"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </body>
