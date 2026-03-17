@@ -1,4 +1,9 @@
-<!-- Este archivo sirve para el inicio de sesion por rol, cuando el usuario inicie sesion lo enviara a el rol correspondiente que el admin le haya asignado previamente -->
+<!-- Este archivo procesa el inicio de sesión:
+     - Recibe los datos enviados desde el formulario (correo y contraseña)
+     - Consulta la base de datos para verificar si el usuario existe
+     - Valida la contraseña
+     - Crea la sesión del usuario
+     - Redirige según su rol (admin, estudiante o docente) -->
 <?php
 session_start();
 include("conexion.php");
