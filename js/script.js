@@ -1,12 +1,16 @@
 /// Función para mostrar u ocultar la contraseña
+
+// Cambia entre ojo-abierto.svg y ojo-cerrado.svg según el estado
 function verContrasena() {
     const input = document.getElementById("contrasena");
-
+    const icono = document.getElementById("icono-jo");
     if (input) {
         if (input.type === "password") {
             input.type = "text";
+            icono.src = "img/ojo-abierto.svg";
         } else {
             input.type = "password";
+            icono.src = "img/ojo-cerrado.svg";
         }
     }
 }

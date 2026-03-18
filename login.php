@@ -52,7 +52,11 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                         <label for="contrasena">Contraseña</label>
                         <div class="input-password">
                             <input id="contrasena" name="contrasena" type="password" placeholder="••••••••" required />
-                            <span class="ver-contrasena" onclick="verContrasena()"></span>
+
+                            <!-- Ícono de ojo para mostrar u ocultar la contraseña -->
+                            <span class="ver-contrasena" onclick="verContrasena()">
+                                <img id="icono-jo" src="img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20" />
+                            </span>
                         </div>
                     </div>
 
