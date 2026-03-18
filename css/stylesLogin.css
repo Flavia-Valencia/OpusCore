@@ -181,6 +181,20 @@
     opacity: 1;
 }
 
+/* Ícono del ojo: oculto por defecto, aparece cuando el usuario escribe */
+
+.ver-contrasena {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
 /*olvidar passwd*/
 .pie {
     display: flex;

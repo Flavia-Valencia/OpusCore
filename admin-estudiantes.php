@@ -106,15 +106,37 @@ if(!isset($_SESSION["usuario"])){
                 <h3 class="modal-subtitulo">Detalles del estudiante</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" id="edit-nombre"></div>
-                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido" ></div>
+                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido"></div>
                     <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" id="edit-telefono"></div>
-                    <div class="modal-campo"><label>Estado</label><input type="text" name="estado" id="edit-estado"></div>
-                </div>
+                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" id="edit-fecha_nacimiento"></div>
+                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" id="edit-direccion"></div>
+                    <div class="modal-campo"><label>Género</label>
+                        <select name="genero" id="edit-genero">
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                    </div>
+                </div>  <!-- ajuste -->
 
-                <h3 class="modal-subtitulo">Detalles del usuario</h3>
+                <h3 class="modal-subtitulo">Acceso al sistema</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="text" name="correo" id="edit-correo"></div>
-                    <div class="modal-campo"><label>Contraseña</label><input type="password" name="contrasena" id="edit-contrasena"></div>
+                    <div class="modal-campo">
+                        <label>Contraseña</label>
+                        <div class="input-password">
+                            <input type="password" name="contrasena" id="edit-contrasena">
+                            <span class="ver-contrasena-estudiante" onclick="toggleContrasena('edit-contrasena', 'icono-ojo-estudiante')">
+                                <img id="icono-ojo-estudiante" src="img/ojo-cerrado.svg" width="20" height="20">
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="modal-campo"><label>Estado</label>
+                        <select name="estado" id="edit-estado">
+                            <option value="Activo">Activo</option>    <!-- solo hice el cambio de minuscula a mayuscula ya que el valor en la base de datos es "Activo" -->
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -151,7 +173,12 @@ if(!isset($_SESSION["usuario"])){
                 <h3 class="modal-subtitulo">Detalles del usuario</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="email" name="correo" required></div>
-                    <div class="modal-campo"><label>Contraseña</label><input type="password" name="contrasena" required></div>
+                    <div class="modal-campo">
+                        <label>Contraseña</label>
+                        <div class="input-password">
+                            <input type="text" name="contrasena" id="nuevo-contrasena-est">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">

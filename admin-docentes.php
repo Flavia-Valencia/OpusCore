@@ -121,10 +121,25 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" id="editd-direccion"></div>
                 </div>
 
-                <h3 class="modal-subtitulo">Detalles del usuario</h3>
+                <h3 class="modal-subtitulo">Acceso al sistema</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="email" name="correo" id="editd-correo"></div>
-                    <div class="modal-campo"><label>Contraseña</label><input type="password" name="password_hash" id="editd-password_hash"></div>
+                    <div class="modal-campo"><label>Contraseña</label>
+                        <div class="input-password">
+                            <input type="password" name="password_hash" id="editd-password_hash">
+                            <!-- Ícono de ojo para mostrar u ocultar la contraseña -->
+                            <span class="ver-contrasena-docente" onclick="toggleContrasena('editd-password_hash', 'icono-ojo-docente')">
+                                <img id="icono-ojo-docente" src="img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20">
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="modal-campo"><label>Estado</label>
+                        <select name="estado" id="editd-estado">
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -163,7 +178,11 @@ if(!isset($_SESSION["usuario"])){
                 <h3 class="modal-subtitulo">Detalles del usuario</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="email" name="correo" required></div>
-                    <div class="modal-campo"><label>Contraseña</label><input type="password" name="contrasena" required></div>
+                   <div class="modal-campo"><label>Contraseña</label>
+                        <div class="input-password">
+                            <input type="text" name="password_hash" id="nuevo-password_hash">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
