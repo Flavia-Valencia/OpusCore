@@ -18,6 +18,8 @@ if (formulario) {
 
 // Estructura creada por Yahir (Luego la comentas mejor)
 // lo que estaba en el archivo modal-docente
+
+// Abre el modal de edición de docentes y carga los datos
 document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
     btn.addEventListener('click', function() {
 
@@ -35,7 +37,7 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
         document.getElementById('editd-direccion').value        = this.dataset.direccion;
         document.getElementById('editd-correo').value           = this.dataset.correo;
         document.getElementById('editd-password_hash').value    = this.dataset.password_hash;
-
+        // Mostrar modal
         modal.classList.add('activo');
         document.body.style.overflow = 'hidden';
     });
@@ -49,14 +51,16 @@ function cerrarModalDocente() {
     }
 }
 
+// Cerrar al hacer clic fuera del modal
 const modalEditarDocente = document.getElementById('modalEditarDocente');
-
 if (modalEditarDocente) {
     modalEditarDocente.addEventListener('click', function(e) {
         if (e.target === this) cerrarModalDocente();
     });
 }
 
+
+// Botón "+ Nuevo" abre el modal correspondiente
 const btnNuevo = document.querySelector('.btn-nuevo');
 
 if (btnNuevo) {
@@ -86,6 +90,8 @@ function cerrarModalNuevoDocente() {
     }
 }
 
+
+// Cerrar al hacer clic fuera del modal
 const modalNuevoDocente = document.getElementById('modalNuevoDocente');
 
 if (modalNuevoDocente) {
@@ -94,6 +100,7 @@ if (modalNuevoDocente) {
     });
 }
 
+// Cierra modales con la tecla Escape
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { 
         cerrarModalDocente(); 
@@ -102,12 +109,14 @@ document.addEventListener('keydown', e => {
 });
 
 // Lo que estaba en el archivo modal-estudiante
+// Abre el modal de edición de estudiantes y carga datos
 document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
     btn.addEventListener('click', function() {
 
         const modal = document.getElementById('modalEditar');
         if (!modal) return;
-
+        
+        // Cargar datos en el formulario
         document.getElementById('edit-id').value = this.dataset.id;
         document.getElementById('edit-nombre').value     = this.dataset.nombre;
         document.getElementById('edit-apellido').value   = this.dataset.apellido;
@@ -217,14 +226,16 @@ function verContrasenaDocente() {
     }
 }
 
+// Muestra u oculta la contraseña en el modal de editar estudiante
+function verContrasenaEstudiante() {
+    const input = document.getElementById("edit-contrasena");
+    const icono = document.getElementById("icono-ojo-estudiante");
 
-// Muestra u oculta el ícono del ojo según si hay texto en el campo contraseña del modal de editar docente
-const inputDocente = document.getElementById("editd-password_hash");
-const ojoDocente = document.querySelector(".ver-contrasena-docente");
-
-if (inputDocente && ojoDocente) {
-    inputDocente.addEventListener("input", function() {
-        ojoDocente.style.opacity = this.value.length > 0 ? "1" : "0";
-    });
+    if (input.type === "password") {
+        input.type = "text";
+        icono.src = "img/ojo-abierto.svg";
+    } else {
+        input.type = "password";
+        icono.src = "img/ojo-cerrado.svg";
+    }
 }
-

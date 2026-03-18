@@ -108,13 +108,27 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" id="edit-nombre"></div>
                     <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido" ></div>
                     <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" id="edit-telefono"></div>
-                    <div class="modal-campo"><label>Estado</label><input type="text" name="estado" id="edit-estado"></div>
                 </div>
 
-                <h3 class="modal-subtitulo">Detalles del usuario</h3>
+                <h3 class="modal-subtitulo">Acceso al sistema</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="text" name="correo" id="edit-correo"></div>
-                    <div class="modal-campo"><label>Contraseña</label><input type="password" name="contrasena" id="edit-contrasena"></div>
+                    <div class="modal-campo">
+                        <label>Contraseña</label>
+                        <div class="input-password">
+                            <input type="password" name="contrasena" id="edit-contrasena">
+                            <span class="ver-contrasena-estudiante" onclick="verContrasenaEstudiante()">
+                                <img id="icono-ojo-estudiante" src="img/ojo-cerrado.svg" width="20" height="20">
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="modal-campo"><label>Estado</label>
+                        <select name="estado" id="edit-estado">
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="modal-footer">

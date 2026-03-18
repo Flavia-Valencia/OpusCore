@@ -905,8 +905,20 @@ body {
     cursor: pointer;
     display: flex;
     align-items: center;
-    opacity: 0;
-    transition: opacity 0.2s ease;
+    opacity: 0.6;
+}
+
+
+/* Ícono del ojo en modal de editar estudiante: oculto por defecto */
+.ver-contrasena-estudiante {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    opacity: 0.6;
 }
 
 .input-password {
