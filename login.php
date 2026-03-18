@@ -54,7 +54,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                             <input id="contrasena" name="contrasena" type="password" placeholder="••••••••" required />
 
                             <!-- Ícono de ojo para mostrar u ocultar la contraseña -->
-                            <span class="ver-contrasena" onclick="verContrasena()">
+                            <span class="ver-contrasena" onclick="toggleContrasena('contrasena', 'icono-ojo')">
                                 <img id="icono-ojo" src="img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20" />
                             </span>
                         </div>

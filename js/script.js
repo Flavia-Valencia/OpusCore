@@ -185,20 +185,17 @@ window.onpageshow = function(event) {
     }
 };
 
-// Función para mostrar u ocultar la contraseña
+// Función para mostrar u ocultar la contraseña en todos los formularios que tengan el ícono de ojo, usando el mismo código para evitar duplicación
 
-// Cambia entre ojo-abierto.svg y ojo-cerrado.svg según el estado
-function verContrasena() {
-    const input = document.getElementById("contrasena");
-    const icono = document.getElementById("icono-ojo");
-    if (input) {
-        if (input.type === "password") {
-            input.type = "text";
-            icono.src = "img/ojo-abierto.svg";
-        } else {
-            input.type = "password";
-            icono.src = "img/ojo-cerrado.svg";
-        }
+// Muestra u oculta la contraseña según el input e ícono que se le pase
+function toggleContrasena(inputId, iconoId) {
+    const input = document.getElementById(inputId);
+    const icono = document.getElementById(iconoId);
+
+    if (input && icono) {
+        const viendo = input.type === "text";
+        input.type = viendo ? "password" : "text";
+        icono.src = `img/ojo-${viendo ? "cerrado" : "abierto"}.svg`;
     }
 }
 
@@ -212,30 +209,3 @@ if (inputContrasena && spanOjo) {
     });
 }
 
-// Muestra u oculta la contraseña en el modal de editar docente
-function verContrasenaDocente() {
-    const input = document.getElementById("editd-password_hash");
-    const icono = document.getElementById("icono-ojo-docente");
-
-    if (input.type === "password") {
-        input.type = "text";
-        icono.src = "img/ojo-abierto.svg";
-    } else {
-        input.type = "password";
-        icono.src = "img/ojo-cerrado.svg";
-    }
-}
-
-// Muestra u oculta la contraseña en el modal de editar estudiante
-function verContrasenaEstudiante() {
-    const input = document.getElementById("edit-contrasena");
-    const icono = document.getElementById("icono-ojo-estudiante");
-
-    if (input.type === "password") {
-        input.type = "text";
-        icono.src = "img/ojo-abierto.svg";
-    } else {
-        input.type = "password";
-        icono.src = "img/ojo-cerrado.svg";
-    }
-}

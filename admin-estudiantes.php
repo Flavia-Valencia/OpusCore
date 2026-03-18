@@ -117,7 +117,7 @@ if(!isset($_SESSION["usuario"])){
                         <label>Contraseña</label>
                         <div class="input-password">
                             <input type="password" name="contrasena" id="edit-contrasena">
-                            <span class="ver-contrasena-estudiante" onclick="verContrasenaEstudiante()">
+                            <span class="ver-contrasena-estudiante" onclick="toggleContrasena('edit-contrasena', 'icono-ojo-estudiante')">
                                 <img id="icono-ojo-estudiante" src="img/ojo-cerrado.svg" width="20" height="20">
                             </span>
                         </div>
@@ -125,8 +125,8 @@ if(!isset($_SESSION["usuario"])){
 
                     <div class="modal-campo"><label>Estado</label>
                         <select name="estado" id="edit-estado">
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
+                            <option value="Activo">Activo</option>    <!-- solo hice el cambio de minuscula a mayuscula ya que el valor en la base de datos es "Activo" -->
+                            <option value="Inactivo">Inactivo</option>
                         </select>
                     </div>
                 </div>
@@ -165,7 +165,15 @@ if(!isset($_SESSION["usuario"])){
                 <h3 class="modal-subtitulo">Detalles del usuario</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="email" name="correo" required></div>
-                    <div class="modal-campo"><label>Contraseña</label><input type="password" name="contrasena" required></div>
+                    <div class="modal-campo">
+                        <label>Contraseña</label>
+                        <div class="input-password">
+                            <input type="password" name="contrasena" id="nuevo-contrasena-est">
+                            <span class="ver-contrasena-estudiante" onclick="toggleContrasena('nuevo-contrasena-est', 'icono-ojo-nuevo-estudiante')">
+                                <img id="icono-ojo-nuevo-estudiante" src="img/ojo-cerrado.svg" width="20" height="20">
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
