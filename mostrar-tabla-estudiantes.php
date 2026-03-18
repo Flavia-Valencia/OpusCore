@@ -52,10 +52,11 @@ if (mysqli_num_rows($resultado) > 0 ){
                             data-nombre="<?php echo htmlspecialchars($fila['nombre']); ?>"
                             data-apellido="<?php echo htmlspecialchars($fila['apellido']); ?>"
                             data-telefono="<?php echo htmlspecialchars($fila['telefono']); ?>"
+                            data-direccion="<?php echo htmlspecialchars($fila['direccion']); ?>"
                             data-curso="Desarrollo Web"
                             data-estado="Activo"
                             data-correo="<?php echo htmlspecialchars($fila['correo']); ?>"
-                            data-contrasena="123456"
+                            data-contrasena=""
                             onclick="return false;"
                         >
                             Editar

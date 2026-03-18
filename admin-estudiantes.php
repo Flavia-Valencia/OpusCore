@@ -106,9 +106,17 @@ if(!isset($_SESSION["usuario"])){
                 <h3 class="modal-subtitulo">Detalles del estudiante</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" id="edit-nombre"></div>
-                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido" ></div>
+                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido"></div>
                     <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" id="edit-telefono"></div>
-                </div>
+                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" id="edit-fecha_nacimiento"></div>
+                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" id="edit-direccion"></div>
+                    <div class="modal-campo"><label>Género</label>
+                        <select name="genero" id="edit-genero">
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                    </div>
+                </div>  <!-- ajuste -->
 
                 <h3 class="modal-subtitulo">Acceso al sistema</h3>
                 <div class="modal-grid">
@@ -168,10 +176,7 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo">
                         <label>Contraseña</label>
                         <div class="input-password">
-                            <input type="password" name="contrasena" id="nuevo-contrasena-est">
-                            <span class="ver-contrasena-estudiante" onclick="toggleContrasena('nuevo-contrasena-est', 'icono-ojo-nuevo-estudiante')">
-                                <img id="icono-ojo-nuevo-estudiante" src="img/ojo-cerrado.svg" width="20" height="20">
-                            </span>
+                            <input type="text" name="contrasena" id="nuevo-contrasena-est">
                         </div>
                     </div>
                 </div>

@@ -180,11 +180,7 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo"><label>Correo</label><input type="email" name="correo" required></div>
                    <div class="modal-campo"><label>Contraseña</label>
                         <div class="input-password">
-                            <input type="password" name="password_hash" id="nuevo-password_hash">
-                            <!-- Ícono de ojo para mostrar u ocultar la contraseña -->
-                            <span class="ver-contrasena-docente" onclick="toggleContrasena('nuevo-password_hash', 'icono-ojo-nuevo-docente')">
-                                <img id="icono-ojo-nuevo-docente" src="img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20">
-                            </span>
+                            <input type="text" name="password_hash" id="nuevo-password_hash">
                         </div>
                     </div>
                 </div>

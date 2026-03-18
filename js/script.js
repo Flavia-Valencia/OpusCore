@@ -121,8 +121,9 @@ document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
         document.getElementById('edit-nombre').value     = this.dataset.nombre;
         document.getElementById('edit-apellido').value   = this.dataset.apellido;
         document.getElementById('edit-telefono').value   = this.dataset.telefono;
+        document.getElementById('edit-direccion').value = this.dataset.direccion;
         document.getElementById('edit-estado').value     = this.dataset.estado;
-        document.getElementById('edit-correo').value     = this.dataset.correo;
+        document.getElementById('edit-correo').value     = this.dataset.correo;   
         document.getElementById('edit-contrasena').value = this.dataset.contrasena;
 
         modal.classList.add('activo');
