@@ -202,21 +202,6 @@ body {
     min-height: 300px;
     padding: 20px;
 }
-/* MODO RESPONSIVE  (max-width: 768px)*/
-
-/* Reset básico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #E8F4FC;
-    color: #333;
-    line-height: 1.6;
-}
 
 /* Checkbox escondido que controla todo el menú */
 .menu-checkbox {
@@ -747,6 +732,16 @@ body {
     background: white;
 }
 
+.modal-campo .input-password {
+    position: relative;
+}
+
+/* Espacio a la derecha del input para que no tape el ojo */
+.modal-campo .input-password input {
+    width: 100%;
+    padding-right: 42px;
+}
+
 .modal-footer {
     display: flex; justify-content: flex-end;
     gap: 12px; padding-top: 20px;
@@ -899,4 +894,21 @@ body {
 @media (max-width: 768px) {
     .banner { flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px; }
     .stats-grid { grid-template-columns: 1fr; }
+}
+
+/* Ícono del ojo en modal de editar docente: oculto por defecto */
+.ver-contrasena-docente {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.input-password {
+    position: relative;
 }

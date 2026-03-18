@@ -1,20 +1,3 @@
-/// Función para mostrar u ocultar la contraseña
-
-// Cambia entre ojo-abierto.svg y ojo-cerrado.svg según el estado
-function verContrasena() {
-    const input = document.getElementById("contrasena");
-    const icono = document.getElementById("icono-jo");
-    if (input) {
-        if (input.type === "password") {
-            input.type = "text";
-            icono.src = "img/ojo-abierto.svg";
-        } else {
-            input.type = "password";
-            icono.src = "img/ojo-cerrado.svg";
-        }
-    }
-}
-
 // Este codigo es para que se envien los datos de el formulario de login.php y valida que no quede ningun campo vacio.
 const formulario = document.getElementById("formulario-inicio");
 const btnEntrar = document.querySelector(".btn-entrar");
@@ -192,3 +175,56 @@ window.onpageshow = function(event) {
         window.location.href = "login.php";
     }
 };
+
+// Función para mostrar u ocultar la contraseña
+
+// Cambia entre ojo-abierto.svg y ojo-cerrado.svg según el estado
+function verContrasena() {
+    const input = document.getElementById("contrasena");
+    const icono = document.getElementById("icono-ojo");
+    if (input) {
+        if (input.type === "password") {
+            input.type = "text";
+            icono.src = "img/ojo-abierto.svg";
+        } else {
+            input.type = "password";
+            icono.src = "img/ojo-cerrado.svg";
+        }
+    }
+}
+
+// Muestra u oculta el ícono del ojo según si hay texto en el campo contraseña
+const inputContrasena = document.getElementById("contrasena");
+const spanOjo = document.querySelector(".ver-contrasena");
+
+if (inputContrasena && spanOjo) {
+    inputContrasena.addEventListener("input", function() {
+        spanOjo.style.opacity = this.value.length > 0 ? "1" : "0";
+    });
+}
+
+// Muestra u oculta la contraseña en el modal de editar docente
+function verContrasenaDocente() {
+    const input = document.getElementById("editd-password_hash");
+    const icono = document.getElementById("icono-ojo-docente");
+
+    if (input.type === "password") {
+        input.type = "text";
+        icono.src = "img/ojo-abierto.svg";
+    } else {
+        input.type = "password";
+        icono.src = "img/ojo-cerrado.svg";
+    }
+}
+
+
+// Muestra u oculta el ícono del ojo según si hay texto en el campo contraseña del modal de editar docente
+const inputDocente = document.getElementById("editd-password_hash");
+const ojoDocente = document.querySelector(".ver-contrasena-docente");
+
+if (inputDocente && ojoDocente) {
+    inputDocente.addEventListener("input", function() {
+        ojoDocente.style.opacity = this.value.length > 0 ? "1" : "0";
+    });
+}
+
