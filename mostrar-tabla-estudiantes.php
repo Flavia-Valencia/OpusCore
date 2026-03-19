@@ -6,6 +6,7 @@ $sql = "SELECT
     u.nombre, 
     u.apellido,
     u.correo,
+    u.password_hash,
     e.fecha_nacimiento,
     e.genero,
     e.telefono,
@@ -51,12 +52,12 @@ if (mysqli_num_rows($resultado) > 0 ){
                             data-id="<?php echo $fila['usuario_id']; ?>"
                             data-nombre="<?php echo htmlspecialchars($fila['nombre']); ?>"
                             data-apellido="<?php echo htmlspecialchars($fila['apellido']); ?>"
+                            data-fecha_nacimiento="<?php echo htmlspecialchars($fila['fecha_nacimiento']); ?>"
+                            data-genero="<?php echo htmlspecialchars($fila['genero']); ?>"
                             data-telefono="<?php echo htmlspecialchars($fila['telefono']); ?>"
                             data-direccion="<?php echo htmlspecialchars($fila['direccion']); ?>"
-                            data-curso="Desarrollo Web"
-                            data-estado="Activo"
                             data-correo="<?php echo htmlspecialchars($fila['correo']); ?>"
-                            data-contrasena=""
+                            data-password_hash="<?php echo htmlspecialchars($fila['password_hash']); ?>"
                             onclick="return false;"
                         >
                             Editar

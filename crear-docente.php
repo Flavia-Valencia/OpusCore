@@ -4,7 +4,7 @@ include("includes/conexion.php");
 $nombre = $_POST['nombre'];
 $apellido = $_POST['apellido'];
 $correo = $_POST['correo'];
-$contrasena = $_POST['contrasena'];
+$password = $_POST['password_hash'];
 $especialidad = $_POST['especialidad'];
 $fecha_nacimiento = $_POST['fecha_nacimiento'];
 $genero = $_POST['genero'];
@@ -16,7 +16,8 @@ $direccion = $_POST['direccion'];
 $sql_usuario = "INSERT INTO usuarios
 (nombre, apellido, correo, password_hash, estado, rol_id)
 VALUES
-('$nombre','$apellido','$correo','$contrasena','Activo',3)";
+('$nombre','$apellido','$correo','$password','Activo',3)";
+
 mysqli_query($conexion, $sql_usuario);
 $usuario_id = mysqli_insert_id($conexion);
 
