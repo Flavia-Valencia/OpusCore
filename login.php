@@ -75,6 +75,10 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                         <div class="mensaje-error">
                             Correo o contraseña incorrecta. Inténtalo de nuevo.
                         </div>
+                        <?php elseif ($error == 2): ?>
+                            <div class="mensaje-error">
+                                Usuario inactivo. Contacta al administrador.
+                            </div>           
                     <?php endif; ?>
 
                     <button class="btn-entrar" type="submit">Entrar</button>

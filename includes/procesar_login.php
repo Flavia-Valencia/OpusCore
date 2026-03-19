@@ -12,11 +12,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $correo = $_POST["correo"];
     $contrasena = $_POST["contrasena"];
 
-    $consulta = "SELECT * FROM usuarios WHERE correo='$correo'";
+    $consulta = "SELECT * FROM usuarios WHERE BINARY correo='$correo'";
     $resultado = mysqli_query($conexion, $consulta);
 
     if (mysqli_num_rows($resultado) == 1) {
         $usuario = mysqli_fetch_assoc($resultado);
+        if ($usuario["estado"] == 0) {
+            header("Location: ../login.php?error=2");
+            exit();
+        }
         
         if ($contrasena === $usuario['password_hash']) {
             $_SESSION["usuario"] = $usuario["correo"];
