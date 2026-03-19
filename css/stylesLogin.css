@@ -142,25 +142,6 @@
 }
 
 /*Campos de la contrasenia*/
-.opcion-recordar {
-    margin-bottom: 14px;
-}
-.recordar-contrasena {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 14px;
-    color: #64748b;
-    cursor: pointer;
-}
-.recordar-contrasena input[type="checkbox"]{
-    accent-color: #053170;
-    width: 14px;
-    height: 14px;
-    cursor: pointer;
-    margin-right: 14px;
-}
-
 .input-password {
     position: relative;
 }
@@ -168,21 +149,7 @@
     padding-right: 42px;
 }
 
-#icono-ojo {
-    transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-#icono-ojo.animando {
-    transform: scale(0);
-    opacity: 0;
-}
-
-.ver-contrasena:hover {
-    opacity: 1;
-}
-
 /* Ícono del ojo: oculto por defecto, aparece cuando el usuario escribe */
-
 .ver-contrasena {
     position: absolute;
     right: 12px;

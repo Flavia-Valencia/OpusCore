@@ -100,6 +100,7 @@ if (modalNuevoDocente) {
     });
 }
 
+
 // Cierra modales con la tecla Escape
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { 
@@ -107,6 +108,7 @@ document.addEventListener('keydown', e => {
         cerrarModalNuevoDocente(); 
     }
 });
+
 
 // Lo que estaba en el archivo modal-estudiante
 // Abre el modal de edición de estudiantes y carga datos
@@ -131,7 +133,8 @@ document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
     });
 });
 
- //Editar estudiante
+
+//Editar estudiante
 function cerrarModal() {
     const modal = document.getElementById('modalEditar');
     if (modal) {
@@ -185,6 +188,7 @@ window.onpageshow = function(event) {
         window.location.href = "login.php";
     }
 };
+
 
 // Función para mostrar u ocultar la contraseña en todos los formularios que tengan el ícono de ojo, usando el mismo código para evitar duplicación
 
