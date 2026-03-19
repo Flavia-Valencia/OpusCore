@@ -136,8 +136,8 @@ if(!isset($_SESSION["usuario"])){
 
                     <div class="modal-campo"><label>Estado</label>
                         <select name="estado" id="editd-estado">
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
+                            <option value="Activo">Activo</option> <!--modifiqué aquí-->
+                            <option value="Inactivo">Inactivo</option>
                         </select>
                     </div>
                 </div>

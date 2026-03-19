@@ -124,8 +124,8 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo">
                         <label>Contraseña</label>
                         <div class="input-password">
-                            <input type="password" name="contrasena" id="edit-contrasena">
-                            <span class="ver-contrasena-estudiante" onclick="toggleContrasena('edit-contrasena', 'icono-ojo-estudiante')">
+                            <input type="password" name="password_hash" id="edit-password_hash">
+                            <span class="ver-contrasena-estudiante" onclick="toggleContrasena('edit-password_hash', 'icono-ojo-estudiante')">
                                 <img id="icono-ojo-estudiante" src="img/ojo-cerrado.svg" width="20" height="20">
                             </span>
                         </div>
@@ -176,7 +176,7 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo">
                         <label>Contraseña</label>
                         <div class="input-password">
-                            <input type="text" name="contrasena" id="nuevo-contrasena-est">
+                            <input type="text" name="password_hash" id="nuevo-contrasena-est">
                         </div>
                     </div>
                 </div>
