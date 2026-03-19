@@ -120,11 +120,13 @@ document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
         document.getElementById('edit-id').value = this.dataset.id;
         document.getElementById('edit-nombre').value     = this.dataset.nombre;
         document.getElementById('edit-apellido').value   = this.dataset.apellido;
+        document.getElementById('edit-fecha_nacimiento').value = this.dataset.fecha_nacimiento;
+        document.getElementById('edit-genero').value           = this.dataset.genero;
         document.getElementById('edit-telefono').value   = this.dataset.telefono;
         document.getElementById('edit-direccion').value = this.dataset.direccion;
         document.getElementById('edit-estado').value     = this.dataset.estado;
         document.getElementById('edit-correo').value     = this.dataset.correo;   
-        document.getElementById('edit-contrasena').value = this.dataset.contrasena;
+        document.getElementById('edit-password_hash').value = this.dataset.password_hash;
 
         modal.classList.add('activo');
         document.body.style.overflow = 'hidden';
