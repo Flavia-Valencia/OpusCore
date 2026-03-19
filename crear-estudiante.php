@@ -9,12 +9,14 @@ $fecha_nacimiento = $_POST['fecha_nacimiento'];
 $genero = $_POST['genero'];
 $telefono = $_POST['telefono'];
 $direccion = $_POST['direccion'];
+$estado = 1;  #envía el estado correctamente a la bd, cuando se modifique la bd, lo cambio
+
 
 
 #Inserta el usuario
 $sql_usuario = "INSERT INTO usuarios 
 (nombre, apellido, correo, password_hash, estado, rol_id)
-VALUES('$nombre', '$apellido', '$correo', '$password', 'Activo', 2)";
+VALUES('$nombre', '$apellido', '$correo', '$password', '$estado', 2)";
 
 mysqli_query($conexion, $sql_usuario);
 $usuario_id = mysqli_insert_id($conexion);

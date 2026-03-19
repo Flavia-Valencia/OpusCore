@@ -10,11 +10,13 @@ $fecha_nacimiento = $_POST['fecha_nacimiento'];
 $genero = $_POST['genero'];
 $telefono = $_POST['telefono'];
 $direccion = $_POST['direccion'];
-$estado = $_POST['estado'];
+$estadoTexto = $_POST['estado'];
+$estado = ($estadoTexto === 'Activo') ? 1 : 0;    #envía el estado correctamente a la bd, cuando se modifique la bd, lo cambio
 
 $sql_usuario = "UPDATE usuarios SET
 nombre='$nombre',
 apellido='$apellido',
+estado= '$estado',
 correo='$correo',
 password_hash='$password'
 WHERE id='$id'";

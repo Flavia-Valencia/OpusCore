@@ -37,6 +37,8 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
         document.getElementById('editd-direccion').value        = this.dataset.direccion;
         document.getElementById('editd-correo').value           = this.dataset.correo;
         document.getElementById('editd-password_hash').value    = this.dataset.password_hash;
+        const estado = this.dataset.estado == 1 ? 'Activo' : 'Inactivo'; //modificación para que se agregue bien en la bd
+        document.getElementById('editd-estado').value = estado;
         // Mostrar modal
         modal.classList.add('activo');
         document.body.style.overflow = 'hidden';
@@ -124,7 +126,8 @@ document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
         document.getElementById('edit-genero').value           = this.dataset.genero;
         document.getElementById('edit-telefono').value   = this.dataset.telefono;
         document.getElementById('edit-direccion').value = this.dataset.direccion;
-        document.getElementById('edit-estado').value     = this.dataset.estado;
+        const estado = this.dataset.estado == 1 ? 'Activo' : 'Inactivo'; //modificación para que se agregue bien en la bd
+        document.getElementById('edit-estado').value = estado;
         document.getElementById('edit-correo').value     = this.dataset.correo;   
         document.getElementById('edit-password_hash').value = this.dataset.password_hash;
 
