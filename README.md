@@ -28,9 +28,9 @@ C:\xampp\htdocs\
 3. Iniciar XAMPP:
 Activar Apache
 Activar MySQL
-4.Importar la base de datos en phpMyAdmin
+4. Importar la base de datos en phpMyAdmin
 Dentro de la carpeta OpusCore se encuentra el script db_academiadigital.sql, utilizar ese.
-5.Ejecutar el proyecto en el navegador:
+5. Ejecutar el proyecto en el navegador:
 http://localhost/OpusCore/login.php
    
 # Evidencias del proyecto.
