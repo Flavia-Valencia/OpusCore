@@ -1,9 +1,3 @@
-# Version del Sistema:
-v0.1
-
-# Autor
-OpusCore 
-
 # Sistema para Academia Futuro Digital
 El proyecto consiste en el desarrollo de una Aplicacion web para una academia, con el objetivo de optimizar procesos internos como: 
 ## Inscripcion de estudiantes
@@ -28,9 +22,27 @@ Desarrollar una Aplicación Web que facilite la gestión administrativa de la ac
 
 # Instalación 
 1. Clonar el repositorio
-   git clone 
+   git clone https://github.com/Flavia-Valencia/OpusCore.git
+2. Mover el proyecto a la carpeta:
+   C:\xampp\htdocs\
+3. Iniciar XAMPP:
+   Activar Apache
+   Activar MySQL
+4.Importar la base de datos en phpMyAdmin
+   Dentro de la carpeta OpusCore se encuentra el script db_academiadigital.sql, utilizar ese.
+5.Ejecutar el proyecto en el navegador:
+   http://localhost/OpusCore/login.php
+   
+# Evidencias del proyecto.
+Las evidencias del proyecto se encuentran:
+C:\xampp\htdocs\OpusCore\Evidencias
 
-Entrega Sprint 1
+# Version del Sistema:
+v0.1 – Sprint 1
+
+# Autor
+OpusCore - Equipo de Desarollo
+
 
 
 
