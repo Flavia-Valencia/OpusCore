@@ -21,17 +21,17 @@ Desarrollar una Aplicación Web que facilite la gestión administrativa de la ac
 - XAMMP -> Entorno de desarrollo local
 
 # Instalación 
-1. Clonar el repositorio
-   git clone https://github.com/Flavia-Valencia/OpusCore.git
+1. Clonar el repositorio:
+git clone https://github.com/Flavia-Valencia/OpusCore.git
 2. Mover el proyecto a la carpeta:
-   C:\xampp\htdocs\
+C:\xampp\htdocs\
 3. Iniciar XAMPP:
-   Activar Apache
-   Activar MySQL
+Activar Apache
+Activar MySQL
 4.Importar la base de datos en phpMyAdmin
-   Dentro de la carpeta OpusCore se encuentra el script db_academiadigital.sql, utilizar ese.
+Dentro de la carpeta OpusCore se encuentra el script db_academiadigital.sql, utilizar ese.
 5.Ejecutar el proyecto en el navegador:
-   http://localhost/OpusCore/login.php
+http://localhost/OpusCore/login.php
    
 # Evidencias del proyecto.
 Las evidencias del proyecto se encuentran:
