@@ -1,13 +1,13 @@
 # Sistema para Academia Futuro Digital
 El proyecto consiste en el desarrollo de una Aplicacion web para una academia, con el objetivo de optimizar procesos internos como: 
-## Inscripcion de estudiantes
-## Gestión de notas 
-## Pagos en línea
+- Inscripcion de estudiantes
+- Gestión de notas 
+- Pagos en línea
 
 El sistema permitira el ingreso de distintos roles: 
-## Administrador 
-## Docente
-## Estudiante 
+- Administrador 
+- Docente
+- Estudiante 
 
 # Objetivo 
 Desarrollar una Aplicación Web que facilite la gestión administrativa de la academia y mejore las experencia de los usuarios tanto administrativos y estudiantiles.
