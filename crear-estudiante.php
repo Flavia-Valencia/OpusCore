@@ -16,7 +16,7 @@ $estado = 1;  #envía el estado correctamente a la bd, cuando se modifique la bd
 #Inserta el usuario
 $sql_usuario = "INSERT INTO usuarios 
 (nombre, apellido, correo, password_hash, estado, rol_id)
-VALUES('$nombre', '$apellido', '$correo', '$password', '$estado', 2)";
+VALUES('$nombre', '$apellido', '$correo', '$password', '$estado', 2)"; //rol_id 2 para estudiantes con cambio de "Activo" a estado
 
 mysqli_query($conexion, $sql_usuario);
 $usuario_id = mysqli_insert_id($conexion);

@@ -99,8 +99,9 @@ if(!isset($_SESSION["usuario"])){
         <div class="modal-contenido">
             <button class="modal-cerrar" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
              <h2 class="modal-titulo"><i class="fas fa-user-edit"></i> Editar Estudiante</h2>
-
+            <!-- Formulario para registrar un nuevo estudiante en el sistema -->
             <form method="POST" action="editar-estudiante.php">
+                <!-- ID oculto para identificar qué estudiante se está editando -->
                 <input type="hidden" name="usuario_id" id="edit-id">
 
                 <h3 class="modal-subtitulo">Detalles del estudiante</h3>
@@ -116,7 +117,7 @@ if(!isset($_SESSION["usuario"])){
                             <option value="F">Femenino</option>
                         </select>
                     </div>
-                </div>  <!-- ajuste -->
+                </div>  <!-- ajuste de diseño para que se muestre igual que los otros modales-->
 
                 <h3 class="modal-subtitulo">Acceso al sistema</h3>
                 <div class="modal-grid">
@@ -132,8 +133,9 @@ if(!isset($_SESSION["usuario"])){
                     </div>
 
                     <div class="modal-campo"><label>Estado</label>
+                        <!-- El valor debe coincidir exactamente con "Activo"/"Inactivo" en la base de datos -->
                         <select name="estado" id="edit-estado">
-                            <option value="Activo">Activo</option>    <!-- solo hice el cambio de minuscula a mayuscula ya que el valor en la base de datos es "Activo" -->
+                            <option value="Activo">Activo</option>    <!-- cambio de minuscula a mayuscula ya que el valor en la base de datos es "Activo" -->
                             <option value="Inactivo">Inactivo</option>
                         </select>
                     </div>
@@ -176,7 +178,8 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo">
                         <label>Contraseña</label>
                         <div class="input-password">
-                            <input type="text" name="password_hash" id="nuevo-contrasena-est">
+                            <!-- Se muestra como texto plano para que el admin vea la contraseña al crearla -->
+                            <input type="text" name="password_hash" id="nuevo-contrasena-est"> <!-- cambio para el tipo de password a text para que se muestre la contraseña al escribirla, ya que es un nuevo usuario y el admin necesita ver lo que escribe -->
                         </div>
                     </div>
                 </div>
