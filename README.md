@@ -10,7 +10,7 @@ El sistema permitira el ingreso de distintos roles:
 - Estudiante 
 
 # Objetivo 
-Desarrollar una Aplicación Web que facilite la gestión administrativa de la academia y mejore las experencia de los usuarios tanto administrativos y estudiantiles.
+Diseñar un sistema que solucione las dificultades actuales en el ingreso de notas, emisión de constancias, inscripciones y facturación, mediante la automatización y centralización de los procesos académicos
 
 
 # Tecnologías que vamos a usar:
