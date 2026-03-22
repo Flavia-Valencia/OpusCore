@@ -13,7 +13,7 @@ El sistema permitira el ingreso de distintos roles:
 Diseñar un sistema que solucione las dificultades actuales en el ingreso de notas, emisión de constancias, inscripciones y facturación, mediante la automatización y centralización de los procesos académicos
 
 
-## Tecnologías que vamos a usar:
+## Tecnologías a utilizar
 - PHP/HTML -> Lógica y estructura del sistema
 - JS -> Interactividad 
 - CSS -> Diseño visual
@@ -44,7 +44,20 @@ Instalar XAMMP luego abrirlo y activar los siguientes servicios:
 #### 5. Ejecutar el sistema:
 Abrir el navegador y acceder a:
 http://localhost/OpusCore/login.php
+
 #### 6. Credenciales del Sistema:
+##### Administrador
+- **Correo:** sabrina@gmail.com
+- **Contraseña:** SabriAdmin-12
+
+##### Docente
+- **Correo:** karli@gmail.com
+- **Contraseña:** KarliDocente_22
+
+##### Estudiante
+- **Correo:** Yamii@gmail.com
+- **Contraseña:** YamiEstudiante-19
+
 
 ## Equipo Responsable
 En caso de dudas con la instalación, contactar a:
@@ -69,7 +82,7 @@ En caso de dudas con la instalación, contactar a:
 ### 👩‍🏫 Panel Docente
 ![Estudiante](Evidencias/docente.png)
 
-## Version del Sistema:
+## Version del Sistema
 v0.1 – Sprint 1
 
 ## Autor(es)
