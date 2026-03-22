@@ -21,7 +21,7 @@ if(!isset($_SESSION["usuario"])){
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
+    <!--PARA ICONOS-->
     <title>ADF | Inicio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/stylesAdmin.css">
@@ -29,6 +29,7 @@ if(!isset($_SESSION["usuario"])){
 </head>
 
 <body class="raleway-all">
+    <!-- Logo de la academia con texto -->
     <header class="header">
         <div class="logo">
             <img src ="img/logo.svg" alt="Logo Academia Futuro Digital" class="logo">
@@ -37,7 +38,8 @@ if(!isset($_SESSION["usuario"])){
                 <span class="logo-big">FUTURO DIGITAL</span>
             </div>
         </div>
-
+        <!---------------------->
+        <!-- Menú hamburguesa para móvil -->
         <input type="checkbox" id="menu-toggle" class="menu-checkbox"> 
      
         <label for="menu-toggle" class="menu-btn">
