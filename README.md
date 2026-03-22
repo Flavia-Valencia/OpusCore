@@ -27,19 +27,19 @@ Pasos detallados para instalar y ejecutar el proyecto en un entorno local.
 En la terminal de Visual Studio Code ejecutar:
 git clone https://github.com/Flavia-Valencia/OpusCore.git
 
-#### 2. Mover la carpeta del proyecto a la siguiente ruta:
-C:\xampp\htdocs\
-
-#### 3. Iniciar el servidor local:
+#### 2. Iniciar el servidor local:
 Instalar XAMMP luego abrirlo y activar los siguientes servicios:
 - Apache
 - MySQL
 
+#### 3. Mover la carpeta del proyecto a la siguiente ruta:
+C:\xampp\htdocs\
+
 #### 4. Configurar la base de datos:
 - Ingresar a: http://localhost/phpmyadmin/
 - Crear una nueva base de datos, con el siguiente nombre: db_academiadigital
-- Importar el archivo:
-    OpusCore/db_academiadigital.sql
+- Importar desde el repositorio OpusCore el script de la base de datos:
+    db_academiadigital.sql
   
 #### 5. Ejecutar el sistema:
 Abrir el navegador y acceder a:
