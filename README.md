@@ -1,4 +1,4 @@
-# Sistema para Academia Futuro Digital
+# 📚 Sistema para Academia Futuro Digital
 El proyecto consiste en el desarrollo de una Aplicacion web para una academia, con el objetivo de optimizar procesos internos como: 
 - Inscripcion de estudiantes
 - Gestión de notas 
@@ -33,9 +33,20 @@ Dentro de la carpeta OpusCore se encuentra el script db_academiadigital.sql, uti
 5. Ejecutar el proyecto en el navegador:
 http://localhost/OpusCore/login.php
    
-# Evidencias del proyecto.
-Las evidencias del proyecto se encuentran:
-C:\xampp\htdocs\OpusCore\Evidencias
+
+##  Evidencias del Proyecto
+
+### 🔐 Pantalla de Login
+![Login](Evidencias/login.png)
+
+### 👨‍💼 Panel Administrador
+![Admin](Evidencias/administrador.png)
+
+### 🎓 Panel Estudiante
+![Estudiante](Evidencias/estudiante.png)
+
+### 👩‍🏫 Panel Docente
+![Estudiante](Evidencias/docente.png)
 
 # Version del Sistema:
 v0.1 – Sprint 1
