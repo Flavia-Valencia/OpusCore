@@ -1,21 +1,59 @@
-# Version del Sistema:
-v0.1
+# 📚 Sistema para Academia Futuro Digital
+El proyecto consiste en el desarrollo de una Aplicacion web para una academia, con el objetivo de optimizar procesos internos como: 
+- Inscripcion de estudiantes
+- Gestión de notas 
+- Pagos en línea
 
-# Autor
-OpusCore 
+El sistema permitira el ingreso de distintos roles: 
+- Administrador 
+- Docente
+- Estudiante 
 
-# Sistema para Academia Futuro Digital
-Aplicacion web para una academia optimizando procesos internos como: Inscripcion, Gestion de notas y Pagos en linea, 
-el sistema permitira el ingreso de distintos roles: Administrador, Docente, Estudiante. Utilizando las siguientes herramientas:
+# Objetivo 
+Desarrollar una Aplicación Web que facilite la gestión administrativa de la academia y mejore las experencia de los usuarios tanto administrativos y estudiantiles.
+
 
 # Tecnologías que vamos a usar:
-- PHP/HTML 
-- JS
-- CSS
-- MySQL
-- XAMMP
+- PHP/HTML -> Lógica y estructura del sistema
+- JS -> Interactividad 
+- CSS -> Diseño visual
+- MySQL -> Base de Datos
+- XAMMP -> Entorno de desarrollo local
 
-Entrega Sprint 1
+# Instalación 
+1. Clonar el repositorio:
+git clone https://github.com/Flavia-Valencia/OpusCore.git
+2. Mover el proyecto a la carpeta:
+C:\xampp\htdocs\
+3. Iniciar XAMPP:
+Activar Apache
+Activar MySQL
+4. Importar la base de datos en phpMyAdmin
+Dentro de la carpeta OpusCore se encuentra el script db_academiadigital.sql, utilizar ese.
+5. Ejecutar el proyecto en el navegador:
+http://localhost/OpusCore/login.php
+   
+
+##  Evidencias del Proyecto
+
+### 🔐 Pantalla de Login
+![Login](Evidencias/login.png)
+
+### 👨‍💼 Panel Administrador
+![Admin](Evidencias/administrador.png)
+
+### 🎓 Panel Estudiante
+![Estudiante](Evidencias/estudiante.png)
+
+### 👩‍🏫 Panel Docente
+![Estudiante](Evidencias/docente.png)
+
+# Version del Sistema:
+v0.1 – Sprint 1
+
+# Autor
+OpusCore - Equipo de Desarollo
+
 
 
 
