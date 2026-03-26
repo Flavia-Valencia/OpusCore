@@ -1,10 +1,11 @@
-/*Estilos para el login*/
+/* Estilos para el login */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-/*Fuente importada de google fonts*/
+
+/* Fuente importada de Google Fonts */
 .raleway-all {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
@@ -12,15 +13,16 @@
   font-style: normal;
 }
 
-/*Pantalla completa*/
+/* ── LAYOUT PRINCIPAL: dos mitades lado a lado ───────────── */
 .contenedor {
     display: flex;
     height: 100vh;
 }
-/*Lado izquierdo: donde está el degradado*/
+
+/* lado izquierdo con degradado animado */
 .izquierda {
     width: 50%;
-    background: linear-gradient(400deg,#053170, #069DBF,  #ffffff30);
+    background: linear-gradient(400deg, #053170, #069DBF, #ffffff30);
     background-size: 100% 200%;
     animation: moverDegradado 10s ease-in-out infinite alternate;
     color: white;
@@ -43,6 +45,7 @@
     line-height: 1.1;
 }
 
+/* íconos de redes centrados y pegados al fondo del lado izquierdo */
 .redes {
     position: absolute;
     bottom: 30px;
@@ -75,12 +78,13 @@
     border-radius: 20px;
     transition: all 0.25s;
 }
+
 .iconos a:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.5);
 }
 
-/*Lado derecho: donde está el formulario*/
+/* lado derecho: formulario centrado */
 .derecha {
     width: 50%;
     display: flex;
@@ -88,6 +92,8 @@
     align-items: center;
     background: #f0f0f0;
 }
+
+/* tarjeta del formulario con animación de entrada */
 .contenedor-formulario {
     animation: fadeUp 0.8s ease 0.3s both;
     background: #FFFFFF;
@@ -96,14 +102,17 @@
     border-radius: 14px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
 }
+
 .leyenda {
     color: #041E42;
     margin-bottom: 30px;
     font-size: 26px;
 }
+
 .fila {
     margin-bottom: 20px;
 }
+
 .fila input {
     width: 100%;
     padding: 11px 14px;
@@ -129,7 +138,7 @@
     box-shadow: 0 0 0 3px rgba(6, 157, 191, 0.2);
 }
 
-/*mensaje de error al introducir usario mal o inexistente*/
+/* mensaje de error al introducir usuario mal o inexistente */
 .mensaje-error {
     background-color: #ffe0e0;
     color: #c0392b;
@@ -141,15 +150,16 @@
     text-align: center;
 }
 
-/*Campos de la contrasenia*/
+/* input de contraseña con espacio para el ícono del ojo */
 .input-password {
     position: relative;
 }
+
 .input-password input {
     padding-right: 42px;
 }
 
-/* Ícono del ojo: oculto por defecto, aparece cuando el usuario escribe */
+/* ícono del ojo: invisible por defecto, aparece cuando el usuario escribe (manejado por JS) */
 .ver-contrasena {
     position: absolute;
     right: 12px;
@@ -162,7 +172,6 @@
     transition: opacity 0.2s ease;
 }
 
-/*olvidar passwd*/
 .pie {
     display: flex;
     align-items: center;
@@ -209,28 +218,22 @@
 .btn-entrar:active {
     transform: translateY(0);
 }
-/*PARA MOVIMIENTO DEL DEGRADADO*/
+
+/* animación del degradado del lado izquierdo */
 @keyframes moverDegradado {
-    0% {
-        background-position: top;
-    }
-    100% {
-        background-position: bottom;
-    }
-}
-/*SLIDE UP PARA QUE SE VEA ESTETICO*/
-@keyframes fadeUp {
-    from { 
-        opacity: 0; 
-        transform: translateY(24px); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    }
+    0%   { background-position: top; }
+    100% { background-position: bottom; }
 }
 
-/* tablet */
+/* entrada del formulario desde abajo con fade */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── DISEÑO RESPONSIVO ───────────────────────────────────── */
+
+/* tablet: formulario con fondo semi-transparente y blur */
 @media (max-width: 900px) {
     .izquierda {
         padding: 50px 40px;
@@ -240,6 +243,7 @@
         font-size: 36px;
     }
 
+    /* fondo blanco semitransparente con blur — el degradado se empieza a ver detrás */
     .contenedor-formulario {
         max-width: 85%;
         width: 360px;
@@ -254,9 +258,10 @@
     }
 }
 
-/* movil: degradado cubre toda la pantalla, formulario flota encima */
+/* móvil: el degradado cubre toda la pantalla y el formulario flota encima */
 @media (max-width: 640px) {
 
+    /* contenedor en columna con overflow hidden para que no se salga el degradado */
     .contenedor {
         position: relative;
         flex-direction: column;
@@ -265,6 +270,7 @@
         overflow: hidden;
     }
 
+    /* .izquierda pasa a ser el fondo completo de la pantalla */
     .izquierda {
         position: absolute;
         inset: 0;
@@ -278,13 +284,8 @@
         z-index: 0;
     }
 
-    .texto-arriba h2 {
-        font-size: 15px;
-    }
-
-    .texto-arriba h1 {
-        font-size: 26px;
-    }
+    .texto-arriba h2 { font-size: 15px; }
+    .texto-arriba h1 { font-size: 26px; }
 
     .redes {
         position: absolute;
@@ -300,6 +301,7 @@
         padding: 4px 10px;
     }
 
+    /* .derecha transparent y encima del degradado gracias al z-index */
     .derecha {
         position: relative;
         width: 100%;
@@ -337,22 +339,10 @@
     }
 }
 
-/* movil pequeño: ajustes de fuente y padding */
+/* móvil pequeño: solo ajustes menores de fuente y padding */
 @media (max-width: 380px) {
-    .texto-arriba h1 {
-        font-size: 22px;
-    }
-
-    .contenedor-formulario {
-        padding: 28px 18px;
-    }
-
-    .iconos {
-        gap: 4px;
-    }
-
-    .iconos a {
-        font-size: 10px;
-        padding: 4px 8px;
-    }
+    .texto-arriba h1 { font-size: 22px; }
+    .contenedor-formulario { padding: 28px 18px; }
+    .iconos { gap: 4px; }
+    .iconos a { font-size: 10px; padding: 4px 8px; }
 }

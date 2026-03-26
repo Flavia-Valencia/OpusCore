@@ -3,7 +3,8 @@
     padding: 0;
     box-sizing: border-box;
 }
-/*Fuente importada de google fonts*/
+
+/* Fuente importada de Google Fonts */
 .raleway-all {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
@@ -16,6 +17,7 @@ body {
     background-size: 200% 200%;
 }
 
+/* ── HEADER ──────────────────────────────────────────────── */
 .header {
     display: flex;
     justify-content: space-between;
@@ -49,7 +51,7 @@ body {
     font-weight: bold;
 }
 
-/*Para el perfil en la parte del botón logout*/
+/* fondo traslúcido con blur en el botón de perfil/logout (glassmorphism) */
 .user-profile {
     display: flex;
     align-items: center;
@@ -62,22 +64,24 @@ body {
     cursor: pointer;
     transition: background-color 0.4s;
 }
+
 .user-info {
     display: flex;
     flex-direction: column;
     text-align: left;
 }
+
 .user-role {
     font-size: 14px;
     font-weight: 600;
     color: white;
 }
+
 .user-email {
     font-size: 11px;
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* icono de cerrar sesion (flecha saliendo) */
 .logout-icon {
     font-size: 20px;
     color: white;
@@ -86,10 +90,13 @@ body {
 .logout-btn {
     color: white;
 }
+
+/* pisa el font-size de .logout-icon definido arriba */
 .logout-icon {
     font-size: 18px;
 }
 
+/* ── CONTENIDO PRINCIPAL ─────────────────────────────────── */
 .main {
     padding: 40px;
 }
@@ -98,7 +105,8 @@ body {
     font-size: 28px;
     margin-bottom: 30px;
 }
-/* Las tarjetas (botones de opciones con iconos) */
+
+/* acomoda sola las columnas según el espacio disponible */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -123,8 +131,9 @@ body {
     transform: translateY(-4px);
 }
 
-.icono{
-    font-size:22px;
+/* gradiente en el texto del ícono via background-clip */
+.icono {
+    font-size: 22px;
     background: linear-gradient(135deg,#053170,#069DBF);
     background-clip: text;
     -webkit-background-clip: text;

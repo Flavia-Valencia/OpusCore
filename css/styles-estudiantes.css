@@ -3,7 +3,8 @@
     padding: 0;
     box-sizing: border-box;
 }
-/*Fuente importada de google fonts*/
+
+/* Fuente importada de Google Fonts */
 .raleway-all {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
@@ -12,15 +13,17 @@
 }
 
 body {
-    background: radial-gradient(circle at top left, #d8e8ff, #eaf4ff, #ffffff); 
+    background: radial-gradient(circle at top left, #d8e8ff, #eaf4ff, #ffffff);
     background-size: 200% 200%;
 }
 
+/* ── HEADER ──────────────────────────────────────────────── */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
+    /* este tiene un color extra al de docentes (el morado al final) */
     background: linear-gradient(135deg,#069DBF,#1D4B73, #053170, #5624cc);
     color: white;
 }
@@ -49,7 +52,7 @@ body {
     font-weight: bold;
 }
 
-/*Para el perfil en la parte del botón logout*/
+/* Botón de perfil/logout — fondo semitransparente con blur (glassmorphism) */
 .user-profile {
     display: flex;
     align-items: center;
@@ -62,22 +65,24 @@ body {
     cursor: pointer;
     transition: background-color 0.4s;
 }
+
 .user-info {
     display: flex;
     flex-direction: column;
     text-align: left;
 }
+
 .user-role {
     font-size: 14px;
     font-weight: 600;
     color: white;
 }
+
 .user-email {
     font-size: 11px;
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* icono de cerrar sesion (flecha saliendo) */
 .logout-icon {
     font-size: 20px;
     color: white;
@@ -86,10 +91,13 @@ body {
 .logout-btn {
     color: white;
 }
+
+/* pisa el font-size de .logout-icon definido arriba */
 .logout-icon {
     font-size: 18px;
 }
 
+/* ── CONTENIDO PRINCIPAL ─────────────────────────────────── */
 .main {
     padding: 40px;
 }
@@ -98,7 +106,8 @@ body {
     font-size: 28px;
     margin-bottom: 30px;
 }
-/* Las tarjetas (botones de opciones con iconos) */
+
+/* grilla que acomoda sola las columnas según el espacio disponible */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -123,8 +132,9 @@ body {
     transform: translateY(-4px);
 }
 
-.icono{
-    font-size:22px;
+/* gradiente aplicado al texto del ícono con el truco de background-clip */
+.icono {
+    font-size: 22px;
     background: linear-gradient(135deg,#053170,#069DBF);
     background-clip: text;
     -webkit-background-clip: text;
