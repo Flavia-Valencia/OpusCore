@@ -1,4 +1,4 @@
-/*Diseño de pantallas del administrador*/
+/* Diseño de pantallas del administrador */
 * {
     margin: 0;
     padding: 0;
@@ -29,7 +29,7 @@ body {
     align-items: center;
 }
 
-/* logo en columna (academia arriba, futuro digital abajo) */
+/* logo: ícono + texto apilado en columna */
 .logo {
     display: flex;
     flex-direction: row;
@@ -58,7 +58,7 @@ body {
     font-weight: 700;
 }
 
-/* ── NAV ─────────────────────────────────────────────────── */
+/* ── NAV: barra de navegación ────────────────────────────── */
 .nav {
     display: flex;
     align-items: center;
@@ -88,7 +88,7 @@ body {
     background-color: #069DBF;
 }
 
-/* perfil de usuario en la esquina del header (rol, email y salir) */
+/* botón de perfil/logout en la esquina del header */
 .user-profile {
     display: flex;
     align-items: center;
@@ -107,6 +107,7 @@ body {
     transform: translateY(-1px);
 }
 
+/* info del usuario dentro del botón de perfil */
 .user-info {
     display: flex;
     flex-direction: column;
@@ -124,6 +125,7 @@ body {
     color: rgba(255, 255, 255, 0.7);
 }
 
+/* ícono de cerrar sesión */
 .logout-icon {
     font-size: 20px;
     color: white;
@@ -136,6 +138,7 @@ body {
     margin: 0 auto;
 }
 
+/* encabezado de página: título + botón nuevo */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -149,6 +152,7 @@ body {
     color: #1a1a1a;
 }
 
+/* botón para agregar nuevo registro */
 .btn-nuevo {
     background: linear-gradient(135deg, #1a5276, #053170);
     color: white;
@@ -178,11 +182,13 @@ body {
     border-radius: 16px;
 }
 
+/* barra de búsqueda encima de la tabla */
 .toolbar {
     padding: 20px;
     border-bottom: 1px solid #e5e5e5;
 }
 
+/* campo de texto para filtrar registros */
 .input-buscar {
     width: 100%;
     max-width: 350px;
@@ -208,7 +214,7 @@ body {
     display: none;
 }
 
-/* solo visible en móvil */
+/* botón ☰ — solo visible en móvil */
 .menu-btn {
     display: none;
     background: none;
@@ -260,6 +266,7 @@ body {
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
 
+    /* logo más pequeño en móvil */
     .logo {
         display: flex;
         align-items: center;
@@ -362,7 +369,7 @@ body {
         display: block;
     }
 
-    /* info de usuario dentro del menú lateral */
+    /* info del usuario en la parte superior del menú lateral */
     .menu-user {
         display: block;
         padding: 20px;
@@ -461,6 +468,7 @@ body {
         max-width: 100%;
     }
 
+    /* encabezado de página en móvil: apilado en columna */
     .page-header {
         display: flex;
         flex-direction: column;
@@ -511,6 +519,7 @@ body {
         font-size: 16px;
     }
 
+    /* barra de búsqueda en móvil */
     .toolbar {
         background: white;
         padding: 15px;
@@ -537,6 +546,7 @@ body {
         background: white;
     }
 
+    /* card contenedora en móvil */
     .card {
         background: white;
         border-radius: 12px;
@@ -601,7 +611,7 @@ body {
         margin-bottom: 0;
     }
 
-    /* cada celda se convierte en fila flex con etiqueta a la izquierda y valor a la derecha */
+    /* cada celda: etiqueta a la izquierda, valor a la derecha */
     table.mobile-cards td {
         display: flex;
         justify-content: space-between;
@@ -616,7 +626,7 @@ body {
         border-bottom: none;
     }
 
-    /* etiqueta generada automáticamente desde el atributo data-label del HTML */
+    /* etiqueta generada desde el atributo data-label del HTML */
     table.mobile-cards td::before {
         content: attr(data-label);
         font-weight: 600;
@@ -629,6 +639,7 @@ body {
         margin-right: 10px;
     }
 
+    /* celda de acciones (editar/eliminar) separada visualmente */
     td.acciones-cell {
         border-top: 2px solid #f5f5f5;
         margin-top: 10px;
@@ -659,6 +670,7 @@ body {
 
 .modal-overlay.activo { display: flex; }
 
+/* contenedor del modal con animación de entrada */
 .modal-contenido {
     background: white;
     border-radius: 16px;
@@ -678,6 +690,7 @@ body {
     to   { transform: translateY(0); opacity: 1; }
 }
 
+/* botón X para cerrar el modal */
 .modal-cerrar {
     position: absolute;
     top: 16px; right: 16px;
@@ -692,6 +705,7 @@ body {
 
 .modal-cerrar:hover { background: #e74c3c; color: white; }
 
+/* título e ícono del modal */
 .modal-titulo { font-size: 20px; font-weight: 700; color: #053170; margin-bottom: 20px; }
 .modal-titulo i { color: #069DBF; margin-right: 8px; }
 
@@ -705,6 +719,7 @@ body {
 /* grilla de 2 columnas para los campos del formulario */
 .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
+/* cada campo del formulario: label + input */
 .modal-campo { display: flex; flex-direction: column; gap: 5px; }
 .modal-campo label { font-size: 13px; font-weight: 600; color: #444; }
 .modal-campo input {
@@ -724,7 +739,7 @@ body {
     background: white;
 }
 
-/* espacio a la derecha para que el ícono del ojo no tape el texto */
+/* campo de contraseña — espacio a la derecha para el ícono del ojo */
 .modal-campo .input-password {
     position: relative;
 }
@@ -734,6 +749,7 @@ body {
     padding-right: 42px;
 }
 
+/* pie del modal con botones cancelar y guardar */
 .modal-footer {
     display: flex; justify-content: flex-end;
     gap: 12px; padding-top: 20px;
@@ -757,7 +773,7 @@ body {
 
 .btn-guardar:hover { box-shadow: 0 6px 16px rgba(5,49,112,0.3); transform: translateY(-1px); }
 
-/* modal en móvil: una columna */
+/* modal en móvil: una sola columna */
 @media (max-width: 768px) {
     .modal-contenido { padding: 20px; }
     .modal-grid { grid-template-columns: 1fr; }
@@ -770,6 +786,7 @@ body {
     font-size: 14px;
 }
 
+/* encabezado de la tabla */
 .data-table thead th {
     background: #f0f6ff;
     color: #053170;
@@ -807,6 +824,7 @@ body {
     transition: all 0.2s;
 }
 
+/* acción editar estudiante */
 .link-accion.abrir-modal-estudiante {
     color: #069DBF;
     background: #e0f7fa;
@@ -817,6 +835,7 @@ body {
     color: white;
 }
 
+/* acción eliminar */
 .link-accion.eliminar {
     color: #e74c3c;
     background: #fee2e2;
@@ -846,6 +865,8 @@ body {
 }
 
 /* ── PANEL DE INICIO DEL ADMIN ───────────────────────────── */
+
+/* banner de bienvenida con fecha */
 .banner {
     background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
     border-radius: 20px;
@@ -861,13 +882,14 @@ body {
 .banner-texto p { font-size: 14px; opacity: 0.8; }
 .banner-fecha { text-align: right; font-size: 14px; opacity: 0.85; text-transform: capitalize; }
 
-/* grilla fija de 3 columnas para las tarjetas de estadísticas */
+/* tarjetas de estadísticas — grilla fija de 3 columnas */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
 
+/* cada tarjeta de estadística */
 .stat-card {
     background: white;
     border-radius: 16px;
@@ -880,12 +902,14 @@ body {
 
 .stat-left h3 { font-size: 32px; font-weight: 700; color: #053170; }
 .stat-left p { font-size: 13px; color: #666; font-weight: 600; margin-top: 2px; }
+
+/* ícono de cada stat con variantes de color */
 .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
 .stat-icon.blue { background: #e0f0ff; color: #053170; }
 .stat-icon.teal { background: #e0f7fa; color: #069DBF; }
 .stat-icon.green { background: #d1fae5; color: #065f46; }
 
-/* en móvil: banner en columna y stats en una sola columna */
+/* en móvil: banner en columna y stats apiladas */
 @media (max-width: 768px) {
     .banner { flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px; }
     .stats-grid { grid-template-columns: 1fr; }

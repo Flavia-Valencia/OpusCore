@@ -27,6 +27,7 @@ body {
     color: white;
 }
 
+/* logo: ícono + texto apilado en columna */
 .logo {
     display: flex;
     align-items: center;
@@ -51,7 +52,7 @@ body {
     font-weight: bold;
 }
 
-/* fondo traslúcido con blur en el botón de perfil/logout (glassmorphism) */
+/* botón de perfil/logout — fondo traslúcido con blur (glassmorphism) */
 .user-profile {
     display: flex;
     align-items: center;
@@ -65,6 +66,7 @@ body {
     transition: background-color 0.4s;
 }
 
+/* info del usuario dentro del botón de perfil */
 .user-info {
     display: flex;
     flex-direction: column;
@@ -82,6 +84,7 @@ body {
     color: rgba(255, 255, 255, 0.7);
 }
 
+/* ícono y botón de cerrar sesión */
 .logout-icon {
     font-size: 20px;
     color: white;
@@ -106,13 +109,14 @@ body {
     margin-bottom: 30px;
 }
 
-/* acomoda sola las columnas según el espacio disponible */
+/* tarjetas de opciones — grilla que acomoda sola las columnas según el espacio */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
 }
 
+/* cada tarjeta/opción del menú principal */
 .card-opcion {
     background: white;
     padding: 25px;
@@ -131,7 +135,7 @@ body {
     transform: translateY(-4px);
 }
 
-/* gradiente en el texto del ícono via background-clip */
+/* ícono de cada tarjeta — gradiente aplicado al texto via background-clip */
 .icono {
     font-size: 22px;
     background: linear-gradient(135deg,#053170,#069DBF);
