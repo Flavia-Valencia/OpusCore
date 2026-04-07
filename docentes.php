@@ -56,12 +56,11 @@ if(!isset($_SESSION["usuario"])){
         <section class="cards-container">
             <a href="#" class="card-opcion">
                 <i class="fas fa-book icono"></i>
-                <span>Cursos</span>
+                <span>Mis cursos</span>
             </a>
-
             <a href="#" class="card-opcion">
-                <i class="fas fa-graduation-cap icono"></i>
-                <span>Calificaciones</span>
+                <i class="fas fa-credit-card icono"></i>
+                <span>Mis pagos</span>
             </a>
         </section>
     </main>

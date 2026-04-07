@@ -1,11 +1,11 @@
-/*Diseño de pantallas del administrador*/
+/* Diseño de pantallas del administrador */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/*Fuente importada de google fonts*/
+/* Fuente importada de Google Fonts */
 .raleway-all {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
@@ -14,11 +14,13 @@
 }
 
 body {
-    background: radial-gradient(circle at top left, #c7e0ff, #eaf4ff, #ffffff); 
+    background: radial-gradient(circle at top left, #c7e0ff, #eaf4ff, #ffffff);
     background-size: 100% 200%;
 }
+
+/* ── HEADER ──────────────────────────────────────────────── */
 .header {
-    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF); /*APLICA DEGRADADO*/ 
+    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
     backdrop-filter: blur(10px);
     color: white;
     padding: 15px 40px;
@@ -26,48 +28,49 @@ body {
     justify-content: space-between;
     align-items: center;
 }
-/* logo en columna (academia arriba, futuro digital abajo) */
+
+/* logo: ícono + texto apilado en columna */
 .logo {
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 12px;
 }
+
 .logo-text {
     display: flex;
     flex-direction: column;
     line-height: 1.1;
 }
 
-/* tamaño del icono del logo */
 .logo img {
     width: 40px;
     height: 40px;
 }
-/* texto chico del logo */
+
 .logo-small {
     font-size: 12px;
     font-weight: 600;
-
 }
 
-/* texto grande del logo */
 .logo-big {
     font-size: 24px;
     font-weight: 700;
 }
 
-/* menu de navegacion*/
+/* ── NAV: barra de navegación ────────────────────────────── */
 .nav {
     display: flex;
     align-items: center;
     gap: 10px;
 }
+
+/* fondo traslúcido con blur en cada botón del nav (glassmorphism) */
 .btn-nav {
     padding: 10px 20px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    color:#FFFFFF;
+    color: #FFFFFF;
     text-decoration: none;
     border-radius: 20px;
     font-size: 14px;
@@ -75,17 +78,17 @@ body {
     transition: 0.4s;
     cursor: pointer;
 }
+
 .btn-nav:hover {
     background-color: #213e7d;
     transform: translateY(-1px);
 }
 
-/* boton activo (el que esté seleccionado) */
 .btn-nav.active {
     background-color: #069DBF;
 }
 
-/* perfil de usuario en la esquina (rol, email y salir) */
+/* botón de perfil/logout en la esquina del header */
 .user-profile {
     display: flex;
     align-items: center;
@@ -100,44 +103,42 @@ body {
 }
 
 .user-profile:hover {
-    background-color: #213e7d;    
+    background-color: #213e7d;
     transform: translateY(-1px);
 }
-/* info del usuario: rol y email */
+
+/* info del usuario dentro del botón de perfil */
 .user-info {
     display: flex;
     flex-direction: column;
     text-align: left;
 }
 
-/* rol: Admin */
 .user-role {
     font-size: 14px;
     font-weight: 600;
     color: white;
 }
 
-/* email del admin */
 .user-email {
     font-size: 11px;
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* icono de cerrar sesion (flecha saliendo) */
+/* ícono de cerrar sesión */
 .logout-icon {
     font-size: 20px;
     color: white;
 }
 
-/* caja principal donde va todo el contenido */
+/* ── CONTENIDO PRINCIPAL ─────────────────────────────────── */
 .main {
     padding: 30px 40px;
     max-width: 1200px;
     margin: 0 auto;
-    
 }
 
-/* parte de arriba con el titulo y el boton nuevo */
+/* encabezado de página: título + botón nuevo */
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -145,14 +146,13 @@ body {
     margin-bottom: 20px;
 }
 
-/* titulo "administrar estudiantes" */
 .titulo {
     font-size: 24px;
     font-weight: 700;
     color: #1a1a1a;
 }
 
-/* boton azul de + nuevo estudiante */
+/* botón para agregar nuevo registro */
 .btn-nuevo {
     background: linear-gradient(135deg, #1a5276, #053170);
     color: white;
@@ -164,14 +164,16 @@ body {
     cursor: pointer;
     transition: background-color 0.3s;
 }
-/* cuando paso el mouse por el boton nuevo */
+
 .btn-nuevo:hover {
     background: linear-gradient(135deg, #1a5276, #053170);
     box-shadow: 0 10px 20px #c9c9c9;
     transition: all 0.3s ease;
     transform: translateX(-1px);
 }
-/* caja blanca que contiene el buscador y la tabla */
+
+/* caja blanca que contiene el buscador y la tabla —
+   tiene dos box-shadow definidos, el segundo pisa al primero */
 .card {
     background-color: white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -179,12 +181,14 @@ body {
     box-shadow: 0 20px 40px rgba(0,0,0,0.08);
     border-radius: 16px;
 }
-/* parte de arriba de la caja blanca con el input de buscar */
+
+/* barra de búsqueda encima de la tabla */
 .toolbar {
     padding: 20px;
     border-bottom: 1px solid #e5e5e5;
 }
-/* campo de texto para buscar estudiante */
+
+/* campo de texto para filtrar registros */
 .input-buscar {
     width: 100%;
     max-width: 350px;
@@ -193,37 +197,24 @@ body {
     border-radius: 6px;
     font-size: 14px;
 }
-/* color del texto gris cuando esta vacio */
+
 .input-buscar::placeholder {
     color: #999;
 }
-/* espacio donde el backend va a poner la tabla */
+
 .tabla-placeholder {
     min-height: 300px;
     padding: 20px;
 }
-/* MODO RESPONSIVE  (max-width: 768px)*/
 
-/* Reset básico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* ── MENÚ HAMBURGUESA (lógica sin JS con checkbox oculto) ── */
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #E8F4FC;
-    color: #333;
-    line-height: 1.6;
-}
-
-/* Checkbox escondido que controla todo el menú */
+/* el checkbox actúa como estado: checked = menú abierto */
 .menu-checkbox {
     display: none;
 }
 
-/* Botón de hamburguesa - solo aparece en pantallas chicas */
+/* botón ☰ — solo visible en móvil */
 .menu-btn {
     display: none;
     background: none;
@@ -235,7 +226,7 @@ body {
     z-index: 1000;
 }
 
-/* Fondo oscuro semitransparente cuando abro el menú */
+/* fondo oscuro semitransparente cuando el menú está abierto */
 .menu-overlay {
     display: none;
     position: fixed;
@@ -247,19 +238,19 @@ body {
     z-index: 998;
 }
 
-/*Desactiva el usuario y boton salir en pantalla pc*/
-.menu-user{
-    display:none;
+/* estos dos solo se muestran dentro del menú móvil */
+.menu-user {
+    display: none;
 }
 
-.btn-salir{
-    display:none;
+.btn-salir {
+    display: none;
 }
 
-/*MEDIA QUERY MÓVIL (max-width: 768px)*/
+/* ── DISEÑO RESPONSIVO (max-width: 768px) ────────────────── */
 @media (max-width: 768px) {
 
-    /* HEADER - Fijo arriba */
+    /* header fijo arriba para que no se vaya al hacer scroll */
     .header {
         padding: 12px 15px;
         position: fixed;
@@ -274,86 +265,82 @@ body {
         height: 60px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
-    
-    /* Logo */
+
+    /* logo más pequeño en móvil */
     .logo {
         display: flex;
         align-items: center;
         gap: 10px;
     }
-    
+
     .logo-img {
         width: 35px;
         height: 35px;
     }
-    
+
     .logo-container {
         display: flex;
         align-items: center;
         gap: 10px;
     }
-    
+
     .logo-icon {
         width: 35px;
         height: 35px;
     }
-    
+
     .logo-icon svg {
         width: 100%;
         height: 100%;
     }
-    
+
     .logo-text {
         display: flex;
         flex-direction: column;
     }
-    
+
     .logo-big {
         font-size: 16px;
         font-weight: bold;
         color: white;
         line-height: 1.2;
     }
-    
+
     .logo-small {
         font-size: 9px;
         color: rgba(255,255,255,0.8);
         letter-spacing: 1px;
     }
-    
-    /* Muestro el botón de hamburguesa */
+
     .menu-btn {
         display: block;
         order: 2;
     }
-    
-    /* Iconos de menú */
+
     .menu-btn .hamburguesa {
         display: block;
     }
-    
+
     .menu-btn .cerrar {
         display: none;
         font-size: 28px;
     }
-    
-    /* Cambio a X cuando está abierto */
+
+    /* cuando el checkbox está marcado: cambia ☰ por X */
     .menu-checkbox:checked ~ .menu-btn .hamburguesa {
         display: none;
     }
-    
+
     .menu-checkbox:checked ~ .menu-btn .cerrar {
         display: block;
     }
-    
-    /* Oculto el perfil del admin del header en móvil */
+
+    /* el perfil del header se oculta — en móvil va dentro del menú lateral */
     .user-profile {
         display: none;
     }
-    
-    /*MENÚ DESPLEGABLE DESDE LA DERECHA*/
-    
-    /* Menú escondido fuera de la pantalla por defecto */
+
+    /* menú lateral: empieza fuera de la pantalla a la derecha */
     .nav {
         position: fixed;
         top: 0;
@@ -372,37 +359,38 @@ body {
         display: flex;
         overflow-y: auto;
     }
-    
-    /* Cuando el checkbox está marcado, traigo el menú a la vista */
+
+    /* desliza el menú a la vista cuando el checkbox está marcado */
     .menu-checkbox:checked ~ .nav {
         right: 0;
     }
-    
-    /* Muestro el fondo oscuro cuando el menú está abierto */
+
     .menu-checkbox:checked ~ .menu-overlay {
         display: block;
     }
-    
-    /* Info de usuario en el menú */
+
+    /* info del usuario en la parte superior del menú lateral */
     .menu-user {
-        display:block;
+        display: block;
         padding: 20px;
         border-bottom: 1px solid rgba(255,255,255,0.2);
         margin-bottom: 10px;
         color: #FFFFFF;
     }
+
     .menu-user-email {
         font-size: 12px;
         color: rgba(255,255,255,0.7);
         word-break: break-all;
     }
-    .menu-user-role{
-        font-size:18px;
-        color:rgba(255,255,255,0.6);
-        margin-top:3px;
+
+    .menu-user-role {
+        font-size: 18px;
+        color: rgba(255,255,255,0.6);
+        margin-top: 3px;
     }
-    
-    /* Botones del menú en formato vertical para móvil */
+
+    /* botones del nav en vertical para móvil */
     .btn-nav {
         width: 100%;
         text-align: left;
@@ -421,25 +409,23 @@ body {
         border-bottom: 1px solid rgba(255,255,255,0.1);
         cursor: pointer;
     }
-    
-    /* Botón activo resaltado en turquesa con borde izquierdo */
+
+    /* activo con borde izquierdo turquesa */
     .btn-nav.active {
         background-color: #069DBF;
         border-left: 4px solid #55D9D9;
     }
-    
-    /* Efecto hover en los botones del menú */
+
     .btn-nav:hover {
         background-color: rgba(6, 157, 191, 0.3);
     }
-    
-    /* Iconos en el menú */
+
     .btn-nav i {
         width: 20px;
         text-align: center;
     }
-    
-    /* Botón de salir al final del menú */
+
+    /* botón de cerrar sesión al fondo del menú lateral */
     .btn-salir {
         margin-top: auto;
         border-top: 2px solid rgba(255,255,255,0.2);
@@ -452,38 +438,37 @@ body {
         font-size: 15px;
         transition: all 0.2s;
     }
-    
+
     .btn-salir:hover {
         background-color: rgba(175, 40, 40, 0.2);
     }
-    
+
     .btn-salir i {
         width: 20px;
     }
-    /*Agregar el boton de cerrar sesion*/
 
-    .btn-salir{
-        display:flex;
+    .btn-salir {
+        display: flex;
     }
 
-    .nav .user-profile{
-        display:none;
+    .nav .user-profile {
+        display: none;
     }
-    
-    /*CONTENIDO PRINCIPAL*/
-    
-    /* Dejo espacio arriba porque el header está fijo */
+
+    /* ── CONTENIDO PRINCIPAL EN MÓVIL ────────────────────── */
+
+    /* padding-top grande para compensar el header fijo de 60px */
     .main {
         padding: 80px 15px 20px;
         margin-top: 0;
         min-height: 100vh;
     }
-    
+
     .container {
         max-width: 100%;
     }
-    
-    /* Header de página */
+
+    /* encabezado de página en móvil: apilado en columna */
     .page-header {
         display: flex;
         flex-direction: column;
@@ -491,8 +476,7 @@ body {
         gap: 15px;
         margin-bottom: 20px;
     }
-    
-    /* Título de página */
+
     .titulo {
         font-size: 20px;
         font-weight: 700;
@@ -500,13 +484,13 @@ body {
         margin-bottom: 5px;
         line-height: 1.3;
     }
-    
+
     .subtitulo {
         font-size: 13px;
         color: #666;
     }
-    
-    /* Botón nuevo - estilo completo */
+
+    /* botón nuevo ocupa todo el ancho en móvil */
     .btn-nuevo {
         width: 100%;
         padding: 14px 20px;
@@ -524,19 +508,18 @@ body {
         transition: all 0.2s;
         text-decoration: none;
     }
-    
+
     .btn-nuevo:hover {
         background: #057a96;
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(6, 157, 191, 0.3);
     }
-    
+
     .btn-nuevo i {
         font-size: 16px;
     }
-    
-    /*TOOLBAR DE BÚSQUEDA*/
-    
+
+    /* barra de búsqueda en móvil */
     .toolbar {
         background: white;
         padding: 15px;
@@ -544,8 +527,7 @@ body {
         margin-bottom: 15px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-    
-    /* Campo de búsqueda */
+
     .input-buscar {
         width: 100%;
         max-width: 100%;
@@ -557,15 +539,14 @@ body {
         transition: all 0.2s;
         background: #f8f9fa;
     }
-    
+
     .input-buscar:focus {
         border-color: #069DBF;
         box-shadow: 0 0 0 3px rgba(6, 157, 191, 0.1);
         background: white;
     }
-    
-    /*CARD PRINCIPAL */
-    
+
+    /* card contenedora en móvil */
     .card {
         background: white;
         border-radius: 12px;
@@ -574,26 +555,24 @@ body {
         margin-bottom: 15px;
         overflow: hidden;
     }
-    
-    /* Mensaje cuando no hay datos */
+
     .mensaje-vacio {
         text-align: center;
         padding: 40px 20px;
         color: #666;
         font-size: 14px;
     }
-    
-    /*TABLAS - CONVERTIR A CARDS VERTICALES*/
-    
-    /* Contenedor de tabla con scroll horizontal si es necesario */
+
+    /* ── TABLA → CARDS VERTICALES EN MÓVIL ──────────────── */
+
+    /* scroll horizontal de respaldo si la tabla no cabe */
     .table-container {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         margin: -15px;
         padding: 15px;
     }
-    
-    /* Tabla base */
+
     table.data-table,
     table.mobile-cards {
         display: block;
@@ -601,18 +580,18 @@ body {
         border-collapse: collapse;
         min-width: 100%;
     }
-    
-    /* Ocultar header de tabla en móvil */
+
+    /* thead oculto — las etiquetas se muestran con data-label en cada td */
     table.mobile-cards thead {
         display: none;
     }
-    
+
     table.mobile-cards tbody {
         display: block;
         width: 100%;
     }
-    
-    /* Cada fila se convierte en una card */
+
+    /* cada fila de la tabla se convierte en una card independiente */
     table.mobile-cards tbody tr {
         display: block;
         background: white;
@@ -623,16 +602,16 @@ body {
         border: 1px solid #e8e8e8;
         transition: transform 0.2s, box-shadow 0.2s;
     }
-    
+
     table.mobile-cards tbody tr:active {
         transform: scale(0.98);
     }
-    
+
     table.mobile-cards tbody tr:last-child {
         margin-bottom: 0;
     }
-    
-    /* Celdas como filas flex */
+
+    /* cada celda: etiqueta a la izquierda, valor a la derecha */
     table.mobile-cards td {
         display: flex;
         justify-content: space-between;
@@ -642,12 +621,12 @@ body {
         text-align: right;
         font-size: 14px;
     }
-    
+
     table.mobile-cards td:last-child {
         border-bottom: none;
     }
-    
-    /* Etiqueta del campo (usando data-label) */
+
+    /* etiqueta generada desde el atributo data-label del HTML */
     table.mobile-cards td::before {
         content: attr(data-label);
         font-weight: 600;
@@ -659,8 +638,8 @@ body {
         letter-spacing: 0.5px;
         margin-right: 10px;
     }
-    
-    /* Celda de acciones especial */
+
+    /* celda de acciones (editar/eliminar) separada visualmente */
     td.acciones-cell {
         border-top: 2px solid #f5f5f5;
         margin-top: 10px;
@@ -668,12 +647,15 @@ body {
         flex-direction: column;
         gap: 10px;
     }
-    
+
     td.acciones-cell::before {
         display: none;
     }
 }
 
+/* ── MODAL ───────────────────────────────────────────────── */
+
+/* overlay oscuro con blur — oculto por defecto, se activa con la clase .activo */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -685,8 +667,10 @@ body {
     justify-content: center;
     padding: 20px;
 }
+
 .modal-overlay.activo { display: flex; }
 
+/* contenedor del modal con animación de entrada */
 .modal-contenido {
     background: white;
     border-radius: 16px;
@@ -699,11 +683,14 @@ body {
     box-shadow: 0 25px 60px rgba(5, 49, 112, 0.25);
     animation: slideUp 0.25s ease;
 }
+
+/* animación de entrada del modal */
 @keyframes slideUp {
     from { transform: translateY(20px); opacity: 0; }
     to   { transform: translateY(0); opacity: 1; }
 }
 
+/* botón X para cerrar el modal */
 .modal-cerrar {
     position: absolute;
     top: 16px; right: 16px;
@@ -715,8 +702,10 @@ body {
     color: #555;
     transition: all 0.2s;
 }
+
 .modal-cerrar:hover { background: #e74c3c; color: white; }
 
+/* título e ícono del modal */
 .modal-titulo { font-size: 20px; font-weight: 700; color: #053170; margin-bottom: 20px; }
 .modal-titulo i { color: #069DBF; margin-right: 8px; }
 
@@ -727,8 +716,10 @@ body {
     padding-bottom: 6px; margin: 20px 0 14px;
 }
 
+/* grilla de 2 columnas para los campos del formulario */
 .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
+/* cada campo del formulario: label + input */
 .modal-campo { display: flex; flex-direction: column; gap: 5px; }
 .modal-campo label { font-size: 13px; font-weight: 600; color: #444; }
 .modal-campo input {
@@ -741,46 +732,61 @@ body {
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
+
 .modal-campo input:focus {
     border-color: #069DBF;
     box-shadow: 0 0 0 3px rgba(6,157,191,0.12);
     background: white;
 }
 
+/* campo de contraseña — espacio a la derecha para el ícono del ojo */
+.modal-campo .input-password {
+    position: relative;
+}
+
+.modal-campo .input-password input {
+    width: 100%;
+    padding-right: 42px;
+}
+
+/* pie del modal con botones cancelar y guardar */
 .modal-footer {
     display: flex; justify-content: flex-end;
     gap: 12px; padding-top: 20px;
     border-top: 1px solid #eee; margin-top: 20px;
 }
+
 .btn-cancelar {
     padding: 10px 20px; border: 1px solid #dde3ec;
     border-radius: 8px; background: white; color: #555;
     font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
 }
+
 .btn-cancelar:hover { background: #f5f5f5; }
+
 .btn-guardar {
     padding: 10px 22px; border: none;
     border-radius: 8px; background: linear-gradient(135deg, #1a5276, #053170);
     color: white; font-size: 14px; font-weight: 600;
     cursor: pointer; font-family: inherit; transition: all 0.2s;
 }
+
 .btn-guardar:hover { box-shadow: 0 6px 16px rgba(5,49,112,0.3); transform: translateY(-1px); }
 
+/* modal en móvil: una sola columna */
 @media (max-width: 768px) {
     .modal-contenido { padding: 20px; }
     .modal-grid { grid-template-columns: 1fr; }
 }
 
-
-
-
-/* arreglo de diseno para tabla estudiante */
+/* ── TABLA DE DATOS ──────────────────────────────────────── */
 .data-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
 }
 
+/* encabezado de la tabla */
 .data-table thead th {
     background: #f0f6ff;
     color: #053170;
@@ -808,7 +814,7 @@ body {
     vertical-align: middle;
 }
 
-/* BOTONES EDITAR / ELIMINAR */
+/* ── BOTONES EDITAR / ELIMINAR ───────────────────────────── */
 .link-accion {
     font-size: 13px;
     font-weight: 600;
@@ -818,6 +824,7 @@ body {
     transition: all 0.2s;
 }
 
+/* acción editar estudiante */
 .link-accion.abrir-modal-estudiante {
     color: #069DBF;
     background: #e0f7fa;
@@ -828,6 +835,7 @@ body {
     color: white;
 }
 
+/* acción eliminar */
 .link-accion.eliminar {
     color: #e74c3c;
     background: #fee2e2;
@@ -845,9 +853,7 @@ body {
     gap: 8px;
 }
 
-/* BOTONES EDITAR / ELIMINAR  PARA DOCENTE*/
-
-
+/* mismos estilos de acción pero para la tabla de docentes */
 .link-accion.abrir-modal-docente {
     color: #069DBF;
     background: #e0f7fa;
@@ -858,9 +864,9 @@ body {
     color: white;
 }
 
+/* ── PANEL DE INICIO DEL ADMIN ───────────────────────────── */
 
-
-/* admin inicio */
+/* banner de bienvenida con fecha */
 .banner {
     background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
     border-radius: 20px;
@@ -871,15 +877,19 @@ body {
     align-items: center;
     margin-bottom: 28px;
 }
+
 .banner-texto h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
 .banner-texto p { font-size: 14px; opacity: 0.8; }
 .banner-fecha { text-align: right; font-size: 14px; opacity: 0.85; text-transform: capitalize; }
 
+/* tarjetas de estadísticas — grilla fija de 3 columnas */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
 }
+
+/* cada tarjeta de estadística */
 .stat-card {
     background: white;
     border-radius: 16px;
@@ -889,14 +899,47 @@ body {
     justify-content: space-between;
     align-items: center;
 }
+
 .stat-left h3 { font-size: 32px; font-weight: 700; color: #053170; }
 .stat-left p { font-size: 13px; color: #666; font-weight: 600; margin-top: 2px; }
+
+/* ícono de cada stat con variantes de color */
 .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
 .stat-icon.blue { background: #e0f0ff; color: #053170; }
 .stat-icon.teal { background: #e0f7fa; color: #069DBF; }
 .stat-icon.green { background: #d1fae5; color: #065f46; }
 
+/* en móvil: banner en columna y stats apiladas */
 @media (max-width: 768px) {
     .banner { flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px; }
     .stats-grid { grid-template-columns: 1fr; }
+}
+
+/* ── ÍCONO OJO (mostrar/ocultar contraseña) ──────────────── */
+
+/* posicionado absolute dentro del .input-password relativo */
+.ver-contrasena-docente {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    opacity: 0.6;
+}
+
+.ver-contrasena-estudiante {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    opacity: 0.6;
+}
+
+.input-password {
+    position: relative;
 }

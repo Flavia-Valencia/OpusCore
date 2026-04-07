@@ -52,17 +52,13 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                         <label for="contrasena">Contraseña</label>
                         <div class="input-password">
                             <input id="contrasena" name="contrasena" type="password" placeholder="••••••••" required />
-                            <span class="ver-contrasena" onclick="verContrasena()"></span>
+                            <!-- Ícono de ojo para mostrar u ocultar la contraseña -->
+                            <span class="ver-contrasena" onclick="toggleContrasena('contrasena', 'icono-ojo')">
+                                <img id="icono-ojo" src="img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20" />
+                            </span>
                         </div>
                     </div>
-
-                    <div class="opcion-recordar">
-                        <label class="recordar-contrasena">
-                            <input type="checkbox" name="recordar-contrasena"/>
-                            Recordar contraseña
-                        </label>
-                    </div>
-
+                    
                     <!-- <div class="pie">
                         <p>Olvidaste tu contraseña?</p><a href="#" class="enlace">Enviar solicitud de reestablecimiento</a>
                     </div> -->
@@ -71,6 +67,10 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                         <div class="mensaje-error">
                             Correo o contraseña incorrecta. Inténtalo de nuevo.
                         </div>
+                        <?php elseif ($error == 2): ?>
+                            <div class="mensaje-error">
+                                Usuario inactivo. Contacta al administrador.
+                            </div>           
                     <?php endif; ?>
 
                     <button class="btn-entrar" type="submit">Entrar</button>

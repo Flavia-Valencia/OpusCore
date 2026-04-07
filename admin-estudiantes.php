@@ -99,22 +99,46 @@ if(!isset($_SESSION["usuario"])){
         <div class="modal-contenido">
             <button class="modal-cerrar" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
              <h2 class="modal-titulo"><i class="fas fa-user-edit"></i> Editar Estudiante</h2>
-
+            <!-- Formulario para registrar un nuevo estudiante en el sistema -->
             <form method="POST" action="editar-estudiante.php">
+                <!-- ID oculto para identificar qué estudiante se está editando -->
                 <input type="hidden" name="usuario_id" id="edit-id">
 
                 <h3 class="modal-subtitulo">Detalles del estudiante</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" id="edit-nombre"></div>
-                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido" ></div>
+                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido"></div>
                     <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" id="edit-telefono"></div>
-                    <div class="modal-campo"><label>Estado</label><input type="text" name="estado" id="edit-estado"></div>
-                </div>
+                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" id="edit-fecha_nacimiento"></div>
+                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" id="edit-direccion"></div>
+                    <div class="modal-campo"><label>Género</label>
+                        <select name="genero" id="edit-genero">
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                    </div>
+                </div>  <!-- ajuste de diseño para que se muestre igual que los otros modales-->
 
-                <h3 class="modal-subtitulo">Detalles del usuario</h3>
+                <h3 class="modal-subtitulo">Acceso al sistema</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="text" name="correo" id="edit-correo"></div>
-                    <div class="modal-campo"><label>Contraseña</label><input type="password" name="contrasena" id="edit-contrasena"></div>
+                    <div class="modal-campo">
+                        <label>Contraseña</label>
+                        <div class="input-password">
+                            <input type="password" name="password_hash" id="edit-password_hash">
+                            <span class="ver-contrasena-estudiante" onclick="toggleContrasena('edit-password_hash', 'icono-ojo-estudiante')">
+                                <img id="icono-ojo-estudiante" src="img/ojo-cerrado.svg" width="20" height="20">
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="modal-campo"><label>Estado</label>
+                        <!-- El valor debe coincidir exactamente con "Activo"/"Inactivo" en la base de datos -->
+                        <select name="estado" id="edit-estado">
+                            <option value="Activo">Activo</option>    <!-- cambio de minuscula a mayuscula ya que el valor en la base de datos es "Activo" -->
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -151,7 +175,13 @@ if(!isset($_SESSION["usuario"])){
                 <h3 class="modal-subtitulo">Detalles del usuario</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="email" name="correo" required></div>
-                    <div class="modal-campo"><label>Contraseña</label><input type="password" name="contrasena" required></div>
+                    <div class="modal-campo">
+                        <label>Contraseña</label>
+                        <div class="input-password">
+                            <!-- Se muestra como texto plano para que el admin vea la contraseña al crearla -->
+                            <input type="text" name="password_hash" id="nuevo-contrasena-est"> <!-- cambio para el tipo de password a text para que se muestre la contraseña al escribirla, ya que es un nuevo usuario y el admin necesita ver lo que escribe -->
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">

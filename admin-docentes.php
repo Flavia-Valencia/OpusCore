@@ -29,7 +29,7 @@ if(!isset($_SESSION["usuario"])){
 </head>
 
 <body class="raleway-all">
-   
+   <!-- encabezado con logo, menú hamburguesa para móvil y navegación principal -->
     <header class="header">
         <div class="logo">
             <img src ="img/logo.svg" alt="Logo Academia Futuro Digital" class="logo">
@@ -38,7 +38,7 @@ if(!isset($_SESSION["usuario"])){
                 <span class="logo-big">FUTURO DIGITAL</span>
             </div>
         </div>
-
+        <!-- checkbox oculto que controla la apertura del menú en móvil -->
         <input type="checkbox" id="menu-toggle" class="menu-checkbox">
 
         <label for="menu-toggle" class="menu-btn">
@@ -49,7 +49,7 @@ if(!isset($_SESSION["usuario"])){
         <label for="menu-toggle" class="menu-overlay"></label>
 
         <nav class="nav">
-            <!--Funciona para nombre el celu -->
+            <!--Funciona para nombre en celu -->
             <div class="menu-user">
                 <div class="menu-user-role">Admin</div>
                 <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
@@ -65,6 +65,7 @@ if(!isset($_SESSION["usuario"])){
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
             <!-------------->
 
+            <!-- perfil del usuario con correo y botón de cerrar sesión en escritorio -->
             <a href="includes/logout.php" style="text-decoration:none;">
                 <div class="user-profile">
                     <div class="user-info">
@@ -78,6 +79,7 @@ if(!isset($_SESSION["usuario"])){
     </header>
 
     <main class="main">
+        <!-- encabezado de la sección con título y botón para abrir el modal de nuevo docente -->
         <div class="page-header">
             <h1 class="titulo">ADMINISTRAR DOCENTES</h1>
             <button class="btn-nuevo">+ Nuevo Docente</button>
@@ -87,6 +89,7 @@ if(!isset($_SESSION["usuario"])){
             <div class="toolbar">
                 <input type="text" placeholder="🔎 Buscar un docente" class="input-buscar">
             </div>
+            <!-- tabla de docentes cargada dinámicamente desde mostrar-tabla-docentes.php -->
             <div class="tabla-placeholder">
                 <?php include('mostrar-tabla-docentes.php'); ?>
 
@@ -101,6 +104,7 @@ if(!isset($_SESSION["usuario"])){
             <button class="modal-cerrar" onclick="cerrarModalDocente()"><i class="fas fa-times"></i></button>
             <h2 class="modal-titulo"><i class="fas fa-user-edit"></i> Editar Docente</h2>
 
+            <!-- formulario que envia los datos actualizados del docente-->
             <form method="POST" action="editar-docente.php">
                 <input type="hidden" name="id" id="editd-id">
 
@@ -121,10 +125,26 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" id="editd-direccion"></div>
                 </div>
 
-                <h3 class="modal-subtitulo">Detalles del usuario</h3>
+                <h3 class="modal-subtitulo">Acceso al sistema</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="email" name="correo" id="editd-correo"></div>
-                    <div class="modal-campo"><label>Contraseña</label><input type="password" name="password_hash" id="editd-password_hash"></div>
+                    <div class="modal-campo"><label>Contraseña</label>
+                        <div class="input-password">
+                            <input type="password" name="password_hash" id="editd-password_hash">
+                            <!-- Ícono de ojo para mostrar u ocultar la contraseña -->
+                            <span class="ver-contrasena-docente" onclick="toggleContrasena('editd-password_hash', 'icono-ojo-docente')">
+                                <img id="icono-ojo-docente" src="img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20">
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="modal-campo"><label>Estado</label>
+                     <!-- El valor debe coincidir exactamente con "Activo"/"Inactivo" en la base de datos -->
+                        <select name="estado" id="editd-estado">
+                            <option value="Activo">Activo</option> <!--modifiqué aquí-->
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -138,11 +158,13 @@ if(!isset($_SESSION["usuario"])){
     <!-- MODAL NUEVO DOCENTE -->
     <div id="modalNuevoDocente" class="modal-overlay">
         <div class="modal-contenido">
+
+        <!-- El botón de cerrar modal y el título del modal -->
             <button class="modal-cerrar" onclick="cerrarModalNuevoDocente()"><i class="fas fa-times"></i></button>
             <h2 class="modal-titulo"><i class="fas fa-user-plus"></i> Nuevo Docente</h2>
 
             <form method="POST" action="crear-docente.php">
-
+                <!-- Campos para ingresar los detalles del nuevo docente -->
                 <h3 class="modal-subtitulo">Detalles del docente</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" required></div>
@@ -163,7 +185,12 @@ if(!isset($_SESSION["usuario"])){
                 <h3 class="modal-subtitulo">Detalles del usuario</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="email" name="correo" required></div>
-                    <div class="modal-campo"><label>Contraseña</label><input type="password" name="contrasena" required></div>
+                   <div class="modal-campo"><label>Contraseña</label>
+                        <div class="input-password">
+                            <!-- Se muestra como texto plano para que el admin vea la contraseña al crearla -->
+                            <input type="text" name="password_hash" id="nuevo-password_hash">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
