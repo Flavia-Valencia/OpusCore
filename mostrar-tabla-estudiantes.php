@@ -1,18 +1,21 @@
 <?php
 include('includes/conexion.php');   
 
+// Consulta que une la tabla estudiantes con usuarios para obtener todos sus datos
 $sql = "SELECT
     u.id AS usuario_id,
     u.nombre, 
     u.apellido,
     u.correo,
+    u.password_hash,
+    u.estado,
     e.fecha_nacimiento,
     e.genero,
     e.telefono,
     e.direccion
     FROM estudiantes e 
     INNER JOIN usuarios u ON e.usuario_id = u.id
-    WHERE u.rol_id = 2";
+    WHERE u.rol_id = 2"; // rol_id 2 corresponde al rol de estudiante
     
 $resultado = mysqli_query($conexion, $sql);
 
@@ -45,24 +48,27 @@ if (mysqli_num_rows($resultado) > 0 ){
                 <td data-label="Dirección"><?php echo htmlspecialchars($fila['direccion']); ?></td>
                 <td data-label="Acciones" class="acciones-cell">
                     <div class="acciones-texto">
+                        <!-- Los data-* pasan los datos del estudiante al modal de edición via JavaScript -->
                         <a 
                             href="#"
                             class="link-accion abrir-modal-estudiante"
                             data-id="<?php echo $fila['usuario_id']; ?>"
                             data-nombre="<?php echo htmlspecialchars($fila['nombre']); ?>"
                             data-apellido="<?php echo htmlspecialchars($fila['apellido']); ?>"
+                            data-fecha_nacimiento="<?php echo htmlspecialchars($fila['fecha_nacimiento']); ?>"
+                            data-genero="<?php echo htmlspecialchars($fila['genero']); ?>"
                             data-telefono="<?php echo htmlspecialchars($fila['telefono']); ?>"
-                            data-curso="Desarrollo Web"
-                            data-estado="Activo"
+                            data-direccion="<?php echo htmlspecialchars($fila['direccion']); ?>"
                             data-correo="<?php echo htmlspecialchars($fila['correo']); ?>"
-                            data-contrasena="123456"
+                            data-password_hash="<?php echo htmlspecialchars($fila['password_hash']); ?>" 
+                            data-estado="<?php echo htmlspecialchars($fila['estado']); ?>"
                             onclick="return false;"
                         >
                             Editar
                         </a>
-
+                         <!-- Pide confirmación antes de eliminar para evitar borrados accidentales -->
                         <span class="separador-acciones">|</span>
-
+                        
                         <a 
                             href="eliminar-estudiantes.php?id=<?php echo $fila['usuario_id']; ?>" 
                             class="link-accion eliminar"
