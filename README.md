@@ -9,6 +9,7 @@ El sistema permitira el ingreso de distintos roles:
 - Docente
 - Estudiante 
 
+
 ## Objetivo 
 Diseñar un sistema que solucione las dificultades actuales en el ingreso de notas, emisión de constancias, inscripciones y facturación, mediante la automatización y centralización de los procesos académicos
 
@@ -19,6 +20,7 @@ Diseñar un sistema que solucione las dificultades actuales en el ingreso de not
 - CSS -> Diseño visual
 - MySQL -> Base de Datos
 - XAMMP -> Entorno de desarrollo local
+
 
 ## Instalación y Ejecución
 Pasos detallados para instalar y ejecutar el proyecto en un entorno local.
@@ -87,9 +89,6 @@ v0.1 – Sprint 1
 
 ## Autor(es)
 OpusCore - Equipo de Desarollo
-
-
-
 
 
 
