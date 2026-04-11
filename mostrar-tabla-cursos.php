@@ -1,7 +1,7 @@
 <?php
 include('includes/conexion.php');   
 
-$sql = "SELECT c.id, c.nombre, c.descripcion, c.duracion, c.precio FROM cursos c";
+$sql = "SELECT c.id, c.nombre, c.descripcion, c.fechaInicio, c.fechaFin, c.costoMensual, c.cupos, c.estado FROM cursos c";
 $resultado = mysqli_query($conexion, $sql);
 
 if (mysqli_num_rows($resultado) > 0 ){
@@ -12,8 +12,11 @@ if (mysqli_num_rows($resultado) > 0 ){
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Descripción</th>
-                <th>Duración</th>
-                <th>Precio</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Costo Mensual</th>
+                <th>Cupos</th>
+                <th>Estado</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -24,8 +27,11 @@ if (mysqli_num_rows($resultado) > 0 ){
                 <td data-label="ID"><?php echo $fila['id']; ?></td>
                 <td data-label="Nombre"><?php echo htmlspecialchars($fila['nombre']); ?></td>
                 <td data-label="Descripción"><?php echo htmlspecialchars($fila['descripcion']); ?></td>
-                <td data-label="Duración"><?php echo htmlspecialchars($fila['duracion']); ?></td>
-                <td data-label="Precio">$<?php echo htmlspecialchars($fila['precio']); ?></td>
+                <td data-label="Fecha Inicio"><?php echo $fila['fechaInicio']; ?></td>
+                <td data-label="Fecha Fin"><?php echo $fila['fechaFin']; ?></td>
+                <td data-label="Costo Mensual">$<?php echo $fila['costoMensual']; ?></td>
+                <td data-label="Cupos"><?php echo $fila['cupos']; ?></td>
+                <td data-label="Estado"><?php echo $fila['estado'] == 1 ? 'Activo' : 'Inactivo'; ?></td>
 
                 <td data-label="Acciones" class="acciones-cell">
                     <div class="acciones-texto">
@@ -37,8 +43,11 @@ if (mysqli_num_rows($resultado) > 0 ){
                             data-id="<?php echo $fila['id']; ?>"
                             data-nombre="<?php echo htmlspecialchars($fila['nombre']); ?>"
                             data-descripcion="<?php echo htmlspecialchars($fila['descripcion']); ?>"
-                            data-duracion="<?php echo htmlspecialchars($fila['duracion']); ?>"
-                            data-precio="<?php echo htmlspecialchars($fila['precio']); ?>"
+                            data-fechainicio="<?php echo $fila['fechaInicio']; ?>"
+                            data-fechafin="<?php echo $fila['fechaFin']; ?>"
+                            data-costo="<?php echo $fila['costoMensual']; ?>"
+                            data-cupos="<?php echo $fila['cupos']; ?>"
+                            data-estado="<?php echo $fila['estado']; ?>"
                             onclick="return false;"
                         >
                             Editar
