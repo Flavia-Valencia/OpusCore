@@ -852,6 +852,16 @@ body {
     background: #069DBF;
     color: white;
 }
+/* acción para abrir modal de curso */
+.link-accion.abrir-modal-curso {
+    color: #069DBF;
+    background: #e0f7fa;
+}
+
+.link-accion.abrir-modal-curso:hover {
+    background: #069DBF;
+    color: white;
+}
 
 
 
