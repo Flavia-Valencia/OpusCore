@@ -76,5 +76,124 @@ if(!isset($_SESSION["usuario"])){
         </nav>
     </header>
 
+    <main class="main">
+        <div class="page-header">
+            <h1 class="titulo">ADMINISTRAR MATERIAS</h1>
+            <button class="btn-nuevo">+ Nueva Materia</button>
+        </div>
+
+        <div class="card">
+            <div class="toolbar">
+                <input type="text" placeholder="🔎 Buscar una materia" class="input-buscar">
+            </div>
+            <div class="tabla-placeholder">
+                <?php include('mostrar-tabla-cursos.php'); ?>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL NUEVO CURSO -->
+<div id="modalNuevoCurso" class="modal-overlay">
+    <div class="modal-contenido">
+        <button class="modal-cerrar" onclick="cerrarModalNuevoCurso()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h2 class="modal-titulo">
+            <i class="fas fa-book"></i> Nuevo Curso
+        </h2>
+
+        <form method="POST" action="crear-curso.php">
+
+            <h3 class="modal-subtitulo">Detalles del curso</h3>
+            <div class="modal-grid">
+
+                <div class="modal-campo">
+                    <label>Nombre del curso</label>
+                    <input type="text" name="nombre" required>
+                </div>
+
+                <div class="modal-campo">
+                    <label>Duración</label>
+                    <input type="text" name="duracion" placeholder="Ej: 3 meses o 40 horas">
+                </div>
+
+                <div class="modal-campo" style="grid-column: span 2;">
+                    <label>Descripción</label>
+                    <input type="text" name="descripcion" placeholder="Descripción del curso">
+                </div>
+
+                <div class="modal-campo">
+                    <label>Precio ($)</label>
+                    <input type="number" step="0.01" name="precio" required>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" onclick="cerrarModalNuevoCurso()">Cancelar</button>
+                <button type="submit" class="btn-guardar">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- MODAL EDITAR CURSO -->
+<div id="modalEditarCurso" class="modal-overlay">
+    <div class="modal-contenido">
+        <button class="modal-cerrar" onclick="cerrarModalCurso()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h2 class="modal-titulo">
+            <i class="fas fa-edit"></i> Editar Curso
+        </h2>
+
+        <form method="POST" action="editar-curso.php">
+
+            <!-- ID oculto -->
+            <input type="hidden" name="id" id="edit-id-curso">
+
+            <h3 class="modal-subtitulo">Detalles del curso</h3>
+            <div class="modal-grid">
+
+                <div class="modal-campo">
+                    <label>Nombre del curso</label>
+                    <input type="text" name="nombre" id="edit-nombre-curso">
+                </div>
+
+                <div class="modal-campo">
+                    <label>Duración</label>
+                    <input type="text" name="duracion" id="edit-duracion-curso">
+                </div>
+
+                <div class="modal-campo" style="grid-column: span 2;">
+                    <label>Descripción</label>
+                    <input type="text" name="descripcion" id="edit-descripcion-curso">
+                </div>
+
+                <div class="modal-campo">
+                    <label>Precio ($)</label>
+                    <input type="number" step="0.01" name="precio" id="edit-precio-curso">
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" onclick="cerrarModalCurso()">Cancelar</button>
+                <button type="submit" class="btn-guardar">
+                    <i class="fas fa-save"></i> Guardar cambios
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<script src="js/script.js"></script>
 </body>
 </html>

@@ -68,27 +68,6 @@ if (modalEditarDocente) {
 
 // --- MODAL NUEVO DOCENTE / NUEVO ESTUDIANTE ---
 
-// Botón "+ Nuevo" abre el modal correspondiente
-const btnNuevo = document.querySelector('.btn-nuevo');
-
-if (btnNuevo) {
-    btnNuevo.addEventListener('click', function() {
-
-        const modalNuevoDocente = document.getElementById('modalNuevoDocente');
-
-        if (modalNuevoDocente) {
-            modalNuevoDocente.classList.add('activo');
-            document.body.style.overflow = 'hidden';
-        }
-
-        const modalNuevo = document.getElementById('modalNuevo');
-
-        if (modalNuevo) {
-            modalNuevo.classList.add('activo');
-            document.body.style.overflow = 'hidden';
-        }
-    });
-}
 
 function cerrarModalNuevoDocente() {
     const modal = document.getElementById('modalNuevoDocente');
@@ -108,14 +87,6 @@ if (modalNuevoDocente) {
     });
 }
 
-
-// Cierra modales al presionar la tecla Esc
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { 
-        cerrarModalDocente(); 
-        cerrarModalNuevoDocente(); 
-    }
-});
 
 
 // --- MODAL EDITAR ESTUDIANTE ---
@@ -166,11 +137,6 @@ if (modalEditar) {
     });
 }
 
-// Cierra el modal de edición de estudiante al presionar Esc
-document.addEventListener('keydown', e => { 
-    if (e.key === 'Escape') cerrarModal(); 
-});
-
 // Cierra el modal de nuevo estudiante
 function cerrarModalNuevo() {
     const modal = document.getElementById('modalNuevo');
@@ -187,6 +153,89 @@ if (modalNuevo) {
         if (e.target === this) cerrarModalNuevo();
     });
 }
+
+
+// MODAL nuevo curso
+
+
+
+function cerrarModalNuevoCurso() {
+    const modal = document.getElementById('modalNuevoCurso');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+
+const modalNuevoCurso = document.getElementById('modalNuevoCurso');
+
+if (modalNuevoCurso) {
+    modalNuevoCurso.addEventListener('click', function(e) {
+        if (e.target === this) cerrarModalNuevoCurso();
+    });
+}
+
+// bueno
+
+// --- MODAL EDITAR CURSO ---
+
+document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
+    btn.addEventListener('click', function() {
+
+        const modal = document.getElementById('modalEditarCurso');
+        if (!modal) return;
+
+        // Rellenar datos
+        document.getElementById('edit-id-curso').value = this.dataset.id;
+        document.getElementById('edit-nombre-curso').value = this.dataset.nombre;
+        document.getElementById('edit-descripcion-curso').value = this.dataset.descripcion;
+        document.getElementById('edit-duracion-curso').value = this.dataset.duracion;
+        document.getElementById('edit-precio-curso').value = this.dataset.precio;
+
+        modal.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+// Cierra el modal de edición de curso
+function cerrarModalCurso() {
+    const modal = document.getElementById('modalEditarCurso');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+
+// cerrar al hacer clic fuera
+const modalEditarCurso = document.getElementById('modalEditarCurso');
+if (modalEditarCurso) {
+    modalEditarCurso.addEventListener('click', function(e) {
+        if (e.target === this) cerrarModalCurso();
+    });
+}
+
+
+//-- funcion para nuevo curso, nuevo docente o nuevo estudiante, dependiendo de cuál exista en la página, para evitar duplicar código al tener un botón "+ Nuevo" que abre diferentes modales según la página en la que se encuentre el admin
+    const btnNuevo = document.querySelector('.btn-nuevo');
+
+    if (btnNuevo) {
+        btnNuevo.addEventListener('click', function() {
+
+            const modalNuevoCurso = document.getElementById('modalNuevoCurso');
+            const modalNuevoDocente = document.getElementById('modalNuevoDocente');
+            const modalNuevo = document.getElementById('modalNuevo');
+
+            if (modalNuevoCurso) {
+                modalNuevoCurso.classList.add('activo');
+            } else if (modalNuevoDocente) {
+                modalNuevoDocente.classList.add('activo');
+            } else if (modalNuevo) {
+                modalNuevo.classList.add('activo');
+            }
+
+            document.body.style.overflow = 'hidden';
+        });
+    }
 
 
 // --- PÁGINA DE INICIO ---
@@ -235,3 +284,14 @@ if (inputContrasena && spanOjo) {
     });
 }
 
+
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { 
+        cerrarModalDocente(); 
+        cerrarModalNuevoDocente();
+        cerrarModal(); 
+        cerrarModalCurso(); 
+        cerrarModalNuevoCurso(); 
+    }
+});
