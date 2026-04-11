@@ -1,4 +1,4 @@
-<?php                   #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
+<?php
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -9,6 +9,27 @@ if(!isset($_SESSION["usuario"])){
     header("Location: login.php");
     exit();
 }
+
+// TEMPORAL - conexión directa para probar
+$conn = new mysqli("localhost", "root", "", "db_academiadigital");
+
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+
+// Contar estudiantes
+$res_estudiantes = $conn->query("SELECT COUNT(*) AS total FROM usuarios WHERE rol_id = 2 AND estado = 1");
+$total_estudiantes = $res_estudiantes->fetch_assoc()["total"];
+
+// Contar docentes
+$res_docentes = $conn->query("SELECT COUNT(*) AS total FROM usuarios WHERE rol_id = 3 AND estado = 1");
+$total_docentes = $res_docentes->fetch_assoc()["total"];
+
+// Contar cursos activos
+$res_cursos = $conn->query("SELECT COUNT(*) AS total FROM cursos WHERE estado = 1");
+$total_cursos = $res_cursos->fetch_assoc()["total"];
+
+
 ?>
 
 <!DOCTYPE html>
@@ -21,7 +42,7 @@ if(!isset($_SESSION["usuario"])){
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
+    <!--PARA ICONOS-->
     <title>ADF | Inicio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/stylesAdmin.css">
@@ -29,6 +50,7 @@ if(!isset($_SESSION["usuario"])){
 </head>
 
 <body class="raleway-all">
+    <!-- Logo de la academia con texto -->
     <header class="header">
         <div class="logo">
             <img src ="img/logo.svg" alt="Logo Academia Futuro Digital" class="logo">
@@ -37,7 +59,8 @@ if(!isset($_SESSION["usuario"])){
                 <span class="logo-big">FUTURO DIGITAL</span>
             </div>
         </div>
-
+        <!---------------------->
+        <!-- Menú hamburguesa para móvil -->
         <input type="checkbox" id="menu-toggle" class="menu-checkbox"> 
      
         <label for="menu-toggle" class="menu-btn">
@@ -92,21 +115,21 @@ if(!isset($_SESSION["usuario"])){
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-left">
-                    <h3>0</h3>
+                    <h3><?php echo $total_estudiantes; ?></h3>
                     <p>Estudiantes</p>
                 </div>
                 <div class="stat-icon blue"><i class="fas fa-user-graduate"></i></div>
             </div>
             <div class="stat-card">
                 <div class="stat-left">
-                    <h3>0</h3>
+                    <h3><?php echo $total_docentes; ?></h3>
                     <p>Docentes</p>
                 </div>
                 <div class="stat-icon teal"><i class="fas fa-chalkboard-teacher"></i></div>
             </div>
             <div class="stat-card">
                 <div class="stat-left">
-                    <h3>0</h3>
+                    <h3><?php echo $total_cursos; ?></h3>
                     <p>Cursos activos</p>
                 </div>
                 <div class="stat-icon green"><i class="fas fa-book-open"></i></div>

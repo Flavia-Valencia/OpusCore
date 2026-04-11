@@ -176,15 +176,7 @@ if (modalNuevoCurso) {
 }
 
 // bueno
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { 
-        cerrarModalDocente(); 
-        cerrarModalNuevoDocente();
-        cerrarModal(); 
-        cerrarModalCurso(); 
-        cerrarModalNuevoCurso(); 
-    }
-});
+
 // --- MODAL EDITAR CURSO ---
 
 document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
@@ -292,3 +284,14 @@ if (inputContrasena && spanOjo) {
     });
 }
 
+
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { 
+        cerrarModalDocente(); 
+        cerrarModalNuevoDocente();
+        cerrarModal(); 
+        cerrarModalCurso(); 
+        cerrarModalNuevoCurso(); 
+    }
+});

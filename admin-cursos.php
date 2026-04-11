@@ -48,7 +48,7 @@ if(!isset($_SESSION["usuario"])){
         <label for="menu-toggle" class="menu-overlay"></label>
 
         <nav class="nav">
-            <!--Funciona para nombre el celu -->
+            <!--Funciona para nombre en celu -->
             <div class="menu-user">
                 <div class="menu-user-role">Admin</div>
                 <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
