@@ -82,6 +82,16 @@ if(!isset($_SESSION["usuario"])){
             <button class="btn-nuevo">+ Nueva Materia</button>
         </div>
 
+        <!--Mensaje de validación del curso-->
+        <?php if(isset($_GET['error'])): ?>
+
+    <?php if($_GET['error'] == 'existe'): ?>
+        <div class="alerta alerta-error">
+        Error: El curso ya existe. Intenta con otro nombre.
+        </div>
+        <?php endif; ?>
+    <?php endif; ?>
+        
         <div class="card">
             <div class="toolbar">
                 <input type="text" placeholder="🔎 Buscar una materia" class="input-buscar">
@@ -125,10 +135,27 @@ if(!isset($_SESSION["usuario"])){
 
                 <div class="modal-campo">
                     <label>Precio ($)</label>
-                    <input type="number" step="0.01" name="precio" required>
+                    <input type="number" step="0.01" name="costoMensual" required>
                 </div>
 
-            </div>
+                 <div class="modal-campo">
+                    <label>Cupos</label>
+                    <input type="number" name="cupos" required>
+                </div>
+
+                <div class="modal-campo">
+                    <label>Fecha Inicio</label>
+                    <input type="date" name="fechaInicio" required>
+                </div>
+
+                <div class="modal-campo">
+                    <label>Fecha Fin</label>
+                    <input type="date" name="fechaFin" required>
+                </div>
+
+                <input type="hidden" name="idDocente" value="6"> <!-- aquí va a ir el ID del docente asignado a la materia -->
+
+             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn-cancelar" onclick="cerrarModalNuevoCurso()">Cancelar</button>
