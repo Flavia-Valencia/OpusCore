@@ -295,3 +295,52 @@ document.addEventListener('keydown', e => {
         cerrarModalNuevoCurso(); 
     }
 });
+
+// --- BUSCADOR DOCENTES ---
+const buscadorDocente = document.getElementById('buscador-docente');
+if (buscadorDocente) {
+    buscadorDocente.addEventListener('keyup', function() {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
+
+        filas.forEach(function(fila) {
+            const id = fila.cells[0].textContent.toLowerCase();
+            const nombre = fila.cells[1].textContent.toLowerCase();
+
+            fila.style.display = (id.includes(filtro) || nombre.includes(filtro)) ? '' : 'none';
+        });
+    });
+}
+
+// --- BUSCADOR ESTUDIANTES ---
+const buscadorEstudiante = document.getElementById('buscador-estudiante');
+if (buscadorEstudiante) {
+    buscadorEstudiante.addEventListener('keyup', function() {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
+
+        filas.forEach(function(fila) {
+            const id = fila.cells[0].textContent.toLowerCase();
+            const nombre = fila.cells[1].textContent.toLowerCase();
+
+            fila.style.display = (id.includes(filtro) || nombre.includes(filtro)) ? '' : 'none';
+        });
+    });
+}
+// --- BUSCADOR CURSOS ---
+const buscadorCurso = document.getElementById('buscador-curso');
+if (buscadorCurso) {
+    buscadorCurso.addEventListener('keyup', function() {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll('.data-table tbody tr');
+        
+        console.log('Filas encontradas:', filas.length); // para ver si encuentra las filas
+
+        filas.forEach(function(fila) {
+            const id = fila.cells[0].textContent.toLowerCase();
+            const nombre = fila.cells[1].textContent.toLowerCase();
+
+            fila.style.display = (id.includes(filtro) || nombre.includes(filtro)) ? '' : 'none';
+        });
+    });
+}
