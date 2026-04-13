@@ -12,15 +12,6 @@ CREATE TABLE `cursos` (
 ALTER TABLE `cursos`
   ADD CONSTRAINT `cursos_ibfk_1` FOREIGN KEY (`idDocente`) REFERENCES `docentes` (`id`);
   
-CREATE TABLE `prerrequisitos` ( 
-    `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `idCursoActual` int NOT NULL,
-    `idCursoPrevio` int NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-ALTER TABLE `prerrequisitos`
-  ADD CONSTRAINT `prerrequisitos_ibfk_1` FOREIGN KEY (`idCursoActual`) REFERENCES `cursos` (`id`),
-  ADD CONSTRAINT `prerrequisitos_ibfk_2` FOREIGN KEY (`idCursoPrevio`) REFERENCES `cursos` (`id`);
-  
 CREATE TABLE `horarios` ( 
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     `horaInicio` time COLLATE utf8mb4_general_ci NOT NULL, 
@@ -32,14 +23,22 @@ CREATE TABLE `aulas` (
     `aula` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
     `capacidad` int COLLATE utf8mb4_general_ci NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `materiaHorario` ( 
+CREATE TABLE `prerrequisitos` (
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `idMateria` int NOT NULL,
-    `dia` enum('Lunes','Martes','Miércoles','Juves','Viernes','Sábado','Domingo') COLLATE utf8mb4_general_ci NOT NULL,
-    `idHorario` int NOT NULL,
-    `idAula` int NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `idCursoActual` int NOT NULL,
+    `idCursoPrevio` int NOT NULL,
+    CONSTRAINT `fk_actual` FOREIGN KEY (`idCursoActual`) REFERENCES `cursos` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_previo` FOREIGN KEY (`idCursoPrevio`) REFERENCES `cursos` (`id`) ON DELETE CASCADE,
+    UNIQUE KEY `unique_requisito` (`idCursoActual`, `idCursoPrevio`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-ALTER TABLE `materiaHorario`
-  ADD CONSTRAINT `materiaHorario_ibfk_1` FOREIGN KEY (`idMateria`) REFERENCES `cursos` (`id`),
-  ADD CONSTRAINT `materiaHorario_ibfk_2` FOREIGN KEY (`idHorario`) REFERENCES `horarios` (`id`),
-  ADD CONSTRAINT `materiaHorario_ibfk_3` FOREIGN KEY (`idAula`) REFERENCES `aulas` (`id`);
+CREATE TABLE `CursoHorario` (
+    `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `idCurso` int NOT NULL,
+    `dia` enum('Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo') NOT NULL,
+    `idHorario` int NOT NULL,
+    `idAula` int NOT NULL,
+    CONSTRAINT `fk_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_horario` FOREIGN KEY (`idHorario`) REFERENCES `horarios` (`id`),
+    CONSTRAINT `fk_aula` FOREIGN KEY (`idAula`) REFERENCES `aulas` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
