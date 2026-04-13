@@ -85,12 +85,13 @@ if(!isset($_SESSION["usuario"])){
         <!--Mensaje de validación del curso-->
         <?php if(isset($_GET['error'])): ?>
 
-    <?php if($_GET['error'] == 'existe'): ?>
-        <div class="alerta alerta-error">
-        Error: El curso ya existe. Intenta con otro nombre.
-        </div>
+            <?php if(isset($_GET['error']) && $_GET['error'] == 'existe'): ?>
+                <div class="toast-error">
+                    El curso ya existe. Intenta con otro nombre.
+                </div>
+            <?php endif; ?>
+
         <?php endif; ?>
-    <?php endif; ?>
         
         <div class="card">
             <div class="toolbar">
