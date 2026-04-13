@@ -17,7 +17,7 @@ if (mysqli_num_rows($resultado) > 0 ){
                 <th>Costo Mensual</th>
                 <th>Cupos</th>
                 <th>Estado</th>
-                <th>Acciones</th>
+                <th style="width: 200px; text-align: center;">Acciones</th>
             </tr>
         </thead>
 
@@ -57,12 +57,23 @@ if (mysqli_num_rows($resultado) > 0 ){
 
                         <!-- BOTÓN ELIMINAR -->
                         <a 
-                            href="eliminar-curso.php?id=<?php echo $fila['id']; ?>" 
+                            href="desactivar-curso.php?id=<?php echo $fila['id']; ?>" 
                             class="link-accion eliminar"
-                            onclick="return confirm('¿Eliminar curso?')"
+                            onclick="return confirm('¿Desactivar el curso <?php echo htmlspecialchars($fila['nombre']); ?>?')"
                         >
-                            Eliminar
+                            Desactivar
                         </a>
+
+                        <!-- BOTÓN HORARIOS -->
+                        <a 
+                            href="#"
+                            class="link-accion horarios"
+                            onclick="abrirModalHorarios(<?php echo $fila['id']; ?>); return false;"
+                        >
+                            Horarios 🕒
+                        </a>
+
+                        
 
                     </div>
                 </td>

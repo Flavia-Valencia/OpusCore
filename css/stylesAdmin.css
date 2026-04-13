@@ -853,6 +853,58 @@ body {
     gap: 8px;
 }
 
+.link-accion.horarios {
+    color: #069DBF;
+    background: #e0f7fa;
+}
+
+.link-accion.horarios:hover {
+    background: #069DBF;
+    color: white;
+}
+
+/* ── COLUMNA ACCIONES ── */
+.acciones-texto {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+}
+
+.data-table thead th:last-child,
+.data-table tbody td:last-child {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.link-accion {
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.data-table tbody td {
+    padding: 14px 16px;
+    color: #333;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.data-table tbody td:nth-child(3) {
+    white-space: normal;
+    max-width: 200px;
+}
+
+.data-table tbody td:nth-child(2) {
+    white-space: normal;
+    max-width: 200px;
+}
+
 /* mismos estilos de acción pero para la tabla de docentes */
 .link-accion.abrir-modal-docente {
     color: #069DBF;
@@ -952,4 +1004,159 @@ body {
 
 .input-password {
     position: relative;
+}
+
+
+/*combobox de prerrequisitos*/
+
+.select-prerrequisitos {
+    width: 100%;
+    height: 100px;
+    padding: 6px;
+    border: 1px solid #dde3ec;
+    border-radius: 8px;
+    background: #f8fafc;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+}
+
+.select-prerrequisitos:focus {
+    border-color: #069DBF;
+    box-shadow: 0 0 0 3px rgba(6,157,191,0.12);
+    background: white;
+}
+
+
+/* --- Ajustes generales para tablas --- */
+.data-table tbody td {
+    padding: 14px 16px;
+    color: #333;
+    vertical-align: middle;
+    white-space: nowrap; /* por defecto, todo en una sola línea */
+    overflow-wrap: break-word;
+}
+
+/* Permitir que ciertas columnas largas se partan */
+.data-table tbody td:nth-child(3), /* Descripción en cursos */
+.data-table tbody td:nth-child(4), /* Especialidad en docentes */
+.data-table tbody td:nth-child(8)  /* Dirección en docentes/estudiantes */
+{
+    white-space: normal; /* permite saltos de línea */
+    max-width: 200px;    /* ajusta el ancho máximo */
+}
+ 
+/* --- Ajuste definitivo para columnas largas --- */
+.data-table td:nth-child(4), /* Especialidad en docentes */
+.data-table td:nth-child(3), /* Descripción en cursos */
+.data-table td:nth-child(7),
+.data-table td:nth-child(8) /* Dirección en docentes/estudiantes */
+{
+  white-space: normal !important; /* permite saltos de línea */
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  max-width: 180px !important; /* limita el ancho máximo */
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+/* ── RESPONSIVE MODALES ── */
+@media (max-width: 768px) {
+    .modal-contenido {
+        padding: 20px;
+        margin: 10px;
+        max-height: 95vh;
+    }
+
+    .modal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-campo {
+        grid-column: span 1 !important;
+    }
+
+    .modal-campo input,
+    .modal-campo select {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .select-prerrequisitos {
+        height: 80px;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .btn-cancelar,
+    .btn-guardar {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+    }
+
+   
+    table.mobile-cards td {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        gap: 8px !important;
+        text-align: left !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+    }
+
+    table.mobile-cards td::before {
+        flex-shrink: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    td.acciones-cell {
+        display: flex !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        border-top: 1px solid #f0f0f0 !important;
+        border-bottom: none !important;
+        gap: 8px !important;
+        padding-top: 12px !important;
+        overflow: visible !important;
+        white-space: normal !important;
+    }
+
+    td.acciones-cell .acciones-texto {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+}
+
+/* Notificación flotante que aparece arriba al centro y desaparece sola */
+.toast-error {
+    position: fixed;       /* flota sobre todo el contenido */
+    top: 19.5%;
+    left: 68.5%;
+    transform: translateX(-50%); /* centra horizontalmente */
+    background: #fee2e2;
+    color: #e74c3c;
+    border-left: 4px solid #e74c3c;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 9999;         /* encima de modales y overlays */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    animation: fadeOut 0.5s ease 3s forwards; /* desaparece a los 3s */
+}
+
+/* animación de desvanecimiento del toast */
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; visibility: hidden; }
 }

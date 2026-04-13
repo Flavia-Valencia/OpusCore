@@ -155,7 +155,7 @@ if (modalNuevo) {
 }
 
 
-// MODAL nuevo curso
+// MODAL NUEVO CURSO
 
 
 
@@ -189,8 +189,9 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
         document.getElementById('edit-id-curso').value = this.dataset.id;
         document.getElementById('edit-nombre-curso').value = this.dataset.nombre;
         document.getElementById('edit-descripcion-curso').value = this.dataset.descripcion;
-        document.getElementById('edit-duracion-curso').value = this.dataset.duracion;
-        document.getElementById('edit-precio-curso').value = this.dataset.precio;
+        document.getElementById('edit-fecha-inicio').value = this.dataset.fechainicio;
+        document.getElementById('edit-fecha-fin').value = this.dataset.fechafin; // aqui lo que hice fue eliminar el dato de duracion ya que era redundante y cambiarlo por fecha inicio/fin - Yahir
+        document.getElementById('edit-costo-mensual').value = this.dataset.costo; // lo mismo con el precio, lo cambié por costo mensual - Yahir
 
         modal.classList.add('activo');
         document.body.style.overflow = 'hidden';
@@ -344,3 +345,5 @@ if (buscadorCurso) {
         });
     });
 }
+
+
