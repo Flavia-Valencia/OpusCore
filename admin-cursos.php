@@ -124,11 +124,7 @@ if(!isset($_SESSION["usuario"])){
                     <input type="text" name="nombre" required>
                 </div>
 
-                <div class="modal-campo">
-                    
-                </div>
-
-                <div class="modal-campo" style="grid-column: span 2;">
+                <div class="modal-campo full-width">
                     <label>Descripción</label>
                     <input type="text" name="descripcion" placeholder="Descripción del curso">
                 </div>
