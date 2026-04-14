@@ -85,7 +85,7 @@ En caso de dudas con la instalación, contactar a:
 ![Estudiante](Evidencias/docente.png)
 
 ## Version del Sistema
-v0.1 – Sprint 1
+v0.2 – Sprint 2
 
 ## Autor(es)
 OpusCore - Equipo de Desarollo

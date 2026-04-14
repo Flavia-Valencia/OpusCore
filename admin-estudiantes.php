@@ -85,7 +85,7 @@ if(!isset($_SESSION["usuario"])){
 
         <div class="card">
             <div class="toolbar">
-                <input type="text" placeholder="🔎 Buscar un estudiante" class="input-buscar">
+                <input type="text" id="buscador-estudiante" placeholder="🔎 Buscar un estudiante" class="input-buscar">
             </div>
             <div class="tabla-placeholder">
                 <?php include('mostrar-tabla-estudiantes.php'); ?>
