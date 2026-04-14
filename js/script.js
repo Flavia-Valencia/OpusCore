@@ -193,9 +193,84 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
         document.getElementById('edit-fecha-fin').value = this.dataset.fechafin; // aqui lo que hice fue eliminar el dato de duracion ya que era redundante y cambiarlo por fecha inicio/fin - Yahir
         document.getElementById('edit-costo-mensual').value = this.dataset.costo; // lo mismo con el precio, lo cambié por costo mensual - Yahir
 
+        // Valida que el elemento exista antes de usarlo y asigna sus valores dinámicamente
+        if(document.getElementById('edit-cupos')) {
+            document.getElementById('edit-cupos').value = this.dataset.cupos;
+        }
+        if(document.getElementById('edit-estado-curso')) {
+            const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
+            document.getElementById('edit-estado-curso').value = estadoTexto;
+        }
+
         modal.classList.add('activo');
         document.body.style.overflow = 'hidden';
     });
+});
+
+
+// --- NUEVO UI MODAL (Inyectado en body) esto sirve para generar modal de advertencia dinámicamente y reutilizar el mismo modal en diferentes acciones sin duplicar código en el HTML
+
+const customModalHTML = `
+<div class="custom-modal-overlay" id="customConfirmModal">
+    <div class="custom-modal">
+        <div class="custom-modal-content">
+            <div class="custom-modal-title" id="customModalTitle">Modal Title</div>
+            <div class="custom-modal-text" id="customModalText">Lorem ipsum dolor sit amet...</div>
+            <div class="custom-modal-actions">
+                <button class="custom-btn custom-btn-cancel" id="customBtnCancel">Cancelar</button>
+                <button class="custom-btn custom-btn-accept" id="customBtnAccept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+`;
+document.body.insertAdjacentHTML('beforeend', customModalHTML);
+// Lógica para botones de Estado
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('btn-toggle-estado')) {
+        e.preventDefault();
+        const btn = e.target;
+        
+        const isActivo = btn.classList.contains('estado-activo');
+        
+        const modal = document.getElementById('customConfirmModal');
+        const mTitle = document.getElementById('customModalTitle');
+        const mText = document.getElementById('customModalText');
+        const bCancel = document.getElementById('customBtnCancel');
+        const bAccept = document.getElementById('customBtnAccept');
+        if (isActivo) {
+            // Confirmación de DESACTIVAR
+            mTitle.innerText = '¿Desactivar registro?';
+            mText.innerText = 'El registro pasará a estado Inactivo. Podrás volver a habilitarlo luego.';
+        } else {
+            // Confirmación de ACTIVAR
+            mTitle.innerText = '¿Activar registro?';
+            mText.innerText = 'El registro pasará a estado Activo y volverá a ser visible en el sistema.';
+        }
+        modal.classList.add('active');
+        // Limpiar eventos anteriores para no duplicarlos
+        const newCancel = bCancel.cloneNode(true);
+        const newAccept = bAccept.cloneNode(true);
+        bCancel.parentNode.replaceChild(newCancel, bCancel);
+        bAccept.parentNode.replaceChild(newAccept, bAccept);
+        newCancel.addEventListener('click', function() {
+            modal.classList.remove('active');
+        });
+        newAccept.addEventListener('click', function() {
+            if (isActivo) {
+                // Pasa de activo a Inactivo
+                btn.classList.remove('estado-activo');
+                btn.classList.add('estado-inactivo');
+                btn.innerText = 'Inactivo';
+            } else {
+                // Pasa de inactivo a Activo
+                btn.classList.remove('estado-inactivo');
+                btn.classList.add('estado-activo');
+                btn.innerText = 'Activo';
+            }
+            modal.classList.remove('active');
+        });
+    }
 });
 
 // Cierra el modal de edición de curso
