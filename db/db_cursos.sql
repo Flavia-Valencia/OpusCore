@@ -1,5 +1,5 @@
--- IMPORTANTE: Antes de ejecutar este script, asegúrate de haber creado la base de datos y haber seleccionado 
--- la base de datos correcta. Luego de eso solo ejecuta las tablas antes de insertar los datos en las tablas 
+-- IMPORTANTE: Antes de ejecutar este script, asegúrate de haber creado la base de dato y haber seleccionado 
+-- la base de datos correcta (debe ser después de ejecutar el script de academiadigital). Luego de eso solo ejecuta las tablas antes de insertar los datos en las tablas 
 -- aulas y horarios.
 CREATE TABLE `cursos` ( 
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
