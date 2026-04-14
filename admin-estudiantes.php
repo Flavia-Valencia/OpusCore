@@ -132,7 +132,7 @@ if(!isset($_SESSION["usuario"])){
                         </div>
                     </div>
 
-                    <div class="modal-campo"><label>Estado</label>
+                     <div class="modal-campo" style="display: none;"><label>Estado</label>
                         <!-- El valor debe coincidir exactamente con "Activo"/"Inactivo" en la base de datos -->
                         <select name="estado" id="edit-estado">
                             <option value="Activo">Activo</option>    <!-- cambio de minuscula a mayuscula ya que el valor en la base de datos es "Activo" -->
@@ -192,6 +192,9 @@ if(!isset($_SESSION["usuario"])){
         </div>
     </div>
 
+    <!-- Librería SweetAlert2 para mostrar alertas personalizadas en la interfaz -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script src="js/script.js"></script>
 </body>
 </html>

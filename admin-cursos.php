@@ -198,14 +198,45 @@ if(!isset($_SESSION["usuario"])){
             <input type="hidden" name="id" id="edit-id-curso">
 
             <h3 class="modal-subtitulo">Detalles del curso</h3>
+
             <div class="modal-grid">
 
                 <div class="modal-campo">
                     <label>Nombre del curso</label>
-                    <input type="text" name="nombre" id="edit-nombre-curso">
+                    <input type="text" name="nombre" id="edit-nombre-curso" required>
+                </div>
+
+                  <div class="modal-campo full-width" style="grid-column: span 2;">
+                    <label>Descripción</label>
+                    <input type="text" name="descripcion" id="edit-descripcion-curso" placeholder="Descripción del curso">
+                </div>
+
+                <div class="modal-campo" style="grid-column: span 2;">
+                    <label>Prerrequisitos (opcional)</label>
+                    <select name="prerrequisitos[]" multiple class="select-prerrequisitos" id="edit-prerrequisitos">
+                        <?php
+                        include("includes/conexion.php");
+                        $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
+                        $result = mysqli_query($conexion, $query);
+                        while($curso = mysqli_fetch_assoc($result)) { ?>
+                            <option value="<?php echo $curso['id']; ?>">
+                                <?php echo htmlspecialchars($curso['nombre']); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <div class="modal-campo">
+                    <label>Costo Mensual ($)</label>
+                    <input type="number" step="0.25" name="costoMensual" id="edit-costo-mensual" required>
                 </div>
 
                  <div class="modal-campo">
+                    <label>Cupos</label>
+                    <input type="number" name="cupos" id="edit-cupos" required>
+                </div>     
+
+                <div class="modal-campo">
                     <label>Fecha Inicio</label>
                     <input type="date" name="fechaInicio" id="edit-fecha-inicio" required>
                 </div>
@@ -213,24 +244,14 @@ if(!isset($_SESSION["usuario"])){
                 <div class="modal-campo">
                     <label>Fecha Fin</label>
                     <input type="date" name="fechaFin" id="edit-fecha-fin" required>
-                </div>
+                </div>                
 
-                <div class="modal-campo" style="grid-column: span 2;">
-                    <label>Descripción</label>
-                    <input type="text" name="descripcion" id="edit-descripcion-curso">
+                <div class="modal-campo" style="display: none;"><label>Estado</label>
+                    <select name="estado" id="editd-estado-curso">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
                 </div>
-
-                <div class="modal-campo">
-                    <label>Costo mensual($)</label>
-                    <input type="number" step="0.25" name="costoMensual" id="edit-costo-mensual">
-                </div>
-
-                <div class="modal-campo"><label>Estado</label>
-                        <select name="estado" id="editd-estado">
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
-                    </div>
 
             </div>
 
@@ -262,6 +283,10 @@ if(!isset($_SESSION["usuario"])){
 
     </div>
 
-<script src="js/script.js"></script>
+    <!-- Librería SweetAlert2 para mostrar alertas personalizadas en la interfaz -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="js/script.js"></script>
+
 </body>
 </html>

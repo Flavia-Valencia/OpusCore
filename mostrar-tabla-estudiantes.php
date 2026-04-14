@@ -70,11 +70,10 @@ if (mysqli_num_rows($resultado) > 0 ){
                         <span class="separador-acciones">|</span>
                         
                         <a 
-                            href="eliminar-estudiantes.php?id=<?php echo $fila['usuario_id']; ?>" 
-                            class="link-accion eliminar"
-                            onclick="return confirm('¿Eliminar estudiante?')"
+                            href="#" 
+                            class="link-accion btn-toggle-estado <?php echo ($fila['estado'] == 'Activo' || $fila['estado'] == 1) ? 'estado-activo' : 'estado-inactivo'; ?>"
                         >
-                            Eliminar
+                            <?php echo ($fila['estado'] == 'Activo' || $fila['estado'] == 1) ? 'Activo' : 'Inactivo'; ?>
                         </a>
                     </div>
                 </td>

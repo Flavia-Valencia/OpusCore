@@ -55,11 +55,10 @@ if (mysqli_num_rows($resultado) > 0 ){
 
                         <span class="separador-acciones">|</span>
 
-                        <!-- BOTÓN ELIMINAR -->
+                        <!-- BOTÓN de estado -->
                         <a 
-                            href="desactivar-curso.php?id=<?php echo $fila['id']; ?>" 
-                            class="link-accion eliminar"
-                            onclick="return confirm('¿Desactivar el curso <?php echo htmlspecialchars($fila['nombre']); ?>?')"
+                            href="#" 
+                            class="link-accion btn-toggle-estado <?php echo $fila['estado'] == 1 ? 'estado-activo' : 'estado-inactivo'; ?>"
                         >
                             Desactivar
                         </a>
