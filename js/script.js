@@ -68,6 +68,27 @@ if (modalEditarDocente) {
 
 // --- MODAL NUEVO DOCENTE / NUEVO ESTUDIANTE ---
 
+// Botón "+ Nuevo" abre el modal correspondiente
+const btnNuevo = document.querySelector('.btn-nuevo');
+
+if (btnNuevo) {
+    btnNuevo.addEventListener('click', function() {
+
+        const modalNuevoDocente = document.getElementById('modalNuevoDocente');
+
+        if (modalNuevoDocente) {
+            modalNuevoDocente.classList.add('activo');
+            document.body.style.overflow = 'hidden';
+        }
+
+        const modalNuevo = document.getElementById('modalNuevo');
+
+        if (modalNuevo) {
+            modalNuevo.classList.add('activo');
+            document.body.style.overflow = 'hidden';
+        }
+    });
+}
 
 function cerrarModalNuevoDocente() {
     const modal = document.getElementById('modalNuevoDocente');
@@ -87,6 +108,14 @@ if (modalNuevoDocente) {
     });
 }
 
+
+// Cierra modales al presionar la tecla Esc
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { 
+        cerrarModalDocente(); 
+        cerrarModalNuevoDocente(); 
+    }
+});
 
 
 // --- MODAL EDITAR ESTUDIANTE ---
@@ -137,6 +166,11 @@ if (modalEditar) {
     });
 }
 
+// Cierra el modal de edición de estudiante al presionar Esc
+document.addEventListener('keydown', e => { 
+    if (e.key === 'Escape') cerrarModal(); 
+});
+
 // Cierra el modal de nuevo estudiante
 function cerrarModalNuevo() {
     const modal = document.getElementById('modalNuevo');
@@ -153,90 +187,6 @@ if (modalNuevo) {
         if (e.target === this) cerrarModalNuevo();
     });
 }
-
-
-// MODAL NUEVO CURSO
-
-
-
-function cerrarModalNuevoCurso() {
-    const modal = document.getElementById('modalNuevoCurso');
-    if (modal) {
-        modal.classList.remove('activo');
-        document.body.style.overflow = '';
-    }
-}
-
-const modalNuevoCurso = document.getElementById('modalNuevoCurso');
-
-if (modalNuevoCurso) {
-    modalNuevoCurso.addEventListener('click', function(e) {
-        if (e.target === this) cerrarModalNuevoCurso();
-    });
-}
-
-// bueno
-
-// --- MODAL EDITAR CURSO ---
-
-document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
-    btn.addEventListener('click', function() {
-
-        const modal = document.getElementById('modalEditarCurso');
-        if (!modal) return;
-
-        // Rellenar datos
-        document.getElementById('edit-id-curso').value = this.dataset.id;
-        document.getElementById('edit-nombre-curso').value = this.dataset.nombre;
-        document.getElementById('edit-descripcion-curso').value = this.dataset.descripcion;
-        document.getElementById('edit-fecha-inicio').value = this.dataset.fechainicio;
-        document.getElementById('edit-fecha-fin').value = this.dataset.fechafin; // aqui lo que hice fue eliminar el dato de duracion ya que era redundante y cambiarlo por fecha inicio/fin - Yahir
-        document.getElementById('edit-costo-mensual').value = this.dataset.costo; // lo mismo con el precio, lo cambié por costo mensual - Yahir
-
-        modal.classList.add('activo');
-        document.body.style.overflow = 'hidden';
-    });
-});
-
-// Cierra el modal de edición de curso
-function cerrarModalCurso() {
-    const modal = document.getElementById('modalEditarCurso');
-    if (modal) {
-        modal.classList.remove('activo');
-        document.body.style.overflow = '';
-    }
-}
-
-// cerrar al hacer clic fuera
-const modalEditarCurso = document.getElementById('modalEditarCurso');
-if (modalEditarCurso) {
-    modalEditarCurso.addEventListener('click', function(e) {
-        if (e.target === this) cerrarModalCurso();
-    });
-}
-
-
-//-- funcion para nuevo curso, nuevo docente o nuevo estudiante, dependiendo de cuál exista en la página, para evitar duplicar código al tener un botón "+ Nuevo" que abre diferentes modales según la página en la que se encuentre el admin
-    const btnNuevo = document.querySelector('.btn-nuevo');
-
-    if (btnNuevo) {
-        btnNuevo.addEventListener('click', function() {
-
-            const modalNuevoCurso = document.getElementById('modalNuevoCurso');
-            const modalNuevoDocente = document.getElementById('modalNuevoDocente');
-            const modalNuevo = document.getElementById('modalNuevo');
-
-            if (modalNuevoCurso) {
-                modalNuevoCurso.classList.add('activo');
-            } else if (modalNuevoDocente) {
-                modalNuevoDocente.classList.add('activo');
-            } else if (modalNuevo) {
-                modalNuevo.classList.add('activo');
-            }
-
-            document.body.style.overflow = 'hidden';
-        });
-    }
 
 
 // --- PÁGINA DE INICIO ---
@@ -284,66 +234,4 @@ if (inputContrasena && spanOjo) {
         spanOjo.style.opacity = this.value.length > 0 ? "1" : "0";
     });
 }
-
-
-
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { 
-        cerrarModalDocente(); 
-        cerrarModalNuevoDocente();
-        cerrarModal(); 
-        cerrarModalCurso(); 
-        cerrarModalNuevoCurso(); 
-    }
-});
-
-// --- BUSCADOR DOCENTES ---
-const buscadorDocente = document.getElementById('buscador-docente');
-if (buscadorDocente) {
-    buscadorDocente.addEventListener('keyup', function() {
-        const filtro = this.value.toLowerCase();
-        const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
-
-        filas.forEach(function(fila) {
-            const id = fila.cells[0].textContent.toLowerCase();
-            const nombre = fila.cells[1].textContent.toLowerCase();
-
-            fila.style.display = (id.includes(filtro) || nombre.includes(filtro)) ? '' : 'none';
-        });
-    });
-}
-
-// --- BUSCADOR ESTUDIANTES ---
-const buscadorEstudiante = document.getElementById('buscador-estudiante');
-if (buscadorEstudiante) {
-    buscadorEstudiante.addEventListener('keyup', function() {
-        const filtro = this.value.toLowerCase();
-        const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
-
-        filas.forEach(function(fila) {
-            const id = fila.cells[0].textContent.toLowerCase();
-            const nombre = fila.cells[1].textContent.toLowerCase();
-
-            fila.style.display = (id.includes(filtro) || nombre.includes(filtro)) ? '' : 'none';
-        });
-    });
-}
-// --- BUSCADOR CURSOS ---
-const buscadorCurso = document.getElementById('buscador-curso');
-if (buscadorCurso) {
-    buscadorCurso.addEventListener('keyup', function() {
-        const filtro = this.value.toLowerCase();
-        const filas = document.querySelectorAll('.data-table tbody tr');
-        
-        console.log('Filas encontradas:', filas.length); // para ver si encuentra las filas
-
-        filas.forEach(function(fila) {
-            const id = fila.cells[0].textContent.toLowerCase();
-            const nombre = fila.cells[1].textContent.toLowerCase();
-
-            fila.style.display = (id.includes(filtro) || nombre.includes(filtro)) ? '' : 'none';
-        });
-    });
-}
-
 

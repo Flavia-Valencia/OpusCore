@@ -176,9 +176,9 @@ body {
    tiene dos box-shadow definidos, el segundo pisa al primero */
 .card {
     background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
     border-radius: 16px;
 }
 
@@ -615,17 +615,11 @@ body {
     table.mobile-cards td {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        padding: 12px 0;
+        align-items: center;
+        padding: 10px 0;
         border-bottom: 1px solid #f0f0f0;
         text-align: right;
         font-size: 14px;
-        gap: 15px;
-        max-width: none !important;
-        white-space: normal !important;
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        word-break: break-word !important;
     }
 
     table.mobile-cards td:last-child {
@@ -638,22 +632,13 @@ body {
         font-weight: 600;
         color: #053170;
         text-align: left;
+        flex: 1;
         font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        flex-shrink: 0;
-        flex-basis: 35%;
-        margin-right: 0;
+        margin-right: 10px;
     }
 
-
-    table.mobile-cards td >* {
-        margin-left: auto;
-        text-align: right;
-    }
-
-
-    
     /* celda de acciones (editar/eliminar) separada visualmente */
     td.acciones-cell {
         border-top: 2px solid #f5f5f5;
@@ -683,9 +668,7 @@ body {
     padding: 20px;
 }
 
-.modal-overlay.activo { 
-    display: flex; 
-}
+.modal-overlay.activo { display: flex; }
 
 /* contenedor del modal con animación de entrada */
 .modal-contenido {
@@ -703,83 +686,42 @@ body {
 
 /* animación de entrada del modal */
 @keyframes slideUp {
-   from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
 }
 
 /* botón X para cerrar el modal */
 .modal-cerrar {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 16px; right: 16px;
     background: #f0f4f8;
     border: none;
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     border-radius: 50%;
     cursor: pointer;
     color: #555;
     transition: all 0.2s;
 }
 
-.modal-cerrar:hover { 
-    background: #e74c3c; 
-    color: white; 
-}
+.modal-cerrar:hover { background: #e74c3c; color: white; }
 
 /* título e ícono del modal */
-.modal-titulo { font-size: 20px; 
-    font-weight: 700; 
-    color: #053170;
-     margin-bottom: 20px;
-}
-
-.modal-titulo i { 
-    color: #069DBF;
-     margin-right: 8px; 
-}
+.modal-titulo { font-size: 20px; font-weight: 700; color: #053170; margin-bottom: 20px; }
+.modal-titulo i { color: #069DBF; margin-right: 8px; }
 
 .modal-subtitulo {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #069DBF;
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; color: #069DBF;
     border-bottom: 2px solid #e8f4fc;
-    padding-bottom: 6px;
-    margin: 20px 0 14px;
+    padding-bottom: 6px; margin: 20px 0 14px;
 }
 
 /* grilla de 2 columnas para los campos del formulario */
-.modal-grid { 
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px; 
-}
-
-.full-width {
-    grid-column: span 2;
-}
-
+.modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
 /* cada campo del formulario: label + input */
-.modal-campo { 
-    display: flex;
-    flex-direction: column;
-    gap: 5px; 
-}
-
-.modal-campo label { 
-    font-size: 13px;
-    font-weight: 600;
-    color: #444; 
-}
-
+.modal-campo { display: flex; flex-direction: column; gap: 5px; }
+.modal-campo label { font-size: 13px; font-weight: 600; color: #444; }
 .modal-campo input {
     padding: 10px 12px;
     border: 1px solid #dde3ec;
@@ -809,47 +751,32 @@ body {
 
 /* pie del modal con botones cancelar y guardar */
 .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-    margin-top: 20px;
+    display: flex; justify-content: flex-end;
+    gap: 12px; padding-top: 20px;
+    border-top: 1px solid #eee; margin-top: 20px;
 }
 
 .btn-cancelar {
-    padding: 10px 20px;
-    border: 1px solid #dde3ec;
-    border-radius: 8px;
-    background: white;
-    color: #555;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
+    padding: 10px 20px; border: 1px solid #dde3ec;
+    border-radius: 8px; background: white; color: #555;
+    font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
 }
 
-.btn-cancelar:hover { 
-    background: #f5f5f5; 
-}
-
+.btn-cancelar:hover { background: #f5f5f5; }
 
 .btn-guardar {
-   padding: 10px 22px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #1a5276, #053170);
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s;
+    padding: 10px 22px; border: none;
+    border-radius: 8px; background: linear-gradient(135deg, #1a5276, #053170);
+    color: white; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
 }
 
-.btn-guardar:hover {
-    box-shadow: 0 6px 16px rgba(5, 49, 112, 0.3);
-    transform: translateY(-1px);
+.btn-guardar:hover { box-shadow: 0 6px 16px rgba(5,49,112,0.3); transform: translateY(-1px); }
+
+/* modal en móvil: una sola columna */
+@media (max-width: 768px) {
+    .modal-contenido { padding: 20px; }
+    .modal-grid { grid-template-columns: 1fr; }
 }
 
 /* ── TABLA DE DATOS ──────────────────────────────────────── */
@@ -919,53 +846,11 @@ body {
     color: white;
 }
 
-.separador-acciones { 
-    display: none; 
-}
+.separador-acciones { display: none; }
 
-
-.link-accion.horarios {
-    color: #069DBF;
-    background: #e0f7fa;
-}
-
-.link-accion.horarios:hover {
-    background: #069DBF;
-    color: white;
-}
-
-/* ── COLUMNA ACCIONES ── */
 .acciones-texto {
     display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    align-items: center;
-    justify-content: center;
-}
-
-.data-table thead th:last-child,
-.data-table tbody td:last-child {
-    text-align: center;
-    white-space: nowrap;
-}
-
-.data-table tbody td {
-    padding: 14px 16px;
-    color: #333;
-    vertical-align: middle;
-    white-space: nowrap;
-}
-
-@media (min-width: 769px) {
-    .data-table tbody td:nth-child(3) {
-        white-space: normal;
-        max-width: 200px;
-    }
-
-    .data-table tbody td:nth-child(2) {
-        white-space: normal;
-        max-width: 200px;
-    }
+    gap: 8px;
 }
 
 /* mismos estilos de acción pero para la tabla de docentes */
@@ -975,16 +860,6 @@ body {
 }
 
 .link-accion.abrir-modal-docente:hover {
-    background: #069DBF;
-    color: white;
-}
-/* acción para abrir modal de curso */
-.link-accion.abrir-modal-curso {
-    color: #069DBF;
-    background: #e0f7fa;
-}
-
-.link-accion.abrir-modal-curso:hover {
     background: #069DBF;
     color: white;
 }
@@ -1003,21 +878,9 @@ body {
     margin-bottom: 28px;
 }
 
-.banner-texto h1 {
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 6px;
-}
-.banner-texto p {
-    font-size: 14px;
-    opacity: 0.8;
-}
-.banner-fecha {
-    text-align: right;
-    font-size: 14px;
-    opacity: 0.85;
-    text-transform: capitalize;
-}
+.banner-texto h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+.banner-texto p { font-size: 14px; opacity: 0.8; }
+.banner-fecha { text-align: right; font-size: 14px; opacity: 0.85; text-transform: capitalize; }
 
 /* tarjetas de estadísticas — grilla fija de 3 columnas */
 .stats-grid {
@@ -1037,42 +900,20 @@ body {
     align-items: center;
 }
 
-.stat-left h3 {
-    font-size: 32px;
-    font-weight: 700;
-    color: #053170;
-}
-.stat-left p {
-    font-size: 13px;
-    color: #666;
-    font-weight: 600;
-    margin-top: 2px;
-}
+.stat-left h3 { font-size: 32px; font-weight: 700; color: #053170; }
+.stat-left p { font-size: 13px; color: #666; font-weight: 600; margin-top: 2px; }
 
 /* ícono de cada stat con variantes de color */
-.stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-}
+.stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.stat-icon.blue { background: #e0f0ff; color: #053170; }
+.stat-icon.teal { background: #e0f7fa; color: #069DBF; }
+.stat-icon.green { background: #d1fae5; color: #065f46; }
 
-.stat-icon.blue {
-    background: #e0f0ff;
-    color: #053170;
+/* en móvil: banner en columna y stats apiladas */
+@media (max-width: 768px) {
+    .banner { flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px; }
+    .stats-grid { grid-template-columns: 1fr; }
 }
-.stat-icon.teal {
-    background: #e0f7fa;
-    color: #069DBF;
-}
-.stat-icon.green {
-    background: #d1fae5;
-    color: #065f46;
-}
-
 
 /* ── ÍCONO OJO (mostrar/ocultar contraseña) ──────────────── */
 
@@ -1101,207 +942,4 @@ body {
 
 .input-password {
     position: relative;
-}
-
-
-/*combobox de prerrequisitos*/
-
-.select-prerrequisitos {
-    width: 100%;
-    height: 100px;
-    padding: 6px;
-    border: 1px solid #dde3ec;
-    border-radius: 8px;
-    background: #f8fafc;
-    font-size: 14px;
-    font-family: inherit;
-    outline: none;
-}
-
-.select-prerrequisitos:focus {
-    border-color: #069DBF;
-    box-shadow: 0 0 0 3px rgba(6,157,191,0.12);
-    background: white;
-}
-
-
-/* --- Ajustes generales para tablas --- */
-.data-table tbody td {
-    padding: 14px 16px;
-    color: #333;
-    vertical-align: middle;
-    white-space: nowrap; /* por defecto, todo en una sola línea */
-    overflow-wrap: break-word;
-}
-
-/* Permitir que ciertas columnas largas se partan */
-@media (min-width: 769px) {
-    .data-table tbody td:nth-child(3),
-    /* Descripción en cursos */
-    .data-table tbody td:nth-child(4),
-    /* Especialidad en docentes */
-    .data-table tbody td:nth-child(8)
-    /* Dirección en docentes/estudiantes */
-        {
-        white-space: normal;
-        /* permite saltos de línea */
-        max-width: 200px;
-        /* ajusta el ancho máximo */
-    }
-    /* --- Ajuste definitivo para columnas largas --- */
-    .data-table td:nth-child(4),
-    /* Especialidad en docentes */
-    .data-table td:nth-child(3),
-    /* Descripción en cursos */
-    .data-table td:nth-child(7),
-    .data-table td:nth-child(8)
-    /* Dirección en docentes/estudiantes */
-        {
-        white-space: normal !important;
-        /* permite saltos de línea */
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-        max-width: 180px !important;
-        /* limita el ancho máximo */
-        text-overflow: ellipsis;
-        box-sizing: border-box;
-    }
-}
- 
-
-
-/* ── RESPONSIVE MODALES ── */
-@media (max-width: 768px) {
-    .banner {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 24px;
-    }
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    .modal-overlay {
-        padding: 10px;
-        align-items: flex-end;
-        /* Para que salga desde abajo o se alinee mejor pero center es estándar, usaremos center y se ajusta la altura */
-        justify-content: center;
-    }
-
-    .modal-contenido {
-        padding: 24px;
-        margin: 0;
-        max-height: 90vh;
-        width: 100%;
-        border-radius: 16px;
-    }
-
-    .modal-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .modal-campo {
-        width: 100%;
-        grid-column: span 1 !important;
-    }
-
-    .modal-campo input,
-    .modal-campo select {
-        width: 100%;
-        font-size: 15px;
-        padding: 12px;
-    }
-
-    .select-prerrequisitos {
-       height: auto;
-        min-height: 80px;
-    }
-
-    .modal-footer {
-        flex-direction: column-reverse;
-        gap: 12px;
-        margin-top: 15px;
-        padding-top: 15px;
-    }
-
-    .btn-cancelar,
-    .btn-guardar {
-        width: 100%;
-        text-align: center;
-        padding: 14px;
-        font-size: 15px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-
-    table.mobile-cards td::before {
-        flex-shrink: 0 !important;
-        margin-right: 0 !important;
-    }
-
-    td.acciones-cell {
-        display: flex !important;
-        justify-content: center !important;
-        flex-wrap: wrap !important;
-        border-top: 1px solid #f0f0f0 !important;
-        border-bottom: none !important;
-        gap: 8px !important;
-        padding-top: 12px !important;
-        overflow: visible !important;
-        white-space: normal !important;
-    }
-
-    td.acciones-cell .acciones-texto {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important;
-        flex-wrap: wrap !important;
-        gap: 8px !important;
-        width: 100% !important;
-    }
-}
-
-/* Notificación flotante que aparece arriba al centro y desaparece sola */
-.toast-error {
-    position: fixed;       /* flota sobre todo el contenido */
-    top: 19.5%;
-    left: 68.5%;
-    transform: translateX(-50%); /* centra horizontalmente */
-    background: #fee2e2;
-    color: #e74c3c;
-    border-left: 4px solid #e74c3c;
-    padding: 14px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 9999;         /* encima de modales y overlays */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    animation: fadeOut 0.5s ease 3s forwards; /* desaparece a los 3s */
-}
-
-/* animación de desvanecimiento del toast */
-@keyframes fadeOut {
-    from { 
-        opacity: 1; 
-    }
-
-    to {
-        opacity: 0;
-        visibility: hidden;
-    }
-}
-
-/* Ajuste de toast de error para móviles */
-@media (max-width: 768px) {
-    .toast-error {
-        left: 50%;
-        top: 20px;
-        width: 90%;
-        text-align: center;
-        padding: 12px 16px;
-    }
 }
