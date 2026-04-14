@@ -245,7 +245,7 @@ if(!isset($_SESSION["usuario"])){
     </div>
 </div>
 
-<!-- MODAL HORARIOS CURSO -->
+<!-- MODAL PARA HORARIOS CURSO -->
 <div id="modalHorarios" class="modal-overlay">
     <div class="modal-contenido">
         <button class="modal-cerrar" onclick="cerrarModalHorarios()">
