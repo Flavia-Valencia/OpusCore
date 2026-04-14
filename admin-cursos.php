@@ -124,11 +124,7 @@ if(!isset($_SESSION["usuario"])){
                     <input type="text" name="nombre" required>
                 </div>
 
-                <div class="modal-campo">
-                    
-                </div>
-
-                <div class="modal-campo" style="grid-column: span 2;">
+                <div class="modal-campo full-width">
                     <label>Descripción</label>
                     <input type="text" name="descripcion" placeholder="Descripción del curso">
                 </div>
@@ -249,7 +245,7 @@ if(!isset($_SESSION["usuario"])){
     </div>
 </div>
 
-<!-- MODAL HORARIOS CURSO -->
+<!-- MODAL PARA HORARIOS CURSO -->
 <div id="modalHorarios" class="modal-overlay">
     <div class="modal-contenido">
         <button class="modal-cerrar" onclick="cerrarModalHorarios()">
