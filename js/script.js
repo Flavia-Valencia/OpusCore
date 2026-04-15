@@ -298,6 +298,19 @@ document.addEventListener('click', function(e) {
             celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
         }
 
+        // --- MOVER FILA INMEDIATAMENTE ---
+        if (esCurso) {
+            const tbody = fila.parentElement;
+
+            if (isActivo) {
+                
+                tbody.appendChild(fila);
+            } else {
+                
+                tbody.insertBefore(fila, tbody.firstChild);
+            }
+        }
+
         modal.classList.remove('active');
 
         fetch(archivo, {
@@ -314,7 +327,6 @@ document.addEventListener('click', function(e) {
         });
     };
 });
-
 // Cierra el modal de edición de curso
 function cerrarModalCurso() {
     const modal = document.getElementById('modalEditarCurso');
