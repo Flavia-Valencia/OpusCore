@@ -482,4 +482,24 @@ if (buscadorCurso) {
     });
 }
 
+    // Función que valida que se pueda deseleccionar el prerequisito en crear curso
 
+    document.querySelectorAll('.select-prerrequisitos').forEach(select =>{
+        select.addEventListener('mousedown', function(e){
+            e.preventDefault();
+            const option = e.target;
+
+            if(option.tagName === 'OPTION'){
+                const idCursoActual = document.getElementById('edit-id-curso')
+                ? document.getElementById('edit-id-curso').value 
+                :null;
+                //  -- MENSAJE DE ERROR SOBRE PREREQUISITO DE SU PROPIO CURSO ---
+
+                if(idCursoActual && option.value === idCursoActual){
+                    alert('El curso no puede ser su propio prerrequisito');
+                    return;
+                }
+                option.selected = !option.selected;
+            }             
+    });
+});

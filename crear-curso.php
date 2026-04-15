@@ -31,6 +31,10 @@ $idCursoNuevo = mysqli_insert_id($conexion);
 // Guardar prerrequisitos si se seleccionaron
 if (!empty($_POST['prerrequisitos'])) {
     foreach ($_POST['prerrequisitos'] as $idCursoPrevio) {
+        // Esto evita que el curso sea su propio prerequisito
+        if ($idCursoPrevio == $idCursoNuevo){
+            continue; 
+        }
         $sql_pre = "INSERT INTO prerrequisitos (idCursoActual, idCursoPrevio) 
                     VALUES ('$idCursoNuevo', '$idCursoPrevio')";
         mysqli_query($conexion, $sql_pre);

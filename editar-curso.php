@@ -31,14 +31,20 @@ $sql = "UPDATE cursos SET
     estado        = '$estado'
 WHERE id = '$id'";
 
-//eliminar prerrequisitos anteriores
-mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
 
 // inserta nuevos
 if (!empty($_POST['prerrequisitos'])) {
+    //eliminar prerrequisitos anteriores
+    mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
     foreach ($_POST['prerrequisitos'] as $idCursoPrevio) {
+        $idCursoPrevio = intval($idCursoPrevio);
+        $idActual = intval($id);
+        // evita que sea su propio prerequisito
+        if ($idCursoPrevio === $idActual){
+            continue; 
+        }
         $sql_pre = "INSERT INTO prerrequisitos (idCursoActual, idCursoPrevio) 
-                    VALUES ('$id', '$idCursoPrevio')";
+                    VALUES ('$idActual', '$idCursoPrevio')";
         mysqli_query($conexion, $sql_pre);
     }
 }
