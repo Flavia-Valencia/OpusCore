@@ -233,6 +233,12 @@ document.body.insertAdjacentHTML('beforeend', customModalHTML);
 // - Abre un modal de confirmación antes de cambiar el estado
 // - Al aceptar, verifica la clase `estado-activo` para invertir el estado (toggle)
 // - Actualiza inmediatamente el texto y estilos del botón en la interfaz
+// - Cambia visualmente la fila (gris si está inactivo)
+// - Bloquea botones de editar y horarios cuando está inactivo
+// - Reordena la fila dinámicamente:
+//     * Inactivos se envían al final
+//     * Activos se insertan en su posición correcta por ID
+// - Mantiene estilos y bloqueos al recargar la página
 // - Envía el ID al servidor con fetch para guardar el cambio en la base de datos sin recargar
 document.addEventListener('click', function(e) {
 
@@ -249,8 +255,18 @@ document.addEventListener('click', function(e) {
 
     const isActivo = btn.classList.contains('estado-activo');
 
-    mTitle.innerText = isActivo ? '¿Desactivar curso?' : '¿Activar curso?';
-    mText.innerText = isActivo ? 'Pasará a Inactivo.' : 'Pasará a Activo.';
+    // detectar tipo
+    let tipo = 'curso';
+    if (document.getElementById('buscador-docente')) tipo = 'docente';
+    else if (document.getElementById('buscador-estudiante')) tipo = 'estudiante';
+
+    mTitle.innerText = isActivo 
+        ? `¿Desactivar ${tipo}?` 
+        : `¿Activar ${tipo}?`;
+
+    mText.innerText = isActivo 
+        ? `Pasará a Inactivo.` 
+        : `Pasará a Activo.`;
 
     modal.classList.add('active');
 
@@ -298,16 +314,72 @@ document.addEventListener('click', function(e) {
             celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
         }
 
+        // --- COLOR GRIS SI ESTÁ INACTIVO ---
+        const btnEditar = fila.querySelector('.abrir-modal-curso');
+        const btnHorarios = fila.querySelector('.horarios');
+
+        if (isActivo) {
+            fila.querySelectorAll('td').forEach(td => {
+                td.style.backgroundColor = '#e9ecef';
+                td.style.color = '#6c757d';
+                td.style.opacity = '0.7';
+            });
+
+            if (btnEditar) {
+                btnEditar.style.pointerEvents = 'none';
+                btnEditar.style.opacity = '0.5';
+            }
+
+            if (btnHorarios) {
+                btnHorarios.style.pointerEvents = 'none';
+                btnHorarios.style.opacity = '0.5';
+            }
+
+        } else {
+            fila.querySelectorAll('td').forEach(td => {
+                td.style.backgroundColor = '';
+                td.style.color = '';
+                td.style.opacity = '';
+            });
+
+            if (btnEditar) {
+                btnEditar.style.pointerEvents = '';
+                btnEditar.style.opacity = '';
+            }
+
+            if (btnHorarios) {
+                btnHorarios.style.pointerEvents = '';
+                btnHorarios.style.opacity = '';
+            }
+        }
+
         // --- MOVER FILA INMEDIATAMENTE ---
         if (esCurso) {
             const tbody = fila.parentElement;
 
             if (isActivo) {
-                
                 tbody.appendChild(fila);
             } else {
-                
-                tbody.insertBefore(fila, tbody.firstChild);
+                const filas = Array.from(tbody.querySelectorAll('tr'));
+
+                let insertado = false;
+
+                for (let f of filas) {
+                    if (f === fila) continue;
+
+                    const idActual = parseInt(f.querySelector('td').textContent.trim());
+                    const idNuevo = parseInt(id);
+
+                    if (idNuevo < idActual) {
+                        tbody.insertBefore(fila, f);
+                        insertado = true;
+                        break;
+                    }
+                }
+
+                if (!insertado) {
+                    tbody.appendChild(fila);
+                }
             }
         }
 
@@ -326,6 +398,41 @@ document.addEventListener('click', function(e) {
             console.error('Error:', err);
         });
     };
+});
+
+
+// --- APLICAR ESTILO Y BLOQUEO AL CARGAR ---
+document.addEventListener('DOMContentLoaded', function() {
+
+    const filas = document.querySelectorAll('tbody tr');
+
+    filas.forEach(fila => {
+        const estado = fila.querySelector('td[data-label="Estado"]');
+        if (!estado) return;
+
+        if (estado.textContent.trim() === 'Inactivo') {
+
+            const btnEditar = fila.querySelector('.abrir-modal-curso');
+            const btnHorarios = fila.querySelector('.horarios');
+
+            fila.querySelectorAll('td').forEach(td => {
+                td.style.backgroundColor = '#e9ecef';
+                td.style.color = '#6c757d';
+                td.style.opacity = '0.7';
+            });
+
+            if (btnEditar) {
+                btnEditar.style.pointerEvents = 'none';
+                btnEditar.style.opacity = '0.5';
+            }
+
+            if (btnHorarios) {
+                btnHorarios.style.pointerEvents = 'none';
+                btnHorarios.style.opacity = '0.5';
+            }
+        }
+    });
+
 });
 // Cierra el modal de edición de curso
 function cerrarModalCurso() {
