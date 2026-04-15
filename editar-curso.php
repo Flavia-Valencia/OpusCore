@@ -7,7 +7,9 @@ $descripcion = $_POST['descripcion'];
 $costoMensual = $_POST['costoMensual'];
 $fechaInicio = $_POST['fechaInicio'];
 $fechaFin    = $_POST['fechaFin'];
+$cupos       = intval($_POST['cupos']);
 $estado      = $_POST['estado'] == 'Activo' ? 1 : 0;
+
 
 # Verificar que el nombre no lo use OTRO curso (distinto al que estamos editando)
 $sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre') AND id != '$id'";
@@ -25,9 +27,21 @@ $sql = "UPDATE cursos SET
     costoMensual  = '$costoMensual',
     fechaInicio   = '$fechaInicio',
     fechaFin      = '$fechaFin',
+    cupos         = '$cupos',
     estado        = '$estado'
 WHERE id = '$id'";
 
+//eliminar prerrequisitos anteriores
+mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
+
+// inserta nuevos
+if (!empty($_POST['prerrequisitos'])) {
+    foreach ($_POST['prerrequisitos'] as $idCursoPrevio) {
+        $sql_pre = "INSERT INTO prerrequisitos (idCursoActual, idCursoPrevio) 
+                    VALUES ('$id', '$idCursoPrevio')";
+        mysqli_query($conexion, $sql_pre);
+    }
+}
 mysqli_query($conexion, $sql);
 
 header("Location: admin-cursos.php");
