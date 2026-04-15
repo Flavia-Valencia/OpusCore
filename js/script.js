@@ -224,53 +224,95 @@ const customModalHTML = `
     </div>
 </div>
 `;
+
 document.body.insertAdjacentHTML('beforeend', customModalHTML);
-// Lógica para botones de Estado
+
+// --- TOGGLE ESTADO ---  
+
+// - Detecta clic en el botón de estado (activo/inactivo)
+// - Abre un modal de confirmación antes de cambiar el estado
+// - Al aceptar, verifica la clase `estado-activo` para invertir el estado (toggle)
+// - Actualiza inmediatamente el texto y estilos del botón en la interfaz
+// - Envía el ID al servidor con fetch para guardar el cambio en la base de datos sin recargar
 document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('btn-toggle-estado')) {
-        e.preventDefault();
-        const btn = e.target;
-        
-        const isActivo = btn.classList.contains('estado-activo');
-        
-        const modal = document.getElementById('customConfirmModal');
-        const mTitle = document.getElementById('customModalTitle');
-        const mText = document.getElementById('customModalText');
-        const bCancel = document.getElementById('customBtnCancel');
-        const bAccept = document.getElementById('customBtnAccept');
-        if (isActivo) {
-            // Confirmación de DESACTIVAR
-            mTitle.innerText = '¿Desactivar registro?';
-            mText.innerText = 'El registro pasará a estado Inactivo. Podrás volver a habilitarlo luego.';
-        } else {
-            // Confirmación de ACTIVAR
-            mTitle.innerText = '¿Activar registro?';
-            mText.innerText = 'El registro pasará a estado Activo y volverá a ser visible en el sistema.';
-        }
-        modal.classList.add('active');
-        // Limpiar eventos anteriores para no duplicarlos
-        const newCancel = bCancel.cloneNode(true);
-        const newAccept = bAccept.cloneNode(true);
-        bCancel.parentNode.replaceChild(newCancel, bCancel);
-        bAccept.parentNode.replaceChild(newAccept, bAccept);
-        newCancel.addEventListener('click', function() {
-            modal.classList.remove('active');
-        });
-        newAccept.addEventListener('click', function() {
+
+    const btn = e.target.closest('.btn-toggle-estado');
+    if (!btn) return;
+
+    e.preventDefault();
+
+    const modal = document.getElementById('customConfirmModal');
+    const mTitle = document.getElementById('customModalTitle');
+    const mText = document.getElementById('customModalText');
+    const bCancel = document.getElementById('customBtnCancel');
+    const bAccept = document.getElementById('customBtnAccept');
+
+    const isActivo = btn.classList.contains('estado-activo');
+
+    mTitle.innerText = isActivo ? '¿Desactivar curso?' : '¿Activar curso?';
+    mText.innerText = isActivo ? 'Pasará a Inactivo.' : 'Pasará a Activo.';
+
+    modal.classList.add('active');
+
+    bCancel.onclick = () => modal.classList.remove('active');
+
+    bAccept.onclick = function() {
+
+        const fila = btn.closest('tr');
+        const id = fila.querySelector('td').textContent.trim();
+
+        let archivo = '';
+        if (document.getElementById('buscador-docente')) archivo = 'toggle-estado-docente.php';
+        else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
+        else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
+
+        // detectar si estamos en cursos
+        const esCurso = document.getElementById('buscador-curso');
+
+        // CAMBIO VISUAL INMEDIATO
+        if (esCurso) {
             if (isActivo) {
-                // Pasa de activo a Inactivo
                 btn.classList.remove('estado-activo');
                 btn.classList.add('estado-inactivo');
-                btn.innerText = 'Inactivo';
+                btn.textContent = 'Activar';
             } else {
-                // Pasa de inactivo a Activo
                 btn.classList.remove('estado-inactivo');
                 btn.classList.add('estado-activo');
-                btn.innerText = 'Activo';
+                btn.textContent = 'Desactivar';
             }
-            modal.classList.remove('active');
+        } else {
+            // DOCENTES / ESTUDIANTES (mostrar estado)
+            if (isActivo) {
+                btn.classList.remove('estado-activo');
+                btn.classList.add('estado-inactivo');
+                btn.textContent = 'Inactivo';
+            } else {
+                btn.classList.remove('estado-inactivo');
+                btn.classList.add('estado-activo');
+                btn.textContent = 'Activo';
+            }
+        }
+
+        const celdaEstado = fila.querySelector('td[data-label="Estado"]');
+        if (celdaEstado) {
+            celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
+        }
+
+        modal.classList.remove('active');
+
+        fetch(archivo, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + id
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Guardado en BD:', data);
+        })
+        .catch(err => {
+            console.error('Error:', err);
         });
-    }
+    };
 });
 
 // Cierra el modal de edición de curso

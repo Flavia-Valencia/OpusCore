@@ -1,7 +1,10 @@
 <?php
 include('includes/conexion.php');   
 
-$sql = "SELECT c.id, c.nombre, c.descripcion, c.fechaInicio, c.fechaFin, c.costoMensual, c.cupos, c.estado FROM cursos c";
+$sql = "SELECT c.id, c.nombre, c.descripcion, c.fechaInicio, c.fechaFin, c.costoMensual, c.cupos, c.estado 
+        FROM cursos c
+        ORDER BY c.estado DESC";
+
 $resultado = mysqli_query($conexion, $sql);
 
 if (mysqli_num_rows($resultado) > 0 ){
@@ -57,10 +60,10 @@ if (mysqli_num_rows($resultado) > 0 ){
 
                         <!-- BOTÓN de estado -->
                         <a 
-                            href="#" 
+                            href="javascript:void(0);" 
                             class="link-accion btn-toggle-estado <?php echo $fila['estado'] == 1 ? 'estado-activo' : 'estado-inactivo'; ?>"
                         >
-                            Desactivar
+                            <?php echo $fila['estado'] == 1 ? 'Desactivar' : 'Activar'; ?>
                         </a>
 
                         <!-- BOTÓN HORARIOS -->
