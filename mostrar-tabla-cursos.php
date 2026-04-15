@@ -1,8 +1,18 @@
 <?php
 include('includes/conexion.php');   
 
-$sql = "SELECT c.id, c.nombre, c.descripcion, c.fechaInicio, c.fechaFin, c.costoMensual, c.cupos, c.estado 
+$sql = "SELECT c.id,
+               c.nombre, 
+               c.descripcion, 
+               c.fechaInicio, 
+               c.fechaFin, 
+               c.costoMensual, 
+               c.cupos, 
+               c.estado,
+               GROUP_CONCAT(p.idCursoPrevio) AS prerrequisitos
         FROM cursos c
+        LEFT JOIN prerrequisitos p ON c.id = p.idCursoActual
+        GROUP BY c.id
         ORDER BY c.estado DESC";
 
 $resultado = mysqli_query($conexion, $sql);
@@ -40,6 +50,19 @@ if (mysqli_num_rows($resultado) > 0 ){
                     <div class="acciones-texto">
                         
                         <!-- BOTÓN EDITAR -->
+                         <?php
+                         $idCurso = $fila['id'];
+                        $sqlPre = "SELECT idCursoPrevio FROM prerrequisitos WHERE idCursoActual = '$idCurso'";
+                        $resPre = mysqli_query($conexion, $sqlPre);
+
+                        $ids = [];
+
+                        while ($rowPre = mysqli_fetch_assoc($resPre)) {
+                        $ids[] = $rowPre['idCursoPrevio'];
+                        }
+
+                        $prerrequisitosString = implode(",", $ids);
+                        ?>
                         <a 
                             href="#"
                             class="link-accion abrir-modal-curso"
@@ -50,6 +73,7 @@ if (mysqli_num_rows($resultado) > 0 ){
                             data-fechafin="<?php echo $fila['fechaFin']; ?>"
                             data-costo="<?php echo $fila['costoMensual']; ?>"
                             data-cupos="<?php echo $fila['cupos']; ?>"
+                            data-prerrequisitos="<?php echo $prerrequisitosString; ?>"
                             data-estado="<?php echo $fila['estado']; ?>"
                             onclick="return false;"
                         >

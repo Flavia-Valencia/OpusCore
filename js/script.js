@@ -180,6 +180,7 @@ if (modalNuevoCurso) {
 // --- MODAL EDITAR CURSO ---
 
 document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
+
     btn.addEventListener('click', function() {
 
         const modal = document.getElementById('modalEditarCurso');
@@ -197,6 +198,24 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
         if(document.getElementById('edit-cupos')) {
             document.getElementById('edit-cupos').value = this.dataset.cupos;
         }
+
+         //obtiene los prerequisitos del curso actual
+        const prerequisitos = this.dataset.prerrequisitos
+                             ? this.dataset.prerrequisitos.split(",") 
+                             :[];
+    
+    const select = document.getElementById('edit-prerrequisitos');
+
+    //limpia opción previa
+    Array.from(select.options).forEach(option =>{
+        option.selected = false;
+    });
+    
+    //Selecciona prerequisito correcto
+    prerequisitos.forEach(id =>{
+        const option = select.querySelector(`option[value="${id}"]`);
+        if(option) option.selected = true;
+    });
         if(document.getElementById('edit-estado-curso')) {
             const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
             document.getElementById('edit-estado-curso').value = estadoTexto;
