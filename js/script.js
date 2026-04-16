@@ -294,7 +294,7 @@ document.addEventListener('click', function(e) {
     bAccept.onclick = function() {
 
         const fila = btn.closest('tr');
-        const id = fila.querySelector('td').textContent.trim();
+        const id = fila.dataset.id;
 
         let archivo = '';
         if (document.getElementById('buscador-docente')) archivo = 'toggle-estado-docente.php';
@@ -383,7 +383,7 @@ document.addEventListener('click', function(e) {
             for (let f of filas) {
                 if (f === fila) continue;
 
-                const idActual = parseInt(f.querySelector('td').textContent.trim());
+                const idActual = parseInt(f.dataset.id);
                 const idNuevo = parseInt(id);
 
                 if (idNuevo < idActual) {
@@ -469,8 +469,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ordenar activos por ID
     activos.sort((a, b) => {
-        const idA = parseInt(a.querySelector('td').textContent.trim());
-        const idB = parseInt(b.querySelector('td').textContent.trim());
+        const idA = parseInt(a.dataset.id);
+        const idB = parseInt(b.dataset.id);
         return idA - idB;
     });
 
@@ -621,10 +621,11 @@ if (buscadorDocente) {
         const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
 
         filas.forEach(function(fila) {
-            const id = fila.cells[0].textContent.toLowerCase();
+          const id = fila.cells[0].textContent.toLowerCase();
             const nombre = fila.cells[1].textContent.toLowerCase();
+            const apellido = fila.cells[2].textContent.toLowerCase();
 
-            fila.style.display = (id.includes(filtro) || nombre.includes(filtro)) ? '' : 'none';
+            fila.style.display = (id.includes(filtro) || nombre.includes(filtro) || apellido.includes(filtro)) ? '' : 'none';
         });
     });
 }
@@ -639,8 +640,9 @@ if (buscadorEstudiante) {
         filas.forEach(function(fila) {
             const id = fila.cells[0].textContent.toLowerCase();
             const nombre = fila.cells[1].textContent.toLowerCase();
+            const apellido = fila.cells[2].textContent.toLowerCase();
 
-            fila.style.display = (id.includes(filtro) || nombre.includes(filtro)) ? '' : 'none';
+            fila.style.display = (id.includes(filtro) || nombre.includes(filtro) || apellido.includes(filtro)) ? '' : 'none';
         });
     });
 }
@@ -654,10 +656,9 @@ if (buscadorCurso) {
         console.log('Filas encontradas:', filas.length); // para ver si encuentra las filas
 
         filas.forEach(function(fila) {
-            const id = fila.cells[0].textContent.toLowerCase();
-            const nombre = fila.cells[1].textContent.toLowerCase();
+            const nombre = fila.cells[0].textContent.toLowerCase();
 
-            fila.style.display = (id.includes(filtro) || nombre.includes(filtro)) ? '' : 'none';
+            fila.style.display = (nombre.includes(filtro)) ? '' : 'none';
         });
     });
 }
@@ -676,7 +677,7 @@ if (buscadorCurso) {
                 //  -- MENSAJE DE ERROR SOBRE PREREQUISITO DE SU PROPIO CURSO ---
 
                 if(idCursoActual && option.value === idCursoActual){
-                    alert('El curso no puede ser su propio prerrequisito');
+                    mostrarToastPremium('El curso no puede ser su propio prerrequisito', 'error');
                     return;
                 }
                 option.selected = !option.selected;
@@ -684,4 +685,133 @@ if (buscadorCurso) {
     });
 });
 
+
+// SISTEMA DE NOTIFICACIONES
+
+function mostrarToastPremium(mensaje, tipo = 'error') {
+    // Eliminar toasts anteriores
+    const toastsPrevios = document.querySelectorAll('.toast-premium');
+    toastsPrevios.forEach(t => t.remove());
+    const toast = document.createElement('div');
+    toast.className = `toast-premium toast-${tipo}`;
+    
+    // Icono según tipo
+    const icono = tipo === 'error' ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>';
+    
+    toast.innerHTML = `${icono} <span>${mensaje}</span>`;
+    document.body.appendChild(toast);
+    // Animación de entrada y salida
+    setTimeout(() => {
+        toast.classList.add('visible');
+    }, 100);
+    setTimeout(() => {
+        toast.classList.remove('visible');
+        setTimeout(() => toast.remove(), 500);
+    }, 4000);
+}
+// --- LÓGICA MODAL HORARIOS PREMIUM ---
+function agregarBloqueHorario() {
+    const container = document.getElementById('bloques-horario-container');
+    const template = document.getElementById('template-horario-card');
+    if (!container || !template) return;
+    const clone = template.content.cloneNode(true);
+    container.appendChild(clone);
+}
+function abrirModalHorarios(idCurso) {
+    const modal = document.getElementById('modalHorarios');
+    const container = document.getElementById('bloques-horario-container');
+    if (!modal || !container) return;
+    
+    // Guardar ID del curso en el modal para referencia
+    modal.dataset.idCurso = idCurso;
+    
+    // Limpiar container y agregar un bloque inicial
+    container.innerHTML = '';
+    agregarBloqueHorario();
+    modal.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+}
+function cerrarModalHorarios() {
+    const modal = document.getElementById('modalHorarios');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+// Cerrar al hacer clic fuera
+const modalHorarios = document.getElementById('modalHorarios');
+if (modalHorarios) {
+    modalHorarios.addEventListener('click', function(e) {
+        if (e.target === this) cerrarModalHorarios();
+    });
+}
+// Botón Agregar Bloque
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.btn-agregar-horario')) {
+        agregarBloqueHorario();
+    }
+});
+// Botón Eliminar Bloque (X)
+document.addEventListener('click', function(e) {
+    const btnCerrar = e.target.closest('.horario-card-cerrar');
+    if (btnCerrar) {
+        const card = btnCerrar.closest('.horario-card-registro');
+        const container = document.getElementById('bloques-horario-container');
+        
+        // No permitir borrar si es el único bloque
+        if (container.querySelectorAll('.horario-card-registro').length > 1) {
+            card.remove();
+        } else {
+            mostrarToastPremium('Debe haber al menos un bloque de horario');
+        }
+    }
+});
+// Selección de Días Tags (Delegación de eventos para bloques dinámicos)
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('dia-tag')) {
+        e.target.classList.toggle('active');
+    }
+});
+// Botón Guardar Horarios
+const btnGuardarHorarios = document.getElementById('btn-guardar-horarios');
+if (btnGuardarHorarios) {
+    btnGuardarHorarios.addEventListener('click', function() {
+        const modal = document.getElementById('modalHorarios');
+        const idCurso = modal.dataset.idCurso;
+        const cards = document.querySelectorAll('.horario-card-registro');
+        
+        const bloques = [];
+        let valid = true;
+        cards.forEach(card => {
+            const diasSeleccionados = Array.from(card.querySelectorAll('.dia-tag.active')).map(t => t.dataset.dia);
+            const horario = card.querySelector('.horario-select').value;
+            const aula = card.querySelector('.aula-select').value;
+            if (diasSeleccionados.length === 0 || !horario || !aula) {
+                valid = false;
+            }
+            bloques.push({
+                dias: diasSeleccionados,
+                horario: horario,
+                aula: aula
+            });
+        });
+        if (!valid) {
+            mostrarToastPremium('Complete todos los campos de cada bloque de horario');
+            return;
+        }
+        // Estructura de datos final
+        const data = {
+            idCurso: idCurso,
+            bloques: bloques
+        };
+        console.log('Datos consolidados para Backend:', data);
+        
+        // Simulación de éxito (El backend real persistirá estos datos en SQL)
+        mostrarToastPremium('Horarios guardados correctamente', 'success');
+        
+        setTimeout(() => {
+            cerrarModalHorarios();
+        }, 1500);
+    });
+}
 

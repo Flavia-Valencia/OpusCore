@@ -268,17 +268,71 @@ if(!isset($_SESSION["usuario"])){
 
 <!-- MODAL PARA HORARIOS CURSO -->
 <div id="modalHorarios" class="modal-overlay">
-    <div class="modal-contenido">
+    <div class="modal-contenido modal-horarios-premium">
         <button class="modal-cerrar" onclick="cerrarModalHorarios()">
             <i class="fas fa-times"></i>
         </button>
 
         <h2 class="modal-titulo">
-            <i class="fas fa-clock"></i> Horarios del Curso
+            <i class="fas fa-clock"></i> HORARIO
         </h2>
 
-        <div id="horarios-content">
-            <!-- Aquí se abriba el modal y se cargarán los horarios del curso mediante JavaScript pero aun no se agregan las funciones-->
+        <div class="modal-seccion-titulo">CONFIGURACIÓN DE BLOQUES</div>
+
+        <div id="bloques-horario-container">
+            <!-- Los bloques de horario se cargarán aquí dinámicamente -->
+        </div>
+
+            <!-- Template para nuevos bloques de horario (oculto) -->
+            <template id="template-horario-card">
+                <div class="horario-card-registro" style="margin-top: 15px;">
+                    <button type="button" class="horario-card-cerrar"><i class="fas fa-times"></i></button>
+                    
+                    <div class="horario-campo">
+                        <label><i class="fas fa-calendar-day"></i> DÍAS</label>
+                        <div class="dias-selector">
+                            <button type="button" class="dia-tag" data-dia="Lunes">Lunes</button>
+                            <button type="button" class="dia-tag" data-dia="Martes">Martes</button>
+                            <button type="button" class="dia-tag" data-dia="Miércoles">Miércoles</button>
+                            <button type="button" class="dia-tag" data-dia="Jueves">Jueves</button>
+                            <button type="button" class="dia-tag" data-dia="Viernes">Viernes</button>
+                            <button type="button" class="dia-tag" data-dia="Sábado">Sábado</button>
+                            <button type="button" class="dia-tag" data-dia="Domingo">Domingo</button>
+                        </div>
+                    </div>
+                    <div class="horario-grid">
+                        <div class="horario-campo">
+                            <label>HORARIO ESTABLECIDO</label>
+                            <div class="select-wrapper">
+                                <i class="fas fa-clock icon-input"></i>
+                                <select class="premium-select horario-select">
+                                    <option value="">Seleccione un rango</option>
+                                    <option value="08:50 - 10:40">08:50 - 10:40 (Ejemplo)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="horario-campo">
+                            <label>SALÓN / AULA</label>
+                            <div class="select-wrapper">
+                                <i class="fas fa-door-open icon-input"></i>
+                                <select class="premium-select aula-select">
+                                    <option value="">Seleccione salón</option>
+                                    <option value="Aula 101">Aula 101 (Ejemplo)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <button class="btn-agregar-horario">
+                <i class="fas fa-plus"></i> AGREGAR HORARIO
+            </button>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" onclick="cerrarModalHorarios()">Cancelar</button>
+                <button type="button" class="btn-guardar-premium" id="btn-guardar-horarios">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+            </div>
         </div>
 
     </div>

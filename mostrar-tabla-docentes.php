@@ -41,7 +41,8 @@ if (mysqli_num_rows($resultado) > 0 ){
 
         <tbody>
             <?php while($fila = mysqli_fetch_assoc($resultado)){ ?>
-            <tr>
+            <tr data-id="<?php echo $fila['usuario_id']; ?>">
+                
                 <td data-label="ID"><?php echo $fila['usuario_id']; ?></td>
                 <td data-label="Nombre"><?php echo htmlspecialchars($fila['nombre']); ?></td>
                 <td data-label="Apellido"><?php echo htmlspecialchars($fila['apellido']); ?></td>

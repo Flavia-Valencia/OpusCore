@@ -22,7 +22,6 @@ if (mysqli_num_rows($resultado) > 0 ){
     <table class="data-table mobile-cards">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Fecha Inicio</th>
@@ -36,10 +35,9 @@ if (mysqli_num_rows($resultado) > 0 ){
 
         <tbody>
             <?php while($fila = mysqli_fetch_assoc($resultado)){ ?>
-            <tr>
-                <td data-label="ID"><?php echo $fila['id']; ?></td>
+            <tr data-id="<?php echo $fila['id']; ?>">
                 <td data-label="Nombre"><?php echo htmlspecialchars($fila['nombre']); ?></td>
-                <td data-label="Descripción"><?php echo htmlspecialchars($fila['descripcion']); ?></td>
+                <td data-label="Descripción" class="col-descripcion"><?php echo htmlspecialchars($fila['descripcion']); ?></td>
                 <td data-label="Fecha Inicio"><?php echo $fila['fechaInicio']; ?></td>
                 <td data-label="Fecha Fin"><?php echo $fila['fechaFin']; ?></td>
                 <td data-label="Costo Mensual">$<?php echo $fila['costoMensual']; ?></td>
