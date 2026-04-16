@@ -1,20 +1,8 @@
 -- IMPORTANTE: Antes de ejecutar este script, asegúrate de haber creado la base de dato y haber seleccionado 
--- la base de datos correcta (debe ser después de ejecutar el script de academiadigital). Luego de eso solo ejecuta las tablas antes de insertar los datos en las tablas 
--- aulas y horarios.
-CREATE TABLE `cursos` ( 
-    `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
-    `nombre` varchar(100) COLLATE utf8mb4_general_ci NOT NULL, 
-    `descripcion` varchar(100) COLLATE utf8mb4_general_ci NOT NULL, 
-    `costoMensual` decimal(8,2) COLLATE utf8mb4_general_ci NOT NULL, 
-    `cupos` int COLLATE utf8mb4_general_ci NOT NULL, 
-    `fechaInicio` date COLLATE utf8mb4_general_ci NOT NULL, 
-    `fechaFin` date COLLATE utf8mb4_general_ci NOT NULL, 
-    `estado` tinyint(1) DEFAULT '1', 
-    `idDocente` int NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- la base de datos correcta ( se debe ejecutar después del script de academiadigital).
 
-ALTER TABLE `cursos`
-  ADD CONSTRAINT `cursos_ibfk_1` FOREIGN KEY (`idDocente`) REFERENCES `docentes` (`id`);
-  
+
+-- IMPORTANTE: Se recomienda ejecutar todo el script por primera vez una sola vez para insertar los datos en las tablas.
 CREATE TABLE `horarios` ( 
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     `horaInicio` time COLLATE utf8mb4_general_ci NOT NULL, 
@@ -26,6 +14,20 @@ CREATE TABLE `aulas` (
     `aula` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
     `capacidad` int COLLATE utf8mb4_general_ci NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `cursos` ( 
+    `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
+    `nombre` varchar(100) COLLATE utf8mb4_general_ci NOT NULL, 
+    `descripcion` varchar(150) COLLATE utf8mb4_general_ci NOT NULL, 
+    `costoMensual` decimal(8,2) COLLATE utf8mb4_general_ci NOT NULL, 
+    `cupos` int COLLATE utf8mb4_general_ci NOT NULL, 
+    `fechaInicio` date COLLATE utf8mb4_general_ci NOT NULL, 
+    `fechaFin` date COLLATE utf8mb4_general_ci NOT NULL, 
+    `estado` tinyint(1) DEFAULT '1', 
+    `idDocente` int NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `cursos`
+  ADD CONSTRAINT `cursos_ibfk_1` FOREIGN KEY (`idDocente`) REFERENCES `docentes` (`id`);
+  
 CREATE TABLE `prerrequisitos` (
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `idCursoActual` int NOT NULL,
@@ -45,18 +47,3 @@ CREATE TABLE `CursoHorario` (
     CONSTRAINT `fk_horario` FOREIGN KEY (`idHorario`) REFERENCES `horarios` (`id`),
     CONSTRAINT `fk_aula` FOREIGN KEY (`idAula`) REFERENCES `aulas` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- insertar los datos en la tabla aulas (se debe ejecutar después 
--- de crear la tabla aulas y en la tabla aulas crear una nueva consulta en el apartado que dice SQL)
-
-INSERT INTO `aulas`(`id`, `aula`, `capacidad`) VALUES 
-(1,'Aula 01',40),(2,'Aula 02',40),(3,'Aula 03',50),(4,'Aula 04',50),(5,'Aula 05',60),
-(6,'Aula 06',60),(7,'Aula 07',70),(8,'Aula 08',70),(9,'Aula 09',80),(10,'Aula 10',80),
-(11,'Aula 11',90),(12,'Aula 12',90),(13,'Aula 13',100),(14,'Aula 14',100);
-
--- insertar los datos en la tabla horarios (se debe ejecutar después 
--- de crear la tabla horarios y en la tabla horarios crear una nueva consulta en el apartado que dice SQL)
-INSERT INTO `horarios`(`horaInicio`, `horaFin`, `etiqueta`) VALUES 
-('07:00:00','08:30:00','07:00 a.m. - 08:30 a.m.'),('08:40:00','10:10:00','08:40 a.m. - 10:10 a.m.'),
-('10:20:00','11:50:00','10:20 a.m. - 11:50 a.m.'),('13:00:00','14:30:00','01:00 p.m. - 02:30 p.m.'),
-('14:40:00','16:10:00','02:40 p.m. - 04:10 p.m.');

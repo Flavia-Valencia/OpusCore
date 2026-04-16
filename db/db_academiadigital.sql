@@ -37,14 +37,7 @@ CREATE TABLE `administradores` (
   `direccion` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `administradores`
---
 
-INSERT INTO `administradores` (`id`, `usuario_id`, `fecha_nacimiento`, `genero`, `salario`, `telefono`, `direccion`) VALUES
-(1, 1, '2001-01-01', 'F', 500.00, '1234-5678', 'San Miguel');
-
--- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `docentes`
@@ -61,12 +54,10 @@ CREATE TABLE `docentes` (
   `direccion` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `docentes`
---
 
-INSERT INTO `docentes` (`id`, `usuario_id`, `especialidad`, `fecha_nacimiento`, `genero`, `salario`, `telefono`, `direccion`) VALUES
-(1, 3, 'Desarrollo de Software', '2001-01-01', 'F', 500.00, '8765-4321', 'Usulután');
+
+
+
 --
 -- Estructura de tabla para la tabla `estudiantes`
 --
@@ -80,10 +71,7 @@ CREATE TABLE `estudiantes` (
   `direccion` varchar(200) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-INSERT INTO `estudiantes` (`id`, `usuario_id`, `fecha_nacimiento`, `genero`, `telefono`, `direccion`) VALUES
-(1, 2, '2001-01-01', 'F', '5678-1234', 'Usulután');
---
+
 -- Estructura de tabla para la tabla `roles`
 --
 
@@ -117,24 +105,7 @@ CREATE TABLE `usuarios` (
   `rol_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `usuarios`
---
 
-INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `correo`, `password_hash`, `estado`, `rol_id`) VALUES
-(1, 'Sabrina', 'Saravia', 'sabrina@gmail.com', 'SabriAdmin-12', 1, 1);
-
-INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `correo`, `password_hash`, `estado`, `rol_id`) VALUES
-(2, 'Yamileth', 'Valencia', 'yamii@gmail.com', 'YamiEstudiante-19', 1, 2);
-
-INSERT INTO `usuarios` (`id`, `nombre`, `apellido`, `correo`, `password_hash`, `estado`, `rol_id`) VALUES
-(3, 'Karla', 'Morales', ' karli@gmail.com', 'KarliDocente_22', 1, 3);
-
-
-
---
--- Índices para tablas volcadas
---
 
 --
 -- Indices de la tabla `administradores`
