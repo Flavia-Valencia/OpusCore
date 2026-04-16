@@ -106,7 +106,8 @@ if(!isset($_SESSION["usuario"])){
 
             <!-- formulario que envia los datos actualizados del docente-->
             <form method="POST" action="editar-docente.php">
-                <input type="hidden" name="id" id="editd-id">
+                <input type="hidden" name="usuario_id" id="editd-usuario_id">
+                <input type="hidden" name="docente_id" id="editd-docente_id">
 
                 <h3 class="modal-subtitulo">Detalles del docente</h3>
                 <div class="modal-grid">
