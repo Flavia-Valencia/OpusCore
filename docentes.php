@@ -30,40 +30,140 @@ if(!isset($_SESSION["usuario"])){
 
 <body class="raleway-all">
 
-    <header class="header">
+
+<!-- CONTENEDOR PRINCIPAL: divide sidebar (izquierda) y contenido (derecha) -->
+<div class="layout">
+
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+
+        <!-- Logo + título del módulo -->
         <div class="logo">
-            <img src="img/logo.svg" alt="Logo" class="logo-img">
-            <div class="logo-text">
-                <span>¡Bienvenido/a!</span>
-                <!--Para que se coloque el nombre del usuario de la credencial-->
-                <h2 class="user-nombre"><?php echo $_SESSION["nombre"];?></h2>
-            </div>
+            <i class="fas fa-user-graduate"></i> <!-- Icono -->
+            <h2>Docente</h2> <!-- Texto -->
         </div>
 
-        <a href="includes/logout.php" style="text-decoration:none;">
-            <div class="user-profile">
-                <div class="user-info">
-                    <span class="user-role">Docente</span>
-                    <span class="user-email"><?php echo $_SESSION["usuario"]; ?></span>
+        <!-- Menú de navegación lateral -->
+        <nav>
+            <ul>
+
+                <!-- Opción activa (pantalla actual) -->
+                <li class="active">
+                    <i class="fas fa-book"></i> Mis Cursos
+                </li>
+
+                <!-- Otras opciones del sistema -->
+                <li>
+                    <i class="fas fa-chart-line"></i> Calificaciones
+                </li>
+
+                <li>
+                    <i class="fas fa-envelope"></i> Mensajes
+                </li>
+
+                <li>
+                    <i class="fas fa-cog"></i> Configuración
+                </li>
+
+            </ul>
+        </nav>
+
+    </aside>
+    <!-- =============== FIN SIDEBAR =============== -->
+
+
+    <!-- ================= CONTENIDO ================= -->
+    <div class="content">
+
+        <!-- HEADER SUPERIOR -->
+        <header class="header">
+
+            <!-- Marca / nombre del sistema -->
+            <div class="brand">
+                <img src="img/logo.svg" alt="Logo Academia" class="logo-img">
+
+                <!-- Nombre institucional -->
+                <div>
+                    <strong>ACADEMIA</strong><br>
+                    FUTURO DIGITAL
                 </div>
-                <i class="fas fa-arrow-right-from-bracket logout-icon"></i>
             </div>
-        </a>
-    </header>
 
-    <main class="main">
-        <h1 class="titulo">Panel del Docente</h1>
-        <section class="cards-container">
-            <a href="#" class="card-opcion">
-                <i class="fas fa-book icono"></i>
-                <span>Mis cursos</span>
+            <!-- PERFIL DEL USUARIO + LOGOUT -->
+            <!-- Este botón permite cerrar sesión -->
+            <a href="includes/logout.php" class="user-profile">
+
+                <!-- Información del usuario -->
+                <div class="user-info">
+
+                    <!-- Rol del usuario (Docente) -->
+                    <span class="user-role">
+                        <?php echo isset($_SESSION["rol"]) ? htmlspecialchars($_SESSION["rol"]) : "Docente"; ?>
+                    </span>
+
+                    <!-- Correo del usuario -->
+                    <span class="user-email">
+                        <?php echo isset($_SESSION["usuario"]) ? htmlspecialchars($_SESSION["usuario"]) : ""; ?>
+                    </span>
+
+                </div>
+
+                <!-- Icono de cerrar sesión -->
+                <i class="fas fa-arrow-right-from-bracket logout-icon"></i>
+
             </a>
-            <a href="#" class="card-opcion">
-                <i class="fas fa-credit-card icono"></i>
-                <span>Mis pagos</span>
-            </a>
+
+        </header>
+        <!-- =============== FIN HEADER =============== -->
+
+
+        <!-- ================= BIENVENIDA ================= -->
+        <section class="welcome">
+
+            <!-- Saludo dinámico con el nombre del usuario -->
+            <h1>
+                ¡Bienvenido/a, <?php echo htmlspecialchars($_SESSION["nombre"]); ?>!
+            </h1>
+
+            <!-- Texto informativo -->
+            <p>
+                Aquí puedes gestionar tus cursos del semestre activo.
+            </p>
+
         </section>
-    </main>
+      
 
+
+        
+        <section class="courses">
+
+    <!--
+        CARDS TEMPORALES (FRONTEND)
+        Estas tarjetas son solo para mostrar el diseño.
+        En el futuro, el backend (PHP + MySQL) generará estas cards dinámicamente.
+    --> 
+        
+    <!-- CARD 1 -->
+    <div class="card"></div>
+
+    <!-- CARD 2 -->
+    <div class="card"></div>
+
+    <!-- CARD 3 -->
+    <div class="card"></div>
+
+    <!-- CARD 4 -->
+    <div class="card"></div>
+
+</section>
+      
+
+
+    </div>
+    
+
+</div>
+
+</body>
 </body>
 </html>

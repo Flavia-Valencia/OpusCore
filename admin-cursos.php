@@ -166,7 +166,7 @@ if(!isset($_SESSION["usuario"])){
                     <input type="date" name="fechaFin" required>
                 </div>
 
-                <input type="hidden" name="idDocente" value="6"> <!-- aquí va a ir el ID del docente asignado a la materia/curso -->
+                <input type="hidden" name="idDocente" value="1"> <!-- aquí va a ir el ID del docente asignado a la materia/curso -->
 
              </div>
 

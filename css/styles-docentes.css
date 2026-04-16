@@ -1,145 +1,221 @@
+/* =====================
+   RESET GENERAL
+   ===================== */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Fuente importada de Google Fonts */
+/* =====================
+   FUENTE GLOBAL
+   ===================== */
 .raleway-all {
   font-family: "Raleway", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
 }
 
+/* =====================
+   FONDO GENERAL
+   ===================== */
 body {
-    background: radial-gradient(circle at top left, #d8e8ff, #eaf4ff, #ffffff); 
-    background-size: 200% 200%;
+  background: #f4f6f9;
 }
 
-/* ── HEADER ──────────────────────────────────────────────── */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 40px;
-    background: linear-gradient(135deg,#069DBF,#1D4B73, #053170);
-    color: white;
+/* =====================
+   LAYOUT PRINCIPAL
+   ===================== */
+.layout {
+  display: flex;
 }
 
-/* logo: ícono + texto apilado en columna */
+/* =====================
+   SIDEBAR
+   ===================== */
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background: #053170;
+  color: white;
+  padding: 20px;
+  position: fixed;
+}
+
+/* LOGO SIDEBAR */
 .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+/* MENÚ */
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.sidebar li:hover {
+  background: #1D4B73;
+}
+
+.sidebar li.active {
+  background: #069DBF;
+}
+
+/* =====================
+   CONTENIDO
+   ===================== */
+.content {
+  margin-left: 220px;
+  width: 100%;
+  min-height: 100vh; /* importante */
+}
+
+/* =====================
+   HEADER
+   ===================== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background: linear-gradient(135deg, #053170, #069DBF);
+  color: white;
+
+  padding: 12px 24px;
+}
+
+/* LOGO HEADER */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .logo-img {
-    width: 45px;
+  width: 40px;
 }
 
-.logo-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.logo-small {
-    font-size: 12px;
-}
-
-.logo-big {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-/* botón de perfil/logout — fondo traslúcido con blur (glassmorphism) */
+/* =====================
+   USER PROFILE (BOTÓN SALIR)
+   ===================== */
 .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    padding: 8px 12px;
-    border-radius: 20px;
-    margin-left: 20px;
-    cursor: pointer;
-    transition: background-color 0.4s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 8px 14px;
+  border-radius: 20px;
+
+  text-decoration: none;
+  color: white;
+
+  /* EFECTO MODERNO */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+
+  transition: all 0.3s ease;
 }
 
-/* info del usuario dentro del botón de perfil */
+.user-profile:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+/* TEXTO USUARIO */
 .user-info {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .user-role {
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .user-email {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  opacity: 0.8;
 }
 
-/* ícono y botón de cerrar sesión */
+/* ICONO */
 .logout-icon {
-    font-size: 20px;
-    color: white;
+  font-size: 16px;
 }
 
-.logout-btn {
-    color: white;
+/* =====================
+   BIENVENIDA
+   ===================== */
+.welcome {
+  padding: 24px 20px 10px;
 }
 
-/* pisa el font-size de .logout-icon definido arriba */
-.logout-icon {
-    font-size: 18px;
+.welcome h1 {
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: #053170;
 }
 
-/* ── CONTENIDO PRINCIPAL ─────────────────────────────────── */
-.main {
-    padding: 40px;
+.welcome p {
+  font-size: 14px;
+  color: #555;
 }
 
-.titulo {
-    font-size: 28px;
-    margin-bottom: 30px;
+/* =====================
+   CURSOS (GRID)
+   ===================== */
+.courses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  padding: 20px;
+  gap: 20px;
 }
 
-/* tarjetas de opciones — grilla que acomoda sola las columnas según el espacio */
-.cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
+/*CARD (VACÍA POR AHORA) */
+.card {
+  background: white;
+  border-radius: 12px;
+
+  height: 160px; /* clave */
+  
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+
+  /* efecto visual aunque esté vacía */
+  border: 2px dashed #d0d7e2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* cada tarjeta/opción del menú principal */
-.card-opcion {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    color: #053170;
-    font-weight: 600;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    transition: all 0.2s ease;
-}
 
-.card-opcion:hover {
-    transform: translateY(-4px);
-}
+/* RESPONSIVE*/
+@media (max-width: 768px) {
 
-/* ícono de cada tarjeta — gradiente aplicado al texto via background-clip */
-.icono {
-    font-size: 22px;
-    background: linear-gradient(135deg,#053170,#069DBF);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
+  .sidebar {
+    width: 60px;
+    padding: 10px;
+  }
+
+  .sidebar h2,
+  .sidebar li span {
+    display: none;
+  }
+
+  .content {
+    margin-left: 60px;
+  }
 }
