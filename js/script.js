@@ -301,11 +301,8 @@ document.addEventListener('click', function(e) {
         else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
         else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
 
-        // detectar si estamos en cursos
-        const esCurso = document.getElementById('buscador-curso');
-
         // CAMBIO VISUAL INMEDIATO
-        if (esCurso) {
+        if (document.getElementById('buscador-curso')) {
             if (isActivo) {
                 btn.classList.remove('estado-activo');
                 btn.classList.add('estado-inactivo');
@@ -316,7 +313,6 @@ document.addEventListener('click', function(e) {
                 btn.textContent = 'Desactivar';
             }
         } else {
-            // DOCENTES / ESTUDIANTES (mostrar estado)
             if (isActivo) {
                 btn.classList.remove('estado-activo');
                 btn.classList.add('estado-inactivo');
@@ -333,8 +329,8 @@ document.addEventListener('click', function(e) {
             celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
         }
 
-        // --- COLOR GRIS SI ESTÁ INACTIVO ---
-        const btnEditar = fila.querySelector('.abrir-modal-curso');
+        // --- COLOR GRIS Y BLOQUEO (GENERAL PARA TODOS) ---
+        const btnEditar = fila.querySelector('.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (isActivo) {
@@ -372,33 +368,33 @@ document.addEventListener('click', function(e) {
             }
         }
 
-        // --- MOVER FILA INMEDIATAMENTE ---
-        if (esCurso) {
-            const tbody = fila.parentElement;
+        // --- MOVER FILA (AHORA PARA TODOS) ---
+        const tbody = fila.parentElement;
 
-            if (isActivo) {
+        if (isActivo) {
+            // desactivar → abajo
+            tbody.appendChild(fila);
+        } else {
+            // activar → ordenar por ID
+            const filas = Array.from(tbody.querySelectorAll('tr'));
+
+            let insertado = false;
+
+            for (let f of filas) {
+                if (f === fila) continue;
+
+                const idActual = parseInt(f.querySelector('td').textContent.trim());
+                const idNuevo = parseInt(id);
+
+                if (idNuevo < idActual) {
+                    tbody.insertBefore(fila, f);
+                    insertado = true;
+                    break;
+                }
+            }
+
+            if (!insertado) {
                 tbody.appendChild(fila);
-            } else {
-                const filas = Array.from(tbody.querySelectorAll('tr'));
-
-                let insertado = false;
-
-                for (let f of filas) {
-                    if (f === fila) continue;
-
-                    const idActual = parseInt(f.querySelector('td').textContent.trim());
-                    const idNuevo = parseInt(id);
-
-                    if (idNuevo < idActual) {
-                        tbody.insertBefore(fila, f);
-                        insertado = true;
-                        break;
-                    }
-                }
-
-                if (!insertado) {
-                    tbody.appendChild(fila);
-                }
             }
         }
 
@@ -419,6 +415,71 @@ document.addEventListener('click', function(e) {
     };
 });
 
+// === INICIALIZA ESTADOS AL RECARGAR ===
+// Aplica gris y bloquea filas inactivas según su botón,
+// ordena activos por ID y envía los inactivos al final
+// sin eliminar ni modificar la tabla original.
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const tbody = document.querySelector('table tbody');
+    if (!tbody) return;
+
+    const filas = Array.from(tbody.querySelectorAll('tr'));
+
+    const activos = [];
+    const inactivos = [];
+
+    filas.forEach(fila => {
+
+        const btnEstado = fila.querySelector('.btn-toggle-estado');
+        if (!btnEstado) return;
+
+        const esInactivo = btnEstado.classList.contains('estado-inactivo');
+
+        const btnEditar = fila.querySelector('.abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso');
+        const btnHorarios = fila.querySelector('.horarios');
+
+        if (esInactivo) {
+
+            // aplicar gris
+            fila.querySelectorAll('td').forEach(td => {
+                td.style.backgroundColor = '#e9ecef';
+                td.style.color = '#6c757d';
+                td.style.opacity = '0.7';
+            });
+
+            // bloquear
+            if (btnEditar) {
+                btnEditar.style.pointerEvents = 'none';
+                btnEditar.style.opacity = '0.5';
+            }
+
+            if (btnHorarios) {
+                btnHorarios.style.pointerEvents = 'none';
+                btnHorarios.style.opacity = '0.5';
+            }
+
+            inactivos.push(fila);
+
+        } else {
+            activos.push(fila);
+        }
+    });
+
+    // ordenar activos por ID
+    activos.sort((a, b) => {
+        const idA = parseInt(a.querySelector('td').textContent.trim());
+        const idB = parseInt(b.querySelector('td').textContent.trim());
+        return idA - idB;
+    });
+
+    // reordenar correctamente
+    [...activos, ...inactivos].forEach(fila => {
+        tbody.appendChild(fila);
+    });
+
+});
 
 // --- APLICAR ESTILO Y BLOQUEO AL CARGAR ---
 document.addEventListener('DOMContentLoaded', function() {
@@ -600,5 +661,27 @@ if (buscadorCurso) {
         });
     });
 }
+
+// Función que valida que se pueda deseleccionar el prerequisito en crear curso
+
+    document.querySelectorAll('.select-prerrequisitos').forEach(select =>{
+        select.addEventListener('mousedown', function(e){
+            e.preventDefault();
+            const option = e.target;
+
+            if(option.tagName === 'OPTION'){
+                const idCursoActual = document.getElementById('edit-id-curso')
+                ? document.getElementById('edit-id-curso').value 
+                :null;
+                //  -- MENSAJE DE ERROR SOBRE PREREQUISITO DE SU PROPIO CURSO ---
+
+                if(idCursoActual && option.value === idCursoActual){
+                    alert('El curso no puede ser su propio prerrequisito');
+                    return;
+                }
+                option.selected = !option.selected;
+            }             
+    });
+});
 
 
