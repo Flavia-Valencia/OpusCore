@@ -30,40 +30,121 @@ if(!isset($_SESSION["usuario"])){
 
 <body class="raleway-all">
 
-    <header class="header">
-        <div class="logo">
-            <img src="img/logo.svg" alt="Logo" class="logo-img">
-            <div class="logo-text">
-                <span>¡Bienvenido/a!</span>
-                <!--Para que se coloque el nombre del usuario de la credencial-->
-                <h2 class="user-nombre"><?php echo $_SESSION["nombre"];?></h2>
-            </div>
-        </div>
+    <div class="layout">
 
-        <a href="includes/logout.php" style="text-decoration:none;">
-            <div class="user-profile">
-                <div class="user-info">
-                    <span class="user-role">Docente</span>
-                    <span class="user-email"><?php echo $_SESSION["usuario"]; ?></span>
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <!-- 🔥 NUEVO LOGO -->
+            <div class="logo">
+                <img src="img/logo.svg" alt="Logo Academia" class="logo-img-sidebar">
+                <div class="logo-text">
+                    <strong>ACADEMIA</strong><br>
+                    FUTURO DIGITAL
                 </div>
-                <i class="fas fa-arrow-right-from-bracket logout-icon"></i>
             </div>
-        </a>
-    </header>
 
-    <main class="main">
-        <h1 class="titulo">Panel del Docente</h1>
-        <section class="cards-container">
-            <a href="#" class="card-opcion">
-                <i class="fas fa-book icono"></i>
-                <span>Mis cursos</span>
-            </a>
-            <a href="#" class="card-opcion">
-                <i class="fas fa-credit-card icono"></i>
-                <span>Mis pagos</span>
-            </a>
-        </section>
-    </main>
+            <nav>
+                <ul>
+                    <li class="active">
+                        <i class="fas fa-book"></i> Mis Cursos
+                    </li>
+
+                    <li>
+                        <i class="fas fa-chart-line"></i> Calificaciones
+                    </li>
+
+                    <li>
+                        <i class="fas fa-envelope"></i> Mensajes
+                    </li>
+
+                    <li>
+                        <i class="fas fa-cog"></i> Configuración
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- CONTENIDO -->
+        <div class="content">
+
+            <header class="header">
+
+                <!-- BOTÓN HAMBURGUESA -->
+                <button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <!-- PERFIL / LOGOUT -->
+                <a href="includes/logout.php" class="user-profile">
+                    <div class="user-info">
+                        <span class="user-role">
+                            <?php echo isset($_SESSION["rol"]) ? htmlspecialchars($_SESSION["rol"]) : "Docente"; ?>
+                        </span>
+
+                        <span class="user-email">
+                            <?php echo isset($_SESSION["usuario"]) ? htmlspecialchars($_SESSION["usuario"]) : ""; ?>
+                        </span>
+                    </div>
+
+                    <i class="fas fa-arrow-right-from-bracket logout-icon"></i>
+                </a>
+            </header>
+
+            <!-- BIENVENIDA -->
+            <section class="welcome">
+                <h1>
+                    ¡Bienvenido/a, <?php echo htmlspecialchars($_SESSION["nombre"]); ?>!
+                </h1>
+
+                <p>
+                    Aquí puedes gestionar tus cursos del semestre activo.
+                </p>
+            </section>
+            
+            <!-- CARDS -->
+            <section class="courses">
+                <div class="card"></div>
+                <div class="card"></div>
+                <div class="card"></div>
+                <div class="card"></div>
+            </section>
+        
+        </div>
+    </div>
+
+    <!-- OVERLAY -->
+    <div class="overlay"></div>
+
+    <!-- SCRIPT -->
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const toggle = document.querySelector(".menu-toggle");
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.querySelector(".overlay");
+
+        toggle.addEventListener("click", () => {
+            sidebar.classList.toggle("active");
+            overlay.classList.toggle("active");
+        });
+
+        overlay.addEventListener("click", () => {
+            sidebar.classList.remove("active");
+            overlay.classList.remove("active");
+        });
+
+        const links = document.querySelectorAll(".sidebar li");
+
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                sidebar.classList.remove("active");
+                overlay.classList.remove("active");
+            });
+        });
+
+    });
+    </script>
 
 </body>
 </html>
