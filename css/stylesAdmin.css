@@ -800,49 +800,6 @@ body {
 }
 
 
-/* Fix msg error responsivo */
-
-/* Estilo de mensaje de error tipo toast con animación y diseño responsivo */
-.toast-error {
-    position: fixed;
-    top: 30px;
-    right: 30px;
-    z-index: 9999;
-    width: auto;
-    max-width: 350px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    background-color: #ffebee;
-    color: #c62828;
-    padding: 14px 20px;
-    border-radius: 8px;
-    border-left: 4px solid #c62828;
-    box-sizing: border-box;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    animation: fadeInSlide 0.4s ease-out;
-}
-
-@keyframes fadeInSlide {
-    from { opacity: 0; transform: translateX(30px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-@media (max-width: 768px) {
-    .toast-error {
-        top: 20px;
-        right: 50%;
-        transform: translateX(50%);
-        width: 90%;
-        max-width: 100%;
-        animation: fadeInMobile 0.4s ease-out;
-    }
-    
-    @keyframes fadeInMobile {
-        from { opacity: 0; transform: translate(50%, -20px); }
-        to { opacity: 1; transform: translate(50%, 0); }
-    }
-} 
-
 
 /* Fix CSS botones acciones*/
 .link-accion {
@@ -1027,9 +984,15 @@ body {
     font-size: 13px;
     font-weight: 600;
     text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
     transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
 /* acción editar estudiante */
@@ -1072,9 +1035,9 @@ body {
 /* ── COLUMNA ACCIONES ── */
 .acciones-texto {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 5px;
-    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
     justify-content: center;
 }
 
@@ -1092,9 +1055,20 @@ body {
 }
 
 @media (min-width: 769px) {
-    .data-table tbody td:nth-child(3) {
+    .data-table tbody td {
         white-space: normal;
-        max-width: 200px;
+    }
+
+    /* Columna de descripción expandida (Cursos) */
+    .col-descripcion, .col-nombre {
+        min-width: 250px;
+        max-width: 450px !important;
+        color: #4a5568 !important;
+        font-size: 13px;
+        line-height: 1.5;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
     }
 
     .data-table tbody td:nth-child(2) {
@@ -1370,6 +1344,7 @@ body {
         display: flex;
         justify-content: center;
         align-items: center;
+        gap: 11px;
     }
 
 
@@ -1395,28 +1370,13 @@ body {
         flex-direction: row !important;
         justify-content: center !important;
         flex-wrap: nowrap !important;
-        gap: 8px !important;
+        gap: 10px !important;
         width: 100% !important;
     }
 }
 
 /* Notificación flotante que aparece arriba al centro y desaparece sola */
-.toast-error {
-    position: fixed;       /* flota sobre todo el contenido */
-    top: 19.5%;
-    left: 68.5%;
-    transform: translateX(-50%); /* centra horizontalmente */
-    background: #fee2e2;
-    color: #e74c3c;
-    border-left: 4px solid #e74c3c;
-    padding: 14px 24px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 9999;         /* encima de modales y overlays */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    animation: fadeOut 0.5s ease 3s forwards; /* desaparece a los 3s */
-}
+
 
 /* animación de desvanecimiento del toast */
 @keyframes fadeOut {
@@ -1430,13 +1390,231 @@ body {
     }
 }
 
-/* Ajuste de toast de error para móviles */
+
+/* ── MODAL HORARIOS ── */
+.modal-horarios-premium {
+    max-width: 650px !important;
+    padding: 40px !important;
+    background: #ffffff !important;
+}
+.modal-horarios-premium .modal-titulo {
+    font-size: 24px;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.horario-card-registro {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.horario-card-cerrar {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #718096;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+.horario-card-cerrar:hover {
+    color: #e53e3e;
+}
+.horario-campo {
+    margin-bottom: 20px;
+}
+.horario-campo label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #4a5568;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.dias-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.dia-tag {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    font-size: 13px;
+    font-weight: 500;
+    color: #718096;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dia-tag:hover {
+    border-color: #cbd5e0;
+    background: #f7fafc;
+}
+.dia-tag.active {
+    background: #1a202c;
+    color: white;
+    border-color: #1a202c;
+    box-shadow: 0 4px 12px rgba(26, 32, 44, 0.25);
+}
+.horario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.icon-input {
+    position: absolute;
+    left: 15px;
+    color: #a0aec0;
+    font-size: 14px;
+}
+.premium-select {
+    width: 100%;
+    padding: 12px 12px 12px 40px !important;
+    background: #f7fafc !important;
+    border: 1px solid #edf2f7 !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    color: #2d3748 !important;
+    appearance: none;
+    cursor: pointer;
+}
+.premium-select:focus {
+    background: #ffffff !important;
+    border-color: #cbd5e0 !important;
+    box-shadow: 0 0 0 3px rgba(160, 174, 192, 0.1) !important;
+}
+.btn-agregar-horario {
+    width: 100%;
+    padding: 20px;
+    border: 2px dashed #cbd5e0;
+    border-radius: 16px;
+    background: transparent;
+    color: #2d3748;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 30px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.btn-agregar-horario:hover {
+    border-color: #a0aec0;
+    background: #f7fafc;
+    transform: translateY(-2px);
+}
+.btn-guardar-premium {
+    background: #053170 !important;
+    color: white !important;
+    padding: 12px 30px !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    border: none !important;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.btn-guardar-premium:hover {
+    background: #2d3748 !important;
+    box-shadow: 0 4px 14px rgba(26, 32, 44, 0.3) !important;
+    transform: translateY(-1px);
+}
 @media (max-width: 768px) {
-    .toast-error {
-        left: 50%;
-        top: 20px;
-        width: 90%;
-        text-align: center;
-        padding: 12px 16px;
+    .modal-horarios-premium {
+        padding: 25px !important;
+        align-self: flex-start !important;
+        margin-top: 20px !important;
     }
+    
+    .horario-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dia-tag {
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+}
+/* ── TOAST PREMIUM ── */
+.toast-premium {
+    position: fixed;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+/* Posición Escritorio: Esquina inferior derecha */
+@media (min-width: 769px) {
+    .toast-premium {
+        bottom: 30px;
+        right: 30px;
+        transform: translateY(20px);
+    }
+    
+    .toast-premium.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+}
+/* Posición Móvil: Parte superior central */
+@media (max-width: 768px) {
+    .toast-premium {
+        top: 30px;
+        left: 50%;
+        transform: translate(-50%, -20px);
+        width: 90%;
+        max-width: 450px;
+        justify-content: center;
+    }
+    
+    .toast-premium.visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
+        pointer-events: auto;
+    }
+}
+.toast-premium.toast-error {
+    background: #fff5f5;
+    color: #c53030;
+    border-left: 5px solid #c53030;
+}
+.toast-premium.toast-success {
+    background: #f0fff4;
+    color: #2f855a;
+    border-left: 5px solid #2f855a;
+}
+.toast-premium i {
+    font-size: 18px;
 }
