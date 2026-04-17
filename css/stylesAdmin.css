@@ -1060,12 +1060,15 @@ body {
     }
 
     /* Columna de descripción expandida (Cursos) */
-    .col-descripcion {
+    .col-descripcion, .col-nombre {
         min-width: 250px;
         max-width: 450px !important;
         color: #4a5568 !important;
         font-size: 13px;
         line-height: 1.5;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
     }
 
     .data-table tbody td:nth-child(2) {
@@ -1402,15 +1405,7 @@ body {
     align-items: center;
     gap: 12px;
 }
-.modal-seccion-titulo {
-    font-size: 14px;
-    font-weight: 700;
-    color: #2c7a7b;
-    letter-spacing: 1.5px;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #edf2f7;
-}
+
 .horario-card-registro {
     position: relative;
     background: #ffffff;

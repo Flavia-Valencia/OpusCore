@@ -663,25 +663,27 @@ if (buscadorCurso) {
     });
 }
 
-// Función que valida que se pueda deseleccionar el prerequisito en crear curso
-
+// Función que valida que se pueda deseleccionar el prerrequisito sin Ctrl y evita seleccionarse a sí mismo
     document.querySelectorAll('.select-prerrequisitos').forEach(select =>{
-        select.addEventListener('mousedown', function(e){
-            e.preventDefault();
-            const option = e.target;
+        // Usamos pointerdown para soportar mouse y touch por igual
+        select.addEventListener('pointerdown', function(e) {
+        const option = e.target;
+        e.preventDefault(); 
 
-            if(option.tagName === 'OPTION'){
+        if (option.tagName === 'OPTION') {
                 const idCursoActual = document.getElementById('edit-id-curso')
                 ? document.getElementById('edit-id-curso').value 
-                :null;
-                //  -- MENSAJE DE ERROR SOBRE PREREQUISITO DE SU PROPIO CURSO ---
-
-                if(idCursoActual && option.value === idCursoActual){
-                    mostrarToastPremium('El curso no puede ser su propio prerrequisito', 'error');
-                    return;
-                }
-                option.selected = !option.selected;
-            }             
+                : null;
+                // --- VALIDACIÓN: NO PUEDE SER SU PROPIO PRERREQUISITO ---
+            if (idCursoActual && option.value === idCursoActual) {
+                mostrarToastPremium('El curso no puede ser su propio prerrequisito', 'error');
+                return;
+            }
+            // Toggle manual de selección
+            option.selected = !option.selected;
+            // Disparamos evento 'change' manualmente
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
     });
 });
 

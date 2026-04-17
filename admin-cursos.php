@@ -119,7 +119,7 @@ if(!isset($_SESSION["usuario"])){
             <h3 class="modal-subtitulo">Detalles del curso</h3>
             <div class="modal-grid">
 
-                <div class="modal-campo">
+                <div class="modal-campo full-width">
                     <label>Nombre del curso</label>
                     <input type="text" name="nombre" required>
                 </div>
@@ -201,7 +201,7 @@ if(!isset($_SESSION["usuario"])){
 
             <div class="modal-grid">
 
-                <div class="modal-campo">
+                <div class="modal-campo full-width">
                     <label>Nombre del curso</label>
                     <input type="text" name="nombre" id="edit-nombre-curso" required>
                 </div>
@@ -274,10 +274,10 @@ if(!isset($_SESSION["usuario"])){
         </button>
 
         <h2 class="modal-titulo">
-            <i class="fas fa-clock"></i> HORARIO
+            <i class="fas fa-book"></i> Horario
         </h2>
 
-        <div class="modal-seccion-titulo">CONFIGURACIÓN DE BLOQUES</div>
+       <h3 class="modal-subtitulo">Configuracion de bloque</h3>
 
         <div id="bloques-horario-container">
             <!-- Los bloques de horario se cargarán aquí dinámicamente -->
@@ -312,7 +312,7 @@ if(!isset($_SESSION["usuario"])){
                             </div>
                         </div>
                         <div class="horario-campo">
-                            <label>SALÓN / AULA</label>
+                            <label>AULA</label>
                             <div class="select-wrapper">
                                 <i class="fas fa-door-open icon-input"></i>
                                 <select class="premium-select aula-select">
