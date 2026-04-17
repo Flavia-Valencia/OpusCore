@@ -104,10 +104,21 @@ if(!isset($_SESSION["usuario"])){
             
             <!-- CARDS -->
             <section class="courses">
-                <div class="card"></div>
-                <div class="card"></div>
-                <div class="card"></div>
-                <div class="card"></div>
+                <?php
+                include("includes/conexion.php");
+                include("obtener-cursos-docente.php");
+
+                $cursos = getCursosDocente($conexion, $_SESSION["usuario"]);
+
+                foreach ($cursos as $curso): ?>
+                    <div class="card">
+                        <h3><?php echo htmlspecialchars($curso['nombre']); ?></h3>
+                        <p><?php echo htmlspecialchars($curso['descripcion']); ?></p>
+                        <p><?php echo date('d/m/Y', strtotime($curso['fechaInicio'])); ?> — <?php echo date('d/m/Y', strtotime($curso['fechaFin'])); ?></p>
+                        <p>Cupos: <?php echo $curso['cupos']; ?></p>
+                        <p>$<?php echo number_format($curso['costoMensual'], 2); ?>/mes</p>
+                    </div>
+                <?php endforeach; ?>
             </section>
         
         </div>
