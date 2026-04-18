@@ -442,7 +442,7 @@ fetch(archivo, {
                 // Mover la fila de vuelta al final
                 fila.parentElement.appendChild(fila);
 
-                mostrarToastPremium('El docente ya tiene 4 cursos activos. Asigna otro docente antes de activar.');
+                mostrarToastPremium('El docente ya tiene 4 cursos activos. Desasigna al docente de otro curso para poder activar este.');
                 return;
             }
 
