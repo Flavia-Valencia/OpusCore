@@ -1,137 +1,209 @@
-/* =====================
-   RESET GENERAL
-   ===================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* =====================
-   FUENTE GLOBAL
-   ===================== */
 .raleway-all {
   font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
-/* =====================
-   FONDO GENERAL
-   ===================== */
 body {
-  background: #f4f6f9;
+  background: #f0f4f8;
+  min-height: 100vh;
 }
 
-/* =====================
-   LAYOUT PRINCIPAL
-   ===================== */
+/* Ocultar el checkbox del menú hamburguesa sin que genere espacio ni líneas */
+#sidebar-toggle {
+  position: fixed;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
 .layout {
   display: flex;
+  min-height: 100vh;
 }
 
-/* =====================
-   SIDEBAR
-   ===================== */
 .sidebar {
-  width: 220px;
-  height: 100vh;
-  background: #053170;
+  width: 230px;
+  min-height: 100vh;
+  background: linear-gradient(to top, #04224e 75%);
   color: white;
-  padding: 20px;
+  padding: 24px 16px;
   position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transition: left 0.3s ease;
 }
 
-/* =====================
-   LOGO SIDEBAR (NUEVO)
-   ===================== */
-.logo {
+.sidebar-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
+  gap: 12px;
+  padding: 0 8px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 20px;
 }
 
 .logo-img-sidebar {
   width: 40px;
+  height: 40px;
+  object-fit: contain;
+  opacity: 0.95;
 }
 
-.logo-text {
-  font-size: 12px;
+.logo-text-sidebar {
   line-height: 1.2;
 }
 
-/* =====================
-   MENÚ
-   ===================== */
-.sidebar ul {
+.logo-text-sidebar span {
+  display: block;
+  font-size: 9px;
+  opacity: 0.65;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.logo-text-sidebar strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+/*Para mostrar la X de cerrar*/
+.sidebar-close {
+  display: none;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sidebar-close:hover {
+  color: white;
+}
+
+/* Navegación del sidebar */
+.sidebar nav ul {
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .sidebar li {
   display: flex;
   align-items: center;
   gap: 10px;
-
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  padding: 11px 14px;
+  border-radius: 10px;
   cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  transition: background 0.2s, color 0.2s;
+}
 
-  transition: 0.3s;
+.sidebar li i {
+  width: 16px;
+  text-align: center;
+  font-size: 13px;
 }
 
 .sidebar li:hover {
-  background: #1D4B73;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
 }
 
 .sidebar li.active {
-  background: #069DBF;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 600;
 }
 
-/* =====================
-   CONTENIDO
-   ===================== */
+/* Cerrar sesión al fondo del sidebar */
+.sidebar-logout {
+  display: none;
+  margin-top: auto;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 10px;
+  align-items: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-logout i {
+  font-size: 13px;
+}
+
+.sidebar-logout:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
 .content {
-  margin-left: 220px;
-  width: 100%;
+  margin-left: 230px;
+  width: calc(100% - 230px);
+  display: flex;
+  flex-direction: column;
 }
 
-/* =====================
-   HEADER
-   ===================== */
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-
-  background: linear-gradient(135deg, #053170, #069DBF);
-  color: white;
-
-  padding: 12px 24px;
+  background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+  padding: 13px 28px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-/* =====================
-   USER PROFILE
-   ===================== */
+/* Label que actúa como botón hamburguesa (solo móvil) */
+.menu-toggle {
+  display: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: auto;
+  padding: 2px 6px;
+  user-select: none;
+}
+
+/* Botón logout en el header */
 .user-profile {
   display: flex;
   align-items: center;
   gap: 10px;
-
-  padding: 8px 14px;
-  border-radius: 20px;
-
+  padding: 8px 16px;
+  border-radius: 50px;
   text-decoration: none;
   color: white;
-
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-
-  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: all 0.25s ease;
 }
 
 .user-profile:hover {
   background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .user-info {
@@ -141,122 +213,263 @@ body {
 }
 
 .user-role {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 .user-email {
   font-size: 11px;
-  opacity: 0.8;
+  opacity: 0.7;
+  line-height: 1.2;
 }
 
 .logout-icon {
-  font-size: 16px;
-}
-
-/* =====================
-   BIENVENIDA
-   ===================== */
-.welcome {
-  padding: 24px 20px 10px;
-}
-
-.welcome h1 {
-  font-size: 22px;
-  margin-bottom: 6px;
-  color: #053170;
-}
-
-.welcome p {
   font-size: 14px;
-  color: #555;
+  opacity: 0.9;
+}
+/*Para el banner de bienvenido*/
+.welcome {
+  margin: 28px 28px 0;
+  background: linear-gradient(to top, #053170);
+  border-radius: 16px;
+  padding: 28px 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
 }
 
-/* =====================
-   CURSOS
-   ===================== */
+.welcome::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.welcome::after {
+  content: "";
+  position: absolute;
+  bottom: -50px;
+  right: 130px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+.welcome-left h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.welcome-left p {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.welcome-date {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.85;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #5a6a84;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 24px 28px 10px;
+}
+
 .courses {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  padding: 20px;
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  padding: 0 28px 32px;
+  gap: 18px;
 }
-
-/* =====================
-   CARD
-   ===================== */
+/* Tarjetas de los cursos*/
 .card {
   background: white;
-  border-radius: 12px;
-  height: 150px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  padding: 22px;
+  border: 1px solid #e8edf5;
+  border-left: 3px solid #069DBF;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* =====================
-   BOTÓN HAMBURGUESA
-   ===================== */
-.menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 22px;
-  cursor: pointer;
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(5, 49, 112, 0.1);
 }
 
-/* =====================
-   OVERLAY
-   ===================== */
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #053170;
+  line-height: 1.3;
+}
+
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: #e1f5fb;
+  color: #069DBF;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+.card-desc {
+  font-size: 12px;
+  color: #8a97b0;
+  margin-bottom: 16px;
+  line-height: 1.55;
+}
+
+.card-divider {
+  height: 1px;
+  background: #f0f4f8;
+  margin-bottom: 16px;
+}
+
+.card-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.meta-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #aab4c8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meta-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d3a52;
+}
+
+.meta-value.price {
+  color: #069DBF;
+}
+
+.no-cursos {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  color: #aab4c8;
+  font-size: 14px;
+}
 .overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
-  z-index: 900;
   display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 900;
 }
-
-.overlay.active {
-  display: block;
-}
-
-/* =====================
-   RESPONSIVE REAL (MÓVIL)
-   ===================== */
+/*Inician estilos del responsive*/
 @media (max-width: 768px) {
 
-  /* MOSTRAR HAMBURGUESA */
+  .sidebar {
+    left: -250px;
+  }
+
   .menu-toggle {
     display: block;
   }
 
-  /* SIDEBAR OCULTO */
-  .sidebar {
-    left: -250px;
-    top: 0;
-    width: 220px;
-    z-index: 1000;
-    transition: left 0.3s ease;
+  .sidebar-close {
+    display: block;
   }
 
-  .sidebar.active {
+  .sidebar-logout {
+    display: flex;
+  }
+
+  .user-profile {
+    display: none;
+  }
+
+  .content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .header {
+    justify-content: space-between;
+    padding: 12px 16px;
+  }
+
+  #sidebar-toggle:checked ~ .layout .sidebar {
     left: 0;
   }
 
-  /* CONTENIDO NORMAL */
-  .content {
-    margin-left: 0;
+  #sidebar-toggle:checked ~ .overlay {
+    display: block;
   }
 
-  /* CARDS EN COLUMNA */
+  .logo-text-sidebar {
+    display: none;
+  }
+
+  .welcome {
+    margin: 16px 16px 0;
+    padding: 22px 22px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .welcome-left h1 {
+    font-size: 18px;
+  }
+
+  .welcome-date {
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .section-title {
+    padding: 20px 16px 8px;
+  }
+
   .courses {
     grid-template-columns: 1fr;
-  }
-
-  /* OPCIONAL: ocultar texto logo en móvil */
-  .logo-text {
-    display: none;
+    padding: 0 16px 24px;
+    gap: 14px;
   }
 }
