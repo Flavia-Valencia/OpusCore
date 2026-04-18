@@ -189,6 +189,7 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
         // Rellenar datos
         document.getElementById('edit-id-curso').value = this.dataset.id;
         document.getElementById('edit-nombre-curso').value = this.dataset.nombre;
+        document.getElementById('edit-docente-curso').value = this.dataset.docente;
         document.getElementById('edit-descripcion-curso').value = this.dataset.descripcion;
         document.getElementById('edit-fecha-inicio').value = this.dataset.fechainicio;
         document.getElementById('edit-fecha-fin').value = this.dataset.fechafin; // aqui lo que hice fue eliminar el dato de duracion ya que era redundante y cambiarlo por fecha inicio/fin - Yahir
@@ -657,8 +658,8 @@ if (buscadorCurso) {
 
         filas.forEach(function(fila) {
             const nombre = fila.cells[0].textContent.toLowerCase();
-
-            fila.style.display = (nombre.includes(filtro)) ? '' : 'none';
+            const docente = fila.cells[1].textContent.toLowerCase();
+           fila.style.display = (nombre.includes(filtro) || docente.includes(filtro)) ? '' : 'none';
         });
     });
 }

@@ -134,7 +134,7 @@ body {
 /* ── CONTENIDO PRINCIPAL ─────────────────────────────────── */
 .main {
     padding: 30px 40px;
-    max-width: 1200px;
+    max-width: 1400px; /* Espacio para acomodar nuevas columnas */
     margin: 0 auto;
 }
 
@@ -177,9 +177,10 @@ body {
 .card {
     background-color: white;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
     border-radius: 16px;
+    width: 100%;
 }
 
 /* barra de búsqueda encima de la tabla */
@@ -205,6 +206,15 @@ body {
 .tabla-placeholder {
     min-height: 300px;
     padding: 20px;
+}
+
+.col-fecha {
+    white-space: nowrap !important;
+}
+
+.col-docente {
+    white-space: nowrap !important;
+    min-width: 150px !important;
 }
 
 /* ── MENÚ HAMBURGUESA (lógica sin JS con checkbox oculto) ── */
