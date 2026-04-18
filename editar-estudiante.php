@@ -1,7 +1,9 @@
 <?php
 include("includes/conexion.php");
 
-$id = $_POST['usuario_id'];
+
+$usuario_id = $_POST['usuario_id'];
+$estudiante_id = $_POST['estudiante_id'];
 $nombre = $_POST['nombre'];
 $apellido = $_POST['apellido'];
 $correo = $_POST['correo'];
@@ -19,7 +21,7 @@ apellido='$apellido',
 estado= '$estado',
 correo='$correo',
 password_hash='$password'
-WHERE id='$id'";
+WHERE id='$usuario_id'";
 mysqli_query($conexion, $sql_usuario);
 
 $sql_estudiante= "UPDATE estudiantes SET
@@ -27,7 +29,7 @@ fecha_nacimiento='$fecha_nacimiento',
 genero='$genero',
 telefono='$telefono',
 direccion='$direccion'
-WHERE usuario_id='$id'";
+WHERE usuario_id='$usuario_id'";
 mysqli_query($conexion, $sql_estudiante);
 
 header("Location: admin-estudiantes.php");

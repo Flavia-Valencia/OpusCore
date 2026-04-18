@@ -4,6 +4,7 @@ include('includes/conexion.php');
 // consulta que une la tabla docentes con usuarios para obtener todos los datos del docente
 $sql = "SELECT
     u.id AS usuario_id,
+    d.id AS docente_id,
     u.nombre, 
     u.apellido,
     u.correo,
@@ -43,7 +44,7 @@ if (mysqli_num_rows($resultado) > 0 ){
             <?php while($fila = mysqli_fetch_assoc($resultado)){ ?>
             <tr data-id="<?php echo $fila['usuario_id']; ?>">
                 
-                <td data-label="ID"><?php echo $fila['usuario_id']; ?></td>
+                <td data-label="ID"><?php echo $fila['docente_id']; ?></td>
                 <td data-label="Nombre"><?php echo htmlspecialchars($fila['nombre']); ?></td>
                 <td data-label="Apellido"><?php echo htmlspecialchars($fila['apellido']); ?></td>
                 <td data-label="Especialidad"><?php echo htmlspecialchars($fila['especialidad']); ?></td>
@@ -57,7 +58,8 @@ if (mysqli_num_rows($resultado) > 0 ){
                         <a 
                             href="#"
                             class="link-accion abrir-modal-docente"
-                            data-id="<?php echo $fila['usuario_id']; ?>"
+                            data-docente_id="<?php echo $fila['docente_id']; ?>"
+                            data-usuario_id="<?php echo $fila['usuario_id']; ?>"
                             data-nombre="<?php echo htmlspecialchars($fila['nombre']); ?>"
                             data-apellido="<?php echo htmlspecialchars($fila['apellido']); ?>"
                             data-especialidad="<?php echo htmlspecialchars($fila['especialidad']); ?>"
@@ -81,6 +83,7 @@ if (mysqli_num_rows($resultado) > 0 ){
                         <a 
                             href="#" 
                              class="link-accion btn-toggle-estado <?php echo ($fila['estado'] == 'Activo' || $fila['estado'] == 1) ? 'estado-activo' : 'estado-inactivo'; ?>"
+                             data-usuario_id="<?php echo $fila['usuario_id']; ?>"
                         >
                             <?php echo ($fila['estado'] == 'Activo' || $fila['estado'] == 1) ? 'Activo' : 'Inactivo'; ?>
                         </a>
