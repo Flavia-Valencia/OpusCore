@@ -712,25 +712,98 @@ function mostrarToastPremium(mensaje, tipo = 'error') {
         setTimeout(() => toast.remove(), 500);
     }, 4000);
 }
+// -- CATÁLOGOS HORARIOS ---
+let catalogoHorarios =[];
+let catalogoAulas =[];
+
+async function cargarCatalogos(){
+    if (catalogoHorarios.length > 0) return;
+    try{
+        const res = await fetch('obtener-horarios-aulas.php');
+        const data = await res.json();
+        catalogoHorarios = data.horarios;
+        catalogoAulas = data.aulas;
+    } catch {
+        mostrarToastPremium('Error al cargar el catálogo de horarios')
+    }
+}
+
+function llenarSelects(card){
+    const horarioSelect = card.querySelector('.horario-select');
+    const aulaSelect = card.querySelector('.aula-select');
+
+    horarioSelect.innerHTML = '<option value="">Seleccione un rango</option>';
+    aulaSelect.innerHTML    = '<option value="">Seleccione salón</option>';
+
+    catalogoHorarios.forEach(h => {
+        const opt = document.createElement('option');
+        opt.value       = h.id;
+        opt.textContent = h.etiqueta;
+        horarioSelect.appendChild(opt);
+    });
+
+     catalogoAulas.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value       = a.id;
+        opt.textContent = a.aula;
+        aulaSelect.appendChild(opt);
+    });
+}
+
 // --- LÓGICA MODAL HORARIOS PREMIUM ---
 function agregarBloqueHorario() {
     const container = document.getElementById('bloques-horario-container');
     const template = document.getElementById('template-horario-card');
     if (!container || !template) return;
     const clone = template.content.cloneNode(true);
+    const card = clone.querySelector('.horario-card-registro');
+    llenarSelects(card);
     container.appendChild(clone);
 }
-function abrirModalHorarios(idCurso) {
+async function abrirModalHorarios(idCurso) {
     const modal = document.getElementById('modalHorarios');
     const container = document.getElementById('bloques-horario-container');
     if (!modal || !container) return;
+    
+    await cargarCatalogos();
     
     // Guardar ID del curso en el modal para referencia
     modal.dataset.idCurso = idCurso;
     
     // Limpiar container y agregar un bloque inicial
     container.innerHTML = '';
-    agregarBloqueHorario();
+    //cargar los horarios ya guardados
+    try{
+        const res    = await fetch(`obtener-horarios-cursos.php?idCurso=${idCurso}`);
+        const bloques = await res.json();
+
+        if (bloques.length > 0) {
+            bloques.forEach(bloque => {
+                agregarBloqueHorario();
+                // Seleccionar el último bloque agregado
+                const cards = container.querySelectorAll('.horario-card-registro');
+                const card  = cards[cards.length - 1];
+
+                // Marcar el día
+                card.querySelectorAll('.dia-tag').forEach(tag => {
+                    if (bloque.dias.includes(tag.dataset.dia)){
+                        tag.classList.add('active');
+                    }
+                });
+
+                // Seleccionar horario y aula
+                card.querySelector('.horario-select').value = bloque.idHorario;
+                card.querySelector('.aula-select').value    = bloque.idAula;
+            });
+
+    }else{
+         agregarBloqueHorario(); //sin horarios si falla
+
+    }
+}catch{
+     agregarBloqueHorario(); //si falla muestra un bloque vacío
+}
+   
     modal.classList.add('activo');
     document.body.style.overflow = 'hidden';
 }
@@ -778,7 +851,7 @@ document.addEventListener('click', function(e) {
 // Botón Guardar Horarios
 const btnGuardarHorarios = document.getElementById('btn-guardar-horarios');
 if (btnGuardarHorarios) {
-    btnGuardarHorarios.addEventListener('click', function() {
+    btnGuardarHorarios.addEventListener('click', async function() {
         const modal = document.getElementById('modalHorarios');
         const idCurso = modal.dataset.idCurso;
         const cards = document.querySelectorAll('.horario-card-registro');
@@ -809,12 +882,23 @@ if (btnGuardarHorarios) {
         };
         console.log('Datos consolidados para Backend:', data);
         
-        // Simulación de éxito (El backend real persistirá estos datos en SQL)
+        try {
+    const res  = await fetch('guardar-horarios.php', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(data)
+    });
+    const respuesta = await res.json();
+
+    if (respuesta.success) {
         mostrarToastPremium('Horarios guardados correctamente', 'success');
-        
-        setTimeout(() => {
-            cerrarModalHorarios();
-        }, 1500);
+        setTimeout(() => cerrarModalHorarios(), 1500);
+    } else {
+        mostrarToastPremium(respuesta.message || 'Error al guardar');
+    }
+} catch {
+    mostrarToastPremium('Error de conexión');
+}
     });
 }
 
