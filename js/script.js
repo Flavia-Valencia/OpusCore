@@ -401,13 +401,51 @@ document.addEventListener('click', function(e) {
 
         modal.classList.remove('active');
 
-        fetch(archivo, {
+fetch(archivo, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'id=' + id
         })
         .then(res => res.json())
         .then(data => {
+            // Si el servidor devuelve error de límite, revertir cambio visual y mostrar alerta
+            if (data.error === 'limite_docente') {
+
+                // Revertir el botón a su estado original
+                btn.classList.remove('estado-activo');
+                btn.classList.add('estado-inactivo');
+                btn.textContent = 'Activar';
+
+                // Revertir texto de la celda estado
+                const celdaEstado = fila.querySelector('td[data-label="Estado"]');
+                if (celdaEstado) celdaEstado.textContent = 'Inactivo';
+
+                // Revertir gris y bloqueo
+                fila.querySelectorAll('td').forEach(td => {
+                    td.style.backgroundColor = '#e9ecef';
+                    td.style.color = '#6c757d';
+                    td.style.opacity = '0.7';
+                });
+
+                const btnEditar = fila.querySelector('.abrir-modal-curso');
+                const btnHorarios = fila.querySelector('.horarios');
+
+                if (btnEditar) {
+                    btnEditar.style.pointerEvents = 'none';
+                    btnEditar.style.opacity = '0.5';
+                }
+                if (btnHorarios) {
+                    btnHorarios.style.pointerEvents = 'none';
+                    btnHorarios.style.opacity = '0.5';
+                }
+
+                // Mover la fila de vuelta al final
+                fila.parentElement.appendChild(fila);
+
+                mostrarToastPremium('El docente ya tiene 4 cursos activos. Asigna otro docente antes de activar.');
+                return;
+            }
+
             console.log('Guardado en BD:', data);
         })
         .catch(err => {

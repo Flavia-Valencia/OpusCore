@@ -14,7 +14,8 @@ $sql = "SELECT c.id,
                GROUP_CONCAT(p.idCursoPrevio) AS prerrequisitos
         FROM cursos c
         LEFT JOIN prerrequisitos p ON c.id = p.idCursoActual
-        LEFT JOIN usuarios u ON c.idDocente = u.id
+        LEFT JOIN docentes d ON c.idDocente = d.id
+        LEFT JOIN usuarios u ON d.usuario_id = u.id
         GROUP BY c.id
         ORDER BY c.estado DESC";
 
