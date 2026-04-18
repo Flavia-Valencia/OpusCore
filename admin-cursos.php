@@ -9,6 +9,21 @@ if(!isset($_SESSION["usuario"])){
     header("Location: login.php");
     exit();
 }
+
+include("includes/conexion.php");
+// Carga docentes con su id de la tabla docentes y cuenta sus cursos activos
+$query_doc = "SELECT d.id, CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo,
+              COUNT(c.id) AS total_cursos
+              FROM docentes d
+              INNER JOIN usuarios u ON d.usuario_id = u.id
+              LEFT JOIN cursos c ON c.idDocente = d.id AND c.estado = 1
+              WHERE u.estado = 1
+              GROUP BY d.id";
+$res_doc = mysqli_query($conexion, $query_doc);
+$docentes = [];
+while($doc = mysqli_fetch_assoc($res_doc)) {
+    $docentes[] = $doc;
+}
 ?>
 
 <!DOCTYPE html>
@@ -91,6 +106,12 @@ if(!isset($_SESSION["usuario"])){
                 </div>
             <?php endif; ?>
 
+            <?php if(isset($_GET['error']) && $_GET['error'] == 'limite_docente'): ?>
+                <div class="toast-error">
+                    El docente ya tiene 4 cursos activos asignados.
+                </div>
+            <?php endif; ?>
+
         <?php endif; ?>
         
         <div class="card">
@@ -126,18 +147,16 @@ if(!isset($_SESSION["usuario"])){
 
                 <div class="modal-campo full-width">
                     <label>Docente asignado</label>
+                    <!-- Select cargado desde BD, deshabilita docentes que ya tienen 4 cursos activos -->
                     <select name="idDocente" required>
                         <option value="">Seleccione un docente</option>
-                        <?php
-                        $query_doc = "SELECT u.id, CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo 
-                                      FROM usuarios u 
-                                      WHERE u.rol_id = 3 AND u.estado = 1";
-                        $res_doc = mysqli_query($conexion, $query_doc);
-                        while($doc = mysqli_fetch_assoc($res_doc)) { ?>
-                            <option value="<?php echo $doc['id']; ?>">
+                        <?php foreach($docentes as $doc): 
+                            $lleno = $doc['total_cursos'] >= 4; ?>
+                            <option value="<?php echo $doc['id']; ?>" <?php echo $lleno ? 'disabled' : ''; ?>>
                                 <?php echo htmlspecialchars($doc['nombre_completo']); ?>
+                                <?php echo $lleno ? '(máx. cursos)' : ''; ?>
                             </option>
-                        <?php } ?>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -152,7 +171,6 @@ if(!isset($_SESSION["usuario"])){
                     <label>Prerrequisitos (opcional)</label>
                     <select name="prerrequisitos[]" multiple class="select-prerrequisitos">
                         <?php
-                        include("includes/conexion.php");
                         $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
                         $result = mysqli_query($conexion, $query);
                         while($curso = mysqli_fetch_assoc($result)) { ?>
@@ -182,8 +200,6 @@ if(!isset($_SESSION["usuario"])){
                     <label>Fecha Fin</label>
                     <input type="date" name="fechaFin" required>
                 </div>
-
-                <input type="hidden" name="idDocente" value="6"> <!-- aquí va a ir el ID del docente asignado a la materia/curso -->
 
              </div>
 
@@ -225,19 +241,18 @@ if(!isset($_SESSION["usuario"])){
 
                 <div class="modal-campo full-width">
                     <label>Docente asignado</label>
+                    <!-- Reutiliza el arreglo $docentes cargado arriba, deshabilita docentes con 4 cursos activos -->
                     <select name="idDocente" id="edit-docente-curso" required>
                         <option value="">Seleccione un docente</option>
-                        <?php
-                        // Reutilizamos la lógica de carga de docentes
-                        mysqli_data_seek($res_doc, 0); 
-                        while($doc = mysqli_fetch_assoc($res_doc)) { ?>
-                            <option value="<?php echo $doc['id']; ?>">
+                        <?php foreach($docentes as $doc): 
+                            $lleno = $doc['total_cursos'] >= 4; ?>
+                            <option value="<?php echo $doc['id']; ?>" <?php echo $lleno ? 'disabled' : ''; ?>>
                                 <?php echo htmlspecialchars($doc['nombre_completo']); ?>
+                                <?php echo $lleno ? '(máx. cursos)' : ''; ?>
                             </option>
-                        <?php } ?>
+                        <?php endforeach; ?>
                     </select>
                 </div>
-
 
                 <div class="modal-campo full-width" style="grid-column: span 2;">
                     <label>Descripción</label>
@@ -248,7 +263,6 @@ if(!isset($_SESSION["usuario"])){
                     <label>Prerrequisitos (opcional)</label>
                     <select name="prerrequisitos[]" multiple class="select-prerrequisitos" id="edit-prerrequisitos">
                         <?php
-                        include("includes/conexion.php");
                         $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
                         $result = mysqli_query($conexion, $query);
                         while($curso = mysqli_fetch_assoc($result)) { ?>
