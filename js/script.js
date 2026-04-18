@@ -27,7 +27,8 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
         if (!modal) return;
 
         // rellena cada campo del formulario con los datos del docente
-        document.getElementById('editd-id').value               = this.dataset.id;
+        document.getElementById('editd-docente_id').value       = this.dataset.docente_id;
+        document.getElementById('editd-usuario_id').value       = this.dataset.usuario_id;
         document.getElementById('editd-nombre').value           = this.dataset.nombre;
         document.getElementById('editd-apellido').value         = this.dataset.apellido;
         document.getElementById('editd-especialidad').value     = this.dataset.especialidad;
@@ -99,7 +100,8 @@ document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
         if (!modal) return;
         
         // Rellena cada campo del formulario con los datos del estudiante
-        document.getElementById('edit-id').value = this.dataset.id;
+        document.getElementById('editd-estudiante_id').value = this.dataset.estudiante_id;
+        document.getElementById('editd-usuario_id').value = this.dataset.usuario_id;
         document.getElementById('edit-nombre').value     = this.dataset.nombre;
         document.getElementById('edit-apellido').value   = this.dataset.apellido;
         document.getElementById('edit-fecha_nacimiento').value = this.dataset.fecha_nacimiento;

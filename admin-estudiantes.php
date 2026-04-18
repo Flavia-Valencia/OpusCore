@@ -102,7 +102,8 @@ if(!isset($_SESSION["usuario"])){
             <!-- Formulario para registrar un nuevo estudiante en el sistema -->
             <form method="POST" action="editar-estudiante.php">
                 <!-- ID oculto para identificar qué estudiante se está editando -->
-                <input type="hidden" name="usuario_id" id="edit-id">
+                <input type="hidden" name="usuario_id" id="editd-usuario_id">
+                <input type="hidden" name="estudiante_id" id="editd-estudiante_id">
 
                 <h3 class="modal-subtitulo">Detalles del estudiante</h3>
                 <div class="modal-grid">
