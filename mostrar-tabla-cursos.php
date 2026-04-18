@@ -9,9 +9,12 @@ $sql = "SELECT c.id,
                c.costoMensual, 
                c.cupos, 
                c.estado,
+               c.idDocente,
+               CONCAT(u.nombre, ' ', u.apellido) AS docente_full,
                GROUP_CONCAT(p.idCursoPrevio) AS prerrequisitos
         FROM cursos c
         LEFT JOIN prerrequisitos p ON c.id = p.idCursoActual
+        LEFT JOIN usuarios u ON c.idDocente = u.id
         GROUP BY c.id
         ORDER BY c.estado DESC";
 
@@ -23,9 +26,10 @@ if (mysqli_num_rows($resultado) > 0 ){
         <thead>
             <tr>
                 <th>Nombre</th>
+                <th class ="col-docente">Docente</th>
                 <th>Descripción</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Fin</th>
+                <th class= "col-fecha">Fecha Inicio</th>
+                <th class= "col-fecha">Fecha Fin</th>
                 <th>Costo Mensual</th>
                 <th>Cupos</th>
                 <th>Estado</th>
@@ -37,9 +41,10 @@ if (mysqli_num_rows($resultado) > 0 ){
             <?php while($fila = mysqli_fetch_assoc($resultado)){ ?>
             <tr data-id="<?php echo $fila['id']; ?>">
                 <td data-label="Nombre" class="col-nombre"><?php echo htmlspecialchars($fila['nombre']); ?></td>
+                <td data-label="Docente" class= "col-docente"><?php echo htmlspecialchars($fila['docente_full'] ?? 'Sin asignar'); ?></td>
                 <td data-label="Descripción" class="col-descripcion"><?php echo htmlspecialchars($fila['descripcion']); ?></td>
-                <td data-label="Fecha Inicio"><?php echo $fila['fechaInicio']; ?></td>
-                <td data-label="Fecha Fin"><?php echo $fila['fechaFin']; ?></td>
+                <td data-label="Fecha Inicio" class="col-fecha"><?php echo $fila['fechaInicio']; ?></td>
+                <td data-label="Fecha Fin" class="col-fecha"><?php echo $fila['fechaFin']; ?></td>
                 <td data-label="Costo Mensual">$<?php echo $fila['costoMensual']; ?></td>
                 <td data-label="Cupos"><?php echo $fila['cupos']; ?></td>
                 <td data-label="Estado"><?php echo $fila['estado'] == 1 ? 'Activo' : 'Inactivo'; ?></td>
@@ -66,6 +71,7 @@ if (mysqli_num_rows($resultado) > 0 ){
                             class="link-accion abrir-modal-curso"
                             data-id="<?php echo $fila['id']; ?>"
                             data-nombre="<?php echo htmlspecialchars($fila['nombre']); ?>"
+                            data-docente="<?php echo $fila['idDocente']; ?>"
                             data-descripcion="<?php echo htmlspecialchars($fila['descripcion']); ?>"
                             data-fechainicio="<?php echo $fila['fechaInicio']; ?>"
                             data-fechafin="<?php echo $fila['fechaFin']; ?>"
