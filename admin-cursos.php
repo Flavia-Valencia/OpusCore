@@ -125,6 +125,23 @@ if(!isset($_SESSION["usuario"])){
                 </div>
 
                 <div class="modal-campo full-width">
+                    <label>Docente asignado</label>
+                    <select name="idDocente" required>
+                        <option value="">Seleccione un docente</option>
+                        <?php
+                        $query_doc = "SELECT u.id, CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo 
+                                      FROM usuarios u 
+                                      WHERE u.rol_id = 3 AND u.estado = 1";
+                        $res_doc = mysqli_query($conexion, $query_doc);
+                        while($doc = mysqli_fetch_assoc($res_doc)) { ?>
+                            <option value="<?php echo $doc['id']; ?>">
+                                <?php echo htmlspecialchars($doc['nombre_completo']); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <div class="modal-campo full-width">
                     <label>Descripción</label>
                     <input type="text" name="descripcion" placeholder="Descripción del curso">
                 </div>
@@ -206,7 +223,23 @@ if(!isset($_SESSION["usuario"])){
                     <input type="text" name="nombre" id="edit-nombre-curso" required>
                 </div>
 
-                  <div class="modal-campo full-width" style="grid-column: span 2;">
+                <div class="modal-campo full-width">
+                    <label>Docente asignado</label>
+                    <select name="idDocente" id="edit-docente-curso" required>
+                        <option value="">Seleccione un docente</option>
+                        <?php
+                        // Reutilizamos la lógica de carga de docentes
+                        mysqli_data_seek($res_doc, 0); 
+                        while($doc = mysqli_fetch_assoc($res_doc)) { ?>
+                            <option value="<?php echo $doc['id']; ?>">
+                                <?php echo htmlspecialchars($doc['nombre_completo']); ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+
+                <div class="modal-campo full-width" style="grid-column: span 2;">
                     <label>Descripción</label>
                     <input type="text" name="descripcion" id="edit-descripcion-curso" placeholder="Descripción del curso">
                 </div>
