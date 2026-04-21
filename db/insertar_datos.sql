@@ -30,16 +30,6 @@ INSERT INTO `cursos`(`nombre`, `descripcion`, `costoMensual`, `cupos`, `fechaIni
 
 INSERT INTO `prerrequisitos`(`idCursoActual`, `idCursoPrevio`) VALUES (3,1),(5,3);
 
-INSERT INTO `aulas`(`id`, `aula`, `capacidad`) VALUES 
-(1,'Aula 01',40),(2,'Aula 02',40),(3,'Aula 03',50),(4,'Aula 04',50),(5,'Aula 05',60),
-(6,'Aula 06',60),(7,'Aula 07',70),(8,'Aula 08',70),(9,'Aula 09',80),(10,'Aula 10',80),
-(11,'Aula 11',90),(12,'Aula 12',90),(13,'Aula 13',100),(14,'Aula 14',100);
-
-INSERT INTO `horarios`(`horaInicio`, `horaFin`, `etiqueta`) VALUES 
-('07:00:00','08:30:00','07:00 a.m. - 08:30 a.m.'),('08:40:00','10:10:00','08:40 a.m. - 10:10 a.m.'),
-('10:20:00','11:50:00','10:20 a.m. - 11:50 a.m.'),('13:00:00','14:30:00','01:00 p.m. - 02:30 p.m.'),
-('14:40:00','16:10:00','02:40 p.m. - 04:10 p.m.');
-
 INSERT INTO `CursoHorario` (`idCurso`, `dia`, `idHorario`, `idAula`) VALUES 
 (1,'Lunes',1,1),
 (2,'Lunes',2,1),
