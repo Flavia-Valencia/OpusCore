@@ -44,10 +44,11 @@ WHERE id = '$id'";
 mysqli_query($conexion, $sql);
 
 
-// inserta nuevos
+
+ //eliminar prerrequisitos anteriores
+ mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
+ // inserta nuevos
 if (!empty($_POST['prerrequisitos'])) {
-    //eliminar prerrequisitos anteriores
-    mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
     foreach ($_POST['prerrequisitos'] as $idCursoPrevio) {
         $idCursoPrevio = intval($idCursoPrevio);
         $idActual = intval($id);
@@ -60,7 +61,6 @@ if (!empty($_POST['prerrequisitos'])) {
         mysqli_query($conexion, $sql_pre);
     }
 }
-mysqli_query($conexion, $sql);
 
 header("Location: admin-cursos.php");
 exit();

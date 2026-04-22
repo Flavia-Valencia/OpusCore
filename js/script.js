@@ -378,26 +378,31 @@ document.addEventListener('click', function(e) {
             // desactivar → abajo
             tbody.appendChild(fila);
         } else {
-            // activar → ordenar por ID
+            // activar → ordenar por nombre alfabéticamente
             const filas = Array.from(tbody.querySelectorAll('tr'));
-
+            const col = document.getElementById('buscador-curso') ? 0 : 1;
+            const nombreNuevo = fila.cells[col].textContent.trim().toLowerCase();
+            
             let insertado = false;
 
             for (let f of filas) {
-                if (f === fila) continue;
-
-                const idActual = parseInt(f.dataset.id);
-                const idNuevo = parseInt(id);
-
-                if (idNuevo < idActual) {
+                if(f === fila) continue; //no compare consigo misma
+                const btnF = f.querySelector('.btn-toggle-estado');
+                if (btnF && btnF.classList.contains('estado-activo')) continue;
+                const nombreActual = f.cells[col].textContent.trim().toLowerCase();
+                if(nombreNuevo.localeCompare(nombreActual) < 0){
                     tbody.insertBefore(fila, f);
                     insertado = true;
                     break;
                 }
+
             }
 
             if (!insertado) {
-                tbody.appendChild(fila);
+                const primerInactivo = Array.from(tbody.querySelectorAll('tr')).find(f=>
+                  f.querySelector('.btn-toggle-estado')?.classList.contains('estado-inactivo')
+                );
+                primerInactivo ? tbody.insertBefore(fila, primerInactivo) : tbody.appendChild(fila);
             }
         }
 
@@ -508,11 +513,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ordenar activos por ID
+    // ordenar activos por nombre alafabéticamente
     activos.sort((a, b) => {
-        const idA = parseInt(a.dataset.id);
-        const idB = parseInt(b.dataset.id);
-        return idA - idB;
+        const col = document.getElementById('buscador-curso')? 0 : 1;
+        const nombreA = a.cells[col].textContent.trim().toLowerCase();
+        const nombreB = b.cells[col].textContent.trim().toLowerCase();
+        return nombreA.localeCompare(nombreB);
     });
 
     // reordenar correctamente

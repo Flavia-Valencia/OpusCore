@@ -18,7 +18,8 @@ $sql = "SELECT
     d.direccion
     FROM docentes d 
     INNER JOIN usuarios u ON d.usuario_id = u.id
-    WHERE u.rol_id = 3"; // rol_id 3 corresponde al rol de docente
+    WHERE u.rol_id = 3 
+    ORDER BY u.estado DESC, u.nombre ASC"; // Ordena alfebéticamente las tablas;
 
 $resultado = mysqli_query($conexion, $sql);
 

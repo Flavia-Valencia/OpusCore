@@ -16,8 +16,9 @@ $sql = "SELECT
     e.direccion
     FROM estudiantes e 
     INNER JOIN usuarios u ON e.usuario_id = u.id
-    WHERE u.rol_id = 2"; // rol_id 2 corresponde al rol de estudiante
-    
+    WHERE u.rol_id = 2
+    ORDER BY u.estado DESC, u.nombre ASC"; // Ordena alfebéticamente las tablas;
+
 $resultado = mysqli_query($conexion, $sql);
 
 if (mysqli_num_rows($resultado) > 0 ){

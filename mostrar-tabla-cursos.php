@@ -17,7 +17,7 @@ $sql = "SELECT c.id,
         LEFT JOIN docentes d ON c.idDocente = d.id
         LEFT JOIN usuarios u ON d.usuario_id = u.id
         GROUP BY c.id
-        ORDER BY c.estado DESC";
+        ORDER BY c.estado DESC, c.nombre ASC"; // Ordena alfebéticamente las tablas
 
 $resultado = mysqli_query($conexion, $sql);
 
