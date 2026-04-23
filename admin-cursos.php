@@ -144,7 +144,7 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                     <label>Nombre del curso</label>
                     <input type="text" name="nombre" required>
                 </div>
-
+                
                 <div class="modal-campo full-width">
                     <label>Docente asignado</label>
                     <!-- Select cargado desde BD, deshabilita docentes que ya tienen 4 cursos activos -->
@@ -165,11 +165,11 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                     <input type="text" name="descripcion" placeholder="Descripción del curso">
                 </div>
 
-                <!-- Select múltiple para elegir prerrequisitos Carga cursos activos desde la BD y envía varios IDs al backend --> 
+                <!-- Select para elegir prerrequisitos Carga cursos activos desde la BD y envía varios IDs al backend (luego lo arreglan)) --> 
 
                 <div class="modal-campo" style="grid-column: span 2;">
                     <label>Prerrequisitos (opcional)</label>
-                    <select name="prerrequisitos[]" multiple class="select-prerrequisitos">
+                    <select name="idPrerrequisitos"  id="nuevo-prerrequisitos">
                         <?php
                         $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
                         $result = mysqli_query($conexion, $query);
@@ -261,7 +261,8 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
 
                 <div class="modal-campo" style="grid-column: span 2;">
                     <label>Prerrequisitos (opcional)</label>
-                    <select name="prerrequisitos[]" multiple class="select-prerrequisitos" id="edit-prerrequisitos">
+                    <select name="idPrerrequisitos" id="edit-prerrequisitos">
+                        <option value =""> Seleccione un prerrequisito</option>
                         <?php
                         $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
                         $result = mysqli_query($conexion, $query);

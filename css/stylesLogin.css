@@ -346,3 +346,7 @@
     .iconos { gap: 4px; }
     .iconos a { font-size: 10px; padding: 4px 8px; }
 }
+
+.custom-modal-overlay {
+    display: none;
+}

@@ -76,8 +76,6 @@ if (mysqli_num_rows($resultado) > 0 ){
                             Editar
                         </a>
 
-                        <span class="separador-acciones">|</span>
-                        
                         <!-- BOTÓN TOGGLE ESTADO -->
 
                         <a 
