@@ -291,8 +291,6 @@ document.addEventListener('click', function(e) {
     mTitle.innerText = isActivo 
         ? `¿Desactivar ${tipo}?` 
         : `¿Activar ${tipo}?`;
-
-    // ✅ CORRECCIÓN AQUÍ
     if (isActivo) {
         if (tipo === 'curso') {
             mText.innerText = `El curso pasará a Inactivo. Se eliminará el docente y los horarios asignados para liberar los cupos.`;
