@@ -69,7 +69,6 @@ if (mysqli_num_rows($resultado) > 0 ){
                             Editar
                         </a>
                          <!-- Pide confirmación antes de eliminar para evitar borrados accidentales -->
-                        <span class="separador-acciones">|</span>
                         
                         <a 
                             href="#" 
