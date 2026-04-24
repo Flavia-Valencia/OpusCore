@@ -22,7 +22,7 @@ CREATE TABLE `cursos` (
     `fechaInicio` date COLLATE utf8mb4_general_ci NOT NULL, 
     `fechaFin` date COLLATE utf8mb4_general_ci NOT NULL, 
     `estado` tinyint(1) DEFAULT '1', 
-    `idDocente` int NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `idDocente` int DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 ALTER TABLE `cursos`
   ADD CONSTRAINT `cursos_ibfk_1` FOREIGN KEY (`idDocente`) REFERENCES `docentes` (`id`);
