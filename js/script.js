@@ -159,8 +159,6 @@ if (modalNuevo) {
 
 // MODAL NUEVO CURSO
 
-
-
 function cerrarModalNuevoCurso() {
     const modal = document.getElementById('modalNuevoCurso');
     if (modal) {
@@ -177,8 +175,6 @@ if (modalNuevoCurso) {
     });
 }
 
-// bueno
-
 // --- MODAL EDITAR CURSO ---
 
 document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
@@ -194,31 +190,39 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
         document.getElementById('edit-docente-curso').value = this.dataset.docente;
         document.getElementById('edit-descripcion-curso').value = this.dataset.descripcion;
         document.getElementById('edit-fecha-inicio').value = this.dataset.fechainicio;
-        document.getElementById('edit-fecha-fin').value = this.dataset.fechafin; // aqui lo que hice fue eliminar el dato de duracion ya que era redundante y cambiarlo por fecha inicio/fin - Yahir
-        document.getElementById('edit-costo-mensual').value = this.dataset.costo; // lo mismo con el precio, lo cambié por costo mensual - Yahir
+        document.getElementById('edit-fecha-fin').value = this.dataset.fechafin;
+        document.getElementById('edit-costo-mensual').value = this.dataset.costo;
 
         // Valida que el elemento exista antes de usarlo y asigna sus valores dinámicamente
         if(document.getElementById('edit-cupos')) {
             document.getElementById('edit-cupos').value = this.dataset.cupos;
         }
 
-         //obtiene los prerequisitos del curso actual
+        // Obtiene los prerequisitos del curso actual
         const prerequisitos = this.dataset.prerrequisitos
                              ? this.dataset.prerrequisitos.split(",") 
-                             :[];
+                             : [];
     
-    const select = document.getElementById('edit-prerrequisitos');
+        const select = document.getElementById('edit-prerrequisitos');
 
-    //limpia opción previa
-    Array.from(select.options).forEach(option =>{
-        option.selected = false;
-    });
-    
-    //Selecciona prerequisito correcto
-    prerequisitos.forEach(id =>{
-        const option = select.querySelector(`option[value="${id}"]`);
-        if(option) option.selected = true;
-    });
+        // Limpia opción previa
+        Array.from(select.options).forEach(option => {
+            option.selected = false;
+        });
+        
+        // Selecciona prerequisito correcto
+        prerequisitos.forEach(id => {
+            const option = select.querySelector(`option[value="${id}"]`);
+            if(option) option.selected = true;
+        });
+
+        // Si no hay prerrequisitos, seleccionar "Ninguno"
+        const haySeleccionado = Array.from(select.options).some(o => o.selected);
+        if (!haySeleccionado) {
+            const ninguno = select.querySelector('option[value=""]');
+            if (ninguno) ninguno.selected = true;
+        }
+
         if(document.getElementById('edit-estado-curso')) {
             const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
             document.getElementById('edit-estado-curso').value = estadoTexto;
@@ -257,11 +261,13 @@ document.body.insertAdjacentHTML('beforeend', customModalHTML);
 // - Actualiza inmediatamente el texto y estilos del botón en la interfaz
 // - Cambia visualmente la fila (gris si está inactivo)
 // - Bloquea botones de editar y horarios cuando está inactivo
+// - Al desactivar un curso, limpia visualmente la celda de docente
 // - Reordena la fila dinámicamente:
 //     * Inactivos se envían al final
 //     * Activos se insertan en su posición correcta por ID
 // - Mantiene estilos y bloqueos al recargar la página
 // - Envía el ID al servidor con fetch para guardar el cambio en la base de datos sin recargar
+
 document.addEventListener('click', function(e) {
 
     const btn = e.target.closest('.btn-toggle-estado');
@@ -285,10 +291,15 @@ document.addEventListener('click', function(e) {
     mTitle.innerText = isActivo 
         ? `¿Desactivar ${tipo}?` 
         : `¿Activar ${tipo}?`;
-
-    mText.innerText = isActivo 
-        ? `Pasará a Inactivo.` 
-        : `Pasará a Activo.`;
+    if (isActivo) {
+        if (tipo === 'curso') {
+            mText.innerText = `El curso pasará a Inactivo. Se eliminará el docente y los horarios asignados para liberar los cupos.`;
+        } else {
+            mText.innerText = `Pasará a Inactivo.`;
+        }
+    } else {
+        mText.innerText = `Pasará a Activo.`;
+    }
 
     modal.classList.add('active');
 
@@ -330,6 +341,12 @@ document.addEventListener('click', function(e) {
         const celdaEstado = fila.querySelector('td[data-label="Estado"]');
         if (celdaEstado) {
             celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
+        }
+
+        // Limpiar celda de docente visualmente al desactivar un curso
+        if (isActivo && document.getElementById('buscador-curso')) {
+            const celdaDocente = fila.querySelector('td[data-label="Docente"]');
+            if (celdaDocente) celdaDocente.textContent = '—';
         }
 
         // --- COLOR GRIS Y BLOQUEO (GENERAL PARA TODOS) ---
@@ -403,52 +420,15 @@ document.addEventListener('click', function(e) {
 
         modal.classList.remove('active');
 
-fetch(archivo, {
+        fetch(archivo, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'id=' + id
         })
         .then(res => res.json())
         .then(data => {
-            // Si el servidor devuelve error de límite, revertir cambio visual y mostrar alerta
-            if (data.error === 'limite_docente') {
-
-                // Revertir el botón a su estado original
-                btn.classList.remove('estado-activo');
-                btn.classList.add('estado-inactivo');
-                btn.textContent = 'Activar';
-
-                // Revertir texto de la celda estado
-                const celdaEstado = fila.querySelector('td[data-label="Estado"]');
-                if (celdaEstado) celdaEstado.textContent = 'Inactivo';
-
-                // Revertir gris y bloqueo
-                fila.querySelectorAll('td').forEach(td => {
-                    td.style.backgroundColor = '#e9ecef';
-                    td.style.color = '#6c757d';
-                    td.style.opacity = '0.7';
-                });
-
-                const btnEditar = fila.querySelector('.abrir-modal-curso');
-                const btnHorarios = fila.querySelector('.horarios');
-
-                if (btnEditar) {
-                    btnEditar.style.pointerEvents = 'none';
-                    btnEditar.style.opacity = '0.5';
-                }
-                if (btnHorarios) {
-                    btnHorarios.style.pointerEvents = 'none';
-                    btnHorarios.style.opacity = '0.5';
-                }
-
-                // Mover la fila de vuelta al final
-                fila.parentElement.appendChild(fila);
-
-                mostrarToastPremium('El docente ya tiene 4 cursos activos. Desasigna al docente de otro curso para poder activar este.');
-                return;
-            }
-
             console.log('Guardado en BD:', data);
+            window.location.reload();
         })
         .catch(err => {
             console.error('Error:', err);
@@ -687,71 +667,27 @@ if (buscadorEstudiante) {
         });
     });
 }
+
 // --- BUSCADOR CURSOS ---
 const buscadorCurso = document.getElementById('buscador-curso');
+
 if (buscadorCurso) {
     buscadorCurso.addEventListener('keyup', function() {
+
         const filtro = this.value.toLowerCase();
         const filas = document.querySelectorAll('.data-table tbody tr');
-        
-        console.log('Filas encontradas:', filas.length); // para ver si encuentra las filas
+
+        console.log('Filas encontradas:', filas.length);
 
         filas.forEach(function(fila) {
             const nombre = fila.cells[0].textContent.toLowerCase();
-            const docente = fila.cells[1].textContent.toLowerCase();
-           fila.style.display = (nombre.includes(filtro) || docente.includes(filtro)) ? '' : 'none';
+
+            fila.style.display = nombre.includes(filtro) ? '' : 'none';
         });
     });
 }
 
-// Función que valida que se pueda deseleccionar el prerrequisito sin Ctrl y evita seleccionarse a sí mismo
-    document.querySelectorAll('.select-prerrequisitos').forEach(select =>{
-        // Usamos pointerdown para soportar mouse y touch por igual
-        select.addEventListener('pointerdown', function(e) {
-        const option = e.target;
-        e.preventDefault(); 
 
-        if (option.tagName === 'OPTION') {
-                const idCursoActual = document.getElementById('edit-id-curso')
-                ? document.getElementById('edit-id-curso').value 
-                : null;
-                // --- VALIDACIÓN: NO PUEDE SER SU PROPIO PRERREQUISITO ---
-            if (idCursoActual && option.value === idCursoActual) {
-                mostrarToastPremium('El curso no puede ser su propio prerrequisito', 'error');
-                return;
-            }
-            // Toggle manual de selección
-            option.selected = !option.selected;
-            // Disparamos evento 'change' manualmente
-            select.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-    });
-});
-
-
-// SISTEMA DE NOTIFICACIONES
-
-function mostrarToastPremium(mensaje, tipo = 'error') {
-    // Eliminar toasts anteriores
-    const toastsPrevios = document.querySelectorAll('.toast-premium');
-    toastsPrevios.forEach(t => t.remove());
-    const toast = document.createElement('div');
-    toast.className = `toast-premium toast-${tipo}`;
-    
-    // Icono según tipo
-    const icono = tipo === 'error' ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>';
-    
-    toast.innerHTML = `${icono} <span>${mensaje}</span>`;
-    document.body.appendChild(toast);
-    // Animación de entrada y salida
-    setTimeout(() => {
-        toast.classList.add('visible');
-    }, 100);
-    setTimeout(() => {
-        toast.classList.remove('visible');
-        setTimeout(() => toast.remove(), 500);
-    }, 4000);
-}
 // -- CATÁLOGOS HORARIOS ---
 let catalogoHorarios =[];
 let catalogoAulas =[];

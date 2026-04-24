@@ -170,6 +170,7 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                 <div class="modal-campo" style="grid-column: span 2;">
                     <label>Prerrequisitos (opcional)</label>
                     <select name="idPrerrequisitos"  id="nuevo-prerrequisitos">
+                        <option value="">Ninguno</option>
                         <?php
                         $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
                         $result = mysqli_query($conexion, $query);
@@ -262,7 +263,7 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                 <div class="modal-campo" style="grid-column: span 2;">
                     <label>Prerrequisitos (opcional)</label>
                     <select name="idPrerrequisitos" id="edit-prerrequisitos">
-                        <option value =""> Seleccione un prerrequisito</option>
+                        <option value="">Ninguno</option>
                         <?php
                         $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
                         $result = mysqli_query($conexion, $query);
