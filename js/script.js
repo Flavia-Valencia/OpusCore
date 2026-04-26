@@ -395,26 +395,44 @@ document.addEventListener('click', function(e) {
             // desactivar → abajo
             tbody.appendChild(fila);
         } else {
-            // activar → ordenar por ID
-            const filas = Array.from(tbody.querySelectorAll('tr'));
+            // activar → ordenar por nombre alfabéticamente
+              // activar → reordenar según página
+    const filas = Array.from(tbody.querySelectorAll('tr'));
+    let insertado = false;
 
-            let insertado = false;
-
-            for (let f of filas) {
-                if (f === fila) continue;
-
-                const idActual = parseInt(f.dataset.id);
-                const idNuevo = parseInt(id);
-
-                if (idNuevo < idActual) {
-                    tbody.insertBefore(fila, f);
-                    insertado = true;
-                    break;
-                }
+    if (document.getElementById('buscador-curso')) {
+        // cursos → alfabético por nombre
+        const nombreNuevo = fila.cells[0].textContent.trim().toLowerCase();
+        for (let f of filas) {
+            if (f === fila) continue;
+            const btnF = f.querySelector('.btn-toggle-estado');
+            if (btnF && btnF.classList.contains('estado-inactivo')) continue;
+            const nombreActual = f.cells[0].textContent.trim().toLowerCase();
+            if (nombreNuevo.localeCompare(nombreActual) < 0) {
+                tbody.insertBefore(fila, f);
+                insertado = true;
+                break;
             }
+        }
+    } else {
+        // docentes y estudiantes → por ID
+        for (let f of filas) {
+            if (f === fila) continue;
+            const btnF = f.querySelector('.btn-toggle-estado');
+            if (btnF && btnF.classList.contains('estado-inactivo')) continue;
+            if (parseInt(fila.dataset.id) < parseInt(f.dataset.id)) {
+                tbody.insertBefore(fila, f);
+                insertado = true;
+                break;
+            }
+        }
+    }
 
             if (!insertado) {
-                tbody.appendChild(fila);
+                const primerInactivo = Array.from(tbody.querySelectorAll('tr')).find(f=>
+                  f.querySelector('.btn-toggle-estado')?.classList.contains('estado-inactivo')
+                );
+                primerInactivo ? tbody.insertBefore(fila, primerInactivo) : tbody.appendChild(fila);
             }
         }
 
@@ -488,12 +506,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ordenar activos por ID
+    // ordenar activos por nombre alafabéticamente
     activos.sort((a, b) => {
-        const idA = parseInt(a.dataset.id);
-        const idB = parseInt(b.dataset.id);
-        return idA - idB;
-    });
+    if (document.getElementById('buscador-curso')) {
+        const nombreA = a.cells[0].textContent.trim().toLowerCase();
+        const nombreB = b.cells[0].textContent.trim().toLowerCase();
+        return nombreA.localeCompare(nombreB);
+    } else {
+        return parseInt(a.dataset.id) - parseInt(b.dataset.id);
+    }
+});
 
     // reordenar correctamente
     [...activos, ...inactivos].forEach(fila => {
