@@ -20,16 +20,21 @@ if (mysqli_num_rows($resultado_verificar) > 0) {
     exit();
 }
 
-// Verifica límite de 4 cursos — excluye el curso actual que se está editando
-$sql_limite = "SELECT COUNT(*) AS total FROM cursos 
-               WHERE idDocente = '$idDocente' AND estado = 1 AND id != '$id'";
-$res_limite = mysqli_query($conexion, $sql_limite);
-$row_limite = mysqli_fetch_assoc($res_limite);
-if ($row_limite['total'] >= 4) {
-    header("Location: admin-cursos.php?error=limite_docente");
-    exit();
-}
+// Verifica límite solo si el docente cambió
+$sql_docente_actual = "SELECT idDocente FROM cursos WHERE id = '$id'";
+$res_docente_actual = mysqli_query($conexion, $sql_docente_actual);
+$row_docente_actual = mysqli_fetch_assoc($res_docente_actual);
 
+if ($row_docente_actual['idDocente'] != $idDocente) {
+    $sql_limite = "SELECT COUNT(*) AS total FROM cursos 
+                   WHERE idDocente = '$idDocente' AND estado = 1";
+    $res_limite = mysqli_query($conexion, $sql_limite);
+    $row_limite = mysqli_fetch_assoc($res_limite);
+    if ($row_limite['total'] >= 4) {
+        header("Location: admin-cursos.php?error=limite_docente");
+        exit();
+    }
+}
 # Actualizar curso
 $sql = "UPDATE cursos SET
     nombre        = '$nombre',
@@ -52,7 +57,6 @@ if ($idPrerrequisito > 0 && $idPrerrequisito != $id) {
                 VALUES ('$id', '$idPrerrequisito')";
     mysqli_query($conexion, $sql_pre);
 }
-mysqli_query($conexion, $sql);
 
 header("Location: admin-cursos.php");
 exit();

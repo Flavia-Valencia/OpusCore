@@ -187,7 +187,15 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
         // Rellenar datos
         document.getElementById('edit-id-curso').value = this.dataset.id;
         document.getElementById('edit-nombre-curso').value = this.dataset.nombre;
-        document.getElementById('edit-docente-curso').value = this.dataset.docente;
+        const selectDocente = document.getElementById('edit-docente-curso');
+        selectDocente.value = this.dataset.docente;
+        Array.from(selectDocente.options).forEach(option => {
+            if (option.value === this.dataset.docente) {
+                option.disabled = false; // docente actual: siempre habilitado
+            } else if (option.dataset.lleno === '1') {
+                option.disabled = true; // otros llenos: bloqueados
+            }
+        });
         document.getElementById('edit-descripcion-curso').value = this.dataset.descripcion;
         document.getElementById('edit-fecha-inicio').value = this.dataset.fechainicio;
         document.getElementById('edit-fecha-fin').value = this.dataset.fechafin;
