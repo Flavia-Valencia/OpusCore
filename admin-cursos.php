@@ -99,18 +99,13 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
 
         <!--Mensaje de validación del curso-->
         <?php if(isset($_GET['error'])): ?>
-
-            <?php if(isset($_GET['error']) && $_GET['error'] == 'existe'): ?>
-                <div class="toast-error">
-                    El curso ya existe. Intenta con otro nombre.
-                </div>
-            <?php endif; ?>
-
-            <?php if(isset($_GET['error']) && $_GET['error'] == 'limite_docente'): ?>
-                <div class="toast-error">
-                    El docente ya tiene 4 cursos activos asignados.
-                </div>
-            <?php endif; ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                <?php if($_GET['error'] == 'existe'): ?>
+                    mostrarToastPremium('El curso ya existe. Intenta con otro nombre.');
+                <?php endif; ?>
+            });
+        </script>
 
         <?php endif; ?>
         
@@ -152,7 +147,9 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                         <option value="">Seleccione un docente</option>
                         <?php foreach($docentes as $doc): 
                             $lleno = $doc['total_cursos'] >= 4; ?>
-                            <option value="<?php echo $doc['id']; ?>" <?php echo $lleno ? 'disabled' : ''; ?>>
+                            <option value="<?php echo $doc['id']; ?>" 
+                                    data-lleno="<?php echo $lleno ? '1' : '0'; ?>"
+                                    <?php echo $lleno ? 'disabled' : ''; ?>>
                                 <?php echo htmlspecialchars($doc['nombre_completo']); ?>
                                 <?php echo $lleno ? '(máx. cursos)' : ''; ?>
                             </option>
@@ -247,7 +244,9 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                         <option value="">Seleccione un docente</option>
                         <?php foreach($docentes as $doc): 
                             $lleno = $doc['total_cursos'] >= 4; ?>
-                            <option value="<?php echo $doc['id']; ?>" <?php echo $lleno ? 'disabled' : ''; ?>>
+                            <option value="<?php echo $doc['id']; ?>" 
+                                    data-lleno="<?php echo $lleno ? '1' : '0'; ?>"
+                                    <?php echo $lleno ? 'disabled' : ''; ?>>
                                 <?php echo htmlspecialchars($doc['nombre_completo']); ?>
                                 <?php echo $lleno ? '(máx. cursos)' : ''; ?>
                             </option>
