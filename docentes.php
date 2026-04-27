@@ -42,9 +42,14 @@ if(!isset($_SESSION["usuario"])){
                     <span>Academia</span>
                     <strong>Futuro Digital</strong>
                 </div>
+                <div class="menu-user">
+                    <div class="menu-user-role">Docente</div>
+                    <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
+                </div>
             </div>
 
             <nav>
+
                 <ul>
                     <li class="active">
                         <i class="fas fa-book"></i> Mis Cursos
@@ -94,8 +99,8 @@ if(!isset($_SESSION["usuario"])){
 
             </header>
 
-            <div class="welcome">
-                <div class="welcome-left">
+            <div class="banner">
+                <div class="banner-left">
                     <h1>
                         ¡Bienvenido/a, <?php echo htmlspecialchars(isset($_SESSION["nombre"]) ? $_SESSION["nombre"] : "Docente"); ?>! 👋
                     </h1>

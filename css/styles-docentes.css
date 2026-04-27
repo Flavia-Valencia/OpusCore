@@ -158,6 +158,10 @@ body {
   color: white;
 }
 
+.menu-user {
+    display: none;
+}
+
 .content {
   margin-left: 230px;
   width: calc(100% - 230px);
@@ -229,7 +233,7 @@ body {
   opacity: 0.9;
 }
 /*Para el banner de bienvenido*/
-.welcome {
+.banner {
   margin: 28px 28px 0;
   background: linear-gradient(to top, #053170);
   border-radius: 16px;
@@ -242,7 +246,7 @@ body {
   overflow: hidden;
 }
 
-.welcome::before {
+.banner::before{
   content: "";
   position: absolute;
   top: -40px;
@@ -254,7 +258,7 @@ body {
   pointer-events: none;
 }
 
-.welcome::after {
+.banner::after{
   content: "";
   position: absolute;
   bottom: -50px;
@@ -266,24 +270,30 @@ body {
   pointer-events: none;
 }
 
-.welcome-left h1 {
+.banner-left h1 {
   font-size: 22px;
   font-weight: 700;
   margin-bottom: 5px;
 }
 
-.welcome-left p {
+.banner-left p {
   font-size: 13px;
   opacity: 0.7;
 }
 
-.welcome-date {
+.banner-date {
   font-size: 13px;
   font-weight: 600;
   opacity: 0.85;
   text-align: right;
   white-space: nowrap;
 }
+
+/* Custom Modal (UI Feedback) */
+.custom-modal-overlay {
+  display: none;
+}
+/*Fin custom modal*/
 
 .section-title {
   font-size: 13px;
@@ -414,10 +424,37 @@ body {
 
   .sidebar-close {
     display: block;
+    margin-left: auto;
+    flex-shrink: 0;
   }
 
   .sidebar-logout {
     display: flex;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+  }
+
+  .menu-user {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: auto;
+    padding: 5px 6px;
+    text-align: left;
+    color: white;
+    box-sizing: border-box;
+  }
+
+  .menu-user-role, .menu-user-email {
+    width: 100%;
+    text-align: left;
+    margin: 0;
   }
 
   .user-profile {
@@ -446,7 +483,7 @@ body {
     display: none;
   }
 
-  .welcome {
+  .banner {
     margin: 16px 16px 0;
     padding: 22px 22px;
     flex-direction: column;
@@ -454,11 +491,11 @@ body {
     gap: 10px;
   }
 
-  .welcome-left h1 {
+  .banner-left{
     font-size: 18px;
   }
 
-  .welcome-date {
+  .baner-date {
     text-align: left;
     font-size: 12px;
   }
