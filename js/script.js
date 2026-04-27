@@ -223,6 +223,16 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
             if (ninguno) ninguno.selected = true;
         }
 
+        // No perrmite seleccionar el curso actual como prerrequisito 
+        const idActual = this.dataset.id;
+        Array.from(select.options).forEach(option => {
+            if (option.value === idActual) {
+                option.disabled = true;
+            } else {
+                option.disabled = false;
+            }
+        });
+
         if(document.getElementById('edit-estado-curso')) {
             const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
             document.getElementById('edit-estado-curso').value = estadoTexto;

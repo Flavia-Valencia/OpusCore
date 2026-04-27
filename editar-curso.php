@@ -45,20 +45,12 @@ mysqli_query($conexion, $sql);
 
 
 // inserta nuevos
-if (!empty($_POST['prerrequisitos'])) {
-    //eliminar prerrequisitos anteriores
-    mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
-    foreach ($_POST['prerrequisitos'] as $idCursoPrevio) {
-        $idCursoPrevio = intval($idCursoPrevio);
-        $idActual = intval($id);
-        // evita que sea su propio prerequisito
-        if ($idCursoPrevio === $idActual){
-            continue; 
-        }
-        $sql_pre = "INSERT INTO prerrequisitos (idCursoActual, idCursoPrevio) 
-                    VALUES ('$idActual', '$idCursoPrevio')";
-        mysqli_query($conexion, $sql_pre);
-    }
+mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
+$idPrerrequisito = isset($_POST['idPrerrequisitos']) ? intval($_POST['idPrerrequisitos']) : 0;
+if ($idPrerrequisito > 0 && $idPrerrequisito != $id) {
+    $sql_pre = "INSERT INTO prerrequisitos (idCursoActual, idCursoPrevio) 
+                VALUES ('$id', '$idPrerrequisito')";
+    mysqli_query($conexion, $sql_pre);
 }
 mysqli_query($conexion, $sql);
 
