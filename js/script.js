@@ -228,10 +228,8 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
         Array.from(select.options).forEach(option => {
             if (option.value === idActual) {
                 option.disabled = true;
-                option.textContent = option.textContent.replace(' (este curso)', '') + ' (este curso)';
             } else {
                 option.disabled = false;
-                option.textContent = option.textContent.replace(' (este curso)', '');
             }
         });
 
