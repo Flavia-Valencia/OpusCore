@@ -57,20 +57,50 @@ foreach($registros as $r){
        }
        $stmt->close();
 }
-//borra horarios anteriores
-$stmt = $conexion->prepare("DELETE FROM cursohorario WHERE idCurso = ?");
+// Obtener registros actuales de la BD
+$stmt = $conexion->prepare("SELECT id, dia, idHorario, idAula FROM cursohorario WHERE idCurso = ?");
 $stmt->bind_param("i", $idCurso);
 $stmt->execute();
-$stmt->close();
-
-//inserta nuevos
-$stmt = $conexion->prepare("INSERT INTO cursohorario (idCurso, dia, idHorario, idAula) VALUES (?, ?, ?, ?)");
-foreach ($registros as $r) {
-    $stmt->bind_param("isii", $idCurso, $r['dia'], $r['idHorario'], $r['idAula']);
-    $stmt->execute();
+$res = $stmt->get_result();
+$actuales = [];
+while ($row = $res->fetch_assoc()) {
+    $actuales[] = $row;
 }
 $stmt->close();
 
-echo json_encode(["success" => true, "message" => "Horarios guardados correctamente"]);
+// Convertir nuevos registros a formato comparable
+$nuevosSet = [];
+foreach ($registros as $r) {
+    $clave = $r['dia'] . '-' . $r['idHorario'] . '-' . $r['idAula'];
+    $nuevosSet[$clave] = $r;
+}
 
-?>
+// Convertir actuales a formato comparable
+$actualesSet = [];
+foreach ($actuales as $a) {
+    $clave = $a['dia'] . '-' . $a['idHorario'] . '-' . $a['idAula'];
+    $actualesSet[$clave] = $a;
+}
+
+// Eliminar solo los que ya no están en los nuevos
+$stmtDel = $conexion->prepare("DELETE FROM cursohorario WHERE id = ?");
+foreach ($actuales as $a) {
+    $clave = $a['dia'] . '-' . $a['idHorario'] . '-' . $a['idAula'];
+    if (!isset($nuevosSet[$clave])) {
+        $stmtDel->bind_param("i", $a['id']);
+        $stmtDel->execute();
+    }
+}
+$stmtDel->close();
+
+// Insertar solo los que no existen aún
+$stmtIns = $conexion->prepare("INSERT INTO cursohorario (idCurso, dia, idHorario, idAula) VALUES (?, ?, ?, ?)");
+foreach ($nuevosSet as $clave => $r) {
+    if (!isset($actualesSet[$clave])) {
+        $stmtIns->bind_param("isii", $idCurso, $r['dia'], $r['idHorario'], $r['idAula']);
+        $stmtIns->execute();
+    }
+}
+$stmtIns->close();
+
+echo json_encode(["success" => true, "message" => "Horarios guardados correctamente"]);
