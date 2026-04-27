@@ -106,7 +106,8 @@ if(!isset($_SESSION["usuario"])){
 
             <!-- formulario que envia los datos actualizados del docente-->
             <form method="POST" action="editar-docente.php">
-                <input type="hidden" name="id" id="editd-id">
+                <input type="hidden" name="usuario_id" id="editd-usuario_id">
+                <input type="hidden" name="docente_id" id="editd-docente_id">
 
                 <h3 class="modal-subtitulo">Detalles del docente</h3>
                 <div class="modal-grid">
@@ -138,7 +139,7 @@ if(!isset($_SESSION["usuario"])){
                         </div>
                     </div>
 
-                    <div class="modal-campo"><label>Estado</label>
+                         <div class="modal-campo" style="display: none;"><label>Estado</label>
                      <!-- El valor debe coincidir exactamente con "Activo"/"Inactivo" en la base de datos -->
                         <select name="estado" id="editd-estado">
                             <option value="Activo">Activo</option> <!--modifiqué aquí-->
@@ -201,8 +202,11 @@ if(!isset($_SESSION["usuario"])){
         </div>
     </div>
 
+    <!-- Librería SweetAlert2 para mostrar alertas personalizadas en la interfaz -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script src="js/script.js"></script>
-</body>
 
 </body>
+
 </html>

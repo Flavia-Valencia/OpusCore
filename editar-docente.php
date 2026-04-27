@@ -1,7 +1,8 @@
 <?php
 include('includes/conexion.php');  
 
-$id = $_POST['id'];
+$usuario_id = $_POST['usuario_id'];
+$docente_id = $_POST['docente_id'];
 $nombre = $_POST['nombre'];
 $apellido = $_POST['apellido'];
 $correo = $_POST['correo'];
@@ -21,7 +22,7 @@ apellido='$apellido',
 correo='$correo',
 estado='$estado',
 password_hash='$password'
-WHERE id='$id'";
+WHERE id='$usuario_id'";
 mysqli_query($conexion, $sql_usuario);
 
 
@@ -32,7 +33,7 @@ genero='$genero',
 salario='$salario',
 telefono='$telefono',
 direccion='$direccion'
-WHERE usuario_id='$id'";
+WHERE usuario_id='$usuario_id'";
 mysqli_query($conexion, $sql_docente);
 
 header("Location: admin-docentes.php");

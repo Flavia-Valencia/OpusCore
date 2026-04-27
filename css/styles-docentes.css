@@ -1,10 +1,9 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Fuente importada de Google Fonts */
 .raleway-all {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
@@ -13,133 +12,501 @@
 }
 
 body {
-    background: radial-gradient(circle at top left, #d8e8ff, #eaf4ff, #ffffff); 
-    background-size: 200% 200%;
+  background: #f0f4f8;
+  min-height: 100vh;
 }
 
-/* ── HEADER ──────────────────────────────────────────────── */
+/* Ocultar el checkbox del menú hamburguesa sin que genere espacio ni líneas */
+#sidebar-toggle {
+  position: fixed;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 230px;
+  min-height: 100vh;
+  background: linear-gradient(to top, #04224e 75%);
+  color: white;
+  padding: 24px 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transition: left 0.3s ease;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 20px;
+}
+
+.logo-img-sidebar {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  opacity: 0.95;
+}
+
+.logo-text-sidebar {
+  line-height: 1.2;
+}
+
+.logo-text-sidebar span {
+  display: block;
+  font-size: 9px;
+  opacity: 0.65;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.logo-text-sidebar strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+/*Para mostrar la X de cerrar*/
+.sidebar-close {
+  display: none;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sidebar-close:hover {
+  color: white;
+}
+
+/* Navegación del sidebar */
+.sidebar nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar li i {
+  width: 16px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.sidebar li:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.sidebar li.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 600;
+}
+
+/* Cerrar sesión al fondo del sidebar */
+.sidebar-logout {
+  display: none;
+  margin-top: auto;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 10px;
+  align-items: center;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sidebar-logout i {
+  font-size: 13px;
+}
+
+.sidebar-logout:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.menu-user {
+    display: none;
+}
+
+.content {
+  margin-left: 230px;
+  width: calc(100% - 230px);
+  display: flex;
+  flex-direction: column;
+}
+
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 40px;
-    background: linear-gradient(135deg,#069DBF,#1D4B73, #053170);
-    color: white;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+  padding: 13px 28px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-/* logo: ícono + texto apilado en columna */
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* Label que actúa como botón hamburguesa (solo móvil) */
+.menu-toggle {
+  display: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  margin-right: auto;
+  padding: 2px 6px;
+  user-select: none;
 }
 
-.logo-img {
-    width: 45px;
-}
-
-.logo-text {
-    display: flex;
-    flex-direction: column;
-}
-
-.logo-small {
-    font-size: 12px;
-}
-
-.logo-big {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-/* botón de perfil/logout — fondo traslúcido con blur (glassmorphism) */
+/* Botón logout en el header */
 .user-profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    padding: 8px 12px;
-    border-radius: 20px;
-    margin-left: 20px;
-    cursor: pointer;
-    transition: background-color 0.4s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 50px;
+  text-decoration: none;
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: all 0.25s ease;
 }
 
-/* info del usuario dentro del botón de perfil */
+.user-profile:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
 .user-info {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .user-role {
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .user-email {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  opacity: 0.7;
+  line-height: 1.2;
 }
 
-/* ícono y botón de cerrar sesión */
 .logout-icon {
-    font-size: 20px;
-    color: white;
+  font-size: 14px;
+  opacity: 0.9;
+}
+/*Para el banner de bienvenido*/
+.banner {
+  margin: 28px 28px 0;
+  background: linear-gradient(to top, #053170);
+  border-radius: 16px;
+  padding: 28px 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
 }
 
-.logout-btn {
-    color: white;
+.banner::before{
+  content: "";
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
 }
 
-/* pisa el font-size de .logout-icon definido arriba */
-.logout-icon {
-    font-size: 18px;
+.banner::after{
+  content: "";
+  position: absolute;
+  bottom: -50px;
+  right: 130px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
 }
 
-/* ── CONTENIDO PRINCIPAL ─────────────────────────────────── */
-.main {
-    padding: 40px;
+.banner-left h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 5px;
 }
 
-.titulo {
-    font-size: 28px;
-    margin-bottom: 30px;
+.banner-left p {
+  font-size: 13px;
+  opacity: 0.7;
 }
 
-/* tarjetas de opciones — grilla que acomoda sola las columnas según el espacio */
-.cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
+.banner-date {
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.85;
+  text-align: right;
+  white-space: nowrap;
 }
 
-/* cada tarjeta/opción del menú principal */
-.card-opcion {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
+/* Custom Modal (UI Feedback) */
+.custom-modal-overlay {
+  display: none;
+}
+/*Fin custom modal*/
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #5a6a84;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 24px 28px 10px;
+}
+
+.courses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  padding: 0 28px 32px;
+  gap: 18px;
+}
+/* Tarjetas de los cursos*/
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+  border: 1px solid #e8edf5;
+  border-left: 3px solid #069DBF;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(5, 49, 112, 0.1);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #053170;
+  line-height: 1.3;
+}
+
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: #e1f5fb;
+  color: #069DBF;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+}
+
+.card-desc {
+  font-size: 12px;
+  color: #8a97b0;
+  margin-bottom: 16px;
+  line-height: 1.55;
+}
+
+.card-divider {
+  height: 1px;
+  background: #f0f4f8;
+  margin-bottom: 16px;
+}
+
+.card-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.meta-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #aab4c8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meta-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d3a52;
+}
+
+.meta-value.price {
+  color: #069DBF;
+}
+
+.no-cursos {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  color: #aab4c8;
+  font-size: 14px;
+}
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 900;
+}
+/*Inician estilos del responsive*/
+@media (max-width: 768px) {
+
+  .sidebar {
+    left: -250px;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .sidebar-close {
+    display: block;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logout {
+    display: flex;
+  }
+
+  .sidebar-logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    color: #053170;
-    font-weight: 600;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    transition: all 0.2s ease;
-}
+    gap: 2px;
+    width: 100%;
+  }
 
-.card-opcion:hover {
-    transform: translateY(-4px);
-}
+  .menu-user {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: auto;
+    padding: 5px 6px;
+    text-align: left;
+    color: white;
+    box-sizing: border-box;
+  }
 
-/* ícono de cada tarjeta — gradiente aplicado al texto via background-clip */
-.icono {
-    font-size: 22px;
-    background: linear-gradient(135deg,#053170,#069DBF);
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
+  .menu-user-role, .menu-user-email {
+    width: 100%;
+    text-align: left;
+    margin: 0;
+  }
+
+  .user-profile {
+    display: none;
+  }
+
+  .content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .header {
+    justify-content: space-between;
+    padding: 12px 16px;
+  }
+
+  #sidebar-toggle:checked ~ .layout .sidebar {
+    left: 0;
+  }
+
+  #sidebar-toggle:checked ~ .overlay {
+    display: block;
+  }
+
+  .logo-text-sidebar {
+    display: none;
+  }
+
+  .banner {
+    margin: 16px 16px 0;
+    padding: 22px 22px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .banner-left{
+    font-size: 18px;
+  }
+
+  .baner-date {
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .section-title {
+    padding: 20px 16px 8px;
+  }
+
+  .courses {
+    grid-template-columns: 1fr;
+    padding: 0 16px 24px;
+    gap: 14px;
+  }
 }

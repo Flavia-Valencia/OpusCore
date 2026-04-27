@@ -102,7 +102,8 @@ if(!isset($_SESSION["usuario"])){
             <!-- Formulario para registrar un nuevo estudiante en el sistema -->
             <form method="POST" action="editar-estudiante.php">
                 <!-- ID oculto para identificar qué estudiante se está editando -->
-                <input type="hidden" name="usuario_id" id="edit-id">
+                <input type="hidden" name="usuario_id" id="editd-usuario_id">
+                <input type="hidden" name="estudiante_id" id="editd-estudiante_id">
 
                 <h3 class="modal-subtitulo">Detalles del estudiante</h3>
                 <div class="modal-grid">
@@ -132,7 +133,7 @@ if(!isset($_SESSION["usuario"])){
                         </div>
                     </div>
 
-                    <div class="modal-campo"><label>Estado</label>
+                     <div class="modal-campo" style="display: none;"><label>Estado</label>
                         <!-- El valor debe coincidir exactamente con "Activo"/"Inactivo" en la base de datos -->
                         <select name="estado" id="edit-estado">
                             <option value="Activo">Activo</option>    <!-- cambio de minuscula a mayuscula ya que el valor en la base de datos es "Activo" -->
@@ -192,6 +193,9 @@ if(!isset($_SESSION["usuario"])){
         </div>
     </div>
 
+    <!-- Librería SweetAlert2 para mostrar alertas personalizadas en la interfaz -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script src="js/script.js"></script>
 </body>
 </html>

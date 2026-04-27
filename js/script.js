@@ -27,7 +27,8 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
         if (!modal) return;
 
         // rellena cada campo del formulario con los datos del docente
-        document.getElementById('editd-id').value               = this.dataset.id;
+        document.getElementById('editd-docente_id').value       = this.dataset.docente_id;
+        document.getElementById('editd-usuario_id').value       = this.dataset.usuario_id;
         document.getElementById('editd-nombre').value           = this.dataset.nombre;
         document.getElementById('editd-apellido').value         = this.dataset.apellido;
         document.getElementById('editd-especialidad').value     = this.dataset.especialidad;
@@ -68,27 +69,6 @@ if (modalEditarDocente) {
 
 // --- MODAL NUEVO DOCENTE / NUEVO ESTUDIANTE ---
 
-// Botón "+ Nuevo" abre el modal correspondiente
-const btnNuevo = document.querySelector('.btn-nuevo');
-
-if (btnNuevo) {
-    btnNuevo.addEventListener('click', function() {
-
-        const modalNuevoDocente = document.getElementById('modalNuevoDocente');
-
-        if (modalNuevoDocente) {
-            modalNuevoDocente.classList.add('activo');
-            document.body.style.overflow = 'hidden';
-        }
-
-        const modalNuevo = document.getElementById('modalNuevo');
-
-        if (modalNuevo) {
-            modalNuevo.classList.add('activo');
-            document.body.style.overflow = 'hidden';
-        }
-    });
-}
 
 function cerrarModalNuevoDocente() {
     const modal = document.getElementById('modalNuevoDocente');
@@ -109,14 +89,6 @@ if (modalNuevoDocente) {
 }
 
 
-// Cierra modales al presionar la tecla Esc
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { 
-        cerrarModalDocente(); 
-        cerrarModalNuevoDocente(); 
-    }
-});
-
 
 // --- MODAL EDITAR ESTUDIANTE ---
 
@@ -128,7 +100,8 @@ document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
         if (!modal) return;
         
         // Rellena cada campo del formulario con los datos del estudiante
-        document.getElementById('edit-id').value = this.dataset.id;
+        document.getElementById('editd-estudiante_id').value = this.dataset.estudiante_id;
+        document.getElementById('editd-usuario_id').value = this.dataset.usuario_id;
         document.getElementById('edit-nombre').value     = this.dataset.nombre;
         document.getElementById('edit-apellido').value   = this.dataset.apellido;
         document.getElementById('edit-fecha_nacimiento').value = this.dataset.fecha_nacimiento;
@@ -166,11 +139,6 @@ if (modalEditar) {
     });
 }
 
-// Cierra el modal de edición de estudiante al presionar Esc
-document.addEventListener('keydown', e => { 
-    if (e.key === 'Escape') cerrarModal(); 
-});
-
 // Cierra el modal de nuevo estudiante
 function cerrarModalNuevo() {
     const modal = document.getElementById('modalNuevo');
@@ -187,6 +155,465 @@ if (modalNuevo) {
         if (e.target === this) cerrarModalNuevo();
     });
 }
+
+
+// MODAL NUEVO CURSO
+
+function cerrarModalNuevoCurso() {
+    const modal = document.getElementById('modalNuevoCurso');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+
+const modalNuevoCurso = document.getElementById('modalNuevoCurso');
+
+if (modalNuevoCurso) {
+    modalNuevoCurso.addEventListener('click', function(e) {
+        if (e.target === this) cerrarModalNuevoCurso();
+    });
+}
+
+// --- MODAL EDITAR CURSO ---
+
+document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
+
+    btn.addEventListener('click', function() {
+
+        const modal = document.getElementById('modalEditarCurso');
+        if (!modal) return;
+
+        // Rellenar datos
+        document.getElementById('edit-id-curso').value = this.dataset.id;
+        document.getElementById('edit-nombre-curso').value = this.dataset.nombre;
+        const selectDocente = document.getElementById('edit-docente-curso');
+        selectDocente.value = this.dataset.docente;
+        Array.from(selectDocente.options).forEach(option => {
+            if (option.value === this.dataset.docente) {
+                option.disabled = false; // docente actual: siempre habilitado
+            } else if (option.dataset.lleno === '1') {
+                option.disabled = true; // otros llenos: bloqueados
+            }
+        });
+        document.getElementById('edit-descripcion-curso').value = this.dataset.descripcion;
+        document.getElementById('edit-fecha-inicio').value = this.dataset.fechainicio;
+        document.getElementById('edit-fecha-fin').value = this.dataset.fechafin;
+        document.getElementById('edit-costo-mensual').value = this.dataset.costo;
+
+        // Valida que el elemento exista antes de usarlo y asigna sus valores dinámicamente
+        if(document.getElementById('edit-cupos')) {
+            document.getElementById('edit-cupos').value = this.dataset.cupos;
+        }
+
+        // Obtiene los prerequisitos del curso actual
+        const prerequisitos = this.dataset.prerrequisitos
+                             ? this.dataset.prerrequisitos.split(",") 
+                             : [];
+    
+        const select = document.getElementById('edit-prerrequisitos');
+
+        // Limpia opción previa
+        Array.from(select.options).forEach(option => {
+            option.selected = false;
+        });
+        
+        // Selecciona prerequisito correcto
+        prerequisitos.forEach(id => {
+            const option = select.querySelector(`option[value="${id}"]`);
+            if(option) option.selected = true;
+        });
+
+        // Si no hay prerrequisitos, seleccionar "Ninguno"
+        const haySeleccionado = Array.from(select.options).some(o => o.selected);
+        if (!haySeleccionado) {
+            const ninguno = select.querySelector('option[value=""]');
+            if (ninguno) ninguno.selected = true;
+        }
+
+        // No perrmite seleccionar el curso actual como prerrequisito 
+        const idActual = this.dataset.id;
+        Array.from(select.options).forEach(option => {
+            if (option.value === idActual) {
+                option.disabled = true;
+            } else {
+                option.disabled = false;
+            }
+        });
+
+        if(document.getElementById('edit-estado-curso')) {
+            const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
+            document.getElementById('edit-estado-curso').value = estadoTexto;
+        }
+
+        modal.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+
+// --- NUEVO UI MODAL (Inyectado en body) esto sirve para generar modal de advertencia dinámicamente y reutilizar el mismo modal en diferentes acciones sin duplicar código en el HTML
+
+const customModalHTML = `
+<div class="custom-modal-overlay" id="customConfirmModal">
+    <div class="custom-modal">
+        <div class="custom-modal-content">
+            <div class="custom-modal-title" id="customModalTitle">Modal Title</div>
+            <div class="custom-modal-text" id="customModalText">Lorem ipsum dolor sit amet...</div>
+            <div class="custom-modal-actions">
+                <button class="custom-btn custom-btn-cancel" id="customBtnCancel">Cancelar</button>
+                <button class="custom-btn custom-btn-accept" id="customBtnAccept">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+`;
+
+document.body.insertAdjacentHTML('beforeend', customModalHTML);
+
+// --- TOGGLE ESTADO ---  
+
+// - Detecta clic en el botón de estado (activo/inactivo)
+// - Abre un modal de confirmación antes de cambiar el estado
+// - Al aceptar, verifica la clase `estado-activo` para invertir el estado (toggle)
+// - Actualiza inmediatamente el texto y estilos del botón en la interfaz
+// - Cambia visualmente la fila (gris si está inactivo)
+// - Bloquea botones de editar y horarios cuando está inactivo
+// - Al desactivar un curso, limpia visualmente la celda de docente
+// - Reordena la fila dinámicamente:
+//     * Inactivos se envían al final
+//     * Activos se insertan en su posición correcta por ID
+// - Mantiene estilos y bloqueos al recargar la página
+// - Envía el ID al servidor con fetch para guardar el cambio en la base de datos sin recargar
+
+document.addEventListener('click', function(e) {
+
+    const btn = e.target.closest('.btn-toggle-estado');
+    if (!btn) return;
+
+    e.preventDefault();
+
+    const modal = document.getElementById('customConfirmModal');
+    const mTitle = document.getElementById('customModalTitle');
+    const mText = document.getElementById('customModalText');
+    const bCancel = document.getElementById('customBtnCancel');
+    const bAccept = document.getElementById('customBtnAccept');
+
+    const isActivo = btn.classList.contains('estado-activo');
+
+    // detectar tipo
+    let tipo = 'curso';
+    if (document.getElementById('buscador-docente')) tipo = 'docente';
+    else if (document.getElementById('buscador-estudiante')) tipo = 'estudiante';
+
+    mTitle.innerText = isActivo 
+        ? `¿Desactivar ${tipo}?` 
+        : `¿Activar ${tipo}?`;
+    if (isActivo) {
+        if (tipo === 'curso') {
+            mText.innerText = `El curso pasará a Inactivo. Se eliminará el docente y los horarios asignados para liberar los cupos.`;
+        } else {
+            mText.innerText = `Pasará a Inactivo.`;
+        }
+    } else {
+        mText.innerText = `Pasará a Activo.`;
+    }
+
+    modal.classList.add('active');
+
+    bCancel.onclick = () => modal.classList.remove('active');
+
+    bAccept.onclick = function() {
+
+        const fila = btn.closest('tr');
+        const id = fila.dataset.id;
+
+        let archivo = '';
+        if (document.getElementById('buscador-docente')) archivo = 'toggle-estado-docente.php';
+        else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
+        else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
+
+        // CAMBIO VISUAL INMEDIATO
+        if (document.getElementById('buscador-curso')) {
+            if (isActivo) {
+                btn.classList.remove('estado-activo');
+                btn.classList.add('estado-inactivo');
+                btn.textContent = 'Activar';
+            } else {
+                btn.classList.remove('estado-inactivo');
+                btn.classList.add('estado-activo');
+                btn.textContent = 'Desactivar';
+            }
+        } else {
+            if (isActivo) {
+                btn.classList.remove('estado-activo');
+                btn.classList.add('estado-inactivo');
+                btn.textContent = 'Inactivo';
+            } else {
+                btn.classList.remove('estado-inactivo');
+                btn.classList.add('estado-activo');
+                btn.textContent = 'Activo';
+            }
+        }
+
+        const celdaEstado = fila.querySelector('td[data-label="Estado"]');
+        if (celdaEstado) {
+            celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
+        }
+
+        // Limpiar celda de docente visualmente al desactivar un curso
+        if (isActivo && document.getElementById('buscador-curso')) {
+            const celdaDocente = fila.querySelector('td[data-label="Docente"]');
+            if (celdaDocente) celdaDocente.textContent = '—';
+        }
+
+        // --- COLOR GRIS Y BLOQUEO (GENERAL PARA TODOS) ---
+        const btnEditar = fila.querySelector('.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
+        const btnHorarios = fila.querySelector('.horarios');
+
+        if (isActivo) {
+            fila.querySelectorAll('td').forEach(td => {
+                td.style.backgroundColor = '#e9ecef';
+                td.style.color = '#6c757d';
+                td.style.opacity = '0.7';
+            });
+
+            if (btnEditar) {
+                btnEditar.style.pointerEvents = 'none';
+                btnEditar.style.opacity = '0.5';
+            }
+
+            if (btnHorarios) {
+                btnHorarios.style.pointerEvents = 'none';
+                btnHorarios.style.opacity = '0.5';
+            }
+
+        } else {
+            fila.querySelectorAll('td').forEach(td => {
+                td.style.backgroundColor = '';
+                td.style.color = '';
+                td.style.opacity = '';
+            });
+
+            if (btnEditar) {
+                btnEditar.style.pointerEvents = '';
+                btnEditar.style.opacity = '';
+            }
+
+            if (btnHorarios) {
+                btnHorarios.style.pointerEvents = '';
+                btnHorarios.style.opacity = '';
+            }
+        }
+
+        // --- MOVER FILA (AHORA PARA TODOS) ---
+        const tbody = fila.parentElement;
+
+        if (isActivo) {
+            // desactivar → abajo
+            tbody.appendChild(fila);
+        } else {
+            // activar → ordenar por nombre alfabéticamente
+              // activar → reordenar según página
+    const filas = Array.from(tbody.querySelectorAll('tr'));
+    let insertado = false;
+
+    if (document.getElementById('buscador-curso')) {
+        // cursos → alfabético por nombre
+        const nombreNuevo = fila.cells[0].textContent.trim().toLowerCase();
+        for (let f of filas) {
+            if (f === fila) continue;
+            const btnF = f.querySelector('.btn-toggle-estado');
+            if (btnF && btnF.classList.contains('estado-inactivo')) continue;
+            const nombreActual = f.cells[0].textContent.trim().toLowerCase();
+            if (nombreNuevo.localeCompare(nombreActual) < 0) {
+                tbody.insertBefore(fila, f);
+                insertado = true;
+                break;
+            }
+        }
+    } else {
+        // docentes y estudiantes → por ID
+        for (let f of filas) {
+            if (f === fila) continue;
+            const btnF = f.querySelector('.btn-toggle-estado');
+            if (btnF && btnF.classList.contains('estado-inactivo')) continue;
+            if (parseInt(fila.dataset.id) < parseInt(f.dataset.id)) {
+                tbody.insertBefore(fila, f);
+                insertado = true;
+                break;
+            }
+        }
+    }
+
+            if (!insertado) {
+                const primerInactivo = Array.from(tbody.querySelectorAll('tr')).find(f=>
+                  f.querySelector('.btn-toggle-estado')?.classList.contains('estado-inactivo')
+                );
+                primerInactivo ? tbody.insertBefore(fila, primerInactivo) : tbody.appendChild(fila);
+            }
+        }
+
+        modal.classList.remove('active');
+
+        fetch(archivo, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + id
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Guardado en BD:', data);
+            window.location.reload();
+        })
+        .catch(err => {
+            console.error('Error:', err);
+        });
+    };
+});
+
+// === INICIALIZA ESTADOS AL RECARGAR ===
+// Aplica gris y bloquea filas inactivas según su botón,
+// ordena activos por ID y envía los inactivos al final
+// sin eliminar ni modificar la tabla original.
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const tbody = document.querySelector('table tbody');
+    if (!tbody) return;
+
+    const filas = Array.from(tbody.querySelectorAll('tr'));
+
+    const activos = [];
+    const inactivos = [];
+
+    filas.forEach(fila => {
+
+        const btnEstado = fila.querySelector('.btn-toggle-estado');
+        if (!btnEstado) return;
+
+        const esInactivo = btnEstado.classList.contains('estado-inactivo');
+
+        const btnEditar = fila.querySelector('.abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso');
+        const btnHorarios = fila.querySelector('.horarios');
+
+        if (esInactivo) {
+
+            // aplicar gris
+            fila.querySelectorAll('td').forEach(td => {
+                td.style.backgroundColor = '#e9ecef';
+                td.style.color = '#6c757d';
+                td.style.opacity = '0.7';
+            });
+
+            // bloquear
+            if (btnEditar) {
+                btnEditar.style.pointerEvents = 'none';
+                btnEditar.style.opacity = '0.5';
+            }
+
+            if (btnHorarios) {
+                btnHorarios.style.pointerEvents = 'none';
+                btnHorarios.style.opacity = '0.5';
+            }
+
+            inactivos.push(fila);
+
+        } else {
+            activos.push(fila);
+        }
+    });
+
+    // ordenar activos por nombre alafabéticamente
+    activos.sort((a, b) => {
+    if (document.getElementById('buscador-curso')) {
+        const nombreA = a.cells[0].textContent.trim().toLowerCase();
+        const nombreB = b.cells[0].textContent.trim().toLowerCase();
+        return nombreA.localeCompare(nombreB);
+    } else {
+        return parseInt(a.dataset.id) - parseInt(b.dataset.id);
+    }
+});
+
+    // reordenar correctamente
+    [...activos, ...inactivos].forEach(fila => {
+        tbody.appendChild(fila);
+    });
+
+});
+
+// --- APLICAR ESTILO Y BLOQUEO AL CARGAR ---
+document.addEventListener('DOMContentLoaded', function() {
+
+    const filas = document.querySelectorAll('tbody tr');
+
+    filas.forEach(fila => {
+        const estado = fila.querySelector('td[data-label="Estado"]');
+        if (!estado) return;
+
+        if (estado.textContent.trim() === 'Inactivo') {
+
+            const btnEditar = fila.querySelector('.abrir-modal-curso');
+            const btnHorarios = fila.querySelector('.horarios');
+
+            fila.querySelectorAll('td').forEach(td => {
+                td.style.backgroundColor = '#e9ecef';
+                td.style.color = '#6c757d';
+                td.style.opacity = '0.7';
+            });
+
+            if (btnEditar) {
+                btnEditar.style.pointerEvents = 'none';
+                btnEditar.style.opacity = '0.5';
+            }
+
+            if (btnHorarios) {
+                btnHorarios.style.pointerEvents = 'none';
+                btnHorarios.style.opacity = '0.5';
+            }
+        }
+    });
+
+});
+// Cierra el modal de edición de curso
+function cerrarModalCurso() {
+    const modal = document.getElementById('modalEditarCurso');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+
+// cerrar al hacer clic fuera
+const modalEditarCurso = document.getElementById('modalEditarCurso');
+if (modalEditarCurso) {
+    modalEditarCurso.addEventListener('click', function(e) {
+        if (e.target === this) cerrarModalCurso();
+    });
+}
+
+
+//-- funcion para nuevo curso, nuevo docente o nuevo estudiante, dependiendo de cuál exista en la página, para evitar duplicar código al tener un botón "+ Nuevo" que abre diferentes modales según la página en la que se encuentre el admin
+    const btnNuevo = document.querySelector('.btn-nuevo');
+
+    if (btnNuevo) {
+        btnNuevo.addEventListener('click', function() {
+
+            const modalNuevoCurso = document.getElementById('modalNuevoCurso');
+            const modalNuevoDocente = document.getElementById('modalNuevoDocente');
+            const modalNuevo = document.getElementById('modalNuevo');
+
+            if (modalNuevoCurso) {
+                modalNuevoCurso.classList.add('activo');
+            } else if (modalNuevoDocente) {
+                modalNuevoDocente.classList.add('activo');
+            } else if (modalNuevo) {
+                modalNuevo.classList.add('activo');
+            }
+
+            document.body.style.overflow = 'hidden';
+        });
+    }
 
 
 // --- PÁGINA DE INICIO ---
@@ -232,6 +659,288 @@ const spanOjo = document.querySelector(".ver-contrasena");
 if (inputContrasena && spanOjo) {
     inputContrasena.addEventListener("input", function() {
         spanOjo.style.opacity = this.value.length > 0 ? "1" : "0";
+    });
+}
+
+
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { 
+        cerrarModalDocente(); 
+        cerrarModalNuevoDocente();
+        cerrarModal(); 
+        cerrarModalCurso(); 
+        cerrarModalNuevoCurso(); 
+    }
+});
+
+// --- BUSCADOR DOCENTES ---
+const buscadorDocente = document.getElementById('buscador-docente');
+if (buscadorDocente) {
+    buscadorDocente.addEventListener('keyup', function() {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
+
+        filas.forEach(function(fila) {
+          const id = fila.cells[0].textContent.toLowerCase();
+            const nombre = fila.cells[1].textContent.toLowerCase();
+            const apellido = fila.cells[2].textContent.toLowerCase();
+
+            fila.style.display = (id.includes(filtro) || nombre.includes(filtro) || apellido.includes(filtro)) ? '' : 'none';
+        });
+    });
+}
+
+// --- BUSCADOR ESTUDIANTES ---
+const buscadorEstudiante = document.getElementById('buscador-estudiante');
+if (buscadorEstudiante) {
+    buscadorEstudiante.addEventListener('keyup', function() {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
+
+        filas.forEach(function(fila) {
+            const id = fila.cells[0].textContent.toLowerCase();
+            const nombre = fila.cells[1].textContent.toLowerCase();
+            const apellido = fila.cells[2].textContent.toLowerCase();
+
+            fila.style.display = (id.includes(filtro) || nombre.includes(filtro) || apellido.includes(filtro)) ? '' : 'none';
+        });
+    });
+}
+
+// --- BUSCADOR CURSOS ---
+const buscadorCurso = document.getElementById('buscador-curso');
+
+if (buscadorCurso) {
+    buscadorCurso.addEventListener('keyup', function() {
+
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll('.data-table tbody tr');
+
+        console.log('Filas encontradas:', filas.length);
+
+        filas.forEach(function(fila) {
+            const nombre = fila.cells[0].textContent.toLowerCase();
+
+            fila.style.display = nombre.includes(filtro) ? '' : 'none';
+        });
+    });
+}
+
+// --- TOAST PREMIUM ---
+function mostrarToastPremium(mensaje, tipo = 'error') {
+    // Eliminar toast anterior si existe
+    const anterior = document.getElementById('toastPremium');
+    if (anterior) anterior.remove();
+
+    const icono = tipo === 'success' 
+        ? '<i class="fa-solid fa-circle-check"></i>' 
+        : '<i class="fa-solid fa-circle-exclamation"></i>';
+
+    const toast = document.createElement('div');
+    toast.id = 'toastPremium';
+    toast.className = `toast-premium toast-${tipo}`;
+    toast.innerHTML = `${icono} ${mensaje}`;
+
+    document.body.appendChild(toast);
+
+    // Forzar reflow para que la transición funcione
+    toast.getBoundingClientRect();
+    toast.classList.add('visible');
+
+    setTimeout(() => {
+        toast.classList.remove('visible');
+        setTimeout(() => toast.remove(), 400);
+    }, 3000);
+}
+
+// -- CATÁLOGOS HORARIOS ---
+let catalogoHorarios =[];
+let catalogoAulas =[];
+
+async function cargarCatalogos(){
+    if (catalogoHorarios.length > 0) return;
+    try{
+        const res = await fetch('obtener-horarios-aulas.php');
+        const data = await res.json();
+        catalogoHorarios = data.horarios;
+        catalogoAulas = data.aulas;
+    } catch {
+        mostrarToastPremium('Error al cargar el catálogo de horarios')
+    }
+}
+
+function llenarSelects(card){
+    const horarioSelect = card.querySelector('.horario-select');
+    const aulaSelect = card.querySelector('.aula-select');
+
+    horarioSelect.innerHTML = '<option value="">Seleccione un rango</option>';
+    aulaSelect.innerHTML    = '<option value="">Seleccione salón</option>';
+
+    catalogoHorarios.forEach(h => {
+        const opt = document.createElement('option');
+        opt.value       = h.id;
+        opt.textContent = h.etiqueta;
+        horarioSelect.appendChild(opt);
+    });
+
+     catalogoAulas.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value       = a.id;
+        opt.textContent = a.aula;
+        aulaSelect.appendChild(opt);
+    });
+}
+
+// --- LÓGICA MODAL HORARIOS PREMIUM ---
+function agregarBloqueHorario() {
+    const container = document.getElementById('bloques-horario-container');
+    const template = document.getElementById('template-horario-card');
+    if (!container || !template) return;
+    const clone = template.content.cloneNode(true);
+    const card = clone.querySelector('.horario-card-registro');
+    llenarSelects(card);
+    container.appendChild(clone);
+}
+async function abrirModalHorarios(idCurso) {
+    const modal = document.getElementById('modalHorarios');
+    const container = document.getElementById('bloques-horario-container');
+    if (!modal || !container) return;
+    
+    await cargarCatalogos();
+    
+    // Guardar ID del curso en el modal para referencia
+    modal.dataset.idCurso = idCurso;
+    
+    // Limpiar container y agregar un bloque inicial
+    container.innerHTML = '';
+    //cargar los horarios ya guardados
+    try{
+        const res    = await fetch(`obtener-horarios-cursos.php?idCurso=${idCurso}`);
+        const bloques = await res.json();
+
+        if (bloques.length > 0) {
+            bloques.forEach(bloque => {
+                agregarBloqueHorario();
+                // Seleccionar el último bloque agregado
+                const cards = container.querySelectorAll('.horario-card-registro');
+                const card  = cards[cards.length - 1];
+
+                // Marcar el día
+                card.querySelectorAll('.dia-tag').forEach(tag => {
+                    if (bloque.dias.includes(tag.dataset.dia)){
+                        tag.classList.add('active');
+                    }
+                });
+
+                // Seleccionar horario y aula
+                card.querySelector('.horario-select').value = bloque.idHorario;
+                card.querySelector('.aula-select').value    = bloque.idAula;
+            });
+
+    }else{
+         agregarBloqueHorario(); //sin horarios si falla
+
+    }
+}catch{
+     agregarBloqueHorario(); //si falla muestra un bloque vacío
+}
+   
+    modal.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+}
+function cerrarModalHorarios() {
+    const modal = document.getElementById('modalHorarios');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+// Cerrar al hacer clic fuera
+const modalHorarios = document.getElementById('modalHorarios');
+if (modalHorarios) {
+    modalHorarios.addEventListener('click', function(e) {
+        if (e.target === this) cerrarModalHorarios();
+    });
+}
+// Botón Agregar Bloque
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.btn-agregar-horario')) {
+        agregarBloqueHorario();
+    }
+});
+// Botón Eliminar Bloque (X)
+document.addEventListener('click', function(e) {
+    const btnCerrar = e.target.closest('.horario-card-cerrar');
+    if (btnCerrar) {
+        const card = btnCerrar.closest('.horario-card-registro');
+        const container = document.getElementById('bloques-horario-container');
+        
+        // No permitir borrar si es el único bloque
+        if (container.querySelectorAll('.horario-card-registro').length > 1) {
+            card.remove();
+        } else {
+            mostrarToastPremium('Debe haber al menos un bloque de horario');
+        }
+    }
+});
+// Selección de Días Tags (Delegación de eventos para bloques dinámicos)
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('dia-tag')) {
+        e.target.classList.toggle('active');
+    }
+});
+// Botón Guardar Horarios
+const btnGuardarHorarios = document.getElementById('btn-guardar-horarios');
+if (btnGuardarHorarios) {
+    btnGuardarHorarios.addEventListener('click', async function() {
+        const modal = document.getElementById('modalHorarios');
+        const idCurso = modal.dataset.idCurso;
+        const cards = document.querySelectorAll('.horario-card-registro');
+        
+        const bloques = [];
+        let valid = true;
+        cards.forEach(card => {
+            const diasSeleccionados = Array.from(card.querySelectorAll('.dia-tag.active')).map(t => t.dataset.dia);
+            const horario = card.querySelector('.horario-select').value;
+            const aula = card.querySelector('.aula-select').value;
+            if (diasSeleccionados.length === 0 || !horario || !aula) {
+                valid = false;
+            }
+            bloques.push({
+                dias: diasSeleccionados,
+                horario: horario,
+                aula: aula
+            });
+        });
+        if (!valid) {
+            mostrarToastPremium('Complete todos los campos de cada bloque de horario');
+            return;
+        }
+        // Estructura de datos final
+        const data = {
+            idCurso: idCurso,
+            bloques: bloques
+        };
+        console.log('Datos consolidados para Backend:', data);
+        
+        try {
+    const res  = await fetch('guardar-horarios.php', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(data)
+    });
+    const respuesta = await res.json();
+
+    if (respuesta.success) {
+        mostrarToastPremium('Horarios guardados correctamente', 'success');
+        setTimeout(() => cerrarModalHorarios(), 1500);
+    } else {
+        mostrarToastPremium(respuesta.message || 'Error al guardar');
+    }
+} catch {
+    mostrarToastPremium('Error de conexión');
+}
     });
 }
 

@@ -4,6 +4,7 @@ include('includes/conexion.php');
 // Consulta que une la tabla estudiantes con usuarios para obtener todos sus datos
 $sql = "SELECT
     u.id AS usuario_id,
+    e.id AS estudiante_id,
     u.nombre, 
     u.apellido,
     u.correo,
@@ -38,8 +39,8 @@ if (mysqli_num_rows($resultado) > 0 ){
         <!-- Editar estudiante-->
         <tbody>
             <?php while($fila = mysqli_fetch_assoc($resultado)){ ?>
-            <tr>
-                <td data-label="ID"><?php echo $fila['usuario_id']; ?></td>
+            <tr data-id="<?php echo $fila['usuario_id']; ?>">
+                <td data-label="ID"><?php echo $fila['estudiante_id']; ?></td>
                 <td data-label="Nombre"><?php echo htmlspecialchars($fila['nombre']); ?></td>
                 <td data-label="Apellido"><?php echo htmlspecialchars($fila['apellido']); ?></td>
                 <td data-label="Fecha Nac."><?php echo htmlspecialchars($fila['fecha_nacimiento']); ?></td>
@@ -52,7 +53,8 @@ if (mysqli_num_rows($resultado) > 0 ){
                         <a 
                             href="#"
                             class="link-accion abrir-modal-estudiante"
-                            data-id="<?php echo $fila['usuario_id']; ?>"
+                            data-usuario_id="<?php echo $fila['usuario_id']; ?>"
+                            data-estudiante_id="<?php echo $fila['estudiante_id']; ?>"
                             data-nombre="<?php echo htmlspecialchars($fila['nombre']); ?>"
                             data-apellido="<?php echo htmlspecialchars($fila['apellido']); ?>"
                             data-fecha_nacimiento="<?php echo htmlspecialchars($fila['fecha_nacimiento']); ?>"
@@ -67,14 +69,13 @@ if (mysqli_num_rows($resultado) > 0 ){
                             Editar
                         </a>
                          <!-- Pide confirmación antes de eliminar para evitar borrados accidentales -->
-                        <span class="separador-acciones">|</span>
                         
                         <a 
-                            href="eliminar-estudiantes.php?id=<?php echo $fila['usuario_id']; ?>" 
-                            class="link-accion eliminar"
-                            onclick="return confirm('¿Eliminar estudiante?')"
+                            href="#" 
+                            class="link-accion btn-toggle-estado <?php echo ($fila['estado'] == 'Activo' || $fila['estado'] == 1) ? 'estado-activo' : 'estado-inactivo'; ?>"
+                            data-usuario_id="<?php echo $fila['usuario_id']; ?>"
                         >
-                            Eliminar
+                            <?php echo ($fila['estado'] == 'Activo' || $fila['estado'] == 1) ? 'Activo' : 'Inactivo'; ?>
                         </a>
                     </div>
                 </td>
