@@ -87,7 +87,7 @@ if(!isset($_SESSION["usuario"])){
 
         <div class="card">
             <div class="toolbar">
-                <input type="text" placeholder="🔎 Buscar un docente" class="input-buscar">
+                <input type="text" id="buscador-docente" placeholder="🔎 Buscar un docente" class="input-buscar">
             </div>
             <!-- tabla de docentes cargada dinámicamente desde mostrar-tabla-docentes.php -->
             <div class="tabla-placeholder">
