@@ -37,3 +37,7 @@ INSERT INTO `CursoHorario` (`idCurso`, `dia`, `idHorario`, `idAula`) VALUES
 (4,'Miércoles',4,3),
 (5,'Jueves',5,4),
 (1,'Viernes',1,5);
+
+INSERT INTO `PeriodoInscripcion` (`nombre`, `fechaInicio`, `fechaFin`, `estado`) VALUES 
+('Periodo I', '2026-01-01', '2026-01-31', 1),
+('Periodo II', '2025-06-01', '2025-06-30', 0);
