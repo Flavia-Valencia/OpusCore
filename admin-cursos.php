@@ -71,6 +71,7 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
             <!-------------->
 
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
+            <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
             <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
             <a href="./admin-cursos.php" class="btn-nav active">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
@@ -154,6 +155,14 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                                 <?php echo $lleno ? '(máx. cursos)' : ''; ?>
                             </option>
                         <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="modal-campo full-width">
+                    <label>Periodo</label>
+                    <select name="idPeriodo" id="idPeriodo" required>
+                        <option value="">Seleccione un periodo</option>
+                    
                     </select>
                 </div>
 
@@ -251,6 +260,15 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                                 <?php echo $lleno ? '(máx. cursos)' : ''; ?>
                             </option>
                         <?php endforeach; ?>
+                    </select>
+                </div>
+
+                
+                <div class="modal-campo full-width">
+                    <label>Periodo</label>
+                    <select name="idPeriodo" id="idPeriodo" required>
+                        <option value="">Seleccione un periodo</option>
+                    
                     </select>
                 </div>
 

@@ -57,6 +57,7 @@ if(!isset($_SESSION["usuario"])){
             <!-------------->
 
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
+            <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
             <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
             <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav active">Docentes</a>

@@ -305,6 +305,7 @@ document.addEventListener('click', function(e) {
     let tipo = 'curso';
     if (document.getElementById('buscador-docente')) tipo = 'docente';
     else if (document.getElementById('buscador-estudiante')) tipo = 'estudiante';
+    else if (document.getElementById('buscador-periodo')) tipo = 'periodo'
 
     mTitle.innerText = isActivo 
         ? `¿Desactivar ${tipo}?` 
@@ -332,6 +333,7 @@ document.addEventListener('click', function(e) {
         if (document.getElementById('buscador-docente')) archivo = 'toggle-estado-docente.php';
         else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
         else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
+        else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
 
         // CAMBIO VISUAL INMEDIATO
         if (document.getElementById('buscador-curso')) {
@@ -593,6 +595,73 @@ if (modalEditarCurso) {
 }
 
 
+// --- MODAL PERÍODO DE INSCRIPCIÓN ---
+
+// Abre modal en modo NUEVO (lo dispara .btn-nuevo en admin-inscripciones.php
+// gracias al listener genérico de btn-nuevo que ya existe arriba en este archivo)
+function abrirModalNuevoPeriodo() {
+    document.getElementById('modal-periodo-titulo').innerHTML =
+        '<i class="fas fa-calendar-alt" style="color:#069DBF; margin-right:8px"></i> Nuevo Período';
+    document.getElementById('periodo-id').value            = '';
+    document.getElementById('periodo-nombre').value        = '';
+    document.getElementById('periodo-fecha-inicio').value  = '';
+    document.getElementById('periodo-fecha-fin').value     = '';
+
+    const modal = document.getElementById('modalPeriodo');
+    if (modal) {
+        modal.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Abre modal en modo EDITAR — carga datos desde data-* del botón en la tabla
+document.querySelectorAll('.abrir-modal-periodo').forEach(btn => {
+    btn.addEventListener('click', function() {
+
+        const modal = document.getElementById('modalPeriodo');
+        if (!modal) return;
+
+        document.getElementById('modal-periodo-titulo').innerHTML =
+            '<i class="fas fa-edit" style="color:#069DBF; margin-right:8px"></i> Editar Período';
+
+        document.getElementById('periodo-id').value = this.dataset.id;
+        document.getElementById('periodo-nombre').value = this.dataset.nombre;
+        document.getElementById('periodo-fecha-inicio').value = this.dataset.fecha_inicio;
+        document.getElementById('periodo-fecha-fin').value = this.dataset.fecha_fin;
+
+        modal.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+// Cierra el modal de período
+function cerrarModalPeriodo() {
+    const modal = document.getElementById('modalPeriodo');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+
+// Cierra al hacer clic fuera del modal
+const modalPeriodo = document.getElementById('modalPeriodo');
+if (modalPeriodo) {
+    modalPeriodo.addEventListener('click', function(e) {
+        if (e.target === this) cerrarModalPeriodo();
+    });
+}
+
+// Buscador de períodos
+const buscadorPeriodo = document.getElementById('buscador-periodo');
+if (buscadorPeriodo) {
+    buscadorPeriodo.addEventListener('keyup', function() {
+        const filtro = this.value.toLowerCase();
+        document.querySelectorAll('.data-table tbody tr').forEach(function(fila) {
+            fila.style.display = fila.textContent.toLowerCase().includes(filtro) ? '' : 'none';
+        });
+    });
+}
+
 //-- funcion para nuevo curso, nuevo docente o nuevo estudiante, dependiendo de cuál exista en la página, para evitar duplicar código al tener un botón "+ Nuevo" que abre diferentes modales según la página en la que se encuentre el admin
     const btnNuevo = document.querySelector('.btn-nuevo');
 
@@ -602,6 +671,7 @@ if (modalEditarCurso) {
             const modalNuevoCurso = document.getElementById('modalNuevoCurso');
             const modalNuevoDocente = document.getElementById('modalNuevoDocente');
             const modalNuevo = document.getElementById('modalNuevo');
+            const modalPeriodo      = document.getElementById('modalPeriodo');
 
             if (modalNuevoCurso) {
                 modalNuevoCurso.classList.add('activo');
@@ -609,7 +679,10 @@ if (modalEditarCurso) {
                 modalNuevoDocente.classList.add('activo');
             } else if (modalNuevo) {
                 modalNuevo.classList.add('activo');
+            }  else if (modalPeriodo) {
+                abrirModalNuevoPeriodo();
             }
+
 
             document.body.style.overflow = 'hidden';
         });
@@ -671,6 +744,7 @@ document.addEventListener('keydown', e => {
         cerrarModal(); 
         cerrarModalCurso(); 
         cerrarModalNuevoCurso(); 
+        cerrarModalPeriodo();
     }
 });
 

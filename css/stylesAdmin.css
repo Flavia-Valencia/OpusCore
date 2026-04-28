@@ -159,7 +159,7 @@ body {
 /* ── LAYOUT: MAIN CONTENT ── */
 .main {
     padding: 30px 40px;
-    max-width: 1400px;
+    max-width: 1550px;
     margin: 0 auto;
 }
 
@@ -272,7 +272,8 @@ body {
     white-space: nowrap !important;
 }
 
-.col-docente {
+.col-docente,
+.col-periodo {
     white-space: nowrap !important;
     min-width: 150px !important;
 }
@@ -304,6 +305,7 @@ body {
 /* Acciones agrupadas para abrir modales */
 .link-accion.abrir-modal-estudiante,
 .link-accion.abrir-modal-docente,
+.link-accion.abrir-modal-periodo,
 .link-accion.abrir-modal-curso {
     color: var(--accent-teal);
     background: var(--accent-teal-light);
@@ -311,6 +313,7 @@ body {
 
 .link-accion.abrir-modal-estudiante:hover,
 .link-accion.abrir-modal-docente:hover,
+.link-accion.abrir-modal-periodo:hover,
 .link-accion.abrir-modal-curso:hover {
     background: var(--accent-teal);
     color: white;
@@ -339,7 +342,7 @@ body {
 /* Etiquetas de Estado */
 .estado-activo {
     background-color: #e8f5e9 !important;
-    color: #2e7d32 !important;
+    color: #2e7d32 ;
 }
 
 .estado-inactivo {
@@ -1206,5 +1209,15 @@ body {
         transform: translate(-50%, 0);
         opacity: 1;
         pointer-events: auto;
+    }
+
+    .banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    }
+
+    .banner > span {
+        align-self: flex-end;
     }
 }
