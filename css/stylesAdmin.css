@@ -304,6 +304,7 @@ body {
 /* Acciones agrupadas para abrir modales */
 .link-accion.abrir-modal-estudiante,
 .link-accion.abrir-modal-docente,
+.link-accion.abrir-modal-periodo,
 .link-accion.abrir-modal-curso {
     color: var(--accent-teal);
     background: var(--accent-teal-light);
@@ -311,6 +312,7 @@ body {
 
 .link-accion.abrir-modal-estudiante:hover,
 .link-accion.abrir-modal-docente:hover,
+.link-accion.abrir-modal-periodo:hover,
 .link-accion.abrir-modal-curso:hover {
     background: var(--accent-teal);
     color: white;
@@ -339,7 +341,7 @@ body {
 /* Etiquetas de Estado */
 .estado-activo {
     background-color: #e8f5e9 !important;
-    color: #2e7d32 !important;
+    color: #2e7d32 ;
 }
 
 .estado-inactivo {
