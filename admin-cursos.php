@@ -159,6 +159,14 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                 </div>
 
                 <div class="modal-campo full-width">
+                    <label>Periodo</label>
+                    <select name="idPeriodo" id="idPeriodo" required>
+                        <option value="">Seleccione un periodo</option>
+                    
+                    </select>
+                </div>
+
+                <div class="modal-campo full-width">
                     <label>Descripción</label>
                     <input type="text" name="descripcion" placeholder="Descripción del curso">
                 </div>
@@ -252,6 +260,15 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                                 <?php echo $lleno ? '(máx. cursos)' : ''; ?>
                             </option>
                         <?php endforeach; ?>
+                    </select>
+                </div>
+
+                
+                <div class="modal-campo full-width">
+                    <label>Periodo</label>
+                    <select name="idPeriodo" id="idPeriodo" required>
+                        <option value="">Seleccione un periodo</option>
+                    
                     </select>
                 </div>
 

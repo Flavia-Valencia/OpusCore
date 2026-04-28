@@ -142,7 +142,7 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
                     <div class="modal-campo full-width">
                         <label>Nombre del período</label>
                         <input type="text" name="nombre" id="periodo-nombre"
-                            placeholder="Ej: Ciclo I — 2025" required>
+                            placeholder="Ej: Periodo 1 — 2026" required>
                     </div>
 
                     <div class="modal-campo">

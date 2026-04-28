@@ -159,7 +159,7 @@ body {
 /* ── LAYOUT: MAIN CONTENT ── */
 .main {
     padding: 30px 40px;
-    max-width: 1400px;
+    max-width: 1550px;
     margin: 0 auto;
 }
 
@@ -272,7 +272,8 @@ body {
     white-space: nowrap !important;
 }
 
-.col-docente {
+.col-docente,
+.col-periodo {
     white-space: nowrap !important;
     min-width: 150px !important;
 }
@@ -1208,5 +1209,15 @@ body {
         transform: translate(-50%, 0);
         opacity: 1;
         pointer-events: auto;
+    }
+
+    .banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    }
+
+    .banner > span {
+        align-self: flex-end;
     }
 }
