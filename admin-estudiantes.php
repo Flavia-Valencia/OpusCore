@@ -108,11 +108,11 @@ if(!isset($_SESSION["usuario"])){
 
                 <h3 class="modal-subtitulo">Detalles del estudiante</h3>
                 <div class="modal-grid">
-                    <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" id="edit-nombre"></div>
-                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido"></div>
-                    <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" id="edit-telefono"></div>
-                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" id="edit-fecha_nacimiento"></div>
-                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" id="edit-direccion"></div>
+                    <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" id="edit-nombre" required></div>
+                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="edit-apellido" required></div>
+                    <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" id="edit-telefono" required></div>
+                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" id="edit-fecha_nacimiento" required></div>
+                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" id="edit-direccion" required></div>
                     <div class="modal-campo"><label>Género</label>
                         <select name="genero" id="edit-genero">
                             <option value="M">Masculino</option>
@@ -127,7 +127,7 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo">
                         <label>Contraseña</label>
                         <div class="input-password">
-                            <input type="password" name="password_hash" id="edit-password_hash">
+                            <input type="password" name="password_hash" id="edit-password_hash"required>
                             <span class="ver-contrasena-estudiante" onclick="toggleContrasena('edit-password_hash', 'icono-ojo-estudiante')">
                                 <img id="icono-ojo-estudiante" src="img/ojo-cerrado.svg" width="20" height="20">
                             </span>
@@ -163,15 +163,15 @@ if(!isset($_SESSION["usuario"])){
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" required></div>
                     <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" required></div>
-                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento"></div>
+                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" required></div>
                     <div class="modal-campo"><label>Género</label>
                         <select name="genero">
                             <option value="M">Masculino</option>
                             <option value="F">Femenino</option>
                         </select>
                     </div>
-                    <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono"></div>
-                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion"></div>
+                    <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" required></div>
+                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" required></div>
                 </div>
 
                 <h3 class="modal-subtitulo">Detalles del usuario</h3>
@@ -181,7 +181,7 @@ if(!isset($_SESSION["usuario"])){
                         <label>Contraseña</label>
                         <div class="input-password">
                             <!-- Se muestra como texto plano para que el admin vea la contraseña al crearla -->
-                            <input type="text" name="password_hash" id="nuevo-contrasena-est"> <!-- cambio para el tipo de password a text para que se muestre la contraseña al escribirla, ya que es un nuevo usuario y el admin necesita ver lo que escribe -->
+                            <input type="text" name="password_hash" id="nuevo-contrasena-est" required> <!-- cambio para el tipo de password a text para que se muestre la contraseña al escribirla, ya que es un nuevo usuario y el admin necesita ver lo que escribe -->
                         </div>
                     </div>
                 </div>

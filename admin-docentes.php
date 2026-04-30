@@ -112,27 +112,27 @@ if(!isset($_SESSION["usuario"])){
 
                 <h3 class="modal-subtitulo">Detalles del docente</h3>
                 <div class="modal-grid">
-                    <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" id="editd-nombre"></div>
-                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="editd-apellido"></div>
-                    <div class="modal-campo"><label>Especialidad</label><input type="text" name="especialidad" id="editd-especialidad"></div>
-                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" id="editd-fecha_nacimiento"></div>
+                    <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" id="editd-nombre" required></div>
+                    <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" id="editd-apellido" required></div>
+                    <div class="modal-campo"><label>Especialidad</label><input type="text" name="especialidad" id="editd-especialidad" required></div>
+                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" id="editd-fecha_nacimiento" required></div>
                     <div class="modal-campo"><label>Género</label>
                         <select name="genero" id="editd-genero">
                             <option value="M">Masculino</option>
                             <option value="F">Femenino</option>
                         </select>
                     </div>
-                    <div class="modal-campo"><label>Salario</label><input type="number" step="0.01" name="salario" id="editd-salario"></div>
-                    <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" id="editd-telefono"></div>
-                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" id="editd-direccion"></div>
+                    <div class="modal-campo"><label>Salario</label><input type="number" step="0.01" name="salario" id="editd-salario" required></div>
+                    <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" id="editd-telefono" required></div>
+                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" id="editd-direccion" required></div>
                 </div>
 
                 <h3 class="modal-subtitulo">Acceso al sistema</h3>
                 <div class="modal-grid">
-                    <div class="modal-campo"><label>Correo</label><input type="email" name="correo" id="editd-correo"></div>
+                    <div class="modal-campo"><label>Correo</label><input type="email" name="correo" id="editd-correo" required></div>
                     <div class="modal-campo"><label>Contraseña</label>
                         <div class="input-password">
-                            <input type="password" name="password_hash" id="editd-password_hash">
+                            <input type="password" name="password_hash" id="editd-password_hash" required >
                             <!-- Ícono de ojo para mostrar u ocultar la contraseña -->
                             <span class="ver-contrasena-docente" onclick="toggleContrasena('editd-password_hash', 'icono-ojo-docente')">
                                 <img id="icono-ojo-docente" src="img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20">
@@ -171,17 +171,17 @@ if(!isset($_SESSION["usuario"])){
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Nombre</label><input type="text" name="nombre" required></div>
                     <div class="modal-campo"><label>Apellido</label><input type="text" name="apellido" required></div>
-                    <div class="modal-campo"><label>Especialidad</label><input type="text" name="especialidad"></div>
-                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento"></div>
+                    <div class="modal-campo"><label>Especialidad</label><input type="text" name="especialidad" required></div>
+                    <div class="modal-campo"><label>Fecha de Nacimiento</label><input type="date" name="fecha_nacimiento" required></div>
                     <div class="modal-campo"><label>Género</label>
                         <select name="genero">
                             <option value="M">Masculino</option>
                             <option value="F">Femenino</option>
                         </select>
                     </div>
-                    <div class="modal-campo"><label>Salario</label><input type="number" step="0.01" name="salario"></div>
-                    <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono"></div>
-                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion"></div>
+                    <div class="modal-campo"><label>Salario</label><input type="number" step="0.01" name="salario" required></div>
+                    <div class="modal-campo"><label>Teléfono</label><input type="text" name="telefono" required></div>
+                    <div class="modal-campo"><label>Dirección</label><input type="text" name="direccion" required></div>
                 </div>
 
                 <h3 class="modal-subtitulo">Detalles del usuario</h3>
@@ -190,7 +190,7 @@ if(!isset($_SESSION["usuario"])){
                    <div class="modal-campo"><label>Contraseña</label>
                         <div class="input-password">
                             <!-- Se muestra como texto plano para que el admin vea la contraseña al crearla -->
-                            <input type="text" name="password_hash" id="nuevo-password_hash">
+                            <input type="text" name="password_hash" id="nuevo-password_hash" required>
                         </div>
                     </div>
                 </div>

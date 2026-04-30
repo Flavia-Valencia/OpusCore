@@ -156,6 +156,96 @@ if (modalNuevo) {
     });
 }
 
+// VALIDACIÓN DE CAMPOS EN MODAL EDITAR ESTUDIANTE
+const formEditarEstudiante = document.querySelector('#modalEditar form');
+if (formEditarEstudiante){
+    formEditarEstudiante.addEventListener('submit', function(e){
+         const nombre     = document.getElementById('edit-nombre').value.trim();
+         const apellido   = document.getElementById('edit-apellido').value.trim();
+         const telefono   = document.getElementById('edit-telefono').value.trim();
+         const fechaNac   = document.getElementById('edit-fecha_nacimiento').value.trim();
+         const direccion  = document.getElementById('edit-direccion').value.trim();
+         const correo     = document.getElementById('edit-correo').value.trim();
+         const password   = document.getElementById('edit-password_hash').value.trim();
+
+         if (!nombre || !apellido || !telefono || !fechaNac || !direccion || !correo || !password){
+            e.preventDefault();
+            mostrarToastPremium('Complete todos los campos');
+            return;
+
+         }
+    });
+}
+
+// VALIDACIÓN DE CAMPOS EN MODAL NUEVO ESTUDIANTE
+
+const formNuevoEstudiante = document.querySelector('#modalNuevo form');
+if (formNuevoEstudiante){
+    formNuevoEstudiante.addEventListener('submit', function(e){
+        const nombre    = formNuevoEstudiante.querySelector('[name="nombre"]').value.trim();
+        const apellido  = formNuevoEstudiante.querySelector('[name="apellido"]').value.trim();
+        const telefono  = formNuevoEstudiante.querySelector('[name="telefono"]').value.trim();
+        const fechaNac  = formNuevoEstudiante.querySelector('[name="fecha_nacimiento"]').value.trim();
+        const direccion = formNuevoEstudiante.querySelector('[name="direccion"]').value.trim();
+        const correo    = formNuevoEstudiante.querySelector('[name="correo"]').value.trim();
+        const password  = formNuevoEstudiante.querySelector('[name="password_hash"]').value.trim();
+        
+
+         if (!nombre || !apellido || !telefono || !fechaNac || !direccion || !correo || !password){
+            e.preventDefault();
+            mostrarToastPremium('Complete todos los campos');
+            return;
+
+         }
+    });
+} 
+
+// VALIDACIÓN DE CAMPOS EN MODAL EDITAR DOCENTE
+const formEditarDocente = document.querySelector('#modalEditarDocente form');
+if (formEditarDocente) {
+    formEditarDocente.addEventListener('submit', function(e) {
+
+        const nombre       = document.getElementById('editd-nombre').value.trim();
+        const apellido     = document.getElementById('editd-apellido').value.trim();
+        const especialidad = document.getElementById('editd-especialidad').value.trim();
+        const fechaNac     = document.getElementById('editd-fecha_nacimiento').value.trim();
+        const salario      = document.getElementById('editd-salario').value.trim();
+        const telefono     = document.getElementById('editd-telefono').value.trim();
+        const direccion    = document.getElementById('editd-direccion').value.trim();
+        const correo       = document.getElementById('editd-correo').value.trim();
+        const password     = document.getElementById('editd-password_hash').value.trim();
+
+        if (!nombre || !apellido || !especialidad || !fechaNac || !salario || !telefono || !direccion || !correo || !password) {
+            e.preventDefault();
+            mostrarToastPremium('Complete todos los campos');
+            return;
+        }
+    });
+}
+
+// VALIDACIÓN DE CAMPOS EN MODAL NUEVO DOCENTE
+const formNuevoDocente = document.querySelector('#modalNuevoDocente form');
+if (formNuevoDocente) {
+    formNuevoDocente.addEventListener('submit', function(e) {
+
+        const nombre       = formNuevoDocente.querySelector('[name="nombre"]').value.trim();
+        const apellido     = formNuevoDocente.querySelector('[name="apellido"]').value.trim();
+        const especialidad = formNuevoDocente.querySelector('[name="especialidad"]').value.trim();
+        const fechaNac     = formNuevoDocente.querySelector('[name="fecha_nacimiento"]').value.trim();
+        const salario      = formNuevoDocente.querySelector('[name="salario"]').value.trim();
+        const telefono     = formNuevoDocente.querySelector('[name="telefono"]').value.trim();
+        const direccion    = formNuevoDocente.querySelector('[name="direccion"]').value.trim();
+        const correo       = formNuevoDocente.querySelector('[name="correo"]').value.trim();
+        const password     = formNuevoDocente.querySelector('[name="password_hash"]').value.trim();
+
+        if (!nombre || !apellido || !especialidad || !fechaNac || !salario || !telefono || !direccion || !correo || !password) {
+            e.preventDefault();
+            mostrarToastPremium('Complete todos los campos');
+            return;
+        }
+    });
+}
+
 
 // MODAL NUEVO CURSO
 
@@ -370,7 +460,7 @@ document.addEventListener('click', function(e) {
         }
 
         // --- COLOR GRIS Y BLOQUEO (GENERAL PARA TODOS) ---
-        const btnEditar = fila.querySelector('.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
+        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (isActivo) {
@@ -496,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const esInactivo = btnEstado.classList.contains('estado-inactivo');
 
-        const btnEditar = fila.querySelector('.abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso');
+        const btnEditar = fila.querySelector('abrir-modal-periodo, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (esInactivo) {
@@ -555,7 +645,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (estado.textContent.trim() === 'Inactivo') {
 
-            const btnEditar = fila.querySelector('.abrir-modal-curso');
+            const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-curso');
             const btnHorarios = fila.querySelector('.horarios');
 
             fila.querySelectorAll('td').forEach(td => {
@@ -642,6 +732,44 @@ function cerrarModalPeriodo() {
         document.body.style.overflow = '';
     }
 }
+
+// --- GUARDAR PERÍODO - CREAR Y EDITAR ---
+// Intercepta el submit del modal de periodos, detecta si es crear o editar
+// y envia mediante un json los datos correspondientes al php sin recargar la página
+ 
+const formPeriodo = document.querySelector('#modalPeriodo form');
+if(formPeriodo){
+    formPeriodo.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        const id= document.getElementById('periodo-id').value;
+        const archivo = id ? 'editar-periodo.php' : 'crear-periodo.php';
+
+        const body = new URLSearchParams({
+            id: id,
+            nombre: document.getElementById('periodo-nombre').value,
+            fechaInicio: document.getElementById('periodo-fecha-inicio').value,
+            fechaFin: document.getElementById('periodo-fecha-fin').value
+        });
+
+        fetch(archivo, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: body
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success){
+                cerrarModalPeriodo();
+                window.location.reload();
+            }else if (data.error === 'existe'){
+                mostrarToastPremium('Ya existe un período con este nombre. Intenta con otro nombre');
+            }
+        })
+        .catch(err => console.error('Error:', err));
+    })
+}
+
 
 // Cierra al hacer clic fuera del modal
 const modalPeriodo = document.getElementById('modalPeriodo');
