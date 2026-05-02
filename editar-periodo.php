@@ -6,6 +6,11 @@ $nombre      = $_POST['nombre'];
 $fechaInicio = $_POST['fechaInicio'];
 $fechaFin    = $_POST['fechaFin'];
 
+// Verifica que la fecha de fin sea mayor a la fecha de inicio
+if ($fechaFin <= $fechaInicio) {
+    echo json_encode(['success' => false, 'error' => 'fechas']);
+    exit();
+}
 
 // Verifica si existe otro periodo con el mismo nombre
 $sql_verificar = "SELECT id FROM PeriodoInscripcion WHERE LOWER(nombre) = LOWER('$nombre') AND id != '$id'";

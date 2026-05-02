@@ -265,6 +265,26 @@ if (modalNuevoCurso) {
     });
 }
 
+// --- CARGAR PERIODOS EN SELECT DE CURSOS ---
+
+async function cargarPeriodos(selectId, idSeleccionado = null) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    const res = await fetch('obtener-periodos.php');
+    const periodos = await res.json();
+
+    select.innerHTML = '<option value="">Seleccione un periodo</option>';
+    periodos.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.nombre;
+        if (idSeleccionado && p.id == idSeleccionado) opt.selected = true;
+        select.appendChild(opt);
+    });
+}
+
+
 // --- MODAL EDITAR CURSO ---
 
 document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
@@ -335,7 +355,7 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
             const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
             document.getElementById('edit-estado-curso').value = estadoTexto;
         }
-
+        cargarPeriodos('edit-idPeriodo', this.dataset.periodo);
         modal.classList.add('activo');
         document.body.style.overflow = 'hidden';
     });
@@ -764,6 +784,8 @@ if(formPeriodo){
                 window.location.reload();
             }else if (data.error === 'existe'){
                 mostrarToastPremium('Ya existe un período con este nombre. Intenta con otro nombre');
+            }else if(data.error === 'fechas'){
+                mostrarToastPremium('La fecha de fin debe ser mayor a la fecha de inicio');
             }
         })
         .catch(err => console.error('Error:', err));
@@ -803,6 +825,7 @@ if (buscadorPeriodo) {
 
             if (modalNuevoCurso) {
                 modalNuevoCurso.classList.add('activo');
+                cargarPeriodos('idPeriodo')
             } else if (modalNuevoDocente) {
                 modalNuevoDocente.classList.add('activo');
             } else if (modalNuevo) {
