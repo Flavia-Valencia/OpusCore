@@ -3,17 +3,17 @@ const formulario = document.getElementById("formulario-inicio");
 const btnEntrar = document.querySelector(".btn-entrar");
 
 if (formulario) {
-    formulario.addEventListener("submit", function(e) {
-        
+    formulario.addEventListener("submit", function (e) {
+
         const correo = document.getElementById('correo-inicio').value.trim();
         const contrasena = document.getElementById('contrasena').value.trim();
 
         // Si algún campo está vacío, cancela el envío y muestra alerta
-        if (correo === "" || contrasena === "" ) {
-            e.preventDefault(); 
+        if (correo === "" || contrasena === "") {
+            e.preventDefault();
             alert("Complete todos los campos.");
             return;
-        } 
+        }
     });
 }
 
@@ -21,27 +21,27 @@ if (formulario) {
 
 // Abre el modal de edición de docentes y carga los datos del docente seleccionado en el formulario
 document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
 
         const modal = document.getElementById('modalEditarDocente');
         if (!modal) return;
 
         // rellena cada campo del formulario con los datos del docente
-        document.getElementById('editd-docente_id').value       = this.dataset.docente_id;
-        document.getElementById('editd-usuario_id').value       = this.dataset.usuario_id;
-        document.getElementById('editd-nombre').value           = this.dataset.nombre;
-        document.getElementById('editd-apellido').value         = this.dataset.apellido;
-        document.getElementById('editd-especialidad').value     = this.dataset.especialidad;
+        document.getElementById('editd-docente_id').value = this.dataset.docente_id;
+        document.getElementById('editd-usuario_id').value = this.dataset.usuario_id;
+        document.getElementById('editd-nombre').value = this.dataset.nombre;
+        document.getElementById('editd-apellido').value = this.dataset.apellido;
+        document.getElementById('editd-especialidad').value = this.dataset.especialidad;
         document.getElementById('editd-fecha_nacimiento').value = this.dataset.fecha_nacimiento;
-        document.getElementById('editd-genero').value           = this.dataset.genero;
-        document.getElementById('editd-salario').value          = this.dataset.salario;
-        document.getElementById('editd-telefono').value         = this.dataset.telefono;
-        document.getElementById('editd-direccion').value        = this.dataset.direccion;
-        document.getElementById('editd-correo').value           = this.dataset.correo;
-        document.getElementById('editd-password_hash').value    = this.dataset.password_hash;
+        document.getElementById('editd-genero').value = this.dataset.genero;
+        document.getElementById('editd-salario').value = this.dataset.salario;
+        document.getElementById('editd-telefono').value = this.dataset.telefono;
+        document.getElementById('editd-direccion').value = this.dataset.direccion;
+        document.getElementById('editd-correo').value = this.dataset.correo;
+        document.getElementById('editd-password_hash').value = this.dataset.password_hash;
 
         // Convierte el valor numérico de estado a texto para que coincida con el select
-        const estado = this.dataset.estado == 1 ? 'Activo' : 'Inactivo'; 
+        const estado = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
         document.getElementById('editd-estado').value = estado;
         // Mostrar el modal
         modal.classList.add('activo');
@@ -61,7 +61,7 @@ function cerrarModalDocente() {
 // Cierra el modal de docente al hacer clic fuera de el
 const modalEditarDocente = document.getElementById('modalEditarDocente');
 if (modalEditarDocente) {
-    modalEditarDocente.addEventListener('click', function(e) {
+    modalEditarDocente.addEventListener('click', function (e) {
         if (e.target === this) cerrarModalDocente();
     });
 }
@@ -83,7 +83,7 @@ function cerrarModalNuevoDocente() {
 const modalNuevoDocente = document.getElementById('modalNuevoDocente');
 
 if (modalNuevoDocente) {
-    modalNuevoDocente.addEventListener('click', function(e) {
+    modalNuevoDocente.addEventListener('click', function (e) {
         if (e.target === this) cerrarModalNuevoDocente();
     });
 }
@@ -94,21 +94,21 @@ if (modalNuevoDocente) {
 
 // Abre el modal de edición de estudiantes y carga datos
 document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
 
         const modal = document.getElementById('modalEditar');
         if (!modal) return;
-        
+
         // Rellena cada campo del formulario con los datos del estudiante
         document.getElementById('editd-estudiante_id').value = this.dataset.estudiante_id;
         document.getElementById('editd-usuario_id').value = this.dataset.usuario_id;
-        document.getElementById('edit-nombre').value     = this.dataset.nombre;
-        document.getElementById('edit-apellido').value   = this.dataset.apellido;
+        document.getElementById('edit-nombre').value = this.dataset.nombre;
+        document.getElementById('edit-apellido').value = this.dataset.apellido;
         document.getElementById('edit-fecha_nacimiento').value = this.dataset.fecha_nacimiento;
-        document.getElementById('edit-genero').value           = this.dataset.genero;
-        document.getElementById('edit-telefono').value   = this.dataset.telefono;
+        document.getElementById('edit-genero').value = this.dataset.genero;
+        document.getElementById('edit-telefono').value = this.dataset.telefono;
         document.getElementById('edit-direccion').value = this.dataset.direccion;
-        document.getElementById('edit-correo').value     = this.dataset.correo;   
+        document.getElementById('edit-correo').value = this.dataset.correo;
         document.getElementById('edit-password_hash').value = this.dataset.password_hash;
 
         // Convierte el valor numérico de estado a texto para que coincida con el select
@@ -134,7 +134,7 @@ function cerrarModal() {
 // Cierra el modal de edición de estudiante al hacer clic fuera de él
 const modalEditar = document.getElementById('modalEditar');
 if (modalEditar) {
-    modalEditar.addEventListener('click', function(e) {
+    modalEditar.addEventListener('click', function (e) {
         if (e.target === this) cerrarModal();
     });
 }
@@ -151,69 +151,69 @@ function cerrarModalNuevo() {
 // Cierra el modal de nuevo estudiante al hacer clic fuera de él
 const modalNuevo = document.getElementById('modalNuevo');
 if (modalNuevo) {
-    modalNuevo.addEventListener('click', function(e) {
+    modalNuevo.addEventListener('click', function (e) {
         if (e.target === this) cerrarModalNuevo();
     });
 }
 
 // VALIDACIÓN DE CAMPOS EN MODAL EDITAR ESTUDIANTE
 const formEditarEstudiante = document.querySelector('#modalEditar form');
-if (formEditarEstudiante){
-    formEditarEstudiante.addEventListener('submit', function(e){
-         const nombre     = document.getElementById('edit-nombre').value.trim();
-         const apellido   = document.getElementById('edit-apellido').value.trim();
-         const telefono   = document.getElementById('edit-telefono').value.trim();
-         const fechaNac   = document.getElementById('edit-fecha_nacimiento').value.trim();
-         const direccion  = document.getElementById('edit-direccion').value.trim();
-         const correo     = document.getElementById('edit-correo').value.trim();
-         const password   = document.getElementById('edit-password_hash').value.trim();
+if (formEditarEstudiante) {
+    formEditarEstudiante.addEventListener('submit', function (e) {
+        const nombre = document.getElementById('edit-nombre').value.trim();
+        const apellido = document.getElementById('edit-apellido').value.trim();
+        const telefono = document.getElementById('edit-telefono').value.trim();
+        const fechaNac = document.getElementById('edit-fecha_nacimiento').value.trim();
+        const direccion = document.getElementById('edit-direccion').value.trim();
+        const correo = document.getElementById('edit-correo').value.trim();
+        const password = document.getElementById('edit-password_hash').value.trim();
 
-         if (!nombre || !apellido || !telefono || !fechaNac || !direccion || !correo || !password){
+        if (!nombre || !apellido || !telefono || !fechaNac || !direccion || !correo || !password) {
             e.preventDefault();
             mostrarToastPremium('Complete todos los campos');
             return;
 
-         }
+        }
     });
 }
 
 // VALIDACIÓN DE CAMPOS EN MODAL NUEVO ESTUDIANTE
 
 const formNuevoEstudiante = document.querySelector('#modalNuevo form');
-if (formNuevoEstudiante){
-    formNuevoEstudiante.addEventListener('submit', function(e){
-        const nombre    = formNuevoEstudiante.querySelector('[name="nombre"]').value.trim();
-        const apellido  = formNuevoEstudiante.querySelector('[name="apellido"]').value.trim();
-        const telefono  = formNuevoEstudiante.querySelector('[name="telefono"]').value.trim();
-        const fechaNac  = formNuevoEstudiante.querySelector('[name="fecha_nacimiento"]').value.trim();
+if (formNuevoEstudiante) {
+    formNuevoEstudiante.addEventListener('submit', function (e) {
+        const nombre = formNuevoEstudiante.querySelector('[name="nombre"]').value.trim();
+        const apellido = formNuevoEstudiante.querySelector('[name="apellido"]').value.trim();
+        const telefono = formNuevoEstudiante.querySelector('[name="telefono"]').value.trim();
+        const fechaNac = formNuevoEstudiante.querySelector('[name="fecha_nacimiento"]').value.trim();
         const direccion = formNuevoEstudiante.querySelector('[name="direccion"]').value.trim();
-        const correo    = formNuevoEstudiante.querySelector('[name="correo"]').value.trim();
-        const password  = formNuevoEstudiante.querySelector('[name="password_hash"]').value.trim();
-        
+        const correo = formNuevoEstudiante.querySelector('[name="correo"]').value.trim();
+        const password = formNuevoEstudiante.querySelector('[name="password_hash"]').value.trim();
 
-         if (!nombre || !apellido || !telefono || !fechaNac || !direccion || !correo || !password){
+
+        if (!nombre || !apellido || !telefono || !fechaNac || !direccion || !correo || !password) {
             e.preventDefault();
             mostrarToastPremium('Complete todos los campos');
             return;
 
-         }
+        }
     });
-} 
+}
 
 // VALIDACIÓN DE CAMPOS EN MODAL EDITAR DOCENTE
 const formEditarDocente = document.querySelector('#modalEditarDocente form');
 if (formEditarDocente) {
-    formEditarDocente.addEventListener('submit', function(e) {
+    formEditarDocente.addEventListener('submit', function (e) {
 
-        const nombre       = document.getElementById('editd-nombre').value.trim();
-        const apellido     = document.getElementById('editd-apellido').value.trim();
+        const nombre = document.getElementById('editd-nombre').value.trim();
+        const apellido = document.getElementById('editd-apellido').value.trim();
         const especialidad = document.getElementById('editd-especialidad').value.trim();
-        const fechaNac     = document.getElementById('editd-fecha_nacimiento').value.trim();
-        const salario      = document.getElementById('editd-salario').value.trim();
-        const telefono     = document.getElementById('editd-telefono').value.trim();
-        const direccion    = document.getElementById('editd-direccion').value.trim();
-        const correo       = document.getElementById('editd-correo').value.trim();
-        const password     = document.getElementById('editd-password_hash').value.trim();
+        const fechaNac = document.getElementById('editd-fecha_nacimiento').value.trim();
+        const salario = document.getElementById('editd-salario').value.trim();
+        const telefono = document.getElementById('editd-telefono').value.trim();
+        const direccion = document.getElementById('editd-direccion').value.trim();
+        const correo = document.getElementById('editd-correo').value.trim();
+        const password = document.getElementById('editd-password_hash').value.trim();
 
         if (!nombre || !apellido || !especialidad || !fechaNac || !salario || !telefono || !direccion || !correo || !password) {
             e.preventDefault();
@@ -226,17 +226,17 @@ if (formEditarDocente) {
 // VALIDACIÓN DE CAMPOS EN MODAL NUEVO DOCENTE
 const formNuevoDocente = document.querySelector('#modalNuevoDocente form');
 if (formNuevoDocente) {
-    formNuevoDocente.addEventListener('submit', function(e) {
+    formNuevoDocente.addEventListener('submit', function (e) {
 
-        const nombre       = formNuevoDocente.querySelector('[name="nombre"]').value.trim();
-        const apellido     = formNuevoDocente.querySelector('[name="apellido"]').value.trim();
+        const nombre = formNuevoDocente.querySelector('[name="nombre"]').value.trim();
+        const apellido = formNuevoDocente.querySelector('[name="apellido"]').value.trim();
         const especialidad = formNuevoDocente.querySelector('[name="especialidad"]').value.trim();
-        const fechaNac     = formNuevoDocente.querySelector('[name="fecha_nacimiento"]').value.trim();
-        const salario      = formNuevoDocente.querySelector('[name="salario"]').value.trim();
-        const telefono     = formNuevoDocente.querySelector('[name="telefono"]').value.trim();
-        const direccion    = formNuevoDocente.querySelector('[name="direccion"]').value.trim();
-        const correo       = formNuevoDocente.querySelector('[name="correo"]').value.trim();
-        const password     = formNuevoDocente.querySelector('[name="password_hash"]').value.trim();
+        const fechaNac = formNuevoDocente.querySelector('[name="fecha_nacimiento"]').value.trim();
+        const salario = formNuevoDocente.querySelector('[name="salario"]').value.trim();
+        const telefono = formNuevoDocente.querySelector('[name="telefono"]').value.trim();
+        const direccion = formNuevoDocente.querySelector('[name="direccion"]').value.trim();
+        const correo = formNuevoDocente.querySelector('[name="correo"]').value.trim();
+        const password = formNuevoDocente.querySelector('[name="password_hash"]').value.trim();
 
         if (!nombre || !apellido || !especialidad || !fechaNac || !salario || !telefono || !direccion || !correo || !password) {
             e.preventDefault();
@@ -260,7 +260,7 @@ function cerrarModalNuevoCurso() {
 const modalNuevoCurso = document.getElementById('modalNuevoCurso');
 
 if (modalNuevoCurso) {
-    modalNuevoCurso.addEventListener('click', function(e) {
+    modalNuevoCurso.addEventListener('click', function (e) {
         if (e.target === this) cerrarModalNuevoCurso();
     });
 }
@@ -269,7 +269,7 @@ if (modalNuevoCurso) {
 
 document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
 
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
 
         const modal = document.getElementById('modalEditarCurso');
         if (!modal) return;
@@ -292,26 +292,26 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
         document.getElementById('edit-costo-mensual').value = this.dataset.costo;
 
         // Valida que el elemento exista antes de usarlo y asigna sus valores dinámicamente
-        if(document.getElementById('edit-cupos')) {
+        if (document.getElementById('edit-cupos')) {
             document.getElementById('edit-cupos').value = this.dataset.cupos;
         }
 
         // Obtiene los prerequisitos del curso actual
         const prerequisitos = this.dataset.prerrequisitos
-                             ? this.dataset.prerrequisitos.split(",") 
-                             : [];
-    
+            ? this.dataset.prerrequisitos.split(",")
+            : [];
+
         const select = document.getElementById('edit-prerrequisitos');
 
         // Limpia opción previa
         Array.from(select.options).forEach(option => {
             option.selected = false;
         });
-        
+
         // Selecciona prerequisito correcto
         prerequisitos.forEach(id => {
             const option = select.querySelector(`option[value="${id}"]`);
-            if(option) option.selected = true;
+            if (option) option.selected = true;
         });
 
         // Si no hay prerrequisitos, seleccionar "Ninguno"
@@ -331,7 +331,7 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
             }
         });
 
-        if(document.getElementById('edit-estado-curso')) {
+        if (document.getElementById('edit-estado-curso')) {
             const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
             document.getElementById('edit-estado-curso').value = estadoTexto;
         }
@@ -376,7 +376,7 @@ document.body.insertAdjacentHTML('beforeend', customModalHTML);
 // - Mantiene estilos y bloqueos al recargar la página
 // - Envía el ID al servidor con fetch para guardar el cambio en la base de datos sin recargar
 
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
 
     const btn = e.target.closest('.btn-toggle-estado');
     if (!btn) return;
@@ -397,8 +397,8 @@ document.addEventListener('click', function(e) {
     else if (document.getElementById('buscador-estudiante')) tipo = 'estudiante';
     else if (document.getElementById('buscador-periodo')) tipo = 'periodo'
 
-    mTitle.innerText = isActivo 
-        ? `¿Desactivar ${tipo}?` 
+    mTitle.innerText = isActivo
+        ? `¿Desactivar ${tipo}?`
         : `¿Activar ${tipo}?`;
     if (isActivo) {
         if (tipo === 'curso') {
@@ -414,7 +414,7 @@ document.addEventListener('click', function(e) {
 
     bCancel.onclick = () => modal.classList.remove('active');
 
-    bAccept.onclick = function() {
+    bAccept.onclick = function () {
 
         const fila = btn.closest('tr');
         const id = fila.dataset.id;
@@ -506,41 +506,41 @@ document.addEventListener('click', function(e) {
             tbody.appendChild(fila);
         } else {
             // activar → ordenar por nombre alfabéticamente
-              // activar → reordenar según página
-    const filas = Array.from(tbody.querySelectorAll('tr'));
-    let insertado = false;
+            // activar → reordenar según página
+            const filas = Array.from(tbody.querySelectorAll('tr'));
+            let insertado = false;
 
-    if (document.getElementById('buscador-curso')) {
-        // cursos → alfabético por nombre
-        const nombreNuevo = fila.cells[0].textContent.trim().toLowerCase();
-        for (let f of filas) {
-            if (f === fila) continue;
-            const btnF = f.querySelector('.btn-toggle-estado');
-            if (btnF && btnF.classList.contains('estado-inactivo')) continue;
-            const nombreActual = f.cells[0].textContent.trim().toLowerCase();
-            if (nombreNuevo.localeCompare(nombreActual) < 0) {
-                tbody.insertBefore(fila, f);
-                insertado = true;
-                break;
+            if (document.getElementById('buscador-curso')) {
+                // cursos → alfabético por nombre
+                const nombreNuevo = fila.cells[0].textContent.trim().toLowerCase();
+                for (let f of filas) {
+                    if (f === fila) continue;
+                    const btnF = f.querySelector('.btn-toggle-estado');
+                    if (btnF && btnF.classList.contains('estado-inactivo')) continue;
+                    const nombreActual = f.cells[0].textContent.trim().toLowerCase();
+                    if (nombreNuevo.localeCompare(nombreActual) < 0) {
+                        tbody.insertBefore(fila, f);
+                        insertado = true;
+                        break;
+                    }
+                }
+            } else {
+                // docentes y estudiantes → por ID
+                for (let f of filas) {
+                    if (f === fila) continue;
+                    const btnF = f.querySelector('.btn-toggle-estado');
+                    if (btnF && btnF.classList.contains('estado-inactivo')) continue;
+                    if (parseInt(fila.dataset.id) < parseInt(f.dataset.id)) {
+                        tbody.insertBefore(fila, f);
+                        insertado = true;
+                        break;
+                    }
+                }
             }
-        }
-    } else {
-        // docentes y estudiantes → por ID
-        for (let f of filas) {
-            if (f === fila) continue;
-            const btnF = f.querySelector('.btn-toggle-estado');
-            if (btnF && btnF.classList.contains('estado-inactivo')) continue;
-            if (parseInt(fila.dataset.id) < parseInt(f.dataset.id)) {
-                tbody.insertBefore(fila, f);
-                insertado = true;
-                break;
-            }
-        }
-    }
 
             if (!insertado) {
-                const primerInactivo = Array.from(tbody.querySelectorAll('tr')).find(f=>
-                  f.querySelector('.btn-toggle-estado')?.classList.contains('estado-inactivo')
+                const primerInactivo = Array.from(tbody.querySelectorAll('tr')).find(f =>
+                    f.querySelector('.btn-toggle-estado')?.classList.contains('estado-inactivo')
                 );
                 primerInactivo ? tbody.insertBefore(fila, primerInactivo) : tbody.appendChild(fila);
             }
@@ -553,14 +553,14 @@ document.addEventListener('click', function(e) {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'id=' + id
         })
-        .then(res => res.json())
-        .then(data => {
-            console.log('Guardado en BD:', data);
-            window.location.reload();
-        })
-        .catch(err => {
-            console.error('Error:', err);
-        });
+            .then(res => res.json())
+            .then(data => {
+                console.log('Guardado en BD:', data);
+                window.location.reload();
+            })
+            .catch(err => {
+                console.error('Error:', err);
+            });
     };
 });
 
@@ -618,14 +618,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ordenar activos por nombre alafabéticamente
     activos.sort((a, b) => {
-    if (document.getElementById('buscador-curso')) {
-        const nombreA = a.cells[0].textContent.trim().toLowerCase();
-        const nombreB = b.cells[0].textContent.trim().toLowerCase();
-        return nombreA.localeCompare(nombreB);
-    } else {
-        return parseInt(a.dataset.id) - parseInt(b.dataset.id);
-    }
-});
+        if (document.getElementById('buscador-curso')) {
+            const nombreA = a.cells[0].textContent.trim().toLowerCase();
+            const nombreB = b.cells[0].textContent.trim().toLowerCase();
+            return nombreA.localeCompare(nombreB);
+        } else {
+            return parseInt(a.dataset.id) - parseInt(b.dataset.id);
+        }
+    });
 
     // reordenar correctamente
     [...activos, ...inactivos].forEach(fila => {
@@ -635,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // --- APLICAR ESTILO Y BLOQUEO AL CARGAR ---
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 
     const filas = document.querySelectorAll('tbody tr');
 
@@ -679,7 +679,7 @@ function cerrarModalCurso() {
 // cerrar al hacer clic fuera
 const modalEditarCurso = document.getElementById('modalEditarCurso');
 if (modalEditarCurso) {
-    modalEditarCurso.addEventListener('click', function(e) {
+    modalEditarCurso.addEventListener('click', function (e) {
         if (e.target === this) cerrarModalCurso();
     });
 }
@@ -692,10 +692,10 @@ if (modalEditarCurso) {
 function abrirModalNuevoPeriodo() {
     document.getElementById('modal-periodo-titulo').innerHTML =
         '<i class="fas fa-calendar-alt" style="color:#069DBF; margin-right:8px"></i> Nuevo Período';
-    document.getElementById('periodo-id').value            = '';
-    document.getElementById('periodo-nombre').value        = '';
-    document.getElementById('periodo-fecha-inicio').value  = '';
-    document.getElementById('periodo-fecha-fin').value     = '';
+    document.getElementById('periodo-id').value = '';
+    document.getElementById('periodo-nombre').value = '';
+    document.getElementById('periodo-fecha-inicio').value = '';
+    document.getElementById('periodo-fecha-fin').value = '';
 
     const modal = document.getElementById('modalPeriodo');
     if (modal) {
@@ -706,7 +706,7 @@ function abrirModalNuevoPeriodo() {
 
 // Abre modal en modo EDITAR — carga datos desde data-* del botón en la tabla
 document.querySelectorAll('.abrir-modal-periodo').forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
 
         const modal = document.getElementById('modalPeriodo');
         if (!modal) return;
@@ -736,37 +736,54 @@ function cerrarModalPeriodo() {
 // --- GUARDAR PERÍODO - CREAR Y EDITAR ---
 // Intercepta el submit del modal de periodos, detecta si es crear o editar
 // y envia mediante un json los datos correspondientes al php sin recargar la página
- 
+
 const formPeriodo = document.querySelector('#modalPeriodo form');
-if(formPeriodo){
-    formPeriodo.addEventListener('submit', function(e){
+if (formPeriodo) {
+    formPeriodo.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        const id= document.getElementById('periodo-id').value;
+        const nombre = document.getElementById('periodo-nombre').value.trim();
+        const fechaInicio = document.getElementById('periodo-fecha-inicio').value.trim();
+        const fechaFin = document.getElementById('periodo-fecha-fin').value.trim();
+
+        // Validar campos vacíos
+        if (!nombre || !fechaInicio || !fechaFin) {
+            mostrarToastPremium('Complete todos los campos');
+            return;
+        }
+
+        const id = document.getElementById('periodo-id').value;
         const archivo = id ? 'editar-periodo.php' : 'crear-periodo.php';
 
         const body = new URLSearchParams({
             id: id,
-            nombre: document.getElementById('periodo-nombre').value,
-            fechaInicio: document.getElementById('periodo-fecha-inicio').value,
-            fechaFin: document.getElementById('periodo-fecha-fin').value
+            nombre: nombre,
+            fechaInicio: fechaInicio,
+            fechaFin: fechaFin
         });
 
         fetch(archivo, {
             method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: body
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success){
-                cerrarModalPeriodo();
-                window.location.reload();
-            }else if (data.error === 'existe'){
-                mostrarToastPremium('Ya existe un período con este nombre. Intenta con otro nombre');
-            }
-        })
-        .catch(err => console.error('Error:', err));
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    cerrarModalPeriodo();
+                    const mensaje = id ? 'Periodo guardado correctamente' : 'Periodo creado exitosamente';
+                    mostrarToastPremium(mensaje, 'success');
+                    setTimeout(() => window.location.reload(), 1500);
+                } else if (data.error === 'existe') {
+                    mostrarToastPremium('Ya existe un período con este nombre. Intenta con otro nombre');
+                } else {
+                    mostrarToastPremium('Error al guardar el período');
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                mostrarToastPremium('Error de conexión');
+            });
     })
 }
 
@@ -774,7 +791,7 @@ if(formPeriodo){
 // Cierra al hacer clic fuera del modal
 const modalPeriodo = document.getElementById('modalPeriodo');
 if (modalPeriodo) {
-    modalPeriodo.addEventListener('click', function(e) {
+    modalPeriodo.addEventListener('click', function (e) {
         if (e.target === this) cerrarModalPeriodo();
     });
 }
@@ -782,39 +799,39 @@ if (modalPeriodo) {
 // Buscador de períodos
 const buscadorPeriodo = document.getElementById('buscador-periodo');
 if (buscadorPeriodo) {
-    buscadorPeriodo.addEventListener('keyup', function() {
+    buscadorPeriodo.addEventListener('keyup', function () {
         const filtro = this.value.toLowerCase();
-        document.querySelectorAll('.data-table tbody tr').forEach(function(fila) {
+        document.querySelectorAll('.data-table tbody tr').forEach(function (fila) {
             fila.style.display = fila.textContent.toLowerCase().includes(filtro) ? '' : 'none';
         });
     });
 }
 
 //-- funcion para nuevo curso, nuevo docente o nuevo estudiante, dependiendo de cuál exista en la página, para evitar duplicar código al tener un botón "+ Nuevo" que abre diferentes modales según la página en la que se encuentre el admin
-    const btnNuevo = document.querySelector('.btn-nuevo');
+const btnNuevo = document.querySelector('.btn-nuevo');
 
-    if (btnNuevo) {
-        btnNuevo.addEventListener('click', function() {
+if (btnNuevo) {
+    btnNuevo.addEventListener('click', function () {
 
-            const modalNuevoCurso = document.getElementById('modalNuevoCurso');
-            const modalNuevoDocente = document.getElementById('modalNuevoDocente');
-            const modalNuevo = document.getElementById('modalNuevo');
-            const modalPeriodo      = document.getElementById('modalPeriodo');
+        const modalNuevoCurso = document.getElementById('modalNuevoCurso');
+        const modalNuevoDocente = document.getElementById('modalNuevoDocente');
+        const modalNuevo = document.getElementById('modalNuevo');
+        const modalPeriodo = document.getElementById('modalPeriodo');
 
-            if (modalNuevoCurso) {
-                modalNuevoCurso.classList.add('activo');
-            } else if (modalNuevoDocente) {
-                modalNuevoDocente.classList.add('activo');
-            } else if (modalNuevo) {
-                modalNuevo.classList.add('activo');
-            }  else if (modalPeriodo) {
-                abrirModalNuevoPeriodo();
-            }
+        if (modalNuevoCurso) {
+            modalNuevoCurso.classList.add('activo');
+        } else if (modalNuevoDocente) {
+            modalNuevoDocente.classList.add('activo');
+        } else if (modalNuevo) {
+            modalNuevo.classList.add('activo');
+        } else if (modalPeriodo) {
+            abrirModalNuevoPeriodo();
+        }
 
 
-            document.body.style.overflow = 'hidden';
-        });
-    }
+        document.body.style.overflow = 'hidden';
+    });
+}
 
 
 // --- PÁGINA DE INICIO ---
@@ -831,7 +848,7 @@ if (fechaHoy) {
 // --- SEGURIDAD DE SESIÓN ---
 
 // Evita que el navegador muestre páginas del admin desde caché al retroceder sin sesión
-window.onpageshow = function(event) {
+window.onpageshow = function (event) {
     if (event.persisted) {
         window.location.href = "login.php";
     }
@@ -858,7 +875,7 @@ const inputContrasena = document.getElementById("contrasena");
 const spanOjo = document.querySelector(".ver-contrasena");
 
 if (inputContrasena && spanOjo) {
-    inputContrasena.addEventListener("input", function() {
+    inputContrasena.addEventListener("input", function () {
         spanOjo.style.opacity = this.value.length > 0 ? "1" : "0";
     });
 }
@@ -866,12 +883,12 @@ if (inputContrasena && spanOjo) {
 
 
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { 
-        cerrarModalDocente(); 
+    if (e.key === 'Escape') {
+        cerrarModalDocente();
         cerrarModalNuevoDocente();
-        cerrarModal(); 
-        cerrarModalCurso(); 
-        cerrarModalNuevoCurso(); 
+        cerrarModal();
+        cerrarModalCurso();
+        cerrarModalNuevoCurso();
         cerrarModalPeriodo();
     }
 });
@@ -879,12 +896,12 @@ document.addEventListener('keydown', e => {
 // --- BUSCADOR DOCENTES ---
 const buscadorDocente = document.getElementById('buscador-docente');
 if (buscadorDocente) {
-    buscadorDocente.addEventListener('keyup', function() {
+    buscadorDocente.addEventListener('keyup', function () {
         const filtro = this.value.toLowerCase();
         const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
 
-        filas.forEach(function(fila) {
-          const id = fila.cells[0].textContent.toLowerCase();
+        filas.forEach(function (fila) {
+            const id = fila.cells[0].textContent.toLowerCase();
             const nombre = fila.cells[1].textContent.toLowerCase();
             const apellido = fila.cells[2].textContent.toLowerCase();
 
@@ -896,11 +913,11 @@ if (buscadorDocente) {
 // --- BUSCADOR ESTUDIANTES ---
 const buscadorEstudiante = document.getElementById('buscador-estudiante');
 if (buscadorEstudiante) {
-    buscadorEstudiante.addEventListener('keyup', function() {
+    buscadorEstudiante.addEventListener('keyup', function () {
         const filtro = this.value.toLowerCase();
         const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
 
-        filas.forEach(function(fila) {
+        filas.forEach(function (fila) {
             const id = fila.cells[0].textContent.toLowerCase();
             const nombre = fila.cells[1].textContent.toLowerCase();
             const apellido = fila.cells[2].textContent.toLowerCase();
@@ -914,14 +931,14 @@ if (buscadorEstudiante) {
 const buscadorCurso = document.getElementById('buscador-curso');
 
 if (buscadorCurso) {
-    buscadorCurso.addEventListener('keyup', function() {
+    buscadorCurso.addEventListener('keyup', function () {
 
         const filtro = this.value.toLowerCase();
         const filas = document.querySelectorAll('.data-table tbody tr');
 
         console.log('Filas encontradas:', filas.length);
 
-        filas.forEach(function(fila) {
+        filas.forEach(function (fila) {
             const nombre = fila.cells[0].textContent.toLowerCase();
 
             fila.style.display = nombre.includes(filtro) ? '' : 'none';
@@ -935,8 +952,8 @@ function mostrarToastPremium(mensaje, tipo = 'error') {
     const anterior = document.getElementById('toastPremium');
     if (anterior) anterior.remove();
 
-    const icono = tipo === 'success' 
-        ? '<i class="fa-solid fa-circle-check"></i>' 
+    const icono = tipo === 'success'
+        ? '<i class="fa-solid fa-circle-check"></i>'
         : '<i class="fa-solid fa-circle-exclamation"></i>';
 
     const toast = document.createElement('div');
@@ -957,12 +974,12 @@ function mostrarToastPremium(mensaje, tipo = 'error') {
 }
 
 // -- CATÁLOGOS HORARIOS ---
-let catalogoHorarios =[];
-let catalogoAulas =[];
+let catalogoHorarios = [];
+let catalogoAulas = [];
 
-async function cargarCatalogos(){
+async function cargarCatalogos() {
     if (catalogoHorarios.length > 0) return;
-    try{
+    try {
         const res = await fetch('obtener-horarios-aulas.php');
         const data = await res.json();
         catalogoHorarios = data.horarios;
@@ -972,23 +989,23 @@ async function cargarCatalogos(){
     }
 }
 
-function llenarSelects(card){
+function llenarSelects(card) {
     const horarioSelect = card.querySelector('.horario-select');
     const aulaSelect = card.querySelector('.aula-select');
 
     horarioSelect.innerHTML = '<option value="">Seleccione un rango</option>';
-    aulaSelect.innerHTML    = '<option value="">Seleccione salón</option>';
+    aulaSelect.innerHTML = '<option value="">Seleccione salón</option>';
 
     catalogoHorarios.forEach(h => {
         const opt = document.createElement('option');
-        opt.value       = h.id;
+        opt.value = h.id;
         opt.textContent = h.etiqueta;
         horarioSelect.appendChild(opt);
     });
 
-     catalogoAulas.forEach(a => {
+    catalogoAulas.forEach(a => {
         const opt = document.createElement('option');
-        opt.value       = a.id;
+        opt.value = a.id;
         opt.textContent = a.aula;
         aulaSelect.appendChild(opt);
     });
@@ -1008,17 +1025,17 @@ async function abrirModalHorarios(idCurso) {
     const modal = document.getElementById('modalHorarios');
     const container = document.getElementById('bloques-horario-container');
     if (!modal || !container) return;
-    
+
     await cargarCatalogos();
-    
+
     // Guardar ID del curso en el modal para referencia
     modal.dataset.idCurso = idCurso;
-    
+
     // Limpiar container y agregar un bloque inicial
     container.innerHTML = '';
     //cargar los horarios ya guardados
-    try{
-        const res    = await fetch(`obtener-horarios-cursos.php?idCurso=${idCurso}`);
+    try {
+        const res = await fetch(`obtener-horarios-cursos.php?idCurso=${idCurso}`);
         const bloques = await res.json();
 
         if (bloques.length > 0) {
@@ -1026,28 +1043,28 @@ async function abrirModalHorarios(idCurso) {
                 agregarBloqueHorario();
                 // Seleccionar el último bloque agregado
                 const cards = container.querySelectorAll('.horario-card-registro');
-                const card  = cards[cards.length - 1];
+                const card = cards[cards.length - 1];
 
                 // Marcar el día
                 card.querySelectorAll('.dia-tag').forEach(tag => {
-                    if (bloque.dias.includes(tag.dataset.dia)){
+                    if (bloque.dias.includes(tag.dataset.dia)) {
                         tag.classList.add('active');
                     }
                 });
 
                 // Seleccionar horario y aula
                 card.querySelector('.horario-select').value = bloque.idHorario;
-                card.querySelector('.aula-select').value    = bloque.idAula;
+                card.querySelector('.aula-select').value = bloque.idAula;
             });
 
-    }else{
-         agregarBloqueHorario(); //sin horarios si falla
+        } else {
+            agregarBloqueHorario(); //sin horarios si falla
 
+        }
+    } catch {
+        agregarBloqueHorario(); //si falla muestra un bloque vacío
     }
-}catch{
-     agregarBloqueHorario(); //si falla muestra un bloque vacío
-}
-   
+
     modal.classList.add('activo');
     document.body.style.overflow = 'hidden';
 }
@@ -1061,23 +1078,23 @@ function cerrarModalHorarios() {
 // Cerrar al hacer clic fuera
 const modalHorarios = document.getElementById('modalHorarios');
 if (modalHorarios) {
-    modalHorarios.addEventListener('click', function(e) {
+    modalHorarios.addEventListener('click', function (e) {
         if (e.target === this) cerrarModalHorarios();
     });
 }
 // Botón Agregar Bloque
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (e.target.closest('.btn-agregar-horario')) {
         agregarBloqueHorario();
     }
 });
 // Botón Eliminar Bloque (X)
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const btnCerrar = e.target.closest('.horario-card-cerrar');
     if (btnCerrar) {
         const card = btnCerrar.closest('.horario-card-registro');
         const container = document.getElementById('bloques-horario-container');
-        
+
         // No permitir borrar si es el único bloque
         if (container.querySelectorAll('.horario-card-registro').length > 1) {
             card.remove();
@@ -1087,7 +1104,7 @@ document.addEventListener('click', function(e) {
     }
 });
 // Selección de Días Tags (Delegación de eventos para bloques dinámicos)
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (e.target.classList.contains('dia-tag')) {
         e.target.classList.toggle('active');
     }
@@ -1095,11 +1112,11 @@ document.addEventListener('click', function(e) {
 // Botón Guardar Horarios
 const btnGuardarHorarios = document.getElementById('btn-guardar-horarios');
 if (btnGuardarHorarios) {
-    btnGuardarHorarios.addEventListener('click', async function() {
+    btnGuardarHorarios.addEventListener('click', async function () {
         const modal = document.getElementById('modalHorarios');
         const idCurso = modal.dataset.idCurso;
         const cards = document.querySelectorAll('.horario-card-registro');
-        
+
         const bloques = [];
         let valid = true;
         cards.forEach(card => {
@@ -1125,24 +1142,23 @@ if (btnGuardarHorarios) {
             bloques: bloques
         };
         console.log('Datos consolidados para Backend:', data);
-        
+
         try {
-    const res  = await fetch('guardar-horarios.php', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(data)
-    });
-    const respuesta = await res.json();
+            const res = await fetch('guardar-horarios.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const respuesta = await res.json();
 
-    if (respuesta.success) {
-        mostrarToastPremium('Horarios guardados correctamente', 'success');
-        setTimeout(() => cerrarModalHorarios(), 1500);
-    } else {
-        mostrarToastPremium(respuesta.message || 'Error al guardar');
-    }
-} catch {
-    mostrarToastPremium('Error de conexión');
-}
+            if (respuesta.success) {
+                mostrarToastPremium('Horarios guardados correctamente', 'success');
+                setTimeout(() => cerrarModalHorarios(), 1500);
+            } else {
+                mostrarToastPremium(respuesta.message || 'Error al guardar');
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión');
+        }
     });
 }
-
