@@ -6,12 +6,31 @@ CREATE TABLE `horarios` (
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     `horaInicio` time COLLATE utf8mb4_general_ci NOT NULL, 
     `horaFin` time COLLATE utf8mb4_general_ci NOT NULL, 
-    `etiqueta` varchar(50) COLLATE utf8mb4_general_ci NOT NULL ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `etiqueta` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE `aulas` ( 
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     `aula` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-    `capacidad` int COLLATE utf8mb4_general_ci NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `capacidad` int COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- tabla categorias y la insertación de algunas.
+CREATE TABLE `categorias` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `nombre` VARCHAR(50) NOT NULL,
+    `descripcion` VARCHAR(250),
+    `estado` TINYINT(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO categorias(`nombre`, `descripcion`) VALUES 
+('Desarrollo web','Creación y mantenimiento de sitios y aplicaciones web. Abarca desde el desarrollo de interfaces (Frontend) hasta la lógica del servidor y gestión de bases de datos (Backend).'),
+('Programación','Desarrollo de habilidades para la resolución de problemas mediante algoritmos, estructuras de control y paradigmas de programación.'),
+('English Academy','Programas de formación en el idioma inglés enfocados en la comunicación técnica y profesional en entornos globales.'),
+('Inteligencia Artificial y Data Science','Estudio de algoritmos y modelos estadísticos orientados al aprendizaje automático y al análisis de datos.'),
+('Infraestructura y Sistemas','Gestión, configuración y mantenimiento de sistemas operativos, servidores y redes informáticas.'),
+('Diseño de Producto y UX','Diseño de productos digitales con enfoque en usabilidad, accesibilidad y experiencia del usuario.'),
+('Contenido Audiovisual','Producción y edición de contenido multimedia, incluyendo video y audio para plataformas digitales.');
 
 CREATE TABLE `cursos` ( 
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
@@ -22,11 +41,37 @@ CREATE TABLE `cursos` (
     `fechaInicio` date COLLATE utf8mb4_general_ci NOT NULL, 
     `fechaFin` date COLLATE utf8mb4_general_ci NOT NULL, 
     `estado` tinyint(1) DEFAULT '1', 
-    `idDocente` int DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    `idDocente` int DEFAULT NULL,
+    `idCategoria` INT DEFAULT NULL,
+    CONSTRAINT `cursos_ibfk_1` FOREIGN KEY (`idDocente`) REFERENCES `docentes` (`id`),
+    CONSTRAINT `fk_curso_categoria` FOREIGN KEY (`idCategoria`) REFERENCES `categorias` (`id`) 
+    ON UPDATE CASCADE 
+    ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-ALTER TABLE `cursos`
-  ADD CONSTRAINT `cursos_ibfk_1` FOREIGN KEY (`idDocente`) REFERENCES `docentes` (`id`);
-  
+
+-- Crea una restriccion donde no se puede seleccionar una feccha fin anterior a la fecha inicio (crear y editar)
+DELIMITER //
+CREATE TRIGGER `tr_validar_fechas_insert`
+BEFORE INSERT ON `cursos`
+FOR EACH ROW
+BEGIN
+    IF NEW.fechaFin < NEW.fechaInicio THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Error: La fecha de fin no puede ser anterior a la de inicio';
+    END IF;
+END //
+CREATE TRIGGER `tr_validar_fechas_update`
+BEFORE UPDATE ON `cursos`
+FOR EACH ROW
+BEGIN
+    IF NEW.fechaFin < NEW.fechaInicio THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Error: La fecha de fin no puede ser anterior a la de inicio';
+    END IF;
+END //
+DELIMITER ;
+
 CREATE TABLE `prerrequisitos` (
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT,
     `idCursoActual` int NOT NULL,
