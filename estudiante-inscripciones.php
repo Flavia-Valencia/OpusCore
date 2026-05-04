@@ -71,22 +71,219 @@ if($periodo){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>ADF | Inscripciones</title>
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
     <link rel="stylesheet" href="./css/styles-estudiantes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        #sidebar-toggle {
+            display: none;
+        }
+
+        .raleway-all {
+            font-family: "Raleway", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .logo-text-sidebar {
+            font-family: "Raleway", sans-serif;
+            line-height: 1.2;
+        }
+
+        .logo-text-sidebar span {
+            display: block;
+            font-size: 9px;
+            font-weight: 500;
+            opacity: 0.65;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .logo-text-sidebar strong {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .sidebar {
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-close,
+        .sidebar-logout {
+            display: none;
+        }
+
+        .menu-user {
+            display: none;
+        }
+
+        .header-panel {
+            background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+        }
+
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+                padding: 20px 14px;
+            }
+
+            .sidebar.open,
+            #sidebar-toggle:checked ~ .layout .sidebar {
+                left: 0;
+            }
+
+            .sidebar-logo {
+                margin-bottom: 16px;
+            }
+
+            .sidebar-close {
+                display: block;
+                margin-left: auto;
+                position: absolute;
+                background: none;
+                border: 0;
+                color: inherit;
+                font-size: 20px;
+                cursor: pointer;
+                top: 10px;
+                right: 14px;
+            }
+
+            .sidebar nav ul {
+                margin-top: 10px;
+            }
+
+            .sidebar-nav {
+                margin-top: 10px;
+            }
+
+            .sidebar li {
+                justify-content: flex-start;
+                padding: 12px 14px;
+            }
+
+            .nav-item {
+                justify-content: flex-start;
+                padding: 12px 14px;
+            }
+
+            .menu-user {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 5px 6px;
+                color: white;
+                margin-top: 6px;
+            }
+
+            .logo-text-sidebar {
+                display: none;
+            }
+
+            .sidebar-logout {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: auto;
+                padding-top: 14px;
+                border-top: 1px solid rgba(255,255,255,0.15);
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .user-profile,
+            .user-profile-panel {
+                display: none !important;
+            }
+        }
+
+    </style>
 </head>
 
 <body class="raleway-all">
 
+    <input type="checkbox" id="sidebar-toggle">
+
+    <!-- overlay para cerrar sidebar en móvil -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <div class="layout">
 
+        <!-- sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <img src="img/logo.svg" alt="Logo" class="logo-img">
+                <span class="sidebar-brand logo-text-sidebar"><span>Academia</span><strong>Futuro Digital</strong></span>
+                <div class="menu-user">
+                    <div class="menu-user-role">Estudiante</div>
+                    <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
+                </div>
+                <button type="button" class="sidebar-close" onclick="closeSidebar()" aria-label="Cerrar menu">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
 
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    <span>Mis cursos</span>
+                </a>
+                <a href="estudiante-inscripciones.php" class="nav-item active">
+                    <i class="fas fa-pen-to-square"></i>
+                    <span>Inscripción</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-star"></i>
+                    <span>Calificaciones</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Pagos</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>Mensajes</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </nav>
+
+            <a href="includes/logout.php" class="sidebar-logout">
+                <i class="fas fa-arrow-right-from-bracket"></i>
+                <span>Cerrar sesion</span>
+            </a>
+
+        </aside>
+
+        <!-- contenido principal -->
         <div class="content">
 
+            <!-- header -->
             <header class="header-panel">
+                <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <a href="includes/logout.php" class="user-profile-panel">
                     <div class="user-info">
                         <span class="user-role">Estudiante</span>
@@ -96,6 +293,7 @@ if($periodo){
                 </a>
             </header>
 
+            <!-- banner -->
             <div class="banner">
                 <div class="banner-left">
                     <h1>Inscripción de Cursos 📋</h1>
@@ -113,6 +311,7 @@ if($periodo){
                 </div>
             </div>
 
+            <!-- cursos disponibles para inscripción -->
             <?php if (!$periodo): ?>
 
                 <div class="inscripcion-vacia">
@@ -197,16 +396,49 @@ if($periodo){
 
             <?php endif; ?>
 
-        </div>
-    </div>
+        </div><!-- /content -->
+    </div><!-- /layout -->
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>
     <script>
+        // Fecha dinámica en el banner
         const fechaEl = document.getElementById('fecha-hoy');
         if (fechaEl) {
             fechaEl.textContent = new Date().toLocaleDateString('es-ES', {
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+        }
+
+        // Toggle sidebar móvil
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.getElementById('sidebar-toggle');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            toggle.checked = sidebar.classList.contains('open');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.getElementById('sidebar-toggle');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            toggle.checked = false;
+        }
+
+        // Buscador de cursos
+        const buscador = document.getElementById('buscador-curso');
+        if (buscador) {
+            buscador.addEventListener('input', function () {
+                const filtro = this.value.toLowerCase();
+                document.querySelectorAll('.curso-card').forEach(card => {
+                    const nombre = card.querySelector('.curso-nombre')?.textContent.toLowerCase() || '';
+                    const desc = card.querySelector('.curso-desc')?.textContent.toLowerCase() || '';
+                    card.style.display = (nombre.includes(filtro) || desc.includes(filtro)) ? '' : 'none';
+                });
             });
         }
     </script>
