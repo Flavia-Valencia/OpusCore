@@ -58,7 +58,7 @@ if ($periodo) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>ADF | Inscripciones</title>
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
     <link rel="stylesheet" href="./css/styles-estudiantes.css">
@@ -66,6 +66,34 @@ if ($periodo) {
     <style>
         #sidebar-toggle {
             display: none;
+        }
+
+        .raleway-all {
+            font-family: "Raleway", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        .logo-text-sidebar {
+            font-family: "Raleway", sans-serif;
+            line-height: 1.2;
+        }
+
+        .logo-text-sidebar span {
+            display: block;
+            font-size: 9px;
+            font-weight: 500;
+            opacity: 0.65;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .logo-text-sidebar strong {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
         }
 
         .sidebar {
@@ -131,6 +159,7 @@ if ($periodo) {
                 display: none !important;
             }
         }
+
     </style>
 </head>
 
@@ -147,16 +176,16 @@ if ($periodo) {
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
                 <img src="img/logo.svg" alt="Logo" class="logo-img">
-                <span class="sidebar-brand">OpusCore</span>
+                <span class="sidebar-brand logo-text-sidebar"><span>Academia</span><strong>Futuro Digital</strong></span>
                 <button type="button" class="sidebar-close" onclick="closeSidebar()" aria-label="Cerrar menu">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
 
             <nav class="sidebar-nav">
-                <a href="estudiantes.php" class="nav-item">
-                    <i class="fas fa-house"></i>
-                    <span>Inicio</span>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-book"></i>
+                    <span>Mis cursos</span>
                 </a>
                 <a href="estudiante-inscripciones.php" class="nav-item active">
                     <i class="fas fa-pen-to-square"></i>
