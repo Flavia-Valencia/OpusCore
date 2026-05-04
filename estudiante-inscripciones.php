@@ -107,6 +107,10 @@ if ($periodo) {
             display: none;
         }
 
+        .menu-user {
+            display: none;
+        }
+
         .header-panel {
             background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
         }
@@ -126,6 +130,7 @@ if ($periodo) {
         @media (max-width: 768px) {
             .sidebar {
                 left: -250px;
+                padding: 20px 14px;
             }
 
             .sidebar.open,
@@ -133,14 +138,52 @@ if ($periodo) {
                 left: 0;
             }
 
+            .sidebar-logo {
+                margin-bottom: 16px;
+            }
+
             .sidebar-close {
                 display: block;
                 margin-left: auto;
+                position: absolute;
                 background: none;
                 border: 0;
                 color: inherit;
                 font-size: 20px;
                 cursor: pointer;
+                top: 10px;
+                right: 14px;
+            }
+
+            .sidebar nav ul {
+                margin-top: 10px;
+            }
+
+            .sidebar-nav {
+                margin-top: 10px;
+            }
+
+            .sidebar li {
+                justify-content: flex-start;
+                padding: 12px 14px;
+            }
+
+            .nav-item {
+                justify-content: flex-start;
+                padding: 12px 14px;
+            }
+
+            .menu-user {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 5px 6px;
+                color: white;
+                margin-top: 6px;
+            }
+
+            .logo-text-sidebar {
+                display: none;
             }
 
             .sidebar-logout {
@@ -148,8 +191,8 @@ if ($periodo) {
                 align-items: center;
                 gap: 10px;
                 margin-top: auto;
-                margin-bottom: 20px;
-                padding: 11px 14px;
+                padding-top: 14px;
+                border-top: 1px solid rgba(255,255,255,0.15);
                 text-decoration: none;
                 color: inherit;
             }
@@ -177,6 +220,10 @@ if ($periodo) {
             <div class="sidebar-logo">
                 <img src="img/logo.svg" alt="Logo" class="logo-img">
                 <span class="sidebar-brand logo-text-sidebar"><span>Academia</span><strong>Futuro Digital</strong></span>
+                <div class="menu-user">
+                    <div class="menu-user-role">Estudiante</div>
+                    <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
+                </div>
                 <button type="button" class="sidebar-close" onclick="closeSidebar()" aria-label="Cerrar menu">
                     <i class="fas fa-times"></i>
                 </button>
