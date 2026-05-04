@@ -265,6 +265,26 @@ if (modalNuevoCurso) {
     });
 }
 
+// --- CARGAR PERIODOS EN SELECT DE CURSOS ---
+
+async function cargarPeriodos(selectId, idSeleccionado = null) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    const res = await fetch('obtener-periodos.php');
+    const periodos = await res.json();
+
+    select.innerHTML = '<option value="">Seleccione un periodo</option>';
+    periodos.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.nombre;
+        if (idSeleccionado && p.id == idSeleccionado) opt.selected = true;
+        select.appendChild(opt);
+    });
+}
+
+
 // --- MODAL EDITAR CURSO ---
 
 document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
@@ -335,7 +355,7 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
             const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
             document.getElementById('edit-estado-curso').value = estadoTexto;
         }
-
+        cargarPeriodos('edit-idPeriodo', this.dataset.periodo);
         modal.classList.add('activo');
         document.body.style.overflow = 'hidden';
     });
@@ -767,24 +787,42 @@ if (formPeriodo) {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: body
         })
-            .then(res => res.json())
-            .then(data => {
+            .then(res => res.text())
+            .then(text => {
+                console.log("RESPUESTA DEL SERVIDOR:", text);
+
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    throw new Error("Respuesta no es JSON");
+                }
+
                 if (data.success) {
                     cerrarModalPeriodo();
                     const mensaje = id ? 'Periodo guardado correctamente' : 'Periodo creado exitosamente';
                     mostrarToastPremium(mensaje, 'success');
                     setTimeout(() => window.location.reload(), 1500);
+
                 } else if (data.error === 'existe') {
-                    mostrarToastPremium('Ya existe un período con este nombre. Intenta con otro nombre');
+                    mostrarToastPremium('Ya existe un período con este nombre: Intenta con otro nombre');
+
+                } else if (data.error === 'fechas') {
+                    mostrarToastPremium('La fecha de fin no puede ser menor a la de inicio');
+
+                } else if (data.error === 'traslape') {
+                    mostrarToastPremium('Las fechas ingresadas coinciden con otro período existente. Intenta con otras fechas');
+
                 } else {
-                    mostrarToastPremium('Error al guardar el período');
+                    console.error(data);
+                    mostrarToastPremium('Error al guardar');
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
                 mostrarToastPremium('Error de conexión');
             });
-    })
+    });
 }
 
 
@@ -820,6 +858,7 @@ if (btnNuevo) {
 
         if (modalNuevoCurso) {
             modalNuevoCurso.classList.add('activo');
+            cargarPeriodos('idPeriodo')
         } else if (modalNuevoDocente) {
             modalNuevoDocente.classList.add('activo');
         } else if (modalNuevo) {
@@ -827,7 +866,6 @@ if (btnNuevo) {
         } else if (modalPeriodo) {
             abrirModalNuevoPeriodo();
         }
-
 
         document.body.style.overflow = 'hidden';
     });
