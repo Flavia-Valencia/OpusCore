@@ -63,9 +63,80 @@ if ($periodo) {
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
     <link rel="stylesheet" href="./css/styles-estudiantes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        #sidebar-toggle {
+            display: none;
+        }
+
+        .sidebar {
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-close,
+        .sidebar-logout {
+            display: none;
+        }
+
+        .header-panel {
+            background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+        }
+
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -250px;
+            }
+
+            .sidebar.open,
+            #sidebar-toggle:checked ~ .layout .sidebar {
+                left: 0;
+            }
+
+            .sidebar-close {
+                display: block;
+                margin-left: auto;
+                background: none;
+                border: 0;
+                color: inherit;
+                font-size: 20px;
+                cursor: pointer;
+            }
+
+            .sidebar-logout {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-top: auto;
+                margin-bottom: 20px;
+                padding: 11px 14px;
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .user-profile,
+            .user-profile-panel {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
 
 <body class="raleway-all">
+
+    <input type="checkbox" id="sidebar-toggle">
 
     <!-- overlay para cerrar sidebar en móvil -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -77,6 +148,9 @@ if ($periodo) {
             <div class="sidebar-logo">
                 <img src="img/logo.svg" alt="Logo" class="logo-img">
                 <span class="sidebar-brand">OpusCore</span>
+                <button type="button" class="sidebar-close" onclick="closeSidebar()" aria-label="Cerrar menu">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
 
             <nav class="sidebar-nav">
@@ -106,7 +180,10 @@ if ($periodo) {
                 </a>
             </nav>
 
-            
+            <a href="includes/logout.php" class="sidebar-logout">
+                <i class="fas fa-arrow-right-from-bracket"></i>
+                <span>Cerrar sesion</span>
+            </a>
 
         </aside>
 
@@ -248,8 +325,19 @@ if ($periodo) {
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.getElementById('sidebar-toggle');
             sidebar.classList.toggle('open');
             overlay.classList.toggle('active');
+            toggle.checked = sidebar.classList.contains('open');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.getElementById('sidebar-toggle');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            toggle.checked = false;
         }
 
         // Buscador de cursos
