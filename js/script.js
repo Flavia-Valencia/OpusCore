@@ -797,7 +797,9 @@ if (formPeriodo) {
                     setTimeout(() => window.location.reload(), 1500);
                 } else if (data.error === 'existe') {
                     mostrarToastPremium('Ya existe un período con este nombre. Intenta con otro nombre');
-                } else {
+                } else if(data.error === 'fechas'){
+                    mostrarToastPremium('La fecha de fin no puede ser menor a la fecha de inicio')
+                }else {
                     mostrarToastPremium('Error al guardar el período');
                 }
             })
