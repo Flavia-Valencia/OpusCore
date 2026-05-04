@@ -11,6 +11,11 @@ $idDocente    = intval($_POST['idDocente']);
 $idPeriodo = intval($_POST['idPeriodo']);
 $estado       = 1;
 
+// Validación fechas incorrectas
+    if ($fechaFin <= $fechaInicio) {
+    header("Location: admin-cursos.php?error=fechas");
+    exit();
+}
 // Verifica si ya existe un curso con ese nombre
 $sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre')";
 $resultado_verificar = mysqli_query($conexion, $sql_verificar);

@@ -840,7 +840,9 @@ if (buscadorPeriodo) {
     buscadorPeriodo.addEventListener('keyup', function () {
         const filtro = this.value.toLowerCase();
         document.querySelectorAll('.data-table tbody tr').forEach(function (fila) {
-            fila.style.display = fila.textContent.toLowerCase().includes(filtro) ? '' : 'none';
+            const id = fila.cells[0].textContent.toLowerCase();
+            const nombre = fila.cells[1].textContent.toLowerCase();
+            fila.style.display = (id.includes(filtro) || nombre.includes(filtro)) ? '' : 'none';
         });
     });
 }
