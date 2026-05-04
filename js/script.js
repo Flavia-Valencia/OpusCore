@@ -787,27 +787,42 @@ if (formPeriodo) {
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: body
         })
+            .then(res => res.text())
+            .then(text => {
+                console.log("RESPUESTA DEL SERVIDOR:", text);
 
-            .then(res => res.json())
-            .then(data => {
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    throw new Error("Respuesta no es JSON");
+                }
+
                 if (data.success) {
                     cerrarModalPeriodo();
                     const mensaje = id ? 'Periodo guardado correctamente' : 'Periodo creado exitosamente';
                     mostrarToastPremium(mensaje, 'success');
                     setTimeout(() => window.location.reload(), 1500);
+
                 } else if (data.error === 'existe') {
-                    mostrarToastPremium('Ya existe un período con este nombre. Intenta con otro nombre');
-                } else if(data.error === 'fechas'){
-                    mostrarToastPremium('La fecha de fin no puede ser menor a la fecha de inicio')
-                }else {
-                    mostrarToastPremium('Error al guardar el período');
+                    mostrarToastPremium('Ya existe un período con este nombre: Intenta con otro nombre');
+
+                } else if (data.error === 'fechas') {
+                    mostrarToastPremium('La fecha de fin no puede ser menor a la de inicio');
+
+                } else if (data.error === 'traslape') {
+                    mostrarToastPremium('Las fechas ingresadas coinciden con otro período existente. Intenta con otras fechas');
+
+                } else {
+                    console.error(data);
+                    mostrarToastPremium('Error al guardar');
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
                 mostrarToastPremium('Error de conexión');
             });
-    })
+    });
 }
 
 
@@ -841,16 +856,16 @@ if (btnNuevo) {
         const modalNuevo = document.getElementById('modalNuevo');
         const modalPeriodo = document.getElementById('modalPeriodo');
 
-            if (modalNuevoCurso) {
-                modalNuevoCurso.classList.add('activo');
-                cargarPeriodos('idPeriodo')
-            } else if (modalNuevoDocente) {
-                modalNuevoDocente.classList.add('activo');
-            } else if (modalNuevo) {
-                modalNuevo.classList.add('activo');
-            }  else if (modalPeriodo) {
-                abrirModalNuevoPeriodo();
-            }
+        if (modalNuevoCurso) {
+            modalNuevoCurso.classList.add('activo');
+            cargarPeriodos('idPeriodo')
+        } else if (modalNuevoDocente) {
+            modalNuevoDocente.classList.add('activo');
+        } else if (modalNuevo) {
+            modalNuevo.classList.add('activo');
+        } else if (modalPeriodo) {
+            abrirModalNuevoPeriodo();
+        }
 
         document.body.style.overflow = 'hidden';
     });
