@@ -67,13 +67,57 @@ if ($periodo) {
 
 <body class="raleway-all">
 
+    <!-- overlay para cerrar sidebar en móvil -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <div class="layout">
 
+        <!-- sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <img src="img/logo.svg" alt="Logo" class="logo-img">
+                <span class="sidebar-brand">OpusCore</span>
+            </div>
 
+            <nav class="sidebar-nav">
+                <a href="estudiantes.php" class="nav-item">
+                    <i class="fas fa-house"></i>
+                    <span>Inicio</span>
+                </a>
+                <a href="estudiante-inscripciones.php" class="nav-item active">
+                    <i class="fas fa-pen-to-square"></i>
+                    <span>Inscripción</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-star"></i>
+                    <span>Calificaciones</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Pagos</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>Mensajes</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-gear"></i>
+                    <span>Configuración</span>
+                </a>
+            </nav>
+
+            
+
+        </aside>
+
+        <!-- contenido principal -->
         <div class="content">
 
+            <!-- header -->
             <header class="header-panel">
+                <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <a href="includes/logout.php" class="user-profile-panel">
                     <div class="user-info">
                         <span class="user-role">Estudiante</span>
@@ -83,6 +127,7 @@ if ($periodo) {
                 </a>
             </header>
 
+            <!-- banner -->
             <div class="banner">
                 <div class="banner-left">
                     <h1>Inscripción de Cursos 📋</h1>
@@ -100,6 +145,7 @@ if ($periodo) {
                 </div>
             </div>
 
+            <!-- cursos disponibles para inscripción -->
             <?php if (!$periodo): ?>
 
                 <div class="inscripcion-vacia">
@@ -184,16 +230,38 @@ if ($periodo) {
 
             <?php endif; ?>
 
-        </div>
-    </div>
+        </div><!-- /content -->
+    </div><!-- /layout -->
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>
     <script>
+        // Fecha dinámica en el banner
         const fechaEl = document.getElementById('fecha-hoy');
         if (fechaEl) {
             fechaEl.textContent = new Date().toLocaleDateString('es-ES', {
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+        }
+
+        // Toggle sidebar móvil
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        // Buscador de cursos
+        const buscador = document.getElementById('buscador-curso');
+        if (buscador) {
+            buscador.addEventListener('input', function () {
+                const filtro = this.value.toLowerCase();
+                document.querySelectorAll('.curso-card').forEach(card => {
+                    const nombre = card.querySelector('.curso-nombre')?.textContent.toLowerCase() || '';
+                    const desc = card.querySelector('.curso-desc')?.textContent.toLowerCase() || '';
+                    card.style.display = (nombre.includes(filtro) || desc.includes(filtro)) ? '' : 'none';
+                });
             });
         }
     </script>
