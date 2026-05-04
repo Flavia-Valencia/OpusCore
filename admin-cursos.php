@@ -266,7 +266,7 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                 
                 <div class="modal-campo full-width">
                     <label>Periodo</label>
-                    <select name="idPeriodo" id="idPeriodo" required>
+                   <select name="idPeriodo" id="edit-idPeriodo" required>
                         <option value="">Seleccione un periodo</option>
                     
                     </select>

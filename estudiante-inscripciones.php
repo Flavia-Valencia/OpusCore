@@ -30,24 +30,37 @@ if (!$estudiante) {
 
 $idEstudiante = $estudiante['id'];
 
-$periodoStmt = $conexion->query("SELECT * FROM PeriodoInscripcion WHERE estado = 1 LIMIT 1");
+// Obtener el periodo activo si existe
+$periodoStmt = $conexion->query("SELECT * FROM PeriodoInscripcion WHERE estado = 1 
+AND CURDATE() BETWEEN fechaInicio AND fechaFin
+LIMIT 1
+");
 $periodo = $periodoStmt->fetch_assoc();
 
+// Validación de las fechas
+$hoy = date('Y-m-d');
+if($periodo && $hoy > $periodo['fechaFin']){
+    $periodo = null;
+}
+
+// Obtener cursos solo si el periodo está activo y la fecha de inscripción está disponible
 $cursos = [];
-if ($periodo) {
-    $stmt = $conexion->prepare("
-        SELECT c.id, c.nombre, c.descripcion, c.costoMensual, c.cupos, c.fechaInicio, c.fechaFin
-        FROM cursos c
-        WHERE c.estado = 1
-        AND NOT EXISTS (
-            SELECT 1 FROM prerrequisitos pr
-            WHERE pr.idCursoActual = c.id
-        )
-        ORDER BY c.nombre ASC
+if($periodo){
+    $stmt = $conexion -> prepare("SELECT c.id, c.nombre, c.descripcion, c.costoMensual, c.cupos, c.fechaInicio, c.fechaFin 
+    FROM cursos c
+    WHERE c.estado = 1
+    AND c.idperiodo = ?
+    AND NOT EXISTS(
+        SELECT 1 FROM prerrequisitos pr
+        WHERE pr.idCursoActual = c.id
+    )
+    ORDER BY c.nombre ASC
     ");
-    $stmt->execute();
+    $stmt -> bind_param("i", $periodo['id']);
+    $stmt -> execute();
     $resultado = $stmt->get_result();
     $cursos = $resultado->fetch_all(MYSQLI_ASSOC);
+
 }
 ?>
 
