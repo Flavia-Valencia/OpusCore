@@ -1,7 +1,22 @@
 <?php
+
+/*
+VALIDAR INSCRIPCIÓN (EN DESUSO TEMPORAL)
+Este archivo fue creado como endpoint de validación para inscripción.
+Actualmente no se utiliza porque la lógica de bloqueo se maneja
+directamente en la carga de la vista (estudiante-inscripciones.php).
+Se reutilizará cuando se implemente la HU de inscripción real,
+para validar:
+-Estado del curso
+- Vigencia del período
+- Cupos disponibles
+- Inscripciones duplicadas
+*/
 # Recibe el ID de un curso y verifica si se puede inscribir:
 # El curso debe estar activo
 # El período asignado al curso debe estar activo
+
+/*
 include("includes/conexion.php");
 
 $idCurso = intval($_POST['idCurso']);
@@ -31,3 +46,4 @@ if ($fila['periodo_estado'] == 0 || $fila['periodo_estado'] === null) {
 
 echo json_encode(['puede' => true, 'mensaje' => 'Inscripción disponible']);
 ?>
+*/
