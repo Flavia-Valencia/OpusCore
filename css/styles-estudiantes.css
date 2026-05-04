@@ -4,12 +4,12 @@
     box-sizing: border-box;
 }
 
-/* Fuente importada de Google Fonts */
+/* fuente importada de Google Fonts */
 .raleway-all {
-    font-family: "Raleway", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 body {
@@ -17,18 +17,18 @@ body {
     background-size: 200% 200%;
 }
 
-/* ── HEADER ──────────────────────────────────────────────── */
+/* ── HEADER (pantalla de inicio - estudiantes.php) ───────── */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    /* este tiene un color extra al de docentes (el morado al final) */
+    /* color extra al de docentes: el morado al final */
     background: linear-gradient(135deg, #069DBF, #1D4B73, #053170, #5624cc);
     color: white;
 }
 
-/* logo: ícono + texto apilado en columna */
+/* logo: ícono + texto apilado */
 .logo {
     display: flex;
     align-items: center;
@@ -53,7 +53,7 @@ body {
     font-weight: bold;
 }
 
-/* botón de perfil/logout — fondo traslúcido con blur (glassmorphism) */
+/* botón de perfil/logout — glassmorphism */
 .user-profile {
     display: flex;
     align-items: center;
@@ -85,9 +85,9 @@ body {
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* ícono y botón de cerrar sesión */
+/* ícono de cerrar sesión */
 .logout-icon {
-    font-size: 20px;
+    font-size: 18px;
     color: white;
 }
 
@@ -95,12 +95,7 @@ body {
     color: white;
 }
 
-/* pisa el font-size de .logout-icon definido arriba */
-.logout-icon {
-    font-size: 18px;
-}
-
-/* ── CONTENIDO PRINCIPAL ─────────────────────────────────── */
+/* ── CONTENIDO PRINCIPAL (estudiantes.php) ───────────────── */
 .main {
     padding: 40px;
 }
@@ -110,14 +105,14 @@ body {
     margin-bottom: 30px;
 }
 
-/* tarjetas de opciones — grilla que acomoda sola las columnas según el espacio */
+/* grilla de opciones del panel de inicio */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
 }
 
-/* cada tarjeta/opción del menú principal */
+/* cada tarjeta/opción */
 .card-opcion {
     background: white;
     padding: 25px;
@@ -136,7 +131,7 @@ body {
     transform: translateY(-4px);
 }
 
-/* ícono de cada tarjeta — gradiente aplicado al texto via background-clip */
+/* ícono de cada tarjeta */
 .icono {
     font-size: 22px;
     background: linear-gradient(135deg, #053170, #069DBF);
@@ -145,236 +140,253 @@ body {
     color: transparent;
 }
 
-
+/* ── LAYOUT CON SIDEBAR (inscripciones y siguientes vistas) ─ */
 .layout {
     display: flex;
     min-height: 100vh;
 }
 
+/* ── SIDEBAR ──────────────────────────────────────────────── */
 
-.content {
-    width: 100%;
+.sidebar {
+    width: 230px;
     min-height: 100vh;
-    margin-left: 0;
+    background: linear-gradient(to top, #04224e 75%);
+    color: white;
+    padding: 24px 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
     display: flex;
     flex-direction: column;
-    background: #f0f4f8;
 }
 
-/* ── HEADER PANEL ── */
+/* logo */
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    margin-bottom: 20px;
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.sidebar-brand {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* navegación */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-item i {
+    width: 16px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+/* activo */
+.nav-item.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 600;
+}
+
+/* footer */
+.sidebar-footer {
+    margin-top: auto;
+}
+
+.logout-item {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* overlay oscuro para cerrar sidebar en móvil */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 99;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* ── CONTENIDO DERECHO AL SIDEBAR ────────────────────────── */
+.content {
+    margin-left: 230px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ── HEADER PANEL (barra superior de las vistas con sidebar) ─ */
 .header-panel {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    padding: 12px 28px;
     background: linear-gradient(135deg, #069DBF, #1D4B73, #053170, #5624cc);
-    padding: 13px 28px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    gap: 12px;
 }
 
-.menu-toggle {
+/* botón hamburguesa para móvil */
+.hamburger {
     display: none;
+    background: none;
+    border: none;
     color: white;
     font-size: 20px;
     cursor: pointer;
     margin-right: auto;
-    padding: 2px 6px;
-    user-select: none;
 }
 
+/* perfil en el header del panel */
 .user-profile-panel {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 16px;
-    border-radius: 50px;
-    text-decoration: none;
-    color: white;
     background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    transition: all 0.25s ease;
+    backdrop-filter: blur(10px);
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.3s;
 }
 
 .user-profile-panel:hover {
     background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-1px);
 }
 
-.user-profile-panel .user-info {
-    align-items: flex-end;
-}
-
-.user-profile-panel .user-role {
-    font-size: 12px;
-    font-weight: 700;
-    color: white;
-    line-height: 1.2;
-}
-
-.user-profile-panel .user-email {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.2;
-}
-
-.user-profile-panel .logout-icon {
-    font-size: 14px;
-    opacity: 0.9;
-}
-
-/* ── BANNER ── */
+/* ── BANNER ──────────────────────────────────────────────── */
 .banner {
-    margin: 28px 28px 0;
-    background: linear-gradient(135deg, #053170 0%, #1D4B73 60%, #069DBF 100%);
-    border-radius: 16px;
-    padding: 28px 36px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
     color: white;
-    position: relative;
-    overflow: hidden;
-}
-
-.banner::before {
-    content: "";
-    position: absolute;
-    top: -40px;
-    right: -40px;
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.06);
-    pointer-events: none;
-}
-
-.banner::after {
-    content: "";
-    position: absolute;
-    bottom: -50px;
-    right: 130px;
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.04);
-    pointer-events: none;
+    padding: 28px 36px;
+    margin: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(5, 49, 112, 0.25);
 }
 
 .banner-left h1 {
     font-size: 22px;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 .banner-left p {
     font-size: 13px;
-    opacity: 0.75;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .banner-left p strong {
-    opacity: 1;
+    color: white;
 }
 
 .banner-fecha {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
     font-size: 13px;
-    font-weight: 600;
-    opacity: 0.85;
+    color: rgba(255, 255, 255, 0.85);
     text-align: right;
-    white-space: nowrap;
 }
 
-/* ── PERIODO BADGE EN BANNER ── */
+/* ── SECCIÓN DE INSCRIPCIONES ────────────────────────────── */
 
-/* ── SECTION TITLE ── */
-.section-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #5a6a84;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    padding: 24px 28px 10px;
-}
-
-/* MÓDULO: INSCRIPCIONES */
-
+/* barra con buscador */
 .inscripcion-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 20px 28px 4px;
-    flex-wrap: wrap;
+    padding: 0 24px 16px;
 }
 
 .inscripcion-buscador {
-    flex: 1;
-    min-width: 200px;
-    padding: 9px 14px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 8px;
+    width: 100%;
+    padding: 11px 16px;
+    border: 1px solid #dde3ee;
+    border-radius: 10px;
+    font-size: 14px;
     font-family: "Raleway", sans-serif;
-    font-size: 13px;
     background: white;
+    color: #1a2a4a;
     outline: none;
-    transition: border 0.2s;
+    transition: border-color 0.2s;
 }
 
 .inscripcion-buscador:focus {
-    border-color: #069DBF;
+    border-color: #5624cc;
 }
 
-.inscripcion-contador {
-    font-size: 12px;
-    color: #8a97b0;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-/* ── GRID DE CURSOS ── */
+/* grilla de tarjetas de cursos */
 .courses-inscripcion {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    padding: 12px 28px 32px;
-    gap: 16px;
-    align-items: stretch;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 0 24px 32px;
 }
 
-/* ── CARD CURSO ── */
+/* tarjeta de cada curso */
 .curso-card {
     background: white;
     border-radius: 14px;
     padding: 20px;
-    border: 1.5px solid #e8edf5;
-    border-left: 3px solid #069DBF;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    border-left: 4px solid #069DBF;
     display: flex;
     flex-direction: column;
-    gap: 0;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
-    cursor: pointer;
+    gap: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .curso-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(5, 49, 112, 0.12);
-    border-color: #069DBF;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
+/* tarjeta sin cupos — borde gris y opacidad reducida */
 .curso-card.sin-cupos {
-    border-left-color: #f97316;
-    opacity: 0.8;
+    border-left-color: #ccc;
+    opacity: 0.7;
 }
 
-/* cabecera de la card */
+/* fila superior: nombre + badge */
 .curso-card-top {
     display: flex;
-    align-items: flex-start;
     justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 8px;
+    align-items: flex-start;
+    gap: 8px;
 }
 
 .curso-nombre {
@@ -384,71 +396,60 @@ body {
     line-height: 1.3;
 }
 
-.curso-card form {
-    margin-top: auto;
-}
-
-/* badges */
+/* badges de disponibilidad */
 .curso-badge {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 9px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
     border-radius: 20px;
     white-space: nowrap;
-    flex-shrink: 0;
-    letter-spacing: 0.3px;
 }
 
 .curso-badge.disponible {
-    background: #e1f5fb;
-    color: #069DBF;
+    background: #e0f5f0;
+    color: #0a7a5a;
 }
 
 .curso-badge.ultimos {
-    background: #fff3e0;
-    color: #e65100;
+    background: #fff4e0;
+    color: #b06a00;
 }
 
 .curso-badge.sin-cupos {
-    background: #fee2e2;
-    color: #dc2626;
+    background: #f0f0f0;
+    color: #888;
 }
 
-/* descripción */
+/* descripción del curso */
 .curso-desc {
-    font-size: 12px;
-    color: #8a97b0;
-    line-height: 1.55;
-    margin-bottom: 14px;
+    font-size: 13px;
+    color: #5a6a82;
+    line-height: 1.5;
 }
 
-/* divisor */
+/* línea divisoria dentro de la tarjeta */
 .curso-divider {
     height: 1px;
-    background: #f0f4f8;
-    margin-bottom: 14px;
-    margin-top: auto;
+    background: #eef1f6;
 }
 
-/* meta info */
+/* metadatos: inicio, fin, cupos, costo */
 .curso-meta {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-bottom: 16px;
-    margin-top: auto;
 }
 
 .meta-item {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
 }
 
 .meta-label {
     font-size: 10px;
     font-weight: 600;
-    color: #aab4c8;
+    color: #9aa5b8;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -456,147 +457,133 @@ body {
 .meta-value {
     font-size: 13px;
     font-weight: 600;
-    color: #2d3a52;
+    color: #1a2a4a;
 }
 
+.meta-value.sin-cupos-text {
+    color: #aaa;
+}
+
+/* precio en verde azulado */
 .meta-value.price {
     color: #069DBF;
 }
 
-.meta-value.sin-cupos-text {
-    color: #dc2626;
-}
-
-/* botón inscribir */
+/* botón de inscripción */
 .btn-inscribir {
     width: 100%;
-    padding: 10px;
-    background: #053170;
-    color: #fff;
+    padding: 11px;
+    background: linear-gradient(135deg, #053170, #1D4B73);
+    color: white;
     border: none;
-    border-radius: 8px;
-    cursor: pointer;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
     font-family: "Raleway", sans-serif;
-    font-weight: 700;
-    font-size: 13px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: background 0.2s, transform 0.1s;
+    transition: opacity 0.2s, transform 0.2s;
     margin-top: auto;
 }
 
 .btn-inscribir:hover {
-    background: #069DBF;
-    transform: scale(1.01);
+    opacity: 0.9;
+    transform: translateY(-1px);
 }
 
-.btn-inscribir:disabled,
+/* botón deshabilitado cuando no hay cupos */
 .btn-inscribir.lleno {
-    background: #cbd5e1;
-    color: #94a3b8;
+    background: #ddd;
+    color: #999;
     cursor: not-allowed;
     transform: none;
 }
 
-/* estado vacío */
+/* estado vacío: sin periodo o sin cursos */
 .inscripcion-vacia {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 60px 24px;
+    color: #8a99b3;
     text-align: center;
-    padding: 60px 20px;
-    color: #aab4c8;
 }
 
 .inscripcion-vacia i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    display: block;
-    color: #cbd5e1;
+    font-size: 40px;
+    color: #c0cadb;
 }
 
 .inscripcion-vacia p {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 6px;
-    color: #64748b;
 }
 
 .inscripcion-vacia small {
-    font-size: 12px;
+    font-size: 13px;
+    color: #aab5c8;
 }
 
-/* overlay móvil */
-.overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    z-index: 900;
+/* ── NOMBRE DEL USUARIO EN EL HEADER ─────────────────────── */
+.user-nombre {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
 }
 
-/* RESPONSIVE */
+/* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 768px) {
 
-    .menu-toggle {
+    /* ocultar sidebar por defecto en móvil */
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    /* mostrar sidebar cuando tiene clase open */
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* quitar margen izquierdo que deja el sidebar */
+    .content {
+        margin-left: 0;
+    }
+
+    /* mostrar botón hamburguesa */
+    .hamburger {
         display: block;
     }
 
-    .menu-user {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 5px 6px;
-        color: white;
-    }
-
-    .user-profile-panel {
-        display: none;
-    }
-
-    .content {
-        margin-left: 0;
-        width: 100%;
-    }
-
-    .header-panel {
-        justify-content: space-between;
-        padding: 12px 16px;
-    }
-
+    /* banner en columna en pantallas pequeñas */
     .banner {
-        position: relative;
-        margin: 16px 16px 0;
-        padding: 22px;
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+        margin: 16px;
+        padding: 20px;
     }
 
     .banner-fecha {
-        position: static;
-        width: 100%;
         text-align: left;
-        align-items: flex-start;
-        font-size: 12px;
-        white-space: normal;
-        margin-top: 4px;
     }
 
-    .section-title {
-        padding: 20px 16px 8px;
-    }
-
+    /* tarjetas en una sola columna */
     .courses-inscripcion {
         grid-template-columns: 1fr;
-        padding: 12px 16px 24px;
+        padding: 0 16px 24px;
     }
 
     .inscripcion-toolbar {
-        padding: 16px 16px 4px;
+        padding: 0 16px 12px;
     }
-}
 
-.custom-modal-overlay{
-    display: none;
+    /* cards del panel inicio en móvil */
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
 }
