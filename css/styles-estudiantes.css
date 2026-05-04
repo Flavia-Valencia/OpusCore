@@ -6,10 +6,10 @@
 
 /* Fuente importada de Google Fonts */
 .raleway-all {
-  font-family: "Raleway", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }
 
 body {
@@ -24,7 +24,7 @@ body {
     align-items: center;
     padding: 15px 40px;
     /* este tiene un color extra al de docentes (el morado al final) */
-    background: linear-gradient(135deg,#069DBF,#1D4B73, #053170, #5624cc);
+    background: linear-gradient(135deg, #069DBF, #1D4B73, #053170, #5624cc);
     color: white;
 }
 
@@ -128,7 +128,7 @@ body {
     text-decoration: none;
     color: #053170;
     font-weight: 600;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     transition: all 0.2s ease;
 }
 
@@ -139,8 +139,464 @@ body {
 /* ícono de cada tarjeta — gradiente aplicado al texto via background-clip */
 .icono {
     font-size: 22px;
-    background: linear-gradient(135deg,#053170,#069DBF);
+    background: linear-gradient(135deg, #053170, #069DBF);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+}
+
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+.content {
+    width: 100%;
+    min-height: 100vh;
+    margin-left: 0;
+    display: flex;
+    flex-direction: column;
+    background: #f0f4f8;
+}
+
+/* ── HEADER PANEL ── */
+.header-panel {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: linear-gradient(135deg, #069DBF, #1D4B73, #053170, #5624cc);
+    padding: 13px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.menu-toggle {
+    display: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: auto;
+    padding: 2px 6px;
+    user-select: none;
+}
+
+.user-profile-panel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    text-decoration: none;
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: all 0.25s ease;
+}
+
+.user-profile-panel:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+.user-profile-panel .user-info {
+    align-items: flex-end;
+}
+
+.user-profile-panel .user-role {
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+}
+
+.user-profile-panel .user-email {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.2;
+}
+
+.user-profile-panel .logout-icon {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+/* ── BANNER ── */
+.banner {
+    margin: 28px 28px 0;
+    background: linear-gradient(135deg, #053170 0%, #1D4B73 60%, #069DBF 100%);
+    border-radius: 16px;
+    padding: 28px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner::before {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+}
+
+.banner::after {
+    content: "";
+    position: absolute;
+    bottom: -50px;
+    right: 130px;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    pointer-events: none;
+}
+
+.banner-left h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.banner-left p {
+    font-size: 13px;
+    opacity: 0.75;
+}
+
+.banner-left p strong {
+    opacity: 1;
+}
+
+.banner-fecha {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.85;
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* ── PERIODO BADGE EN BANNER ── */
+
+/* ── SECTION TITLE ── */
+.section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #5a6a84;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 24px 28px 10px;
+}
+
+/* MÓDULO: INSCRIPCIONES */
+
+.inscripcion-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 20px 28px 4px;
+    flex-wrap: wrap;
+}
+
+.inscripcion-buscador {
+    flex: 1;
+    min-width: 200px;
+    padding: 9px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: "Raleway", sans-serif;
+    font-size: 13px;
+    background: white;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.inscripcion-buscador:focus {
+    border-color: #069DBF;
+}
+
+.inscripcion-contador {
+    font-size: 12px;
+    color: #8a97b0;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ── GRID DE CURSOS ── */
+.courses-inscripcion {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    padding: 12px 28px 32px;
+    gap: 16px;
+    align-items: stretch;
+}
+
+/* ── CARD CURSO ── */
+.curso-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1.5px solid #e8edf5;
+    border-left: 3px solid #069DBF;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s;
+    cursor: pointer;
+}
+
+.curso-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(5, 49, 112, 0.12);
+    border-color: #069DBF;
+}
+
+.curso-card.sin-cupos {
+    border-left-color: #f97316;
+    opacity: 0.8;
+}
+
+/* cabecera de la card */
+.curso-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.curso-nombre {
+    font-size: 15px;
+    font-weight: 700;
+    color: #053170;
+    line-height: 1.3;
+}
+
+.curso-card form {
+    margin-top: auto;
+}
+
+/* badges */
+.curso-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+}
+
+.curso-badge.disponible {
+    background: #e1f5fb;
+    color: #069DBF;
+}
+
+.curso-badge.ultimos {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.curso-badge.sin-cupos {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* descripción */
+.curso-desc {
+    font-size: 12px;
+    color: #8a97b0;
+    line-height: 1.55;
+    margin-bottom: 14px;
+}
+
+/* divisor */
+.curso-divider {
+    height: 1px;
+    background: #f0f4f8;
+    margin-bottom: 14px;
+    margin-top: auto;
+}
+
+/* meta info */
+.curso-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+    margin-top: auto;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.meta-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #aab4c8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meta-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d3a52;
+}
+
+.meta-value.price {
+    color: #069DBF;
+}
+
+.meta-value.sin-cupos-text {
+    color: #dc2626;
+}
+
+/* botón inscribir */
+.btn-inscribir {
+    width: 100%;
+    padding: 10px;
+    background: #053170;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: "Raleway", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: auto;
+}
+
+.btn-inscribir:hover {
+    background: #069DBF;
+    transform: scale(1.01);
+}
+
+.btn-inscribir:disabled,
+.btn-inscribir.lleno {
+    background: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* estado vacío */
+.inscripcion-vacia {
+    text-align: center;
+    padding: 60px 20px;
+    color: #aab4c8;
+}
+
+.inscripcion-vacia i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+    color: #cbd5e1;
+}
+
+.inscripcion-vacia p {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #64748b;
+}
+
+.inscripcion-vacia small {
+    font-size: 12px;
+}
+
+/* overlay móvil */
+.overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 900;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .menu-user {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 5px 6px;
+        color: white;
+    }
+
+    .user-profile-panel {
+        display: none;
+    }
+
+    .content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .header-panel {
+        justify-content: space-between;
+        padding: 12px 16px;
+    }
+
+    .banner {
+        position: relative;
+        margin: 16px 16px 0;
+        padding: 22px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .banner-fecha {
+        position: static;
+        width: 100%;
+        text-align: left;
+        align-items: flex-start;
+        font-size: 12px;
+        white-space: normal;
+        margin-top: 4px;
+    }
+
+    .section-title {
+        padding: 20px 16px 8px;
+    }
+
+    .courses-inscripcion {
+        grid-template-columns: 1fr;
+        padding: 12px 16px 24px;
+    }
+
+    .inscripcion-toolbar {
+        padding: 16px 16px 4px;
+    }
+}
+
+.custom-modal-overlay{
+    display: none;
 }
