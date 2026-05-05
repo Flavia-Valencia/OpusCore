@@ -347,11 +347,28 @@ body {
   font-weight: 600;
   padding: 3px 9px;
   border-radius: 20px;
-  background: #e1f5fb;
-  color: #069DBF;
+  background: #e8f8ee;
+  color: #198754;
   white-space: nowrap;
   flex-shrink: 0;
   letter-spacing: 0.3px;
+}
+
+.badges-curso {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.badge-periodo {
+  background: #e1f5fb;
+  color: #069DBF ;
+}
+
+.badges-curso {
+  
+  gap: 6px;
+  align-items: center;;
 }
 
 .card-desc {

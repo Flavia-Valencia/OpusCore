@@ -127,11 +127,19 @@ if(!isset($_SESSION["usuario"])){
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title"><?php echo htmlspecialchars($curso['nombre']); ?></h3>
-                                <span class="badge">Activo</span>
+
+                                <div class="badges-curso">
+                                    <span class="badge">Activo</span>
+
+                                    <span class="badge badge-periodo">
+                                        <?php echo !empty($curso['periodo_nombre']) ? htmlspecialchars($curso['periodo_nombre']) : 'Sin periodo'; ?>
+                                    </span>
+                                </div>
                             </div>
                             <p class="card-desc"><?php echo htmlspecialchars($curso['descripcion']); ?></p>
                             <div class="card-divider"></div>
                             <div class="card-meta">
+
                                 <div class="meta-item">
                                     <span class="meta-label">Inicio</span>
                                     <span class="meta-value"><?php echo date('d/m/Y', strtotime($curso['fechaInicio'])); ?></span>
