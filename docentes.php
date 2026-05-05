@@ -141,8 +141,8 @@ if(!isset($_SESSION["usuario"])){
                                     <span class="meta-value"><?php echo date('d/m/Y', strtotime($curso['fechaFin'])); ?></span>
                                 </div>
                                 <div class="meta-item">
-                                    <span class="meta-label">Cupos</span>
-                                    <span class="meta-value"><?php echo $curso['cupos']; ?> alumnos</span>
+                                    <span class="meta-label">Inscritos</span>
+                                    <span class="meta-value"><?php echo $curso['alumnos_inscritos']; ?> </span>
                                 </div>
                                 <div class="meta-item">
                                     <span class="meta-label">Costo mensual</span>
