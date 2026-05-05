@@ -642,7 +642,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const nombreA = a.cells[0].textContent.trim().toLowerCase();
             const nombreB = b.cells[0].textContent.trim().toLowerCase();
             return nombreA.localeCompare(nombreB);
-        } else {
+        }else if (document.getElementById('buscador-periodo')){
+            const idA = parseInt(a.dataset.id) || 0;
+            const idB = parseInt(b.dataset.id) || 0;
+            return idA - idB;
+        }else {
             return parseInt(a.dataset.id) - parseInt(b.dataset.id);
         }
     });
@@ -838,9 +842,22 @@ if (modalPeriodo) {
 const buscadorPeriodo = document.getElementById('buscador-periodo');
 if (buscadorPeriodo) {
     buscadorPeriodo.addEventListener('keyup', function () {
-        const filtro = this.value.toLowerCase();
+        const filtro = this.value.toLowerCase().trim();
+
+        if (filtro === '') {
+            document.querySelectorAll('.data-table tbody tr').forEach(f => f.style.display = '');
+            return;
+        }
+
         document.querySelectorAll('.data-table tbody tr').forEach(function (fila) {
-            fila.style.display = fila.textContent.toLowerCase().includes(filtro) ? '' : 'none';
+            const id = fila.cells[0].textContent.trim();
+            const nombre = fila.cells[1].textContent.toLowerCase().trim();
+
+            // busqueda exacta por ID para evitar conincidencias y busca por nombre a partir de 3 caracteres para evitar resultados erroneos
+            const coincideId = id === filtro;
+            const coincideNombre = filtro.length >= 3 && nombre.includes(filtro);
+
+            fila.style.display = (coincideId || coincideNombre) ? '' : 'none';
         });
     });
 }

@@ -13,6 +13,12 @@ $idPeriodo = !empty($_POST['idPeriodo']) ? intval($_POST['idPeriodo']) : NULL;
 $idPeriodo_sql = ($idPeriodo !== NULL) ? "$idPeriodo" : "NULL"; // Si se seleccionó un período se guarda su ID, de lo contrario se guarda NULL para evitar error de FK
 $estado       = $_POST['estado'] == 'Activo' ? 1 : 0;
 
+// Validación fechas incorrectas
+    if ($fechaFin <= $fechaInicio) {
+    header("Location: admin-cursos.php?error=fechas");
+    exit();
+}
+
 # Verificar que el nombre no lo use OTRO curso (distinto al que estamos editando)
 $sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre') AND id != '$id'";
 $resultado_verificar = mysqli_query($conexion, $sql_verificar);
@@ -52,7 +58,7 @@ WHERE id = '$id'";
 mysqli_query($conexion, $sql);
 
 
-// inserta nuevos
+// inserta nuevos prerrequisitos si se seleccionó alguno
 mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
 $idPrerrequisito = isset($_POST['idPrerrequisitos']) ? intval($_POST['idPrerrequisitos']) : 0;
 if ($idPrerrequisito > 0 && $idPrerrequisito != $id) {
