@@ -93,21 +93,30 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
             <div class="banner-texto">
                 <h1><?php echo $periodo_activo ? htmlspecialchars($periodo_activo['nombre']) : 'Sin período activo'; ?></h1>
             </div>
-            <div style="display:flex; gap:2rem;">
-                <div>
-                    <p style="font-size:15px; font-weight:600;">
-                        <?php echo $periodo_activo ? htmlspecialchars($periodo_activo['fechaInicio']) : '—'; ?>
-                    </p>
+            <div class="periodo-info">
+                <div class="periodo-fechas">
+                    <div>
+                        <p>
+                            <?php echo $periodo_activo ? htmlspecialchars($periodo_activo['fechaInicio']) : '—'; ?>
+                        </p>
+                    </div>
+
+                    <div>
+                        <p>
+                            <?php echo $periodo_activo ? htmlspecialchars($periodo_activo['fechaFin']) : '—'; ?>
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <p style="font-size:15px; font-weight:600;">
-                        <?php echo $periodo_activo ? htmlspecialchars($periodo_activo['fechaFin']) : '—'; ?>
-                    </p>
-                </div>
+
+                <?php
+                    $estadoTexto = $periodo_activo ? 'Activo' : 'Sin período';
+                    $estadoClase = $periodo_activo ? 'activo' : 'sin-periodo';
+                ?>
+
+                <span class="estado-periodo <?php echo $estadoClase; ?>">
+                    <?php echo $estadoTexto; ?>
+                </span>
             </div>
-            <span style="background:rgba(255,255,255,0.2); color:white; padding:6px 18px; border-radius:20px; font-size:13px; font-weight:700; border:1.5px solid rgba(255,255,255,0.4);">
-                <?php echo $periodo_activo ? 'Activo' : 'Sin período'; ?>
-            </span>
         </div>
 
         <!-- Tabla de períodos -->
