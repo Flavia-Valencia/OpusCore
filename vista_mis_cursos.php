@@ -1,5 +1,5 @@
 <?php
-require_once 'obtener-cursos-disponibles.php';
+require_once 'mis_cursos.php';
 ?>
 
 <!DOCTYPE html>
@@ -231,154 +231,42 @@ require_once 'obtener-cursos-disponibles.php';
                 </a>
             </header>
 
-            <!-- banner -->
-            <div class="banner">
-                <div class="banner-left">
-                    <h1>Inscripción de Cursos 📋</h1>
-                    <p>
-                        <?php if ($periodo): ?>
-                            Periodo activo: <strong><?= htmlspecialchars($periodo['nombre']) ?></strong>
-                            &nbsp;·&nbsp; <?= $periodo['fechaInicio'] ?> → <?= $periodo['fechaFin'] ?>
-                        <?php else: ?>
-                            No hay un periodo de inscripción activo en este momento.
-                        <?php endif; ?>
-                    </p>
-                </div>
-                <div class="banner-fecha">
-                    <strong id="fecha-hoy"></strong>
-                </div>
-            </div>
+                <?php if (empty($cursos)): ?>
+                    <p>No tienes cursos inscritos actualmente.</p>
 
-            <!-- cursos disponibles para inscripción -->
-            <?php if (!$periodo): ?>
-
-                <div class="inscripcion-vacia">
-                    <i class="fas fa-calendar-xmark"></i>
-                    <p>No hay un periodo de inscripción activo.</p>
-                    <small>Consulta con tu administrador para más información.</small>
-                </div>
-
-            <?php elseif (empty($cursos)): ?>
-
-                <div class="inscripcion-vacia">
-                    <i class="fas fa-book-open"></i>
-                    <p>No hay cursos disponibles para inscribir en este periodo.</p>
-                    <small>Vuelve pronto, se habilitarán nuevos cursos.</small>
-                </div>
-
-            <?php else: ?>
-
-                <div class="inscripcion-toolbar">
-                    <input type="text" id="buscador-curso" placeholder="🔎 Buscar curso..." class="inscripcion-buscador">
-                </div>
-
-                <section class="courses-inscripcion">
-                    <?php foreach ($cursos as $curso):
-                        $sinCupos = $curso['cupos'] <= 0;
-                        $ultimosCupos = $curso['cupos'] > 0 && $curso['cupos'] <= 5;
-                    ?>
-                    <div class="curso-card <?= $sinCupos ? 'sin-cupos' : '' ?>">
-
-                        <div class="curso-card-top">
-                            <div class="curso-nombre"><?= htmlspecialchars($curso['nombre']) ?></div>
-                            <?php if ($sinCupos): ?>
-                                <span class="curso-badge sin-cupos">Sin cupos</span>
-                            <?php elseif ($ultimosCupos): ?>
-                                <span class="curso-badge ultimos">Últimos cupos</span>
-                            <?php else: ?>
-                                <span class="curso-badge disponible">Disponible</span>
-                            <?php endif; ?>
-                        </div>
-
-                        <p class="curso-desc"><?= htmlspecialchars($curso['descripcion']) ?></p>
-
-                        <div class="curso-divider"></div>
-
-                        <div class="curso-meta">
-                            <div class="meta-item">
-                                <span class="meta-label">Inicio</span>
-                                <span class="meta-value"><?= $curso['fechaInicio'] ?></span>
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Fin</span>
-                                <span class="meta-value"><?= $curso['fechaFin'] ?></span>
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Cupos</span>
-                                <span class="meta-value <?= $sinCupos ? 'sin-cupos-text' : '' ?>">
-                                    <?= $sinCupos ? 'Sin cupos' : $curso['cupos'] . ' disponibles' ?>
-                                </span>
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Costo mensual</span>
-                                <span class="meta-value price">$<?= number_format($curso['costoMensual'], 2) ?></span>
-                            </div>
-                        </div>
-
-                        <?php if (!$sinCupos): ?>
-                            <form method="POST" action="inscribir-curso.php">
-                                <input type="hidden" name="curso_id" value="<?= $curso['id'] ?>">
-                                <button type="submit" class="btn-inscribir">
-                                    <i class="fas fa-pen-to-square"></i> Inscribirme
-                                </button>
-                            </form>
-                        <?php else: ?>
-                            <button class="btn-inscribir lleno" disabled>
-                                <i class="fas fa-lock"></i> Sin cupos disponibles
-                            </button>
-                        <?php endif; ?>
-
-                    </div>
-                    <?php endforeach; ?>
-                </section>
-
-            <?php endif; ?>
+                <?php else: ?>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Costo mensual</th>
+                                <th>Fecha inicio</th>
+                                <th>Fecha fin</th>
+                                <th>Estado</th>
+                                <th>Fecha inscripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($cursos as $curso): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($curso['nombre']) ?></td>
+                                <td><?= htmlspecialchars($curso['descripcion']) ?></td>
+                                <td>$<?= number_format($curso['costoMensual'], 2) ?></td>
+                                <td><?= $curso['fechaInicio'] ?></td>
+                                <td><?= $curso['fechaFin'] ?></td>
+                                <td><?= $curso['estado_academico'] ?></td>
+                                <td><?= $curso['fecha_registro'] ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
 
         </div><!-- /content -->
     </div><!-- /layout -->
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>
-    <script>
-        // Fecha dinámica en el banner
-        const fechaEl = document.getElementById('fecha-hoy');
-        if (fechaEl) {
-            fechaEl.textContent = new Date().toLocaleDateString('es-ES', {
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-            });
-        }
-
-        // Toggle sidebar móvil
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.getElementById('sidebar-toggle');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-            toggle.checked = sidebar.classList.contains('open');
-        }
-
-        function closeSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.getElementById('sidebar-toggle');
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            toggle.checked = false;
-        }
-
-        // Buscador de cursos
-        const buscador = document.getElementById('buscador-curso');
-        if (buscador) {
-            buscador.addEventListener('input', function () {
-                const filtro = this.value.toLowerCase();
-                document.querySelectorAll('.curso-card').forEach(card => {
-                    const nombre = card.querySelector('.curso-nombre')?.textContent.toLowerCase() || '';
-                    const desc = card.querySelector('.curso-desc')?.textContent.toLowerCase() || '';
-                    card.style.display = (nombre.includes(filtro) || desc.includes(filtro)) ? '' : 'none';
-                });
-            });
-        }
-    </script>
 </body>
 </html>
