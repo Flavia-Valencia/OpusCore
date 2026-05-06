@@ -1171,3 +1171,45 @@ if (btnGuardarHorarios) {
         }
     });
 }
+
+// -- VALIDACIÓN DE INSCRIPCIÓN
+async function validarInscripcion(idCurso, btn) {
+    btn.disabled = true;
+
+    try {
+        const formData = new FormData();
+        formData.append('curso_id', idCurso);
+
+        const res = await fetch('validar-inscripcion.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            // parte modal frontend
+            // abrirModalInscripcion(data.idCurso);
+            Swal.fire({
+                title: '¡Inscripción exitosa!',
+                text: data.mensaje,
+                icon: 'success'
+            }); // se modificara cuando front haga el modal
+        } else {
+            Swal.fire({
+                title: 'No puedes inscribirte',
+                text: data.mensaje,
+                icon: 'error'
+            });
+        }
+
+    } catch (err) {
+        Swal.fire({
+            title: 'Error de conexión',
+            text: 'Ocurrió un problema. Intenta de nuevo.',
+            icon: 'error'
+        });
+    } finally {
+        btn.disabled = false;
+    }
+}
