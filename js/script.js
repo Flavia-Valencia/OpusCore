@@ -381,20 +381,21 @@ const customModalHTML = `
 
 document.body.insertAdjacentHTML('beforeend', customModalHTML);
 
-// --- TOGGLE ESTADO ---  
+// --- TOGGLE ESTADO ---
 
 // - Detecta clic en el botón de estado (activo/inactivo)
 // - Abre un modal de confirmación antes de cambiar el estado
-// - Al aceptar, verifica la clase `estado-activo` para invertir el estado (toggle)
-// - Actualiza inmediatamente el texto y estilos del botón en la interfaz
+// - Al aceptar, envía la petición al servidor PRIMERO antes de hacer cambios visuales
+// - Si el servidor rechaza (error), muestra un toast y detiene la acción sin tocar la interfaz
+// - Si el servidor aprueba, actualiza visualmente el botón, la fila y la celda de estado
 // - Cambia visualmente la fila (gris si está inactivo)
 // - Bloquea botones de editar y horarios cuando está inactivo
 // - Al desactivar un curso, limpia visualmente la celda de docente
 // - Reordena la fila dinámicamente:
 //     * Inactivos se envían al final
-//     * Activos se insertan en su posición correcta por ID
+//     * Cursos activos se reinsertan en orden alfabético por nombre
+//     * Docentes y estudiantes activos se reinsertan en orden por ID
 // - Mantiene estilos y bloqueos al recargar la página
-// - Envía el ID al servidor con fetch para guardar el cambio en la base de datos sin recargar
 
 document.addEventListener('click', function (e) {
 
@@ -411,7 +412,6 @@ document.addEventListener('click', function (e) {
 
     const isActivo = btn.classList.contains('estado-activo');
 
-    // detectar tipo
     let tipo = 'curso';
     if (document.getElementById('buscador-docente')) tipo = 'docente';
     else if (document.getElementById('buscador-estudiante')) tipo = 'estudiante';
@@ -433,8 +433,7 @@ document.addEventListener('click', function (e) {
     modal.classList.add('active');
 
     bCancel.onclick = () => modal.classList.remove('active');
-
-    bAccept.onclick = function () {
+    bAccept.onclick = async function () {
 
         const fila = btn.closest('tr');
         const id = fila.dataset.id;
@@ -445,7 +444,19 @@ document.addEventListener('click', function (e) {
         else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
         else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
 
-        // CAMBIO VISUAL INMEDIATO
+        const res = await fetch(archivo, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + id
+        });
+        const data = await res.json();
+
+        if (data.error) {
+            mostrarToastPremium(data.mensaje, 'error');
+            modal.classList.remove('active');
+            return;
+        }
+
         if (document.getElementById('buscador-curso')) {
             if (isActivo) {
                 btn.classList.remove('estado-activo');
@@ -473,13 +484,11 @@ document.addEventListener('click', function (e) {
             celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
         }
 
-        // Limpiar celda de docente visualmente al desactivar un curso
         if (isActivo && document.getElementById('buscador-curso')) {
             const celdaDocente = fila.querySelector('td[data-label="Docente"]');
             if (celdaDocente) celdaDocente.textContent = '—';
         }
 
-        // --- COLOR GRIS Y BLOQUEO (GENERAL PARA TODOS) ---
         const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
         const btnHorarios = fila.querySelector('.horarios');
 
@@ -489,49 +498,26 @@ document.addEventListener('click', function (e) {
                 td.style.color = '#6c757d';
                 td.style.opacity = '0.7';
             });
-
-            if (btnEditar) {
-                btnEditar.style.pointerEvents = 'none';
-                btnEditar.style.opacity = '0.5';
-            }
-
-            if (btnHorarios) {
-                btnHorarios.style.pointerEvents = 'none';
-                btnHorarios.style.opacity = '0.5';
-            }
-
+            if (btnEditar) { btnEditar.style.pointerEvents = 'none'; btnEditar.style.opacity = '0.5'; }
+            if (btnHorarios) { btnHorarios.style.pointerEvents = 'none'; btnHorarios.style.opacity = '0.5'; }
         } else {
             fila.querySelectorAll('td').forEach(td => {
                 td.style.backgroundColor = '';
                 td.style.color = '';
                 td.style.opacity = '';
             });
-
-            if (btnEditar) {
-                btnEditar.style.pointerEvents = '';
-                btnEditar.style.opacity = '';
-            }
-
-            if (btnHorarios) {
-                btnHorarios.style.pointerEvents = '';
-                btnHorarios.style.opacity = '';
-            }
+            if (btnEditar) { btnEditar.style.pointerEvents = ''; btnEditar.style.opacity = ''; }
+            if (btnHorarios) { btnHorarios.style.pointerEvents = ''; btnHorarios.style.opacity = ''; }
         }
-
-        // --- MOVER FILA (AHORA PARA TODOS) ---
         const tbody = fila.parentElement;
 
         if (isActivo) {
-            // desactivar → abajo
             tbody.appendChild(fila);
         } else {
-            // activar → ordenar por nombre alfabéticamente
-            // activar → reordenar según página
             const filas = Array.from(tbody.querySelectorAll('tr'));
             let insertado = false;
 
             if (document.getElementById('buscador-curso')) {
-                // cursos → alfabético por nombre
                 const nombreNuevo = fila.cells[0].textContent.trim().toLowerCase();
                 for (let f of filas) {
                     if (f === fila) continue;
@@ -545,7 +531,6 @@ document.addEventListener('click', function (e) {
                     }
                 }
             } else {
-                // docentes y estudiantes → por ID
                 for (let f of filas) {
                     if (f === fila) continue;
                     const btnF = f.querySelector('.btn-toggle-estado');
@@ -567,23 +552,9 @@ document.addEventListener('click', function (e) {
         }
 
         modal.classList.remove('active');
-
-        fetch(archivo, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'id=' + id
-        })
-            .then(res => res.json())
-            .then(data => {
-                console.log('Guardado en BD:', data);
-                window.location.reload();
-            })
-            .catch(err => {
-                console.error('Error:', err);
-            });
+        window.location.reload();
     };
 });
-
 // === INICIALIZA ESTADOS AL RECARGAR ===
 // Aplica gris y bloquea filas inactivas según su botón,
 // ordena activos por ID y envía los inactivos al final
@@ -1200,3 +1171,146 @@ if (btnGuardarHorarios) {
         }
     });
 }
+
+
+// -- MODAL INSCRIPCIÓN
+let cursoInscripcionId = null;
+let btnInscripcionActual = null;
+
+// Nota: la lógica de apertura/cierre del modal es la parte bien establecida.
+// El resto del código de extracción de datos desde la tarjeta fue un prototipo de prueba.
+// Si el backend puede entregar estos datos directamente, este bloque puede mejorarse o eliminarse.
+function abrirModalInscripcion(idCurso, btn) {
+    cursoInscripcionId = idCurso;
+    btnInscripcionActual = btn;
+
+    const cursoCard = btn.closest('.curso-card');
+    if (!cursoCard) return;
+
+    const nombre = cursoCard.querySelector('.curso-nombre')?.textContent || '';
+    const descripcion = cursoCard.querySelector('.curso-desc')?.textContent || '';
+    const costoMensual = cursoCard.querySelector('.meta-value.price')?.textContent || '';
+    const camposMeta = cursoCard.querySelectorAll('.meta-item');
+    let cuposDisponibles = '';
+    let fechaInicio = '';
+    let fechaFin = '';
+
+    camposMeta.forEach(item => {
+        const label = item.querySelector('.meta-label')?.textContent || '';
+        const value = item.querySelector('.meta-value')?.textContent || '';
+
+        if (label.includes('Cupos')) {
+            cuposDisponibles = value;
+        } else if (label.includes('Inicio')) {
+            fechaInicio = value;
+        } else if (label.includes('Fin')) {
+            fechaFin = value;
+        }
+    });
+
+    document.getElementById('modalCursoNombre').textContent = nombre;
+    document.getElementById('modalCursoDescripcion').textContent = descripcion;
+    document.getElementById('modalCursoCosto').textContent = costoMensual;
+    document.getElementById('modalCursoCupos').textContent = cuposDisponibles || 'Sin cupos';
+    document.getElementById('modalCursoFecha').textContent = fechaInicio && fechaFin ? `${fechaInicio} → ${fechaFin}` : 'Sin fecha disponible';
+    document.getElementById('modalCursoHorario').textContent = 'Cargando...';
+    document.getElementById('modalCursoAula').textContent = 'Cargando...';
+
+    cargarDatosHorarioAula(idCurso);
+
+    const modal = document.getElementById('modalInscripcion');
+    if (!modal) return;
+
+    modal.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+}
+
+// TODO: este método se agregó como prueba para completar horario/aula en el modal.
+// Idealmente el backend debería devolver estos datos directamente junto a la lista de cursos.
+async function cargarDatosHorarioAula(idCurso) {
+    try {
+        await cargarCatalogos();
+        const res = await fetch(`obtener-horarios-cursos.php?idCurso=${encodeURIComponent(idCurso)}`);
+        const bloques = await res.json();
+
+        if (!Array.isArray(bloques) || bloques.length === 0) {
+            document.getElementById('modalCursoHorario').textContent = 'Por asignar';
+            document.getElementById('modalCursoAula').textContent = 'Por asignar';
+            return;
+        }
+
+        const horarios = bloques.map(bloque => {
+            const horario = catalogoHorarios.find(h => Number(h.id) === Number(bloque.idHorario))?.etiqueta || 'Horario no disponible';
+            const dias = Array.isArray(bloque.dias) ? bloque.dias.join(', ') : bloque.dias || '';
+            return `${dias} · ${horario}`;
+        });
+
+        const aulas = [...new Set(bloques.map(bloque => {
+            return catalogoAulas.find(a => Number(a.id) === Number(bloque.idAula))?.aula || 'Aula no disponible';
+        }))];
+
+        document.getElementById('modalCursoHorario').textContent = horarios.join(' / ');
+        document.getElementById('modalCursoAula').textContent = aulas.join(', ');
+    } catch (err) {
+        document.getElementById('modalCursoHorario').textContent = 'Error al cargar';
+        document.getElementById('modalCursoAula').textContent = 'Error al cargar';
+    }
+}
+
+function cerrarModalInscripcion() {
+    const modal = document.getElementById('modalInscripcion');
+    if (!modal) return;
+
+    modal.classList.remove('activo');
+    document.body.style.overflow = '';
+}
+
+// Cerrar modal de inscripción al hacer clic en el overlay
+const modalInscripcion = document.getElementById('modalInscripcion');
+if (modalInscripcion) {
+    modalInscripcion.addEventListener('click', function (e) {
+        if (e.target === this) cerrarModalInscripcion();
+    });
+}
+
+const btnConfirmarInscripcion = document.getElementById('btnConfirmarInscripcion');
+
+if (btnConfirmarInscripcion) {
+    btnConfirmarInscripcion.addEventListener('click', function () {
+        validarInscripcion(cursoInscripcionId, btnInscripcionActual);
+    });
+}
+
+// -- VALIDACIÓN DE INSCRIPCIÓN
+async function validarInscripcion(idCurso, btn) {
+    btn.disabled = true;
+
+    try {
+        const formData = new FormData();
+        formData.append('curso_id', idCurso);
+
+        const res = await fetch('validar-inscripcion.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await res.json();
+        console.log('Respuesta:', data);
+        if (data.success) {
+            // TODO: cambiar este Swal por mostrarToastPremium una vez el backend esté listo.
+            // Por ahora se usa mostrarToastPremium como notificación principal.
+            cerrarModalInscripcion();
+            setTimeout(() => mostrarToastPremium(data.mensaje || 'Inscripción exitosa', 'success'), 300);
+            setTimeout(() => window.location.reload(), 1900);
+        } else {
+            cerrarModalInscripcion();
+            setTimeout(() => mostrarToastPremium(data.mensaje || 'No puedes inscribirte', 'error'), 300);
+        }
+    } catch (err) {
+        mostrarToastPremium('Error de conexión. Ocurrió un problema. Intenta de nuevo.', 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+

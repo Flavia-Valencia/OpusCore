@@ -99,16 +99,17 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
         </div>
 
         <!--Mensaje de validación del curso-->
-        <?php if(isset($_GET['error'])): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                <?php if($_GET['error'] == 'existe'): ?>
-                    mostrarToastPremium('El curso ya existe. Intenta con otro nombre.');
-                <?php endif; ?>
-            });
-        </script>
-
+       <?php if(isset($_GET['error'])): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if($_GET['error'] == 'existe'): ?>
+            mostrarToastPremium('El curso ya existe. Intenta con otro nombre.');
+        <?php elseif($_GET['error'] == 'fechas'): ?>
+            mostrarToastPremium('La fecha de fin no debe ser menor a la fecha de inicio. Intente con otras fechas');
         <?php endif; ?>
+    });
+</script>
+<?php endif; ?>
         
         <div class="card">
             <div class="toolbar">

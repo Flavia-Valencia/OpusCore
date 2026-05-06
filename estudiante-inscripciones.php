@@ -1,67 +1,5 @@
 <?php
-session_start();
-
-header("Cache-Control: no-store, no-cache, must-revalidate");
-header("Pragma: no-cache");
-header("Expires: 0");
-
-if (!isset($_SESSION["usuario"])) {
-    header("Location: login.php");
-    exit();
-}
-
-require_once 'includes/conexion.php';
-
-$correo = $_SESSION["usuario"];
-$stmt = $conexion->prepare("
-    SELECT e.id FROM estudiantes e
-    INNER JOIN usuarios u ON e.usuario_id = u.id
-    WHERE u.correo = ?
-");
-$stmt->bind_param("s", $correo);
-$stmt->execute();
-$resultado = $stmt->get_result();
-$estudiante = $resultado->fetch_assoc();
-
-if (!$estudiante) {
-    header("Location: login.php");
-    exit();
-}
-
-$idEstudiante = $estudiante['id'];
-
-// Obtener el periodo activo si existe
-$periodoStmt = $conexion->query("SELECT * FROM PeriodoInscripcion WHERE estado = 1 
-AND CURDATE() BETWEEN fechaInicio AND fechaFin
-LIMIT 1
-");
-$periodo = $periodoStmt->fetch_assoc();
-
-// Validación de las fechas
-$hoy = date('Y-m-d');
-if($periodo && $hoy > $periodo['fechaFin']){
-    $periodo = null;
-}
-
-// Obtener cursos solo si el periodo está activo y la fecha de inscripción está disponible
-$cursos = [];
-if($periodo){
-    $stmt = $conexion -> prepare("SELECT c.id, c.nombre, c.descripcion, c.costoMensual, c.cupos, c.fechaInicio, c.fechaFin 
-    FROM cursos c
-    WHERE c.estado = 1
-    AND c.idperiodo = ?
-    AND NOT EXISTS(
-        SELECT 1 FROM prerrequisitos pr
-        WHERE pr.idCursoActual = c.id
-    )
-    ORDER BY c.nombre ASC
-    ");
-    $stmt -> bind_param("i", $periodo['id']);
-    $stmt -> execute();
-    $resultado = $stmt->get_result();
-    $cursos = $resultado->fetch_all(MYSQLI_ASSOC);
-
-}
+require_once 'obtener-cursos-disponibles.php';
 ?>
 
 <!DOCTYPE html>
@@ -243,8 +181,8 @@ if($periodo){
             </div>
 
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item">
-                    <i class="fas fa-book"></i>
+                <a href="vista_mis_cursos.php" class="nav-item ">
+                    <i class="fas fa-pen-to-square"></i>
                     <span>Mis cursos</span>
                 </a>
                 <a href="estudiante-inscripciones.php" class="nav-item active">
@@ -384,12 +322,11 @@ if($periodo){
                         </div>
 
                         <?php if (!$sinCupos): ?>
-                            <form method="POST" action="inscribir-curso.php">
-                                <input type="hidden" name="curso_id" value="<?= $curso['id'] ?>">
-                                <button type="submit" class="btn-inscribir">
-                                    <i class="fas fa-pen-to-square"></i> Inscribirme
-                                </button>
-                            </form>
+                            <button class="btn-inscribir" onclick="abrirModalInscripcion(<?= $curso['id'] ?>, this)">
+                                <i class="fas fa-pen-to-square"></i> Inscribirme
+                            </button>
+                            
+                            
                         <?php else: ?>
                             <button class="btn-inscribir lleno" disabled>
                                 <i class="fas fa-lock"></i> Sin cupos disponibles
@@ -404,6 +341,66 @@ if($periodo){
 
         </div><!-- /content -->
     </div><!-- /layout -->
+
+
+<!-- MODAL CONFIRMAR INSCRIPCIÓN -->
+<div id="modalInscripcion" class="modal-overlay">
+    <div class="modal-contenido modal-horarios-premium">
+        <button class="modal-cerrar" onclick="cerrarModalInscripcion()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h2 class="modal-titulo">
+            <i class="fas fa-pen-to-square"></i> Confirmar inscripción
+        </h2>
+
+        <h3 class="modal-subtitulo">Detalle del curso</h3>
+
+        <div class="horario-card-registro">
+            <div class="horario-grid">
+                <div class="horario-campo full-width">
+                    <label>NOMBRE ESTUDIANTE</label>
+                    <p id="modalEstudianteNombre"><?= htmlspecialchars($estudianteNombreCompleto ?? $_SESSION['usuario']) ?></p>
+                </div>
+                <div class="horario-campo">
+                    <label>CURSO</label>
+                    <p id="modalCursoNombre"></p>
+                </div>
+                <div class="horario-campo full-width">
+                    <label>DESCRIPCIÓN</label>
+                    <p id="modalCursoDescripcion"></p>
+                </div>
+                <div class="horario-campo">
+                    <label>HORARIO</label>
+                    <p id="modalCursoHorario">Por asignar</p>
+                </div>
+                <div class="horario-campo">
+                    <label>FECHA</label>
+                    <p id="modalCursoFecha"></p>
+                </div>
+                <div class="horario-campo">
+                    <label>COSTO</label>
+                    <p id="modalCursoCosto"></p>
+                </div>
+                <div class="horario-campo">
+                    <label>CUPOS</label>
+                    <p id="modalCursoCupos"></p>
+                </div>
+                <div class="horario-campo">
+                    <label>AULA</label>
+                    <p id="modalCursoAula">Por asignar</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" onclick="cerrarModalInscripcion()">Cancelar</button>
+            <button type="button" class="btn-guardar-premium" id="btnConfirmarInscripcion">
+                <i class="fas fa-check"></i> Confirmar inscripción
+            </button>
+        </div>
+    </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>
