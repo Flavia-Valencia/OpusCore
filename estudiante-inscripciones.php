@@ -316,7 +316,7 @@ require_once 'obtener-cursos-disponibles.php';
                         </div>
 
                         <?php if (!$sinCupos): ?>
-                            <button class="btn-inscribir" onclick="validarInscripcion(<?= $curso['id'] ?>, this)">
+                            <button class="btn-inscribir" onclick="abrirModalInscripcion(<?= $curso['id'] ?>, this)">
                                 <i class="fas fa-pen-to-square"></i> Inscribirme
                             </button>
                             
@@ -335,6 +335,66 @@ require_once 'obtener-cursos-disponibles.php';
 
         </div><!-- /content -->
     </div><!-- /layout -->
+
+
+<!-- MODAL CONFIRMAR INSCRIPCIÓN -->
+<div id="modalInscripcion" class="modal-overlay">
+    <div class="modal-contenido modal-horarios-premium">
+        <button class="modal-cerrar" onclick="cerrarModalInscripcion()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h2 class="modal-titulo">
+            <i class="fas fa-pen-to-square"></i> Confirmar inscripción
+        </h2>
+
+        <h3 class="modal-subtitulo">Detalle del curso</h3>
+
+        <div class="horario-card-registro">
+            <div class="horario-grid">
+                <div class="horario-campo full-width">
+                    <label>NOMBRE ESTUDIANTE</label>
+                    <p id="modalEstudianteNombre"><?= htmlspecialchars($estudianteNombreCompleto ?? $_SESSION['usuario']) ?></p>
+                </div>
+                <div class="horario-campo">
+                    <label>CURSO</label>
+                    <p id="modalCursoNombre"></p>
+                </div>
+                <div class="horario-campo full-width">
+                    <label>DESCRIPCIÓN</label>
+                    <p id="modalCursoDescripcion"></p>
+                </div>
+                <div class="horario-campo">
+                    <label>HORARIO</label>
+                    <p id="modalCursoHorario">Por asignar</p>
+                </div>
+                <div class="horario-campo">
+                    <label>FECHA</label>
+                    <p id="modalCursoFecha"></p>
+                </div>
+                <div class="horario-campo">
+                    <label>COSTO</label>
+                    <p id="modalCursoCosto"></p>
+                </div>
+                <div class="horario-campo">
+                    <label>CUPOS</label>
+                    <p id="modalCursoCupos"></p>
+                </div>
+                <div class="horario-campo">
+                    <label>AULA</label>
+                    <p id="modalCursoAula">Por asignar</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" onclick="cerrarModalInscripcion()">Cancelar</button>
+            <button type="button" class="btn-guardar-premium" id="btnConfirmarInscripcion">
+                <i class="fas fa-check"></i> Confirmar inscripción
+            </button>
+        </div>
+    </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>

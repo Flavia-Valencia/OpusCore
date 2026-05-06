@@ -1172,6 +1172,115 @@ if (btnGuardarHorarios) {
     });
 }
 
+
+// -- MODAL INSCRIPCIÓN
+let cursoInscripcionId = null;
+let btnInscripcionActual = null;
+
+// Nota: la lógica de apertura/cierre del modal es la parte bien establecida.
+// El resto del código de extracción de datos desde la tarjeta fue un prototipo de prueba.
+// Si el backend puede entregar estos datos directamente, este bloque puede mejorarse o eliminarse.
+function abrirModalInscripcion(idCurso, btn) {
+    cursoInscripcionId = idCurso;
+    btnInscripcionActual = btn;
+
+    const cursoCard = btn.closest('.curso-card');
+    if (!cursoCard) return;
+
+    const nombre = cursoCard.querySelector('.curso-nombre')?.textContent || '';
+    const descripcion = cursoCard.querySelector('.curso-desc')?.textContent || '';
+    const costoMensual = cursoCard.querySelector('.meta-value.price')?.textContent || '';
+    const camposMeta = cursoCard.querySelectorAll('.meta-item');
+    let cuposDisponibles = '';
+    let fechaInicio = '';
+    let fechaFin = '';
+
+    camposMeta.forEach(item => {
+        const label = item.querySelector('.meta-label')?.textContent || '';
+        const value = item.querySelector('.meta-value')?.textContent || '';
+
+        if (label.includes('Cupos')) {
+            cuposDisponibles = value;
+        } else if (label.includes('Inicio')) {
+            fechaInicio = value;
+        } else if (label.includes('Fin')) {
+            fechaFin = value;
+        }
+    });
+
+    document.getElementById('modalCursoNombre').textContent = nombre;
+    document.getElementById('modalCursoDescripcion').textContent = descripcion;
+    document.getElementById('modalCursoCosto').textContent = costoMensual;
+    document.getElementById('modalCursoCupos').textContent = cuposDisponibles || 'Sin cupos';
+    document.getElementById('modalCursoFecha').textContent = fechaInicio && fechaFin ? `${fechaInicio} → ${fechaFin}` : 'Sin fecha disponible';
+    document.getElementById('modalCursoHorario').textContent = 'Cargando...';
+    document.getElementById('modalCursoAula').textContent = 'Cargando...';
+
+    cargarDatosHorarioAula(idCurso);
+
+    const modal = document.getElementById('modalInscripcion');
+    if (!modal) return;
+
+    modal.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+}
+
+// TODO: este método se agregó como prueba para completar horario/aula en el modal.
+// Idealmente el backend debería devolver estos datos directamente junto a la lista de cursos.
+async function cargarDatosHorarioAula(idCurso) {
+    try {
+        await cargarCatalogos();
+        const res = await fetch(`obtener-horarios-cursos.php?idCurso=${encodeURIComponent(idCurso)}`);
+        const bloques = await res.json();
+
+        if (!Array.isArray(bloques) || bloques.length === 0) {
+            document.getElementById('modalCursoHorario').textContent = 'Por asignar';
+            document.getElementById('modalCursoAula').textContent = 'Por asignar';
+            return;
+        }
+
+        const horarios = bloques.map(bloque => {
+            const horario = catalogoHorarios.find(h => Number(h.id) === Number(bloque.idHorario))?.etiqueta || 'Horario no disponible';
+            const dias = Array.isArray(bloque.dias) ? bloque.dias.join(', ') : bloque.dias || '';
+            return `${dias} · ${horario}`;
+        });
+
+        const aulas = [...new Set(bloques.map(bloque => {
+            return catalogoAulas.find(a => Number(a.id) === Number(bloque.idAula))?.aula || 'Aula no disponible';
+        }))];
+
+        document.getElementById('modalCursoHorario').textContent = horarios.join(' / ');
+        document.getElementById('modalCursoAula').textContent = aulas.join(', ');
+    } catch (err) {
+        document.getElementById('modalCursoHorario').textContent = 'Error al cargar';
+        document.getElementById('modalCursoAula').textContent = 'Error al cargar';
+    }
+}
+
+function cerrarModalInscripcion() {
+    const modal = document.getElementById('modalInscripcion');
+    if (!modal) return;
+
+    modal.classList.remove('activo');
+    document.body.style.overflow = '';
+}
+
+// Cerrar modal de inscripción al hacer clic en el overlay
+const modalInscripcion = document.getElementById('modalInscripcion');
+if (modalInscripcion) {
+    modalInscripcion.addEventListener('click', function (e) {
+        if (e.target === this) cerrarModalInscripcion();
+    });
+}
+
+const btnConfirmarInscripcion = document.getElementById('btnConfirmarInscripcion');
+
+if (btnConfirmarInscripcion) {
+    btnConfirmarInscripcion.addEventListener('click', function () {
+        validarInscripcion(cursoInscripcionId, btnInscripcionActual);
+    });
+}
+
 // -- VALIDACIÓN DE INSCRIPCIÓN
 async function validarInscripcion(idCurso, btn) {
     btn.disabled = true;
@@ -1188,28 +1297,18 @@ async function validarInscripcion(idCurso, btn) {
         const data = await res.json();
 
         if (data.success) {
-            // parte modal frontend
-            // abrirModalInscripcion(data.idCurso);
-            Swal.fire({
-                title: '¡Inscripción exitosa!',
-                text: data.mensaje,
-                icon: 'success'
-            }); // se modificara cuando front haga el modal
+            // TODO: cambiar este Swal por mostrarToastPremium una vez el backend esté listo.
+            // Por ahora se usa mostrarToastPremium como notificación principal.
+            mostrarToastPremium(data.mensaje || 'Inscripción exitosa', 'success');
         } else {
-            Swal.fire({
-                title: 'No puedes inscribirte',
-                text: data.mensaje,
-                icon: 'error'
-            });
+            mostrarToastPremium(data.mensaje || 'No puedes inscribirte', 'error');
         }
 
     } catch (err) {
-        Swal.fire({
-            title: 'Error de conexión',
-            text: 'Ocurrió un problema. Intenta de nuevo.',
-            icon: 'error'
-        });
+        mostrarToastPremium('Error de conexión. Ocurrió un problema. Intenta de nuevo.', 'error');
     } finally {
         btn.disabled = false;
     }
 }
+
+

@@ -20,7 +20,7 @@ require_once 'includes/conexion.php';
 
 $correo = $_SESSION["usuario"];
 $stmt = $conexion->prepare("
-    SELECT e.id FROM estudiantes e
+    SELECT e.id, u.nombre, u.apellido FROM estudiantes e
     INNER JOIN usuarios u ON e.usuario_id = u.id
     WHERE u.correo = ?
 ");
@@ -35,6 +35,7 @@ if (!$estudiante) {
 }
 
 $idEstudiante = $estudiante['id'];
+$estudianteNombreCompleto = trim($estudiante['nombre'] . ' ' . $estudiante['apellido']);
 
 $periodoStmt = $conexion->query("SELECT * FROM PeriodoInscripcion WHERE estado = 1 
     AND CURDATE() BETWEEN fechaInicio AND fechaFin LIMIT 1");
