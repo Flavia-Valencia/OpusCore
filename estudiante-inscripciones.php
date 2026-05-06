@@ -1,4 +1,6 @@
 <?php
+// Carga la lista de cursos disponibles para el estudiante en el período activo.
+// El filtro aquí excluye cursos ya inscritos y cursos con prerrequisitos no cumplidos.
 require_once 'obtener-cursos-disponibles.php';
 ?>
 
@@ -14,147 +16,6 @@ require_once 'obtener-cursos-disponibles.php';
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
     <link rel="stylesheet" href="./css/styles-estudiantes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        #sidebar-toggle {
-            display: none;
-        }
-
-        .raleway-all {
-            font-family: "Raleway", sans-serif;
-            font-optical-sizing: auto;
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        .logo-text-sidebar {
-            font-family: "Raleway", sans-serif;
-            line-height: 1.2;
-        }
-
-        .logo-text-sidebar span {
-            display: block;
-            font-size: 9px;
-            font-weight: 500;
-            opacity: 0.65;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        .logo-text-sidebar strong {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-
-        .sidebar {
-            left: 0;
-            height: 100vh;
-            overflow-y: auto;
-        }
-
-        .sidebar-close,
-        .sidebar-logout {
-            display: none;
-        }
-
-        .menu-user {
-            display: none;
-        }
-
-        .header-panel {
-            background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
-        }
-
-        .custom-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                left: -250px;
-                padding: 20px 14px;
-            }
-
-            .sidebar.open,
-            #sidebar-toggle:checked ~ .layout .sidebar {
-                left: 0;
-            }
-
-            .sidebar-logo {
-                margin-bottom: 16px;
-            }
-
-            .sidebar-close {
-                display: block;
-                margin-left: auto;
-                position: absolute;
-                background: none;
-                border: 0;
-                color: inherit;
-                font-size: 20px;
-                cursor: pointer;
-                top: 10px;
-                right: 14px;
-            }
-
-            .sidebar nav ul {
-                margin-top: 10px;
-            }
-
-            .sidebar-nav {
-                margin-top: 10px;
-            }
-
-            .sidebar li {
-                justify-content: flex-start;
-                padding: 12px 14px;
-            }
-
-            .nav-item {
-                justify-content: flex-start;
-                padding: 12px 14px;
-            }
-
-            .menu-user {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 5px 6px;
-                color: white;
-                margin-top: 6px;
-            }
-
-            .logo-text-sidebar {
-                display: none;
-            }
-
-            .sidebar-logout {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                margin-top: auto;
-                padding-top: 14px;
-                border-top: 1px solid rgba(255,255,255,0.15);
-                text-decoration: none;
-                color: inherit;
-            }
-
-            .user-profile,
-            .user-profile-panel {
-                display: none !important;
-            }
-        }
-
-    </style>
 </head>
 
 <body class="raleway-all">
@@ -322,9 +183,20 @@ require_once 'obtener-cursos-disponibles.php';
                         </div>
 
                         <?php if (!$sinCupos): ?>
-                            <button class="btn-inscribir" onclick="abrirModalInscripcion(<?= $curso['id'] ?>, this)">
-                                <i class="fas fa-pen-to-square"></i> Inscribirme
-                            </button>
+                            <button class="btn-inscribir"
+                                data-id="<?= $curso['id'] ?>"
+                                data-nombre="<?= htmlspecialchars($curso['nombre']) ?>"
+                                data-descripcion="<?= htmlspecialchars($curso['descripcion']) ?>"
+                                data-horario="<?= htmlspecialchars($curso['horarios_etiqueta'] ?? 'Sin horario asignado') ?>"
+                                data-dias="<?= htmlspecialchars($curso['dias_semana'] ?? '') ?>"
+                                data-aula="<?= htmlspecialchars($curso['aulas_nombre'] ?? 'Sin aula asignada') ?>"
+                                data-docente="<?= htmlspecialchars($curso['docente_nombre'] ?? 'Sin docente asignado') ?>"
+                                data-fecha="<?= $curso['fechaInicio'] ?> → <?= $curso['fechaFin'] ?>"
+                                data-costo="$<?= number_format($curso['costoMensual'], 2) ?>"
+                                data-cupos="<?= $curso['cupos'] ?> disponibles"
+                                onclick="abrirModalInscripcion(this)">
+                            <i class="fas fa-pen-to-square"></i> Inscribirme
+                        </button>
                             
                             
                         <?php else: ?>
@@ -370,9 +242,21 @@ require_once 'obtener-cursos-disponibles.php';
                     <label>DESCRIPCIÓN</label>
                     <p id="modalCursoDescripcion"></p>
                 </div>
+                <div class="horario-campo full-width">
+                    <label>DOCENTE</label>
+                    <p id="modalCursoDocente"></p>
+                </div>
                 <div class="horario-campo">
                     <label>HORARIO</label>
-                    <p id="modalCursoHorario">Por asignar</p>
+                    <p id="modalCursoHorario"></p>
+                </div>
+                <div class="horario-campo">
+                    <label>DÍAS</label>
+                    <p id="modalCursoDias"></p>
+                </div>
+                <div class="horario-campo">
+                    <label>AULA</label>
+                    <p id="modalCursoAula"></p>
                 </div>
                 <div class="horario-campo">
                     <label>FECHA</label>
@@ -385,10 +269,6 @@ require_once 'obtener-cursos-disponibles.php';
                 <div class="horario-campo">
                     <label>CUPOS</label>
                     <p id="modalCursoCupos"></p>
-                </div>
-                <div class="horario-campo">
-                    <label>AULA</label>
-                    <p id="modalCursoAula">Por asignar</p>
                 </div>
             </div>
         </div>
@@ -432,7 +312,7 @@ require_once 'obtener-cursos-disponibles.php';
             toggle.checked = false;
         }
 
-        // Buscador de cursos
+        // Buscador de cursos (inline porque filtra .curso-card, no .data-table rows)
         const buscador = document.getElementById('buscador-curso');
         if (buscador) {
             buscador.addEventListener('input', function () {

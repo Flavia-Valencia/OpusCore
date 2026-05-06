@@ -92,17 +92,24 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
         <div class="banner">
             <div class="banner-texto">
                 <h1><?php echo $periodo_activo ? htmlspecialchars($periodo_activo['nombre']) : 'Sin período activo'; ?></h1>
+                <p>
+                    <?php if ($periodo_activo): ?>
+                        Período vigente disponible para inscripciones.
+                    <?php else: ?>
+                        Activa o crea un nuevo período para que los estudiantes puedan inscribirse.
+                    <?php endif; ?>
+                </p>
             </div>
             <div class="periodo-info">
                 <div class="periodo-fechas">
                     <div>
-                        <p>
+                        <p><strong>Inicio</strong><br>
                             <?php echo $periodo_activo ? htmlspecialchars($periodo_activo['fechaInicio']) : '—'; ?>
                         </p>
                     </div>
 
                     <div>
-                        <p>
+                        <p><strong>Fin</strong><br>
                             <?php echo $periodo_activo ? htmlspecialchars($periodo_activo['fechaFin']) : '—'; ?>
                         </p>
                     </div>

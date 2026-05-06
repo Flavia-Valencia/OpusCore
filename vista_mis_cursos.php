@@ -41,15 +41,15 @@ require_once 'mis_cursos.php';
 
             <nav class="sidebar-nav">
                 <a href="vista_mis_cursos.php" class="nav-item active ">
-                    <i class="fas fa-pen-to-square"></i>
+                    <i class="fas fa-book-open"></i>
                     <span>Mis cursos</span>
                 </a>
                 <a href="estudiante-inscripciones.php" class="nav-item">
-                    <i class="fas fa-pen-to-square"></i>
+                    <i class="fas fa-clipboard-list"></i>
                     <span>Inscripción</span>
                 </a>
                 <a href="#" class="nav-item">
-                    <i class="fas fa-star"></i>
+                    <i class="fas fa-chart-line"></i>
                     <span>Calificaciones</span>
                 </a>
                 <a href="#" class="nav-item">
@@ -90,7 +90,23 @@ require_once 'mis_cursos.php';
                 </a>
             </header>
 
-               
+            <!-- banner -->
+            <div class="banner">
+                <div class="banner-left">
+                    <h1>Mis cursos inscritos 📚</h1>
+                    <p>
+                        <?php if (empty($cursos)): ?>
+                            Aún no tienes cursos inscritos. Revisa las opciones disponibles en Inscripción.
+                        <?php else: ?>
+                            Tienes <?= count($cursos) ?> curso<?= count($cursos) === 1 ? '' : 's' ?> activo<?= count($cursos) === 1 ? '' : 's' ?>.
+                        <?php endif; ?>
+                    </p>
+                </div>
+                <div class="banner-fecha">
+                    <strong><?= date('d/m/Y') ?></strong>
+                </div>
+            </div>
+
                 <?php if (empty($cursos)): ?>
                     <div class="inscripcion-vacia">
                         <i class="fas fa-book-open"></i>
@@ -155,5 +171,28 @@ require_once 'mis_cursos.php';
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.getElementById('sidebar-toggle');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+            if (toggle) {
+                toggle.checked = sidebar.classList.contains('open');
+            }
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.getElementById('sidebar-toggle');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+            if (toggle) {
+                toggle.checked = false;
+            }
+        }
+    </script>
 </body>
 </html>
