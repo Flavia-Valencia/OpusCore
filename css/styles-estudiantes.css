@@ -325,6 +325,10 @@ body {
     text-align: right;
 }
 
+.periodo-banner p + p {
+  margin-top: 6px;
+}
+
 /* ── SECCIÓN DE INSCRIPCIONES ────────────────────────────── */
 
 /* barra con buscador */
@@ -333,16 +337,12 @@ body {
 }
 
 .inscripcion-buscador {
-    width: 100%;
-    padding: 11px 16px;
-    border: 1px solid #dde3ee;
-    border-radius: 10px;
+     width: 100%;
+    max-width: 350px;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
     font-size: 14px;
-    font-family: "Raleway", sans-serif;
-    background: white;
-    color: #1a2a4a;
-    outline: none;
-    transition: border-color 0.2s;
 }
 
 .inscripcion-buscador:focus {

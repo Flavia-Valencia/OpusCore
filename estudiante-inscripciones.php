@@ -235,14 +235,20 @@ require_once 'obtener-cursos-disponibles.php';
             <div class="banner">
                 <div class="banner-left">
                     <h1>Inscripción de Cursos 📋</h1>
-                    <p>
-                        <?php if ($periodo): ?>
-                            Periodo activo: <strong><?= htmlspecialchars($periodo['nombre']) ?></strong>
-                            &nbsp;·&nbsp; <?= $periodo['fechaInicio'] ?> → <?= $periodo['fechaFin'] ?>
-                        <?php else: ?>
-                            No hay un periodo de inscripción activo en este momento.
-                        <?php endif; ?>
-                    </p>
+                     <?php if ($periodo): ?>
+                        <div class="periodo-banner">
+                            <p>
+                                Periodo activo:
+                                <strong><?= htmlspecialchars($periodo['nombre']) ?></strong>
+                            </p>
+
+                            <p>
+                                <?= $periodo['fechaInicio'] ?> → <?= $periodo['fechaFin'] ?>
+                            </p>
+                        </div>
+                    <?php else: ?>
+                        <p>No hay un periodo de inscripción activo en este momento.</p>
+                    <?php endif; ?>
                 </div>
                 <div class="banner-fecha">
                     <strong id="fecha-hoy"></strong>
