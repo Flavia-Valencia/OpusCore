@@ -1,25 +1,37 @@
 <?php
-# Recibe el ID de un curso, invierte su estado en la tabla cursos (activo/inactivo)
-# y devuelve el nuevo estado en JSON para actualizar el botón sin recargar la página.
-# Al desactivar, limpia el docente y los horarios para liberar el cupo.
+# Recibe el ID de un curso y cambia su estado entre activo e inactivo.
+# Verifica que no existan estudiantes con inscripción activa antes de deshabilitarlo.
+# Al desactivar, elimina la asignación de docente y horarios, y devuelve el nuevo estado en JSON.
 include("includes/conexion.php");
 
 $id = intval($_POST['id']);
 
-// Obtener estado actual del curso
 $res_actual = mysqli_query($conexion, "SELECT estado FROM cursos WHERE id = '$id'");
 $curso = mysqli_fetch_assoc($res_actual);
 
-// Invertir estado
-mysqli_query($conexion, "UPDATE cursos SET estado = IF(estado = 1, 0, 1) WHERE id = '$id'");
-
-// Si se estaba desactivando, limpiar docente y horarios para liberar el cupo
 if ($curso['estado'] == 1) {
-    mysqli_query($conexion, "UPDATE cursos SET idDocente = NULL WHERE id = '$id'");
-    mysqli_query($conexion, "DELETE FROM CursoHorario WHERE idCurso = '$id'");
+    $res_insc = mysqli_query($conexion, "
+        SELECT COUNT(*) as total FROM inscripciones
+        WHERE idCurso = $id
+        AND estado_academico = 'Activo'
+    ");
+    $fila_insc = mysqli_fetch_assoc($res_insc);
+
+    if ($fila_insc['total'] > 0) {
+        echo json_encode([
+            'error' => true,
+            'mensaje' => 'El curso tiene estudiantes inscritos.'
+        ]);
+        exit();
+    }
+
+    mysqli_query($conexion, "UPDATE cursos SET idDocente = NULL WHERE id = $id");
+    mysqli_query($conexion, "DELETE FROM CursoHorario WHERE idCurso = $id");
 }
 
-$res = mysqli_query($conexion, "SELECT estado FROM cursos WHERE id = '$id'");
+mysqli_query($conexion, "UPDATE cursos SET estado = IF(estado = 1, 0, 1) WHERE id = $id");
+
+$res = mysqli_query($conexion, "SELECT estado FROM cursos WHERE id = $id");
 $fila = mysqli_fetch_assoc($res);
 
 echo json_encode(['estado' => $fila['estado']]);
