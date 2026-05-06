@@ -435,125 +435,125 @@ document.addEventListener('click', function (e) {
     bCancel.onclick = () => modal.classList.remove('active');
     bAccept.onclick = async function () {
 
-    const fila = btn.closest('tr');
-    const id = fila.dataset.id;
+        const fila = btn.closest('tr');
+        const id = fila.dataset.id;
 
-    let archivo = '';
-    if (document.getElementById('buscador-docente')) archivo = 'toggle-estado-docente.php';
-    else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
-    else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
-    else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
+        let archivo = '';
+        if (document.getElementById('buscador-docente')) archivo = 'toggle-estado-docente.php';
+        else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
+        else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
+        else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
 
-    const res = await fetch(archivo, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'id=' + id
-    });
-    const data = await res.json();
-
-    if (data.error) {
-        mostrarToastPremium(data.mensaje, 'error');
-        modal.classList.remove('active');
-        return;
-    }
-
-    if (document.getElementById('buscador-curso')) {
-        if (isActivo) {
-            btn.classList.remove('estado-activo');
-            btn.classList.add('estado-inactivo');
-            btn.textContent = 'Activar';
-        } else {
-            btn.classList.remove('estado-inactivo');
-            btn.classList.add('estado-activo');
-            btn.textContent = 'Desactivar';
-        }
-    } else {
-        if (isActivo) {
-            btn.classList.remove('estado-activo');
-            btn.classList.add('estado-inactivo');
-            btn.textContent = 'Inactivo';
-        } else {
-            btn.classList.remove('estado-inactivo');
-            btn.classList.add('estado-activo');
-            btn.textContent = 'Activo';
-        }
-    }
-
-    const celdaEstado = fila.querySelector('td[data-label="Estado"]');
-    if (celdaEstado) {
-        celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
-    }
-
-    if (isActivo && document.getElementById('buscador-curso')) {
-        const celdaDocente = fila.querySelector('td[data-label="Docente"]');
-        if (celdaDocente) celdaDocente.textContent = '—';
-    }
-
-    const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
-    const btnHorarios = fila.querySelector('.horarios');
-
-    if (isActivo) {
-        fila.querySelectorAll('td').forEach(td => {
-            td.style.backgroundColor = '#e9ecef';
-            td.style.color = '#6c757d';
-            td.style.opacity = '0.7';
+        const res = await fetch(archivo, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + id
         });
-        if (btnEditar) { btnEditar.style.pointerEvents = 'none'; btnEditar.style.opacity = '0.5'; }
-        if (btnHorarios) { btnHorarios.style.pointerEvents = 'none'; btnHorarios.style.opacity = '0.5'; }
-    } else {
-        fila.querySelectorAll('td').forEach(td => {
-            td.style.backgroundColor = '';
-            td.style.color = '';
-            td.style.opacity = '';
-        });
-        if (btnEditar) { btnEditar.style.pointerEvents = ''; btnEditar.style.opacity = ''; }
-        if (btnHorarios) { btnHorarios.style.pointerEvents = ''; btnHorarios.style.opacity = ''; }
-    }
-    const tbody = fila.parentElement;
+        const data = await res.json();
 
-    if (isActivo) {
-        tbody.appendChild(fila);
-    } else {
-        const filas = Array.from(tbody.querySelectorAll('tr'));
-        let insertado = false;
+        if (data.error) {
+            mostrarToastPremium(data.mensaje, 'error');
+            modal.classList.remove('active');
+            return;
+        }
 
         if (document.getElementById('buscador-curso')) {
-            const nombreNuevo = fila.cells[0].textContent.trim().toLowerCase();
-            for (let f of filas) {
-                if (f === fila) continue;
-                const btnF = f.querySelector('.btn-toggle-estado');
-                if (btnF && btnF.classList.contains('estado-inactivo')) continue;
-                const nombreActual = f.cells[0].textContent.trim().toLowerCase();
-                if (nombreNuevo.localeCompare(nombreActual) < 0) {
-                    tbody.insertBefore(fila, f);
-                    insertado = true;
-                    break;
-                }
+            if (isActivo) {
+                btn.classList.remove('estado-activo');
+                btn.classList.add('estado-inactivo');
+                btn.textContent = 'Activar';
+            } else {
+                btn.classList.remove('estado-inactivo');
+                btn.classList.add('estado-activo');
+                btn.textContent = 'Desactivar';
             }
         } else {
-            for (let f of filas) {
-                if (f === fila) continue;
-                const btnF = f.querySelector('.btn-toggle-estado');
-                if (btnF && btnF.classList.contains('estado-inactivo')) continue;
-                if (parseInt(fila.dataset.id) < parseInt(f.dataset.id)) {
-                    tbody.insertBefore(fila, f);
-                    insertado = true;
-                    break;
-                }
+            if (isActivo) {
+                btn.classList.remove('estado-activo');
+                btn.classList.add('estado-inactivo');
+                btn.textContent = 'Inactivo';
+            } else {
+                btn.classList.remove('estado-inactivo');
+                btn.classList.add('estado-activo');
+                btn.textContent = 'Activo';
             }
         }
 
-        if (!insertado) {
-            const primerInactivo = Array.from(tbody.querySelectorAll('tr')).find(f =>
-                f.querySelector('.btn-toggle-estado')?.classList.contains('estado-inactivo')
-            );
-            primerInactivo ? tbody.insertBefore(fila, primerInactivo) : tbody.appendChild(fila);
+        const celdaEstado = fila.querySelector('td[data-label="Estado"]');
+        if (celdaEstado) {
+            celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
         }
-    }
 
-    modal.classList.remove('active');
-    window.location.reload();
-};
+        if (isActivo && document.getElementById('buscador-curso')) {
+            const celdaDocente = fila.querySelector('td[data-label="Docente"]');
+            if (celdaDocente) celdaDocente.textContent = '—';
+        }
+
+        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
+        const btnHorarios = fila.querySelector('.horarios');
+
+        if (isActivo) {
+            fila.querySelectorAll('td').forEach(td => {
+                td.style.backgroundColor = '#e9ecef';
+                td.style.color = '#6c757d';
+                td.style.opacity = '0.7';
+            });
+            if (btnEditar) { btnEditar.style.pointerEvents = 'none'; btnEditar.style.opacity = '0.5'; }
+            if (btnHorarios) { btnHorarios.style.pointerEvents = 'none'; btnHorarios.style.opacity = '0.5'; }
+        } else {
+            fila.querySelectorAll('td').forEach(td => {
+                td.style.backgroundColor = '';
+                td.style.color = '';
+                td.style.opacity = '';
+            });
+            if (btnEditar) { btnEditar.style.pointerEvents = ''; btnEditar.style.opacity = ''; }
+            if (btnHorarios) { btnHorarios.style.pointerEvents = ''; btnHorarios.style.opacity = ''; }
+        }
+        const tbody = fila.parentElement;
+
+        if (isActivo) {
+            tbody.appendChild(fila);
+        } else {
+            const filas = Array.from(tbody.querySelectorAll('tr'));
+            let insertado = false;
+
+            if (document.getElementById('buscador-curso')) {
+                const nombreNuevo = fila.cells[0].textContent.trim().toLowerCase();
+                for (let f of filas) {
+                    if (f === fila) continue;
+                    const btnF = f.querySelector('.btn-toggle-estado');
+                    if (btnF && btnF.classList.contains('estado-inactivo')) continue;
+                    const nombreActual = f.cells[0].textContent.trim().toLowerCase();
+                    if (nombreNuevo.localeCompare(nombreActual) < 0) {
+                        tbody.insertBefore(fila, f);
+                        insertado = true;
+                        break;
+                    }
+                }
+            } else {
+                for (let f of filas) {
+                    if (f === fila) continue;
+                    const btnF = f.querySelector('.btn-toggle-estado');
+                    if (btnF && btnF.classList.contains('estado-inactivo')) continue;
+                    if (parseInt(fila.dataset.id) < parseInt(f.dataset.id)) {
+                        tbody.insertBefore(fila, f);
+                        insertado = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!insertado) {
+                const primerInactivo = Array.from(tbody.querySelectorAll('tr')).find(f =>
+                    f.querySelector('.btn-toggle-estado')?.classList.contains('estado-inactivo')
+                );
+                primerInactivo ? tbody.insertBefore(fila, primerInactivo) : tbody.appendChild(fila);
+            }
+        }
+
+        modal.classList.remove('active');
+        window.location.reload();
+    };
 });
 // === INICIALIZA ESTADOS AL RECARGAR ===
 // Aplica gris y bloquea filas inactivas según su botón,
@@ -1295,15 +1295,17 @@ async function validarInscripcion(idCurso, btn) {
         });
 
         const data = await res.json();
-
+        console.log('Respuesta:', data);
         if (data.success) {
             // TODO: cambiar este Swal por mostrarToastPremium una vez el backend esté listo.
             // Por ahora se usa mostrarToastPremium como notificación principal.
-            mostrarToastPremium(data.mensaje || 'Inscripción exitosa', 'success');
+            cerrarModalInscripcion();
+            setTimeout(() => mostrarToastPremium(data.mensaje || 'Inscripción exitosa', 'success'), 300);
+            setTimeout(() => window.location.reload(), 1900);
         } else {
-            mostrarToastPremium(data.mensaje || 'No puedes inscribirte', 'error');
+            cerrarModalInscripcion();
+            setTimeout(() => mostrarToastPremium(data.mensaje || 'No puedes inscribirte', 'error'), 300);
         }
-
     } catch (err) {
         mostrarToastPremium('Error de conexión. Ocurrió un problema. Intenta de nuevo.', 'error');
     } finally {
