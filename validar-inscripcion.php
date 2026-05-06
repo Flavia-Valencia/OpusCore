@@ -135,7 +135,7 @@ foreach ($prerrequisitos as $pre) {
     }
 }
 
-// Todas las validaciones pasaron — registro temporal hasta que esté listo el modal de Iván
+// Todas las validaciones pasaron 
 $conexion->begin_transaction();
 
 try {
