@@ -33,14 +33,6 @@ if (!$estudiante) {
 
 $idEstudiante = $estudiante['id'];
 
-// Obtener el período activo actual para filtrar solo cursos del periodo vigente
-// Obtener el período de inscripción activo actual para que "Mis cursos" muestre
-// únicamente las inscripciones del período vigente.
-$periodoStmt = $conexion->query("SELECT id FROM PeriodoInscripcion WHERE estado = 1 
-    AND CURDATE() BETWEEN fechaInicio AND fechaFin LIMIT 1");
-$periodoActual = $periodoStmt->fetch_assoc();
-$idPeriodoActual = $periodoActual ? $periodoActual['id'] : null;
-
 $stmt = $conexion->prepare("
     SELECT c.id, c.nombre, c.descripcion, c.costoMensual, 
            c.fechaInicio, c.fechaFin,
@@ -49,10 +41,10 @@ $stmt = $conexion->prepare("
     INNER JOIN cursos c ON i.idCurso = c.id
     WHERE i.idEstudiante = ?
     AND i.estado_academico = 'Activo'
-    AND c.idPeriodo = ?
+    AND c. fechaFin >= CURDATE()
     ORDER BY c.nombre ASC
 ");
-$stmt->bind_param("ii", $idEstudiante, $idPeriodoActual);
+$stmt->bind_param("i", $idEstudiante);
 $stmt->execute();
 $resultado = $stmt->get_result();
 $cursos = $resultado->fetch_all(MYSQLI_ASSOC);
