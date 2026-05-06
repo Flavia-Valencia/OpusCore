@@ -381,20 +381,21 @@ const customModalHTML = `
 
 document.body.insertAdjacentHTML('beforeend', customModalHTML);
 
-// --- TOGGLE ESTADO ---  
+// --- TOGGLE ESTADO ---
 
 // - Detecta clic en el botón de estado (activo/inactivo)
 // - Abre un modal de confirmación antes de cambiar el estado
-// - Al aceptar, verifica la clase `estado-activo` para invertir el estado (toggle)
-// - Actualiza inmediatamente el texto y estilos del botón en la interfaz
+// - Al aceptar, envía la petición al servidor PRIMERO antes de hacer cambios visuales
+// - Si el servidor rechaza (error), muestra un toast y detiene la acción sin tocar la interfaz
+// - Si el servidor aprueba, actualiza visualmente el botón, la fila y la celda de estado
 // - Cambia visualmente la fila (gris si está inactivo)
 // - Bloquea botones de editar y horarios cuando está inactivo
 // - Al desactivar un curso, limpia visualmente la celda de docente
 // - Reordena la fila dinámicamente:
 //     * Inactivos se envían al final
-//     * Activos se insertan en su posición correcta por ID
+//     * Cursos activos se reinsertan en orden alfabético por nombre
+//     * Docentes y estudiantes activos se reinsertan en orden por ID
 // - Mantiene estilos y bloqueos al recargar la página
-// - Envía el ID al servidor con fetch para guardar el cambio en la base de datos sin recargar
 
 document.addEventListener('click', function (e) {
 
@@ -411,7 +412,6 @@ document.addEventListener('click', function (e) {
 
     const isActivo = btn.classList.contains('estado-activo');
 
-    // detectar tipo
     let tipo = 'curso';
     if (document.getElementById('buscador-docente')) tipo = 'docente';
     else if (document.getElementById('buscador-estudiante')) tipo = 'estudiante';
@@ -433,157 +433,128 @@ document.addEventListener('click', function (e) {
     modal.classList.add('active');
 
     bCancel.onclick = () => modal.classList.remove('active');
+    bAccept.onclick = async function () {
 
-    bAccept.onclick = function () {
+    const fila = btn.closest('tr');
+    const id = fila.dataset.id;
 
-        const fila = btn.closest('tr');
-        const id = fila.dataset.id;
+    let archivo = '';
+    if (document.getElementById('buscador-docente')) archivo = 'toggle-estado-docente.php';
+    else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
+    else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
+    else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
 
-        let archivo = '';
-        if (document.getElementById('buscador-docente')) archivo = 'toggle-estado-docente.php';
-        else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
-        else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
-        else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
+    const res = await fetch(archivo, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'id=' + id
+    });
+    const data = await res.json();
 
-        // CAMBIO VISUAL INMEDIATO
-        if (document.getElementById('buscador-curso')) {
-            if (isActivo) {
-                btn.classList.remove('estado-activo');
-                btn.classList.add('estado-inactivo');
-                btn.textContent = 'Activar';
-            } else {
-                btn.classList.remove('estado-inactivo');
-                btn.classList.add('estado-activo');
-                btn.textContent = 'Desactivar';
-            }
-        } else {
-            if (isActivo) {
-                btn.classList.remove('estado-activo');
-                btn.classList.add('estado-inactivo');
-                btn.textContent = 'Inactivo';
-            } else {
-                btn.classList.remove('estado-inactivo');
-                btn.classList.add('estado-activo');
-                btn.textContent = 'Activo';
-            }
-        }
-
-        const celdaEstado = fila.querySelector('td[data-label="Estado"]');
-        if (celdaEstado) {
-            celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
-        }
-
-        // Limpiar celda de docente visualmente al desactivar un curso
-        if (isActivo && document.getElementById('buscador-curso')) {
-            const celdaDocente = fila.querySelector('td[data-label="Docente"]');
-            if (celdaDocente) celdaDocente.textContent = '—';
-        }
-
-        // --- COLOR GRIS Y BLOQUEO (GENERAL PARA TODOS) ---
-        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
-        const btnHorarios = fila.querySelector('.horarios');
-
-        if (isActivo) {
-            fila.querySelectorAll('td').forEach(td => {
-                td.style.backgroundColor = '#e9ecef';
-                td.style.color = '#6c757d';
-                td.style.opacity = '0.7';
-            });
-
-            if (btnEditar) {
-                btnEditar.style.pointerEvents = 'none';
-                btnEditar.style.opacity = '0.5';
-            }
-
-            if (btnHorarios) {
-                btnHorarios.style.pointerEvents = 'none';
-                btnHorarios.style.opacity = '0.5';
-            }
-
-        } else {
-            fila.querySelectorAll('td').forEach(td => {
-                td.style.backgroundColor = '';
-                td.style.color = '';
-                td.style.opacity = '';
-            });
-
-            if (btnEditar) {
-                btnEditar.style.pointerEvents = '';
-                btnEditar.style.opacity = '';
-            }
-
-            if (btnHorarios) {
-                btnHorarios.style.pointerEvents = '';
-                btnHorarios.style.opacity = '';
-            }
-        }
-
-        // --- MOVER FILA (AHORA PARA TODOS) ---
-        const tbody = fila.parentElement;
-
-        if (isActivo) {
-            // desactivar → abajo
-            tbody.appendChild(fila);
-        } else {
-            // activar → ordenar por nombre alfabéticamente
-            // activar → reordenar según página
-            const filas = Array.from(tbody.querySelectorAll('tr'));
-            let insertado = false;
-
-            if (document.getElementById('buscador-curso')) {
-                // cursos → alfabético por nombre
-                const nombreNuevo = fila.cells[0].textContent.trim().toLowerCase();
-                for (let f of filas) {
-                    if (f === fila) continue;
-                    const btnF = f.querySelector('.btn-toggle-estado');
-                    if (btnF && btnF.classList.contains('estado-inactivo')) continue;
-                    const nombreActual = f.cells[0].textContent.trim().toLowerCase();
-                    if (nombreNuevo.localeCompare(nombreActual) < 0) {
-                        tbody.insertBefore(fila, f);
-                        insertado = true;
-                        break;
-                    }
-                }
-            } else {
-                // docentes y estudiantes → por ID
-                for (let f of filas) {
-                    if (f === fila) continue;
-                    const btnF = f.querySelector('.btn-toggle-estado');
-                    if (btnF && btnF.classList.contains('estado-inactivo')) continue;
-                    if (parseInt(fila.dataset.id) < parseInt(f.dataset.id)) {
-                        tbody.insertBefore(fila, f);
-                        insertado = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!insertado) {
-                const primerInactivo = Array.from(tbody.querySelectorAll('tr')).find(f =>
-                    f.querySelector('.btn-toggle-estado')?.classList.contains('estado-inactivo')
-                );
-                primerInactivo ? tbody.insertBefore(fila, primerInactivo) : tbody.appendChild(fila);
-            }
-        }
-
+    if (data.error) {
+        mostrarToastPremium(data.mensaje, 'error');
         modal.classList.remove('active');
+        return;
+    }
 
-        fetch(archivo, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'id=' + id
-        })
-            .then(res => res.json())
-            .then(data => {
-                console.log('Guardado en BD:', data);
-                window.location.reload();
-            })
-            .catch(err => {
-                console.error('Error:', err);
-            });
-    };
+    if (document.getElementById('buscador-curso')) {
+        if (isActivo) {
+            btn.classList.remove('estado-activo');
+            btn.classList.add('estado-inactivo');
+            btn.textContent = 'Activar';
+        } else {
+            btn.classList.remove('estado-inactivo');
+            btn.classList.add('estado-activo');
+            btn.textContent = 'Desactivar';
+        }
+    } else {
+        if (isActivo) {
+            btn.classList.remove('estado-activo');
+            btn.classList.add('estado-inactivo');
+            btn.textContent = 'Inactivo';
+        } else {
+            btn.classList.remove('estado-inactivo');
+            btn.classList.add('estado-activo');
+            btn.textContent = 'Activo';
+        }
+    }
+
+    const celdaEstado = fila.querySelector('td[data-label="Estado"]');
+    if (celdaEstado) {
+        celdaEstado.textContent = isActivo ? 'Inactivo' : 'Activo';
+    }
+
+    if (isActivo && document.getElementById('buscador-curso')) {
+        const celdaDocente = fila.querySelector('td[data-label="Docente"]');
+        if (celdaDocente) celdaDocente.textContent = '—';
+    }
+
+    const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
+    const btnHorarios = fila.querySelector('.horarios');
+
+    if (isActivo) {
+        fila.querySelectorAll('td').forEach(td => {
+            td.style.backgroundColor = '#e9ecef';
+            td.style.color = '#6c757d';
+            td.style.opacity = '0.7';
+        });
+        if (btnEditar) { btnEditar.style.pointerEvents = 'none'; btnEditar.style.opacity = '0.5'; }
+        if (btnHorarios) { btnHorarios.style.pointerEvents = 'none'; btnHorarios.style.opacity = '0.5'; }
+    } else {
+        fila.querySelectorAll('td').forEach(td => {
+            td.style.backgroundColor = '';
+            td.style.color = '';
+            td.style.opacity = '';
+        });
+        if (btnEditar) { btnEditar.style.pointerEvents = ''; btnEditar.style.opacity = ''; }
+        if (btnHorarios) { btnHorarios.style.pointerEvents = ''; btnHorarios.style.opacity = ''; }
+    }
+    const tbody = fila.parentElement;
+
+    if (isActivo) {
+        tbody.appendChild(fila);
+    } else {
+        const filas = Array.from(tbody.querySelectorAll('tr'));
+        let insertado = false;
+
+        if (document.getElementById('buscador-curso')) {
+            const nombreNuevo = fila.cells[0].textContent.trim().toLowerCase();
+            for (let f of filas) {
+                if (f === fila) continue;
+                const btnF = f.querySelector('.btn-toggle-estado');
+                if (btnF && btnF.classList.contains('estado-inactivo')) continue;
+                const nombreActual = f.cells[0].textContent.trim().toLowerCase();
+                if (nombreNuevo.localeCompare(nombreActual) < 0) {
+                    tbody.insertBefore(fila, f);
+                    insertado = true;
+                    break;
+                }
+            }
+        } else {
+            for (let f of filas) {
+                if (f === fila) continue;
+                const btnF = f.querySelector('.btn-toggle-estado');
+                if (btnF && btnF.classList.contains('estado-inactivo')) continue;
+                if (parseInt(fila.dataset.id) < parseInt(f.dataset.id)) {
+                    tbody.insertBefore(fila, f);
+                    insertado = true;
+                    break;
+                }
+            }
+        }
+
+        if (!insertado) {
+            const primerInactivo = Array.from(tbody.querySelectorAll('tr')).find(f =>
+                f.querySelector('.btn-toggle-estado')?.classList.contains('estado-inactivo')
+            );
+            primerInactivo ? tbody.insertBefore(fila, primerInactivo) : tbody.appendChild(fila);
+        }
+    }
+
+    modal.classList.remove('active');
+    window.location.reload();
+};
 });
-
 // === INICIALIZA ESTADOS AL RECARGAR ===
 // Aplica gris y bloquea filas inactivas según su botón,
 // ordena activos por ID y envía los inactivos al final
@@ -642,11 +613,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const nombreA = a.cells[0].textContent.trim().toLowerCase();
             const nombreB = b.cells[0].textContent.trim().toLowerCase();
             return nombreA.localeCompare(nombreB);
-        }else if (document.getElementById('buscador-periodo')){
-            const idA = parseInt(a.dataset.id) || 0;
-            const idB = parseInt(b.dataset.id) || 0;
-            return idA - idB;
-        }else {
+        } else {
             return parseInt(a.dataset.id) - parseInt(b.dataset.id);
         }
     });
@@ -842,22 +809,9 @@ if (modalPeriodo) {
 const buscadorPeriodo = document.getElementById('buscador-periodo');
 if (buscadorPeriodo) {
     buscadorPeriodo.addEventListener('keyup', function () {
-        const filtro = this.value.toLowerCase().trim();
-
-        if (filtro === '') {
-            document.querySelectorAll('.data-table tbody tr').forEach(f => f.style.display = '');
-            return;
-        }
-
+        const filtro = this.value.toLowerCase();
         document.querySelectorAll('.data-table tbody tr').forEach(function (fila) {
-            const id = fila.cells[0].textContent.trim();
-            const nombre = fila.cells[1].textContent.toLowerCase().trim();
-
-            // busqueda exacta por ID para evitar conincidencias y busca por nombre a partir de 3 caracteres para evitar resultados erroneos
-            const coincideId = id === filtro;
-            const coincideNombre = filtro.length >= 3 && nombre.includes(filtro);
-
-            fila.style.display = (coincideId || coincideNombre) ? '' : 'none';
+            fila.style.display = fila.textContent.toLowerCase().includes(filtro) ? '' : 'none';
         });
     });
 }
