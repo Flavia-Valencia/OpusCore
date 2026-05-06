@@ -43,35 +43,28 @@ $periodo = $periodoStmt->fetch_assoc();
 
 $cursos = [];
 if ($periodo) {
-   
-$stmt = $conexion->prepare("
-    SELECT c.id, c.nombre, c.descripcion, c.costoMensual, c.cupos, c.fechaInicio, c.fechaFin,
-        GROUP_CONCAT(DISTINCT CONCAT(ch.dia, ' · ', h.etiqueta) ORDER BY h.horaInicio SEPARATOR ' / ') AS horarios,
-        GROUP_CONCAT(DISTINCT a.aula SEPARATOR ', ') AS aulas
-    FROM cursos c
-    LEFT JOIN CursoHorario ch ON ch.idCurso = c.id
-    LEFT JOIN horarios h ON h.id = ch.idHorario
-    LEFT JOIN aulas a ON a.id = ch.idAula
-    WHERE c.estado = 1
-    AND c.idPeriodo = ?
-    AND NOT EXISTS (
-        SELECT 1 FROM prerrequisitos pr
-        WHERE pr.idCursoActual = c.id
-        AND pr.idCursoPrevio NOT IN (
-            SELECT i.idCurso FROM inscripciones i
-            WHERE i.idEstudiante = ?
-            AND i.estado_academico = 'Finalizado'
+    $stmt = $conexion->prepare("
+        SELECT c.id, c.nombre, c.descripcion, c.costoMensual, c.cupos, c.fechaInicio, c.fechaFin 
+        FROM cursos c
+        WHERE c.estado = 1
+        AND c.idPeriodo = ?
+        AND NOT EXISTS (
+            SELECT 1 FROM prerrequisitos pr
+            WHERE pr.idCursoActual = c.id
+            AND pr.idCursoPrevio NOT IN (
+                SELECT i.idCurso FROM inscripciones i
+                WHERE i.idEstudiante = ?
+                AND i.estado_academico = 'Finalizado'
+            )
         )
-    )
-    AND c.id NOT IN (
+        AND c.id NOT IN(
         SELECT i.idCurso FROM inscripciones i
         WHERE i.idEstudiante = ?
         AND i.idPeriodo = ?
         AND i.estado_academico != 'Retirado'
-    )
-    GROUP BY c.id
-    ORDER BY c.nombre ASC
-");
+        )
+        ORDER BY c.nombre ASC
+    ");
     $stmt->bind_param("iiii", $periodo['id'], $idEstudiante, $idEstudiante, $periodo['id']);
     $stmt->execute();
     $resultado = $stmt->get_result();
