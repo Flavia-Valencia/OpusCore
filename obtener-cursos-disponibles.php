@@ -56,9 +56,15 @@ if ($periodo) {
                 AND i.estado_academico = 'Finalizado'
             )
         )
+        AND c.id NOT IN(
+        SELECT i.idCurso FROM inscripciones i
+        WHERE i.idEstudiante = ?
+        AND i.idPeriodo = ?
+        AND i.estado_academico != 'Retirado'
+        )
         ORDER BY c.nombre ASC
     ");
-    $stmt->bind_param("ii", $periodo['id'], $idEstudiante);
+    $stmt->bind_param("iiii", $periodo['id'], $idEstudiante, $idEstudiante, $periodo['id']);
     $stmt->execute();
     $resultado = $stmt->get_result();
     $cursos = $resultado->fetch_all(MYSQLI_ASSOC);

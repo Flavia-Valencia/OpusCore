@@ -316,12 +316,11 @@ require_once 'obtener-cursos-disponibles.php';
                         </div>
 
                         <?php if (!$sinCupos): ?>
-                            <form method="POST" action="inscribir-curso.php">
-                                <input type="hidden" name="curso_id" value="<?= $curso['id'] ?>">
-                                <button type="submit" class="btn-inscribir">
-                                    <i class="fas fa-pen-to-square"></i> Inscribirme
-                                </button>
-                            </form>
+                            <button class="btn-inscribir" onclick="validarInscripcion(<?= $curso['id'] ?>, this)">
+                                <i class="fas fa-pen-to-square"></i> Inscribirme
+                            </button>
+                            
+                            
                         <?php else: ?>
                             <button class="btn-inscribir lleno" disabled>
                                 <i class="fas fa-lock"></i> Sin cupos disponibles
