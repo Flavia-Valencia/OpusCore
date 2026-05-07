@@ -1260,4 +1260,263 @@ async function validarInscripcion(idCurso, btn) {
     }
 }
 
+// 
+
+// ==========================================
+// --- INSCRIPCIÓN DE CURSOS (estudiante-inscripciones.php) ---
+// ==========================================
+// Gestiona: selección múltiple de cursos (máx 5), barra emergente inferior,
+// modal de pago y notificaciones toast para estudiantes.
+
+// Variables globales para rastrear cursos seleccionados
+let cursosSeleccionados = []; // Array de objetos {id, nombre, costo}
+let totalCursos = 0;           // Contador de cursos seleccionados
+let totalCosto = 0;            // Suma total del costo de cursos
+
+// ✓ Mostrar fecha actual en el banner (formato: "martes, 6 de mayo de 2026")
+document.addEventListener('DOMContentLoaded', function () {
+    const fechaEl = document.getElementById('fecha-hoy');
+    if (fechaEl) {
+        fechaEl.textContent = new Date().toLocaleDateString('es-ES', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+    }
+});
+
+// ✓ Toggle del sidebar en móvil (abrir/cerrar menú lateral)
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggle = document.getElementById('sidebar-toggle');
+    sidebar.classList.toggle('open');      // Activa/desactiva clase 'open'
+    overlay.classList.toggle('active');    // Muestra/oculta overlay oscuro
+    toggle.checked = sidebar.classList.contains('open'); // Sincroniza checkbox
+}
+
+// ✓ Cerrar sidebar en móvil
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggle = document.getElementById('sidebar-toggle');
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    toggle.checked = false;
+}
+
+// ✓ Buscador de cursos por nombre o descripción (filtro en tiempo real)
+document.addEventListener('DOMContentLoaded', function () {
+    const buscador = document.getElementById('buscador-curso');
+    if (buscador) {
+        buscador.addEventListener('input', function () {
+            const filtro = this.value.toLowerCase();
+            document.querySelectorAll('.curso-card').forEach(card => {
+                const nombre = card.querySelector('.curso-nombre')?.textContent.toLowerCase() || '';
+                const desc = card.querySelector('.curso-desc')?.textContent.toLowerCase() || '';
+                // Oculta/muestra tarjetas según coincida con el filtro
+                card.style.display = (nombre.includes(filtro) || desc.includes(filtro)) ? '' : 'none';
+            });
+        });
+    }
+});
+
+// ✓ FUNCIÓN PRINCIPAL: Toggle de selección de cursos (máximo 5)
+// Cambios visuales: tarjeta → color azul, botón → "Deseleccionar"
+function seleccionarCurso(button) {
+    const card = button.closest('.curso-card'); // Encuentra la tarjeta padre
+    if (card) {
+        const cursoId = button.dataset.id; // ID del curso
+        const cursoNombre = button.dataset.nombre || card.querySelector('.curso-nombre')?.textContent?.trim() || 'Curso';
+        const costoText = button.dataset.costo || card.querySelector('.meta-value.price')?.textContent || '0';
+        const cursoCosto = parseFloat(costoText.replace(/[^0-9.-]/g, '')); // Convierte a número
+
+        if (card.classList.contains('seleccionado')) {
+            // DESELECCIONAR: quita clase y restaura estado
+            card.classList.remove('seleccionado');
+            button.textContent = 'Seleccionar';
+            removerCursoSeleccionado(cursoId);
+        } else {
+            // SELECCIONAR: verifica límite de 5 cursos
+            const seleccionados = document.querySelectorAll('.curso-card.seleccionado').length;
+            if (seleccionados >= 5) {
+                mostrarToast('Máximo 5 cursos permitidos', 'error');
+                return; // Detiene si ya hay 5 seleccionados
+            }
+
+            // Aplica selección visual
+            card.classList.add('seleccionado');
+            button.textContent = 'Deseleccionar';
+            agregarCursoSeleccionado(cursoId, cursoNombre, cursoCosto);
+        }
+    }
+}
+
+// ✓ Agregar curso a la lista de seleccionados y actualizar totales
+function agregarCursoSeleccionado(id, nombre, costo) {
+    cursosSeleccionados.push({id, nombre, costo});
+    totalCursos++;
+    totalCosto += costo;
+    actualizarBarraInscripcion(); // Refleja cambios en la barra inferior
+}
+
+// ✓ Remover curso de la lista y restar del total
+function removerCursoSeleccionado(id) {
+    const index = cursosSeleccionados.findIndex(c => c.id == id);
+    if (index > -1) {
+        totalCosto -= cursosSeleccionados[index].costo; // Resta costo
+        cursosSeleccionados.splice(index, 1);           // Elimina del array
+        totalCursos--;
+        actualizarBarraInscripcion();
+    }
+}
+
+// ✓ Actualizar barra emergente inferior con: contador, chips, total, puntos de progreso
+function actualizarBarraInscripcion() {
+    const barra = document.getElementById('barra-inscripcion');
+    const contador = document.getElementById('barra-curso-count');
+    // Contador de la pestaña lateral usada solo en responsive.
+    const contadorTab = document.getElementById('barra-tab-count');
+    const botonTab = document.getElementById('barra-inscripcion-tab');
+    const total = document.getElementById('total-costo');
+    const lista = document.getElementById('barra-cursos-nombres');
+    const puntos = document.getElementById('barra-progreso-dots');
+    const porcentaje = document.getElementById('barra-porcentaje');
+
+    if (!barra || !contador || !total || !lista || !puntos || !porcentaje) return;
+
+    if (totalCursos > 0) {
+        // Mostrar barra con animación
+        barra.classList.add('visible');
+        contador.textContent = `${totalCursos}/5`;
+        if (contadorTab) contadorTab.textContent = `${totalCursos}/5 cursos`;
+        total.textContent = `$${totalCosto.toFixed(2)}`;
+
+        // Crear chips (etiquetas) para cada curso seleccionado
+        lista.innerHTML = '';
+        cursosSeleccionados.forEach(curso => {
+            const chip = document.createElement('span');
+            chip.className = 'barra-curso-chip';
+            chip.textContent = curso.nombre;
+            lista.appendChild(chip);
+        });
+
+        // Crear puntos de progreso (llenos/vacíos según cantidad)
+        puntos.innerHTML = Array.from({ length: 5 }, (_, index) => {
+            const active = index < totalCursos ? 'activo' : '';
+            return `<span class="barra-dot ${active}"></span>`;
+        }).join('');
+
+        // Calcular porcentaje: (cursos/5) * 100
+        porcentaje.textContent = `${Math.round((totalCursos / 5) * 100)}%`;
+    } else {
+        // Ocultar barra si no hay cursos seleccionados
+        barra.classList.remove('visible');
+        // Cierra la gaveta móvil al limpiar la selección.
+        barra.classList.remove('abierta');
+        if (botonTab) botonTab.setAttribute('aria-expanded', 'false');
+        if (contadorTab) contadorTab.textContent = '0/5 cursos';
+        lista.innerHTML = '';
+        puntos.innerHTML = '';
+    }
+}
+
+// Abre/cierra la gaveta lateral en móvil; en desktop la barra sigue usando el estilo inferior.
+function toggleBarraInscripcion() {
+    const barra = document.getElementById('barra-inscripcion');
+    const botonTab = document.getElementById('barra-inscripcion-tab');
+    if (!barra || totalCursos === 0) return;
+
+    const abierta = barra.classList.toggle('abierta');
+    if (botonTab) botonTab.setAttribute('aria-expanded', abierta ? 'true' : 'false');
+}
+
+// ✓ Cancelar selección: deselecciona todos los cursos y oculta barra
+function cancelarInscripcion() {
+    document.querySelectorAll('.curso-card.seleccionado').forEach(card => {
+        card.classList.remove('seleccionado');
+        const btn = card.querySelector('.btn-inscribir[onclick*="seleccionarCurso"]');
+        if (btn) btn.textContent = 'Seleccionar';
+    });
+    cursosSeleccionados = [];
+    totalCursos = 0;
+    totalCosto = 0;
+    actualizarBarraInscripcion();
+}
+
+// ✓ Confirmar inscripción: abre modal de pago si hay cursos seleccionados
+function confirmarInscripcion() {
+    if (totalCursos === 0) {
+        mostrarToast('Selecciona al menos un curso', 'error');
+        return;
+    }
+    abrirModalPago();
+}
+
+// ✓ Abrir modal de pago con resumen de cursos y total
+// BACKEND: Aquí se preparan datos para enviar a PayPal
+function abrirModalPago() {
+    const modal = document.getElementById('modalPago');
+    if (!modal) return;
+
+    const listaCursos = document.getElementById('pago-lista-cursos');
+    const totalPago = document.getElementById('pago-total');
+
+    // Construir lista de cursos con precios individuales
+    listaCursos.innerHTML = '';
+    cursosSeleccionados.forEach(curso => {
+        const item = document.createElement('div');
+        item.className = 'pago-curso-item';
+        item.innerHTML = `
+            <span>${curso.nombre}</span>
+            <span>$${curso.costo.toFixed(2)}</span>
+        `;
+        listaCursos.appendChild(item);
+    });
+
+    totalPago.textContent = `$${totalCosto.toFixed(2)}`;
+
+    modal.classList.add('activo');
+    document.body.style.overflow = 'hidden'; // Bloquea scroll del fondo
+}
+
+// ✓ Cerrar modal de pago
+function cerrarModalPago() {
+    const modal = document.getElementById('modalPago');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+
+// ✓ Cerrar modal al hacer clic fuera (en el overlay)
+document.addEventListener('DOMContentLoaded', function () {
+    const modalPago = document.getElementById('modalPago');
+    if (modalPago) {
+        modalPago.addEventListener('click', function (e) {
+            if (e.target === this) cerrarModalPago();
+        });
+    }
+});
+
+// ✓ Mostrar notificación toast (mensaje temporal en la esquina)
+function mostrarToast(mensaje, tipo) {
+    const toast = document.createElement('div');
+    toast.className = `toast-premium toast-${tipo}`;
+    toast.innerHTML = `
+        <i class="fas ${tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+        <span>${mensaje}</span>
+    `;
+    document.body.appendChild(toast);
+
+    // Animar entrada
+    setTimeout(() => {
+        toast.classList.add('visible');
+    }, 100);
+
+    // Animar salida y eliminar
+    setTimeout(() => {
+        toast.classList.remove('visible');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 

@@ -336,17 +336,33 @@ body {
     padding: 0 24px 16px;
 }
 
+/* Buscador de inscripciones: glass suave, aislado de los .input-buscar del admin. */
 .inscripcion-buscador {
-     width: 100%;
+    width: 100%;
     max-width: 350px;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    padding: 13px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.48);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.42);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 28px rgba(5, 49, 112, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    color: #1d3355;
     font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.inscripcion-buscador::placeholder {
+    color: rgba(29, 51, 85, 0.62);
+    font-weight: 600;
 }
 
 .inscripcion-buscador:focus {
-    border-color: #5624cc;
+    border-color: rgba(6, 157, 191, 0.65);
+    background: rgba(255, 255, 255, 0.68);
+    box-shadow: 0 14px 34px rgba(5, 49, 112, 0.14), 0 0 0 4px rgba(6, 157, 191, 0.12);
 }
 
 /* grilla de tarjetas de cursos */
@@ -500,6 +516,71 @@ body {
     color: #999;
     cursor: not-allowed;
     transform: none;
+}
+
+/* contenedor de botones */
+.curso-botones {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.curso-botones .btn-inscribir {
+    flex: 1;
+    margin-top: 0;
+}
+
+/* tarjeta seleccionada — cambio de color a oscuro */
+.curso-card.seleccionado {
+    background: linear-gradient(135deg, #053170, #1D4B73);
+    color: white;
+    border-left-color: #069DBF;
+    box-shadow: 0 6px 24px rgba(5, 49, 112, 0.3);
+}
+
+.curso-card.seleccionado .curso-nombre {
+    color: white;
+}
+
+.curso-card.seleccionado .curso-desc {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.curso-card.seleccionado .meta-label {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.curso-card.seleccionado .meta-value {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.curso-card.seleccionado .meta-value.price {
+    color: #69d7ff;
+}
+
+.curso-card.seleccionado .curso-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.curso-card.seleccionado .curso-divider {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* botones blancos en tarjeta seleccionada */
+.curso-card.seleccionado .btn-inscribir {
+    background: white;
+    color: #053170;
+    font-weight: 700;
+}
+
+.curso-card.seleccionado .btn-inscribir:hover {
+    background: rgba(255, 255, 255, 0.9);
+    opacity: 1;
+}
+
+.curso-card.seleccionado .btn-inscribir i {
+    color: #069DBF;
 }
 
 /* estado vacío: sin periodo o sin cursos */
@@ -724,7 +805,8 @@ body {
 .modal-footer {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: center;
+    align-items: center;
     gap: 12px;
     padding-top: 20px;
     border-top: 1px solid #eee;
@@ -933,3 +1015,351 @@ body {
     opacity: 1;
     pointer-events: auto;
 }
+
+/* ── BARRA DE INSCRIPCIÓN EMERGENTE ────────────────────────── */
+.barra-inscripcion {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 20px 24px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.barra-inscripcion.visible {
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.barra-inscripcion-tab {
+    display: none;
+}
+
+.barra-card {
+    max-width: 1180px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(210px, 1fr) minmax(220px, auto);
+    gap: 18px;
+    align-items: center;
+}
+
+.barra-card-left,
+.barra-card-center,
+.barra-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.barra-card-status {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.barra-status-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #053170, #069dbf);
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 16px;
+}
+
+.barra-status-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1d3355;
+}
+
+.barra-status-subtitle {
+    font-size: 14px;
+    color: #069dbf;
+    font-weight: 700;
+}
+
+.barra-cursos-nombres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.barra-curso-chip {
+    background: rgba(6, 157, 191, 0.1);
+    color: #053170;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.barra-card-center {
+    background: #f8fbff;
+    border-radius: 16px;
+    padding: 16px;
+    align-items: flex-start;
+}
+
+.barra-total-label {
+    color: #6b7a97;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.barra-total-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #053170;
+}
+
+.barra-progreso-dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.barra-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dfe5f0;
+}
+
+.barra-dot.activo {
+    background: #069dbf;
+}
+
+.barra-porcentaje {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #6b7a97;
+    font-weight: 700;
+}
+
+.barra-card-actions {
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.barra-card-actions .btn-cancelar,
+.barra-card-actions .btn-guardar-premium {
+    width: 100%;
+}
+
+.barra-card-actions .btn-cancelar {
+    background: #fff5f5;
+    color: #e13f4d;
+    border: 1px solid #f7d2d3;
+}
+
+.barra-card-actions .btn-cancelar:hover {
+    background: #ffecec;
+}
+
+.barra-card-actions .btn-guardar-premium {
+    width: 100%;
+}
+
+@media (max-width: 980px) {
+    .barra-card {
+        grid-template-columns: 1fr;
+    }
+
+    .barra-card-actions {
+        flex-direction: row;
+        align-items: center;
+        justify-content: stretch;
+    }
+}
+
+@media (max-width: 768px) {
+    /* En móvil la barra se convierte en una gaveta lateral para no cubrir las tarjetas. */
+    .barra-inscripcion {
+        top: 50%;
+        right: 0;
+        bottom: auto;
+        left: auto;
+        width: min(330px, calc(100vw - 58px));
+        padding: 0;
+        transform: translate(100%, -50%);
+        transition: transform 0.28s ease;
+    }
+
+    .barra-inscripcion.visible {
+        transform: translate(100%, -50%);
+    }
+
+    .barra-inscripcion.visible.abierta {
+        transform: translate(0, -50%);
+    }
+
+    /* Pestaña fija que muestra el contador y permite desplegar el resumen seleccionado. */
+    .barra-inscripcion-tab {
+        position: absolute;
+        top: 50%;
+        left: -52px;
+        width: 52px;
+        min-height: 132px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 8px;
+        background: #053170;
+        color: white;
+        border: 0;
+        border-radius: 14px 0 0 14px;
+        box-shadow: -8px 10px 24px rgba(5, 49, 112, 0.2);
+        cursor: pointer;
+        transform: translateY(-50%);
+        pointer-events: auto;
+    }
+
+    .barra-inscripcion:not(.visible) .barra-inscripcion-tab {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Texto vertical para ahorrar espacio horizontal en pantallas pequeñas. */
+    .barra-inscripcion-tab span {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .barra-card {
+        max-height: min(82vh, 560px);
+        margin: 0;
+        overflow-y: auto;
+        border-radius: 18px 0 0 18px;
+        box-shadow: -14px 0 34px rgba(0, 0, 0, 0.16);
+    }
+
+    .barra-card {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .barra-card-center {
+        align-items: stretch;
+    }
+
+    .barra-card-actions {
+        flex-direction: column;
+    }
+
+}
+
+/* ── MODAL DE PAGO ────────────────────────── */
+.modal-pago {
+    max-width: 500px !important;
+}
+
+.pago-resumen {
+    margin-bottom: 24px;
+}
+
+.pago-resumen h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #053170;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #e8f4fc;
+    padding-bottom: 8px;
+}
+
+.pago-lista-cursos {
+    margin-bottom: 16px;
+}
+
+.pago-curso-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.pago-curso-item:last-child {
+    border-bottom: none;
+}
+
+.pago-curso-item span:first-child {
+    font-weight: 500;
+    color: #1d3355;
+}
+
+.pago-curso-item span:last-child {
+    font-weight: 600;
+    color: #069dbf;
+}
+
+.pago-total-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-top: 2px solid #e8f4fc;
+    font-size: 18px;
+    font-weight: 700;
+    color: #053170;
+}
+
+.pago-metodo {
+    margin-bottom: 24px;
+}
+
+.pago-metodo h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #053170;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #e8f4fc;
+    padding-bottom: 8px;
+}
+
+.pago-paypal-container {
+    text-align: center;
+}
+
+.btn-paypal-placeholder {
+    background: #0070ba;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: not-allowed;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.6;
+}
+
+.btn-paypal-placeholder i {
+    font-size: 18px;
+}
+
+.pago-nota {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #6b7a97;
+    font-style: italic;
+}
+
+
