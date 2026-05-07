@@ -16,6 +16,7 @@ require_once 'obtener-cursos-disponibles.php';
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
     <link rel="stylesheet" href="./css/styles-estudiantes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=Af2BotGg3h9wRXyUvU4sJPB1MDX9Mp74DMzh-v2YuU0sVHTN1POJ0LJriJ4x8J0D0kU_DATVXJMLkad2&currency=USD&locale=es_SV"></script>
 </head>
 
 <body class="raleway-all">
@@ -351,18 +352,7 @@ require_once 'obtener-cursos-disponibles.php';
             <div class="pago-paypal-container">
                 <!-- PayPal Buttons Placeholder -->
                 <div id="paypal-button-container">
-                    <!-- BACKEND: Implementar integración con PayPal SDK -->
-                    <!-- 1. Incluir script de PayPal en el head: -->
-                    <!-- <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script> -->
-                    <!-- 2. Crear botones en este contenedor con JavaScript -->
-                    <!-- paypal.Buttons({ createOrder, onApprove, onError }).render('#paypal-button-container'); -->
-                    <!-- 3. Manejar createOrder para enviar datos al backend -->
-                    <!-- 4. En onApprove, procesar la transacción y guardar en BD -->
-                    <button class="btn-paypal-placeholder" disabled>
-                        <i class="fab fa-paypal"></i> Pagar con PayPal
-                    </button>
-                    <p class="pago-nota">* Integración PayPal pendiente de implementación backend</p>
-                </div>
+                 <!--EL SDK de PayPal renderiza sus botones aquí -->
             </div>
         </div>
 
