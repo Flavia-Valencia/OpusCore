@@ -78,3 +78,13 @@ CREATE TABLE `inscripciones` (
     CONSTRAINT `fk_curso_inscripcion` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`),
     CONSTRAINT `fk_periodo_inscripcion` FOREIGN KEY (`idPeriodo`) REFERENCES `PeriodoInscripcion` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tablar de métodos de pago con dos datos insertados.
+CREATE TABLE `MetodosPago` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `nombre` VARCHAR(50) NOT NULL,
+    `estado` TINYINT(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `MetodosPago` (`nombre`) VALUES 
+('PayPal'), ('Tarjeta de Crédito/Débito');

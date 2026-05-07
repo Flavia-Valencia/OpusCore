@@ -5,22 +5,22 @@
 
 USE db_academiadigital;
 
+DELETE FROM inscripciones;
 DELETE FROM prerrequisitos;
 DELETE FROM cursos;
+DELETE FROM periodoInscripcion;
 DELETE FROM docentes;
 DELETE FROM estudiantes;
 DELETE FROM administradores;
 DELETE FROM usuarios;
 DELETE FROM cursoHorario;
-DELETE FROM periodoInscripcion;
-DELETE FROM inscripciones;
 
+ALTER TABLE inscripciones AUTO_INCREMENT = 1;
 ALTER TABLE prerrequisitos AUTO_INCREMENT = 1;
 ALTER TABLE cursos AUTO_INCREMENT = 1;
+ALTER TABLE periodoInscripcion AUTO_INCREMENT = 1;
 ALTER TABLE docentes AUTO_INCREMENT = 1;
 ALTER TABLE estudiantes AUTO_INCREMENT = 1;
 ALTER TABLE administradores AUTO_INCREMENT = 1;
 ALTER TABLE usuarios AUTO_INCREMENT = 1;
 ALTER TABLE cursoHorario AUTO_INCREMENT = 1;
-ALTER TABLE periodoInscripcion AUTO_INCREMENT = 1;
-ALTER TABLE inscripciones AUTO_INCREMENT = 1;
