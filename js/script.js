@@ -1489,6 +1489,8 @@ function abrirModalPago() {
 
     modal.classList.add('activo');
     document.body.style.overflow = 'hidden'; // Bloquea scroll del fondo
+
+    inicializarPayPal(); // Renderiza el botón de PayPal dentro del modal
 }
 
 // Cerrar modal de pago
@@ -1531,5 +1533,71 @@ function mostrarToast(mensaje, tipo) {
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
+
+// ── PAYPAL ────────────────────────────────────────────────────────────────────
+// Inicializa el botón de PayPal dentro del modal de pago.
+// Se llama desde abrirModalPago() una sola vez gracias al flag data-rendered.
+function inicializarPayPal() {
+    const container = document.getElementById('paypal-button-container');
+    if (!container || container.dataset.rendered) return;
+
+    paypal.Buttons({
+
+        // Llama al backend para crear la orden en PayPal
+        createOrder: async function () {
+            const ids = cursosSeleccionados.map(c => parseInt(c.id));
+            const res = await fetch('paypal-create-order.php', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ cursos: ids }),
+            });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToast(data.error, 'error');
+                throw new Error(data.error);
+            }
+            return data.id; // Order ID → PayPal abre el popup
+        },
+
+        // El comprador aprobó el pago en el popup de PayPal
+        onApprove: async function (data) {
+            const res = await fetch('paypal-capture-order.php', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ orderID: data.orderID }),
+            });
+            const result = await res.json();
+
+            if (result.success) {
+                cerrarModalPago();
+                cancelarInscripcion();
+                mostrarToast(
+                    '¡Pago completado! Inscrito en ' + result.cursos + ' curso(s). Total: $' + result.total,
+                    'success'
+                );
+                setTimeout(() => window.location.reload(), 2500);
+            } else {
+                mostrarToast(result.error || 'Error al procesar el pago', 'error');
+            }
+        },
+
+        // El comprador cerró el popup sin pagar
+        onCancel: function () {
+            mostrarToast('Cancelaste el pago. Podés intentarlo cuando quieras.', 'error');
+        },
+
+        // Error técnico del SDK de PayPal
+        onError: function (err) {
+            console.error('PayPal SDK error:', err);
+            mostrarToast('Error de PayPal. Intentá de nuevo.', 'error');
+        },
+
+        style: { layout: 'vertical', color: 'blue', shape: 'pill', label: 'pay' }
+
+    }).render('#paypal-button-container');
+
+    container.dataset.rendered = 'true'; // evita renderizar el botón dos veces
+}
+
 
 
