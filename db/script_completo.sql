@@ -314,7 +314,7 @@ INSERT INTO categorias(`nombre`, `descripcion`) VALUES
 
 INSERT INTO `PeriodoInscripcion` (`nombre`, `fechaInicio`, `fechaFin`, `estado`) VALUES 
 ('Periodo I - 2026', '2026-05-01', '2026-05-07', 1),
-('Periodo II - 2026', '2026-05-01', '2026-05-30', 0);
+('Periodo II - 2026', '2026-06-08', '2026-06-30', 0);
 
 -- Insertar datos en las tablas de cursos, horarios, aulas, prerrequisitos y cursoHorario.
 INSERT INTO `cursos`(`nombre`, `descripcion`, `costoMensual`, `cupos`, `fechaInicio`, `fechaFin`, `estado`, `idDocente`, `idCategoria`, `idPeriodo`) VALUES 
