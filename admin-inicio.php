@@ -11,7 +11,7 @@ if(!isset($_SESSION["usuario"])){
 }
 
 // TEMPORAL - conexión directa para probar
-$conn = new mysqli("localhost:3307", "root", "", "db_academiadigital");
+$conn = new mysqli("localhost", "root", "", "db_academiadigital");
 
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
