@@ -103,6 +103,19 @@ CREATE TABLE `MetodosPago` (
     `estado` TINYINT(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `pagos` (
+    `id` int PRIMARY KEY AUTO_INCREMENT,
+    `idEstudiante` int NOT NULL,
+    `idMetodoPago` int NOT NULL,
+    `monto` decimal(10,2) NOT NULL,
+    `idTransaccionPasarela` varchar(100) UNIQUE, 
+    `estado` enum('Procesando','Completado','Fallido') DEFAULT 'Procesando',
+    `fechaPago` timestamp DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_pago_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`id`),
+    CONSTRAINT `fk_pago_metodo` FOREIGN KEY (`idMetodoPago`) REFERENCES `MetodosPago` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 -- La tabla cursos contiene la información de cada curso.
 CREATE TABLE `cursos` ( 
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
@@ -159,6 +172,36 @@ CREATE TABLE `inscripciones` (
     CONSTRAINT `fk_curso_inscripcion` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`),
     CONSTRAINT `fk_periodo_inscripcion` FOREIGN KEY (`idPeriodo`) REFERENCES `PeriodoInscripcion` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `matricula` (
+    `id` int PRIMARY KEY AUTO_INCREMENT,
+    `idEstudiante` int NOT NULL,
+    `idPeriodo` int NOT NULL,
+    `idFactura` int DEFAULT NULL,
+    `monto` decimal(10,2) NOT NULL,
+    `estado` enum('Pendiente','Pagado','Mora') DEFAULT 'Pendiente',
+    `fechaCreacion` timestamp DEFAULT CURRENT_TIMESTAMP,
+    `fechaVencimiento` date NOT NULL,
+    CONSTRAINT `fk_matri_estudiantes` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`id`),
+    CONSTRAINT `fk_matri_periodo` FOREIGN KEY (`idPeriodo`) REFERENCES `PeriodoInscripcion` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `mensualidades` (
+    `id` int PRIMARY KEY AUTO_INCREMENT,
+    `idEstudiante` int NOT NULL,
+    `idCurso` int NOT NULL,
+    `idPeriodo` int NOT NULL,
+    `idFactura` int DEFAULT NULL,
+    `mesPagado` enum('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',
+                     'Septiembre','Octubre','Noviembre','Diciembre') NOT NULL,
+    `monto` decimal(10,2) NOT NULL,
+    `estado` enum('Pendiente','Pagado','Mora') DEFAULT 'Pendiente',
+    `fechaVencimiento` date NOT NULL,
+    CONSTRAINT `fk_mens_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`id`),
+    CONSTRAINT `fk_mens_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`),
+    CONSTRAINT `fk_mens_periodo` FOREIGN KEY (`idPeriodo`) REFERENCES `PeriodoInscripcion` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 -- Es delimiter es una restriccion en la cual no se permite seleccionar una fecha anterior a la fecha inicio.
 DELIMITER //
@@ -270,18 +313,18 @@ INSERT INTO categorias(`nombre`, `descripcion`) VALUES
 ('Infraestructura y Sistemas','Gestión, configuración y mantenimiento de sistemas operativos, servidores y redes informáticas.');
 
 INSERT INTO `PeriodoInscripcion` (`nombre`, `fechaInicio`, `fechaFin`, `estado`) VALUES 
-('Periodo I - 2026', '2026-01-01', '2026-01-31', 1),
-('Periodo II - 2026', '2026-06-01', '2026-06-30', 0);
+('Periodo I - 2026', '2026-05-01', '2026-05-07', 1),
+('Periodo II - 2026', '2026-05-01', '2026-05-30', 0);
 
 -- Insertar datos en las tablas de cursos, horarios, aulas, prerrequisitos y cursoHorario.
-INSERT INTO `cursos`(`nombre`, `descripcion`, `costoMensual`, `cupos`, `fechaInicio`, `fechaFin`, `estado`, `idDocente`, `idCategoria`) VALUES 
-('Desarrollo lógica de programación','Curso introductorio enfocado en el desarrollo del pensamiento lógico y resolución de problemas mediante algoritmos.',20.00,100,'2026-01-15','2026-05-15', 1, 1,2),
-('Diseño de Páginas Web','Curso orientado a la creación de sitios web utilizando HTML, CSS y principios básicos de diseño web.',20.00,100,'2026-01-15','2026-05-15', 1, 2,1),
-('Programación Estructurada','Curso que enseña los fundamentos de la programación utilizando estructuras de control como secuencias, decisiones y ciclos.',20.00,100,'2026-01-15','2026-05-15', 1, 1,2),
-('Administración de Sistemas Operativos','Curso enfocado en la gestión, configuración y mantenimiento de sistemas operativos en entornos informáticos.',20.00,100,'2026-01-15','2026-05-15', 1, 2,5),
-('Programación Orientada a Objetos','Curso que introduce los conceptos de clases, objetos, herencia y encapsulamiento para desarrollar software modular.',20.00,100,'2026-01-15','2026-05-15', 1, 1,2),
-('English for Developers','Curso enfocado en el uso del inglés en entornos tecnológicos, lectura de documentación, escritura técnica y comunicación.',20.00,100,'2026-01-01','2026-05-01',1,1,3),
-('Machine Learning I','Curso que enseña los conceptos básicos del aprendizaje automático, modelos supervisados y análisis de datos.',20.00,100,'2026-01-15','2026-05-15', 1, 2, 4);
+INSERT INTO `cursos`(`nombre`, `descripcion`, `costoMensual`, `cupos`, `fechaInicio`, `fechaFin`, `estado`, `idDocente`, `idCategoria`, `idPeriodo`) VALUES 
+('Desarrollo lógica de programación','Curso introductorio enfocado en el desarrollo del pensamiento lógico y resolución de problemas mediante algoritmos.',20.00,100,'2026-01-15','2026-05-15', 1, 1,2,1),
+('Diseño de Páginas Web','Curso orientado a la creación de sitios web utilizando HTML, CSS y principios básicos de diseño web.',20.00,100,'2026-01-15','2026-05-15', 1, 2,1,1),
+('Programación Estructurada','Curso que enseña los fundamentos de la programación utilizando estructuras de control como secuencias, decisiones y ciclos.',20.00,100,'2026-01-15','2026-05-15', 1, 1,2,2),
+('Administración de Sistemas Operativos','Curso enfocado en la gestión, configuración y mantenimiento de sistemas operativos en entornos informáticos.',20.00,100,'2026-01-15','2026-05-15', 1, 2,5,1),
+('Programación Orientada a Objetos','Curso que introduce los conceptos de clases, objetos, herencia y encapsulamiento para desarrollar software modular.',20.00,100,'2026-01-15','2026-05-15', 1, 1,2,2),
+('English for Developers','Curso enfocado en el uso del inglés en entornos tecnológicos, lectura de documentación, escritura técnica y comunicación.',20.00,100,'2026-01-01','2026-05-01',1,1,3,1),
+('Machine Learning I','Curso que enseña los conceptos básicos del aprendizaje automático, modelos supervisados y análisis de datos.',20.00,100,'2026-01-15','2026-05-15', 1, 2, 4,1);
 
 INSERT INTO `prerrequisitos`(`idCursoActual`, `idCursoPrevio`) VALUES (3,1),(5,3);
 
