@@ -350,6 +350,22 @@ body {
     color: #c62828 !important;
 }
 
+.estado-pendiente {
+    background-color: #fff7e6 !important;
+    color: #9a5b00 !important;
+}
+
+.estado-pago-admin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 82px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
 /* ── componentes de modales ── */
 .modal-overlay {
     display: none;

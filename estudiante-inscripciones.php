@@ -43,15 +43,15 @@ require_once 'obtener-cursos-disponibles.php';
 
             <nav class="sidebar-nav">
                 <a href="vista_mis_cursos.php" class="nav-item ">
-                    <i class="fas fa-pen-to-square"></i>
+                    <i class="fas fa-book-open"></i>
                     <span>Mis cursos</span>
                 </a>
                 <a href="estudiante-inscripciones.php" class="nav-item active">
-                    <i class="fas fa-pen-to-square"></i>
+                    <i class="fas fa-clipboard-list"></i>
                     <span>Inscripción</span>
                 </a>
                 <a href="#" class="nav-item">
-                    <i class="fas fa-star"></i>
+                    <i class="fas fa-chart-line"></i>
                     <span>Calificaciones</span>
                 </a>
                 <a href="#" class="nav-item">
@@ -358,9 +358,6 @@ require_once 'obtener-cursos-disponibles.php';
                     <!-- paypal.Buttons({ createOrder, onApprove, onError }).render('#paypal-button-container'); -->
                     <!-- 3. Manejar createOrder para enviar datos al backend -->
                     <!-- 4. En onApprove, procesar la transacción y guardar en BD -->
-                    <button class="btn-paypal-placeholder" disabled>
-                        <i class="fab fa-paypal"></i> Pagar con PayPal
-                    </button>
                     <p class="pago-nota">* Integración PayPal pendiente de implementación backend</p>
                 </div>
             </div>
