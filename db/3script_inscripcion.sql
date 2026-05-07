@@ -88,3 +88,44 @@ CREATE TABLE `MetodosPago` (
 
 INSERT INTO `MetodosPago` (`nombre`) VALUES 
 ('PayPal'), ('Tarjeta de Crédito/Débito');
+-- Se enviarán los datos correspondientes del pago
+CREATE TABLE `pagos` (
+    `id` int PRIMARY KEY AUTO_INCREMENT,
+    `idEstudiante` int NOT NULL,
+    `idMetodoPago` int NOT NULL,
+    `monto` decimal(10,2) NOT NULL,
+    `idTransaccionPasarela` varchar(100) UNIQUE, 
+    `estado` enum('Procesando','Completado','Fallido') DEFAULT 'Procesando',
+    `fechaPago` timestamp DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_pago_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`id`),
+    CONSTRAINT `fk_pago_metodo` FOREIGN KEY (`idMetodoPago`) REFERENCES `MetodosPago` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `matricula` (
+    `id` int PRIMARY KEY AUTO_INCREMENT,
+    `idEstudiante` int NOT NULL,
+    `idPeriodo` int NOT NULL,
+    `idFactura` int DEFAULT NULL,
+    `monto` decimal(10,2) NOT NULL,
+    `estado` enum('Pendiente','Pagado','Mora') DEFAULT 'Pendiente',
+    `fechaCreacion` timestamp DEFAULT CURRENT_TIMESTAMP,
+    `fechaVencimiento` date NOT NULL,
+    CONSTRAINT `fk_matri_estudiantes` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`id`),
+    CONSTRAINT `fk_matri_periodo` FOREIGN KEY (`idPeriodo`) REFERENCES `PeriodoInscripcion` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `mensualidades` (
+    `id` int PRIMARY KEY AUTO_INCREMENT,
+    `idEstudiante` int NOT NULL,
+    `idCurso` int NOT NULL,
+    `idPeriodo` int NOT NULL,
+    `idFactura` int DEFAULT NULL,
+    `mesPagado` enum('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',
+                     'Septiembre','Octubre','Noviembre','Diciembre') NOT NULL,
+    `monto` decimal(10,2) NOT NULL,
+    `estado` enum('Pendiente','Pagado','Mora') DEFAULT 'Pendiente',
+    `fechaVencimiento` date NOT NULL,
+    CONSTRAINT `fk_mens_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`id`),
+    CONSTRAINT `fk_mens_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`),
+    CONSTRAINT `fk_mens_periodo` FOREIGN KEY (`idPeriodo`) REFERENCES `PeriodoInscripcion` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
