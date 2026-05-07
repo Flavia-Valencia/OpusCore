@@ -78,7 +78,9 @@ if ($yaInscrito) {
     exit();
 }
 
-// Verificar límite de 5 cursos por período
+// Verificar límite de 5 cursos por período.
+// Esta validación bloquea la inscripción de un sexto curso en el mismo período,
+// pero no oculta cursos disponibles en la lista de inscripción.
 $stmt = $conexion->prepare("
     SELECT COUNT(*) AS total FROM inscripciones
     WHERE idEstudiante = ? AND idPeriodo = ? AND estado_academico != 'Retirado'

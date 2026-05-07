@@ -899,6 +899,7 @@ document.addEventListener('keydown', e => {
         cerrarModalCurso();
         cerrarModalNuevoCurso();
         cerrarModalPeriodo();
+        cerrarModalInscripcion();
     }
 });
 
@@ -1174,87 +1175,35 @@ if (btnGuardarHorarios) {
 
 
 // -- MODAL INSCRIPCIÓN
-let cursoInscripcionId = null;
+// Lee todos los datos desde data-* del botón (el PHP los inyecta en render time).
+// No requiere fetch adicional: evita una petición extra por cada clic.
+let cursoInscripcionId  = null;
 let btnInscripcionActual = null;
 
-// Nota: la lógica de apertura/cierre del modal es la parte bien establecida.
-// El resto del código de extracción de datos desde la tarjeta fue un prototipo de prueba.
-// Si el backend puede entregar estos datos directamente, este bloque puede mejorarse o eliminarse.
-function abrirModalInscripcion(idCurso, btn) {
-    cursoInscripcionId = idCurso;
+function abrirModalInscripcion(btn) {
+    cursoInscripcionId  = btn.dataset.id;
     btnInscripcionActual = btn;
 
-    const cursoCard = btn.closest('.curso-card');
-    if (!cursoCard) return;
+    document.getElementById('modalCursoNombre').textContent      = btn.dataset.nombre     || '';
+    document.getElementById('modalCursoDescripcion').textContent = btn.dataset.descripcion || '';
 
-    const nombre = cursoCard.querySelector('.curso-nombre')?.textContent || '';
-    const descripcion = cursoCard.querySelector('.curso-desc')?.textContent || '';
-    const costoMensual = cursoCard.querySelector('.meta-value.price')?.textContent || '';
-    const camposMeta = cursoCard.querySelectorAll('.meta-item');
-    let cuposDisponibles = '';
-    let fechaInicio = '';
-    let fechaFin = '';
+    const elDocente = document.getElementById('modalCursoDocente');
+    if (elDocente) elDocente.textContent = btn.dataset.docente || 'Sin docente asignado';
 
-    camposMeta.forEach(item => {
-        const label = item.querySelector('.meta-label')?.textContent || '';
-        const value = item.querySelector('.meta-value')?.textContent || '';
+    document.getElementById('modalCursoHorario').textContent = btn.dataset.horario || 'Sin horario asignado';
 
-        if (label.includes('Cupos')) {
-            cuposDisponibles = value;
-        } else if (label.includes('Inicio')) {
-            fechaInicio = value;
-        } else if (label.includes('Fin')) {
-            fechaFin = value;
-        }
-    });
+    const elDias = document.getElementById('modalCursoDias');
+    if (elDias) elDias.textContent = btn.dataset.dias || '—';
 
-    document.getElementById('modalCursoNombre').textContent = nombre;
-    document.getElementById('modalCursoDescripcion').textContent = descripcion;
-    document.getElementById('modalCursoCosto').textContent = costoMensual;
-    document.getElementById('modalCursoCupos').textContent = cuposDisponibles || 'Sin cupos';
-    document.getElementById('modalCursoFecha').textContent = fechaInicio && fechaFin ? `${fechaInicio} → ${fechaFin}` : 'Sin fecha disponible';
-    document.getElementById('modalCursoHorario').textContent = 'Cargando...';
-    document.getElementById('modalCursoAula').textContent = 'Cargando...';
-
-    cargarDatosHorarioAula(idCurso);
+    document.getElementById('modalCursoAula').textContent    = btn.dataset.aula  || 'Sin aula asignada';
+    document.getElementById('modalCursoFecha').textContent   = btn.dataset.fecha || '';
+    document.getElementById('modalCursoCosto').textContent   = btn.dataset.costo || '';
+    document.getElementById('modalCursoCupos').textContent   = btn.dataset.cupos || '';
 
     const modal = document.getElementById('modalInscripcion');
     if (!modal) return;
-
     modal.classList.add('activo');
     document.body.style.overflow = 'hidden';
-}
-
-// TODO: este método se agregó como prueba para completar horario/aula en el modal.
-// Idealmente el backend debería devolver estos datos directamente junto a la lista de cursos.
-async function cargarDatosHorarioAula(idCurso) {
-    try {
-        await cargarCatalogos();
-        const res = await fetch(`obtener-horarios-cursos.php?idCurso=${encodeURIComponent(idCurso)}`);
-        const bloques = await res.json();
-
-        if (!Array.isArray(bloques) || bloques.length === 0) {
-            document.getElementById('modalCursoHorario').textContent = 'Por asignar';
-            document.getElementById('modalCursoAula').textContent = 'Por asignar';
-            return;
-        }
-
-        const horarios = bloques.map(bloque => {
-            const horario = catalogoHorarios.find(h => Number(h.id) === Number(bloque.idHorario))?.etiqueta || 'Horario no disponible';
-            const dias = Array.isArray(bloque.dias) ? bloque.dias.join(', ') : bloque.dias || '';
-            return `${dias} · ${horario}`;
-        });
-
-        const aulas = [...new Set(bloques.map(bloque => {
-            return catalogoAulas.find(a => Number(a.id) === Number(bloque.idAula))?.aula || 'Aula no disponible';
-        }))];
-
-        document.getElementById('modalCursoHorario').textContent = horarios.join(' / ');
-        document.getElementById('modalCursoAula').textContent = aulas.join(', ');
-    } catch (err) {
-        document.getElementById('modalCursoHorario').textContent = 'Error al cargar';
-        document.getElementById('modalCursoAula').textContent = 'Error al cargar';
-    }
 }
 
 function cerrarModalInscripcion() {
@@ -1274,7 +1223,6 @@ if (modalInscripcion) {
 }
 
 const btnConfirmarInscripcion = document.getElementById('btnConfirmarInscripcion');
-
 if (btnConfirmarInscripcion) {
     btnConfirmarInscripcion.addEventListener('click', function () {
         validarInscripcion(cursoInscripcionId, btnInscripcionActual);
@@ -1282,6 +1230,8 @@ if (btnConfirmarInscripcion) {
 }
 
 // -- VALIDACIÓN DE INSCRIPCIÓN
+// Envía la solicitud al backend y muestra el mensaje recibido.
+// Si se supera el límite de 5 cursos, el backend responde con error y el modal permanece abierto.
 async function validarInscripcion(idCurso, btn) {
     btn.disabled = true;
 
@@ -1295,16 +1245,13 @@ async function validarInscripcion(idCurso, btn) {
         });
 
         const data = await res.json();
-        console.log('Respuesta:', data);
         if (data.success) {
-            // TODO: cambiar este Swal por mostrarToastPremium una vez el backend esté listo.
-            // Por ahora se usa mostrarToastPremium como notificación principal.
             cerrarModalInscripcion();
-            setTimeout(() => mostrarToastPremium(data.mensaje || 'Inscripción exitosa', 'success'), 300);
+            mostrarToastPremium(data.mensaje || 'Inscripción exitosa', 'success');
             setTimeout(() => window.location.reload(), 1900);
         } else {
-            cerrarModalInscripcion();
-            setTimeout(() => mostrarToastPremium(data.mensaje || 'No puedes inscribirte', 'error'), 300);
+            // Mostrar el error sin cerrar el modal para que el usuario intente de nuevo
+            mostrarToastPremium(data.mensaje || 'No puedes inscribirte', 'error');
         }
     } catch (err) {
         mostrarToastPremium('Error de conexión. Ocurrió un problema. Intenta de nuevo.', 'error');

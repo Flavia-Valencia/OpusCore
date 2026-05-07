@@ -41,6 +41,7 @@ $stmt = $conexion->prepare("
     INNER JOIN cursos c ON i.idCurso = c.id
     WHERE i.idEstudiante = ?
     AND i.estado_academico = 'Activo'
+    AND c. fechaFin >= CURDATE()
     ORDER BY c.nombre ASC
 ");
 $stmt->bind_param("i", $idEstudiante);

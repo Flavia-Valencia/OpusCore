@@ -43,9 +43,26 @@ $periodo = $periodoStmt->fetch_assoc();
 
 $cursos = [];
 if ($periodo) {
+    // Solo mostramos cursos del período activo que el estudiante aún no tiene inscritos
+    // y cuyos prerrequisitos hayan sido completados.
+    // IMPORTANTE: el límite de 5 cursos por período NO se aplica aquí.
+    // Ese límite se valida más adelante en validar-inscripcion.php cuando el usuario confirma.
+    // FRONTEND: se agregaron LEFT JOINs para traer docente, horario, aula y días directamente
+    // en la misma consulta, evitando peticiones AJAX adicionales al abrir el modal.
+    // Si en el futuro se mueve esto a una API REST, estos campos ya están disponibles aquí.
+    // Columnas nuevas: docente_nombre, horarios_etiqueta, aulas_nombre, dias_semana
     $stmt = $conexion->prepare("
-        SELECT c.id, c.nombre, c.descripcion, c.costoMensual, c.cupos, c.fechaInicio, c.fechaFin 
+        SELECT c.id, c.nombre, c.descripcion, c.costoMensual, c.cupos, c.fechaInicio, c.fechaFin,
+               CONCAT(u.nombre, ' ', u.apellido) AS docente_nombre,
+               GROUP_CONCAT(DISTINCT h.etiqueta ORDER BY h.horaInicio SEPARATOR ', ') AS horarios_etiqueta,
+               GROUP_CONCAT(DISTINCT a.aula ORDER BY a.id SEPARATOR ', ') AS aulas_nombre,
+               GROUP_CONCAT(DISTINCT ch.dia ORDER BY ch.dia SEPARATOR ', ') AS dias_semana
         FROM cursos c
+        LEFT JOIN docentes d ON c.idDocente = d.id
+        LEFT JOIN usuarios u ON d.usuario_id = u.id
+        LEFT JOIN cursohorario ch ON ch.idCurso = c.id
+        LEFT JOIN horarios h ON h.id = ch.idHorario
+        LEFT JOIN aulas a ON a.id = ch.idAula
         WHERE c.estado = 1
         AND c.idPeriodo = ?
         AND NOT EXISTS (
@@ -63,6 +80,7 @@ if ($periodo) {
         AND i.idPeriodo = ?
         AND i.estado_academico != 'Retirado'
         )
+        GROUP BY c.id, c.nombre, c.descripcion, c.costoMensual, c.cupos, c.fechaInicio, c.fechaFin, u.nombre, u.apellido
         ORDER BY c.nombre ASC
     ");
     $stmt->bind_param("iiii", $periodo['id'], $idEstudiante, $idEstudiante, $periodo['id']);
