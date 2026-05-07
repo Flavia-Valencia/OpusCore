@@ -96,6 +96,12 @@ CREATE TABLE `PeriodoInscripcion` (
     `fechaFin` date NOT NULL,
     `estado` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Tabla métodos de pago
+CREATE TABLE `MetodosPago` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `nombre` VARCHAR(50) NOT NULL,
+    `estado` TINYINT(1) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- La tabla cursos contiene la información de cada curso.
 CREATE TABLE `cursos` ( 
@@ -292,3 +298,6 @@ INSERT INTO `inscripciones` (`idEstudiante`, `idCurso`, `idPeriodo`) VALUES
 (1, 1, 1),
 (2, 1, 1), 
 (1, 2, 1);
+-- Inserta dstos en la tablaMetodosPago
+INSERT INTO `MetodosPago` (`nombre`) VALUES 
+('PayPal'), ('Tarjeta de Crédito/Débito');
