@@ -93,7 +93,7 @@ require_once 'mis_cursos.php';
             <!-- banner -->
             <div class="banner">
                 <div class="banner-left">
-                    <h1>Mis cursos inscritos 📚</h1>
+                    <h1>Mis cursos 📚</h1>
                     <p>
                         <?php if (empty($cursos)): ?>
                             Aún no tienes cursos inscritos. Revisa las opciones disponibles en Inscripción.

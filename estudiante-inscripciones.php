@@ -157,7 +157,7 @@ require_once 'obtener-cursos-disponibles.php';
                             <?php endif; ?>
                         </div>
 
-                        <p class="curso-desc"><?= htmlspecialchars($curso['descripcion']) ?></p>
+                       
 
                         <div class="curso-divider"></div>
 
@@ -183,22 +183,29 @@ require_once 'obtener-cursos-disponibles.php';
                         </div>
 
                         <?php if (!$sinCupos): ?>
-                            <button class="btn-inscribir"
-                                data-id="<?= $curso['id'] ?>"
-                                data-nombre="<?= htmlspecialchars($curso['nombre']) ?>"
-                                data-descripcion="<?= htmlspecialchars($curso['descripcion']) ?>"
-                                data-horario="<?= htmlspecialchars($curso['horarios_etiqueta'] ?? 'Sin horario asignado') ?>"
-                                data-dias="<?= htmlspecialchars($curso['dias_semana'] ?? '') ?>"
-                                data-aula="<?= htmlspecialchars($curso['aulas_nombre'] ?? 'Sin aula asignada') ?>"
-                                data-docente="<?= htmlspecialchars($curso['docente_nombre'] ?? 'Sin docente asignado') ?>"
-                                data-fecha="<?= $curso['fechaInicio'] ?> → <?= $curso['fechaFin'] ?>"
-                                data-costo="$<?= number_format($curso['costoMensual'], 2) ?>"
-                                data-cupos="<?= $curso['cupos'] ?> disponibles"
-                                onclick="abrirModalInscripcion(this)">
-                            <i class="fas fa-pen-to-square"></i> Inscribirme
-                        </button>
-                            
-                            
+                            <div class="curso-botones">
+                                <button class="btn-inscribir"
+                                    data-id="<?= $curso['id'] ?>"
+                                    data-nombre="<?= htmlspecialchars($curso['nombre']) ?>"
+                                    data-descripcion="<?= htmlspecialchars($curso['descripcion']) ?>"
+                                    data-horario="<?= htmlspecialchars($curso['horarios_etiqueta'] ?? 'Sin horario asignado') ?>"
+                                    data-dias="<?= htmlspecialchars($curso['dias_semana'] ?? '') ?>"
+                                    data-aula="<?= htmlspecialchars($curso['aulas_nombre'] ?? 'Sin aula asignada') ?>"
+                                    data-docente="<?= htmlspecialchars($curso['docente_nombre'] ?? 'Sin docente asignado') ?>"
+                                    data-fecha="<?= $curso['fechaInicio'] ?> → <?= $curso['fechaFin'] ?>"
+                                    data-costo="$<?= number_format($curso['costoMensual'], 2) ?>"
+                                    data-cupos="<?= $curso['cupos'] ?> disponibles"
+                                    onclick="abrirModalInscripcion(this)">
+                                    <i class="fas fa-pen-to-square"></i> Ver detalles
+                                </button>
+                                <button class="btn-inscribir"
+                                    onclick="seleccionarCurso(this)"
+                                    data-id="<?= $curso['id'] ?>"
+                                    data-nombre="<?= htmlspecialchars($curso['nombre']) ?>"
+                                    data-costo="<?= number_format($curso['costoMensual'], 2, '.', '') ?>">
+                                    Seleccionar
+                                </button>
+                            </div>
                         <?php else: ?>
                             <button class="btn-inscribir lleno" disabled>
                                 <i class="fas fa-lock"></i> Sin cupos disponibles
@@ -212,6 +219,49 @@ require_once 'obtener-cursos-disponibles.php';
             <?php endif; ?>
 
         </div><!-- /content -->
+
+        <!-- BARRA DE INSCRIPCIÓN EMERGENTE -->
+        <div id="barra-inscripcion" class="barra-inscripcion">
+            <!-- En móvil esta pestaña queda fija a la derecha y abre el resumen sin tapar los cursos. -->
+            <button
+                type="button"
+                id="barra-inscripcion-tab"
+                class="barra-inscripcion-tab"
+                onclick="toggleBarraInscripcion()"
+                aria-expanded="false"
+                aria-controls="barra-inscripcion-panel">
+                <span id="barra-tab-count">0/5 cursos</span>
+            </button>
+
+            <!-- Este panel conserva el contenido original de la barra inferior para desktop y móvil. -->
+            <div id="barra-inscripcion-panel" class="barra-card">
+                <div class="barra-card-left">
+                    <div class="barra-card-status">
+                        <div class="barra-status-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div>
+                            <div class="barra-status-title">Cursos seleccionados</div>
+                            <div id="barra-curso-count" class="barra-status-subtitle">0/5</div>
+                        </div>
+                    </div>
+                    <div id="barra-cursos-nombres" class="barra-cursos-nombres"></div>
+                </div>
+
+                <div class="barra-card-center">
+                    <div class="barra-total-label">Total</div>
+                    <div id="total-costo" class="barra-total-value">$0.00</div>
+                    <div id="barra-progreso-dots" class="barra-progreso-dots"></div>
+                    <div id="barra-porcentaje" class="barra-porcentaje">0%</div>
+                </div>
+
+                <div class="barra-card-actions">
+                    <button type="button" class="btn-cancelar" onclick="cancelarInscripcion()">Cancelar selección</button>
+                    <button type="button" class="btn-guardar-premium" onclick="confirmarInscripcion()">Continuar al pago</button>
+                </div>
+            </div>
+        </div>
+
     </div><!-- /layout -->
 
 
@@ -223,17 +273,13 @@ require_once 'obtener-cursos-disponibles.php';
         </button>
 
         <h2 class="modal-titulo">
-            <i class="fas fa-pen-to-square"></i> Confirmar inscripción
+            <i class="fas fa-pen-to-square"></i> Detalles Generales
         </h2>
 
         <h3 class="modal-subtitulo">Detalle del curso</h3>
 
         <div class="horario-card-registro">
             <div class="horario-grid">
-                <div class="horario-campo full-width">
-                    <label>NOMBRE ESTUDIANTE</label>
-                    <p id="modalEstudianteNombre"><?= htmlspecialchars($estudianteNombreCompleto ?? $_SESSION['usuario']) ?></p>
-                </div>
                 <div class="horario-campo">
                     <label>CURSO</label>
                     <p id="modalCursoNombre"></p>
@@ -274,56 +320,59 @@ require_once 'obtener-cursos-disponibles.php';
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn-cancelar" onclick="cerrarModalInscripcion()">Cancelar</button>
-            <button type="button" class="btn-guardar-premium" id="btnConfirmarInscripcion">
-                <i class="fas fa-check"></i> Confirmar inscripción
-            </button>
+            <button type="button" class="btn-cancelar" onclick="cerrarModalInscripcion()">Volver</button>
+            
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE PAGO -->
+<div id="modalPago" class="modal-overlay">
+    <div class="modal-contenido modal-pago">
+        <button class="modal-cerrar" onclick="cerrarModalPago()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h2 class="modal-titulo">
+            <i class="fas fa-credit-card"></i> Procesar Pago
+        </h2>
+
+        <div class="pago-resumen">
+            <h3>Resumen de Inscripción</h3>
+            <div id="pago-lista-cursos" class="pago-lista-cursos"></div>
+            <div class="pago-total-line">
+                <strong>Total a pagar:</strong>
+                <span id="pago-total">$0.00</span>
+            </div>
+        </div>
+
+        <div class="pago-metodo">
+            <h3>Método de Pago</h3>
+            <div class="pago-paypal-container">
+                <!-- PayPal Buttons Placeholder -->
+                <div id="paypal-button-container">
+                    <!-- BACKEND: Implementar integración con PayPal SDK -->
+                    <!-- 1. Incluir script de PayPal en el head: -->
+                    <!-- <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script> -->
+                    <!-- 2. Crear botones en este contenedor con JavaScript -->
+                    <!-- paypal.Buttons({ createOrder, onApprove, onError }).render('#paypal-button-container'); -->
+                    <!-- 3. Manejar createOrder para enviar datos al backend -->
+                    <!-- 4. En onApprove, procesar la transacción y guardar en BD -->
+                    <button class="btn-paypal-placeholder" disabled>
+                        <i class="fab fa-paypal"></i> Pagar con PayPal
+                    </button>
+                    <p class="pago-nota">* Integración PayPal pendiente de implementación backend</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" onclick="cerrarModalPago()">Cancelar</button>
         </div>
     </div>
 </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>
-    <script>
-        // Fecha dinámica en el banner
-        const fechaEl = document.getElementById('fecha-hoy');
-        if (fechaEl) {
-            fechaEl.textContent = new Date().toLocaleDateString('es-ES', {
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-            });
-        }
-
-        // Toggle sidebar móvil
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.getElementById('sidebar-toggle');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-            toggle.checked = sidebar.classList.contains('open');
-        }
-
-        function closeSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.getElementById('sidebar-toggle');
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            toggle.checked = false;
-        }
-
-        // Buscador de cursos (inline porque filtra .curso-card, no .data-table rows)
-        const buscador = document.getElementById('buscador-curso');
-        if (buscador) {
-            buscador.addEventListener('input', function () {
-                const filtro = this.value.toLowerCase();
-                document.querySelectorAll('.curso-card').forEach(card => {
-                    const nombre = card.querySelector('.curso-nombre')?.textContent.toLowerCase() || '';
-                    const desc = card.querySelector('.curso-desc')?.textContent.toLowerCase() || '';
-                    card.style.display = (nombre.includes(filtro) || desc.includes(filtro)) ? '' : 'none';
-                });
-            });
-        }
-    </script>
 </body>
 </html>
