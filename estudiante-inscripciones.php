@@ -55,10 +55,17 @@ require_once 'obtener-cursos-disponibles.php';
                     <i class="fas fa-chart-line"></i>
                     <span>Calificaciones</span>
                 </a>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-credit-card"></i>
-                    <span>Pagos</span>
-                </a>
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-item nav-dropdown-toggle" onclick="togglePagosOnline()">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Pagos en línea</span>
+                        <i class="fas fa-chevron-down nav-arrow"></i>
+                    </button>
+                    <div class="nav-submenu" id="pagosOnlineMenu">
+                        <a href="estudiante-pagos.php">Pagos realizados</a>
+                        <a href="estudiante-tramites-pendientes.php">Trámites pendientes</a>
+                    </div>
+                </div>
                 <a href="#" class="nav-item">
                     <i class="fas fa-envelope"></i>
                     <span>Mensajes</span>
