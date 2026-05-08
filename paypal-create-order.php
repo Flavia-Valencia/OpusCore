@@ -90,7 +90,7 @@ foreach ($cursoIds as $idCurso) {
 }
 
 // Calcular total
-$total = number_format(array_sum(array_column($cursos, 'costoMensual')), 2, '.', '');
+$total = number_format(array_sum(array_column($cursos, 'costoMensual')) + 25.00, 2, '.', '');
 
 // Guardar en sesión para usarlo al capturar sin recalcular
 $_SESSION['paypal_pending'] = [
@@ -108,6 +108,12 @@ foreach ($cursos as $c) {
         'unit_amount' => ['currency_code' => 'USD', 'value' => number_format($c['costoMensual'], 2, '.', '')],
         'quantity'    => '1',
     ];
+
+    $items[] = [
+    'name'        => 'Matrícula',
+    'unit_amount' => ['currency_code' => 'USD', 'value' => '25.00'],
+    'quantity'    => '1',
+];
 }
 
 // Obtener token y crear orden en PayPal
