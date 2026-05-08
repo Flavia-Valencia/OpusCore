@@ -1339,7 +1339,7 @@ function togglePagosOnline() {
 
 let tramitePendienteSeleccionado = null;
 
-// FRONTEND: abre el modal visual para pagar una cuota pendiente.
+// front: abre el modal visual para pagar una cuota pendiente.
 // No registra pagos ni actualiza cuotas en BD; eso queda para backend.
 function pagarTramitePendiente(btn) {
     const modal = document.getElementById('modalPagoCuota');
@@ -1360,7 +1360,7 @@ function pagarTramitePendiente(btn) {
     const total = document.getElementById('cuota-pago-total');
     const monto = parseFloat(tramitePendienteSeleccionado.monto || '0');
 
-    // FRONTEND: reutiliza el mismo estilo/listado del modal de pago de inscripcion.
+    // front: reutiliza el mismo estilo/listado del modal de pago de inscripcion.
     if (lista) {
         lista.innerHTML = '';
 
@@ -1400,14 +1400,14 @@ function inicializarPayPalCuota() {
     const container = document.getElementById('paypal-cuota-button-container');
     if (!container || !tramitePendienteSeleccionado) return;
 
-    // FRONTEND: se limpia para evitar duplicar botones si el modal se abre varias veces.
+    // front: se limpia para evitar duplicar botones si el modal se abre varias veces.
     container.innerHTML = '';
 
     paypal.Buttons({
         createOrder: function (data, actions) {
             const monto = parseFloat(tramitePendienteSeleccionado.monto || '0').toFixed(2);
 
-            // FRONTEND ONLY: crea la orden desde el SDK con el monto mostrado en pantalla.
+            // front: crea la orden desde el SDK con el monto mostrado en pantalla.
             // No llama endpoints PHP ni guarda datos en la base.
             return actions.order.create({
                 purchase_units: [{

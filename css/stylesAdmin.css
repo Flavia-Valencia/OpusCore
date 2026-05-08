@@ -1289,19 +1289,26 @@ body {
 
     .periodo-info {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
     }
 
+    /* mantiene las fechas en pares horizontales.
+       Fila 1: inicio/fin inscripcion. Fila 2: inicio/fin ciclo. */
     .periodo-fechas {
-    display: flex;
-    gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+    margin-top: 6px;
+    width: 100%;
     }
 
     .periodo-fechas p {
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 600;
     margin: 0;
+    overflow-wrap: anywhere;
     }
 
     .estado-periodo {
@@ -1311,6 +1318,7 @@ body {
     font-size: 13px;
     font-weight: 700;
     width: max-content;
+    max-width: 100%;
    
     }
 
