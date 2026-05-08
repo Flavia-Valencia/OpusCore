@@ -79,6 +79,7 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
     <link rel="stylesheet" href="./css/styles-estudiantes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.paypal.com/sdk/js?client-id=Af2BotGg3h9wRXyUvU4sJPB1MDX9Mp74DMzh-v2YuU0sVHTN1POJ0LJriJ4x8J0D0kU_DATVXJMLkad2&currency=USD&locale=es_SV"></script>
 </head>
 
 <body class="raleway-all">
@@ -113,7 +114,7 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
                     <span>Calificaciones</span>
                 </a>
                 <div class="nav-dropdown open">
-                    <button type="button" class="nav-item nav-dropdown-toggle active" onclick="togglePagosOnline()">
+                    <button type="button" class="nav-item nav-dropdown-toggle active" onclick="togglePagosOnline()" aria-expanded="true" aria-controls="pagosOnlineMenu">
                         <i class="fas fa-credit-card"></i>
                         <span>Pagos en línea</span>
                         <i class="fas fa-chevron-down nav-arrow"></i>
@@ -225,6 +226,7 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
                                                 class="pago-accion pago-accion-secundaria"
                                                 onclick="pagarTramitePendiente(this)"
                                                 data-curso="<?= htmlspecialchars($tramite['curso']) ?>"
+                                                data-periodo="<?= htmlspecialchars($tramite['periodo']) ?>"
                                                 data-monto="<?= number_format((float) $tramite['monto'], 2, '.', '') ?>">
                                                 Pagar cuota
                                             </button>
@@ -236,6 +238,39 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
                     </div>
                 <?php endif; ?>
             </section>
+        </div>
+    </div>
+
+    <div id="modalPagoCuota" class="modal-overlay">
+        <div class="modal-contenido modal-pago">
+            <button class="modal-cerrar" onclick="cerrarModalPagoCuota()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h2 class="modal-titulo">
+                <i class="fas fa-credit-card"></i> Pagar cuota
+            </h2>
+
+            <div class="pago-resumen">
+                <h3>Resumen de Pago</h3>
+                <div id="cuota-pago-lista" class="pago-lista-cursos"></div>
+                <div class="pago-divider"></div>
+                <div class="pago-total-line">
+                    <strong>Total a pagar:</strong>
+                    <span id="cuota-pago-total">$0.00</span>
+                </div>
+            </div>
+
+            <div class="pago-metodo">
+                <h3>Método de Pago</h3>
+                <div class="pago-paypal-container">
+                    <div id="paypal-cuota-button-container"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" onclick="cerrarModalPagoCuota()">Cancelar</button>
+            </div>
         </div>
     </div>
 

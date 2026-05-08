@@ -121,7 +121,7 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                     <span>Calificaciones</span>
                 </a>
                 <div class="nav-dropdown open">
-                    <button type="button" class="nav-item nav-dropdown-toggle active" onclick="togglePagosOnline()">
+                    <button type="button" class="nav-item nav-dropdown-toggle active" onclick="togglePagosOnline()" aria-expanded="true" aria-controls="pagosOnlineMenu">
                         <i class="fas fa-credit-card"></i>
                         <span>Pagos en línea</span>
                         <i class="fas fa-chevron-down nav-arrow"></i>
@@ -237,7 +237,7 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                                             </span>
                                         </td>
                                         <td data-label="Comprobante">
-                                            <a class="pago-accion" href="comprobantes/vista-comprobante-pago.php?pago_id=<?= urlencode($pago['pago_id']) ?>">
+                                            <a class="pago-accion" href="comprobantes/descargar-comprobante-pago.php?pago_id=<?= urlencode($pago['pago_id']) ?>">
                                                 <i class="fas fa-file-pdf"></i> PDF
                                             </a>
                                         </td>

@@ -20,7 +20,7 @@ $hora = date("h:i A");
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Comprobante de Pago</title>
+        <title>Academia Futuro Digital | Comprobante de Pago</title>
         <link rel="stylesheet" href="../css/styleComprobante.css">
     </head>
 
@@ -90,7 +90,7 @@ $hora = date("h:i A");
 
             <!-- Para backend: esta plantilla se puede renderizar como PDF con Dompdf/mPDF y enviarla por correo. -->
             <div class="footer">
-                Este comprobante fue generado automáticamente por OpusCore.
+                Este comprobante fue generado automáticamente por Academia Futuro Digital.
             </div>
 
         </div>

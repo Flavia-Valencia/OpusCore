@@ -1325,28 +1325,134 @@ function closeSidebar() {
 
 function togglePagosOnline() {
     const menu = document.getElementById('pagosOnlineMenu');
-    if (menu) menu.classList.toggle('open');
+    if (!menu) return;
+
+    // FRONTEND: permite contraer/expandir el submenu de Pagos en linea.
+    // La pagina activa sigue marcada por el enlace hijo con clase "active".
+    const dropdown = menu.closest('.nav-dropdown');
+    const toggle = dropdown?.querySelector('.nav-dropdown-toggle');
+    const estaAbierto = dropdown ? dropdown.classList.toggle('open') : menu.classList.toggle('open');
+
+    menu.classList.toggle('open', estaAbierto);
+    if (toggle) toggle.setAttribute('aria-expanded', estaAbierto ? 'true' : 'false');
 }
 
-// Para backend: este botón es para pagar una cuota pendiente de un curso ya inscrito.
-// Falta mandar el id de mensualidad al endpoint de PayPal y actualizar esa cuota al aprobar.
-function pagarTramitePendiente(btn) {
-    const curso = btn?.dataset?.curso || 'este curso';
-    const monto = btn?.dataset?.monto || '0.00';
-    const mensaje = `Falta conectar PayPal para pagar la cuota pendiente de ${curso} por $${monto}.`;
+let tramitePendienteSeleccionado = null;
 
-    if (window.Swal) {
-        Swal.fire({
-            icon: 'info',
-            title: 'Pago de cuota pendiente',
-            text: mensaje,
-            confirmButtonText: 'Entendido'
-        });
+// FRONTEND: abre el modal visual para pagar una cuota pendiente.
+// No registra pagos ni actualiza cuotas en BD; eso queda para backend.
+function pagarTramitePendiente(btn) {
+    const modal = document.getElementById('modalPagoCuota');
+    if (!modal) return;
+
+    if (!window.paypal) {
+        mostrarToast('No se pudo cargar PayPal. Intentá de nuevo.', 'error');
         return;
     }
 
-    alert(mensaje);
+    tramitePendienteSeleccionado = {
+        curso: btn?.dataset?.curso || 'Curso',
+        periodo: btn?.dataset?.periodo || 'Periodo no especificado',
+        monto: btn?.dataset?.monto || '0.00'
+    };
+
+    const lista = document.getElementById('cuota-pago-lista');
+    const total = document.getElementById('cuota-pago-total');
+    const monto = parseFloat(tramitePendienteSeleccionado.monto || '0');
+
+    // FRONTEND: reutiliza el mismo estilo/listado del modal de pago de inscripcion.
+    if (lista) {
+        lista.innerHTML = '';
+
+        const item = document.createElement('div');
+        item.className = 'pago-curso-item';
+        item.innerHTML = `
+            <span>${tramitePendienteSeleccionado.curso}</span>
+            <span>$${monto.toFixed(2)}</span>
+        `;
+        lista.appendChild(item);
+
+        const periodo = document.createElement('div');
+        periodo.className = 'pago-curso-item';
+        periodo.innerHTML = `
+            <span>Periodo</span>
+            <span>${tramitePendienteSeleccionado.periodo}</span>
+        `;
+        lista.appendChild(periodo);
+    }
+
+    if (total) total.textContent = `$${monto.toFixed(2)}`;
+
+    modal.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+    inicializarPayPalCuota();
 }
+
+function cerrarModalPagoCuota() {
+    const modal = document.getElementById('modalPagoCuota');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+
+function inicializarPayPalCuota() {
+    const container = document.getElementById('paypal-cuota-button-container');
+    if (!container || !tramitePendienteSeleccionado) return;
+
+    // FRONTEND: se limpia para evitar duplicar botones si el modal se abre varias veces.
+    container.innerHTML = '';
+
+    paypal.Buttons({
+        createOrder: function (data, actions) {
+            const monto = parseFloat(tramitePendienteSeleccionado.monto || '0').toFixed(2);
+
+            // FRONTEND ONLY: crea la orden desde el SDK con el monto mostrado en pantalla.
+            // No llama endpoints PHP ni guarda datos en la base.
+            return actions.order.create({
+                purchase_units: [{
+                    description: `Cuota pendiente - ${tramitePendienteSeleccionado.curso}`,
+                    amount: {
+                        currency_code: 'USD',
+                        value: monto
+                    }
+                }],
+                application_context: {
+                    brand_name: 'Academia Futuro Digital',
+                    user_action: 'PAY_NOW'
+                }
+            });
+        },
+
+        onApprove: function (data, actions) {
+            return actions.order.capture().then(function () {
+                cerrarModalPagoCuota();
+                // BACKEND PENDIENTE: aqui luego deberian marcar la cuota como pagada.
+                mostrarToast('Pago aprobado en PayPal. Backend debe registrar la cuota.', 'success');
+            });
+        },
+
+        onCancel: function () {
+            mostrarToast('Cancelaste el pago. Podés intentarlo cuando quieras.', 'error');
+        },
+
+        onError: function (err) {
+            console.error('PayPal cuota SDK error:', err);
+            mostrarToast('Error de PayPal. Intentá de nuevo.', 'error');
+        },
+
+        style: { layout: 'vertical', color: 'blue', shape: 'pill', label: 'pay' }
+    }).render('#paypal-cuota-button-container');
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const modalPagoCuota = document.getElementById('modalPagoCuota');
+    if (modalPagoCuota) {
+        modalPagoCuota.addEventListener('click', function (e) {
+            if (e.target === this) cerrarModalPagoCuota();
+        });
+    }
+});
 
 //  Buscador de cursos por nombre o descripción (filtro en tiempo real)
 document.addEventListener('DOMContentLoaded', function () {

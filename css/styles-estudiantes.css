@@ -239,6 +239,11 @@ body {
     margin-left: auto;
     width: auto;
     font-size: 11px;
+    transition: transform 0.2s ease;
+}
+
+.nav-dropdown.open .nav-arrow {
+    transform: rotate(180deg);
 }
 
 .nav-submenu {
