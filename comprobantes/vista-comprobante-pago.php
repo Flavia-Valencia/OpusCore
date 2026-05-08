@@ -29,8 +29,8 @@ $hora = date("h:i A");
         <div class="comprobante">
 
             <div class="header">
-                <div class="logo">UNIVO</div>
-                <div>
+                <img src="../img/logo.svg" alt="Logo Academia Futuro Digital" class="comprobante-logo">
+                <div class="fecha">
                     <strong>Fecha:</strong> <?= $fecha ?><br>
                     <strong>Hora:</strong> <?= $hora ?>
                 </div>
