@@ -49,10 +49,12 @@ curl_close($ch);
 
 $capture = json_decode($response, true);
 
-// Verificar que PayPal confirmó el pago como COMPLETED
-if ($httpCode !== 201 || ($capture['status'] ?? '') !== 'COMPLETED') {
+$estadoPayPal = $capture['status'] ?? '';
+
+// Verificar que la respuesta de PayPal fue exitosa (HTTP 201)
+if ($httpCode !== 201) {
     http_response_code(402);
-    echo json_encode(['error' => 'El pago no fue completado. Intentá de nuevo.']);
+    echo json_encode(['error' => 'Error al comunicarse con PayPal. Código: ' . $httpCode]);
     exit;
 }
 
@@ -73,9 +75,23 @@ $payerNombre = trim(
 
 // Registrar en BD con TRANSACCIÓN
 $conexion->begin_transaction();
-  // Insertar registro en tabla pagos
+
 try {
-  
+    
+        $estadoBD = 'Completado';
+        $pagoExitoso = true;
+        
+    } elseif ($estadoPayPal === 'PENDING') {
+        $estadoBD = 'Procesando';
+        $pagoExitoso = false;
+        
+    } else {
+        // DECLINED, EXPIRED, VOIDED, etc.
+        $estadoBD = 'Fallido';
+        $pagoExitoso = false;
+    }
+    
+    // Insertar registro en tabla pagos (SIEMPRE se guarda)
     $stmtPago = $conexion->prepare("
         INSERT INTO pagos (
             idEstudiante, 
@@ -83,25 +99,41 @@ try {
             monto, 
             idTransaccionPasarela, 
             estado
-        ) VALUES (?, 1, ?, ?, 'Completado')
+        ) VALUES (?, 1, ?, ?, ?)
     ");
     
-    $stmtPago->bind_param('ids', $idEstudiante, $total, $captureId);
+    $stmtPago->bind_param('idss', $idEstudiante, $total, $captureId, $estadoBD);
     $stmtPago->execute();
-    $idPago = $conexion->insert_id; // Guarda por si después se necesita vincular
+    $idPago = $conexion->insert_id;
     
-    // Insertar inscripciones
-    $stmtIns = $conexion->prepare("
-        INSERT INTO inscripciones (idEstudiante, idCurso, idPeriodo, estado_academico)
-        VALUES (?, ?, ?, 'Activo')
-    ");
-    
-    foreach ($cursoIds as $idCurso) {
-        $stmtIns->bind_param('iii', $idEstudiante, $idCurso, $idPeriodo);
-        $stmtIns->execute();
+    // Solo si el pago fue COMPLETADO, se registran las inscripciones
+    if ($pagoExitoso) {
+        $stmtIns = $conexion->prepare("
+            INSERT INTO inscripciones (idEstudiante, idCurso, idPeriodo, estado_academico)
+            VALUES (?, ?, ?, 'Activo')
+        ");
         
-        // Descontar cupo del curso
-        $conexion->query("UPDATE cursos SET cupos = cupos - 1 WHERE id = $idCurso AND cupos > 0");
+        foreach ($cursoIds as $idCurso) {
+            $stmtIns->bind_param('iii', $idEstudiante, $idCurso, $idPeriodo);
+            $stmtIns->execute();
+            
+            // Descontar cupo
+            $conexion->query("UPDATE cursos SET cupos = cupos - 1 WHERE id = $idCurso AND cupos > 0");
+        }
+        
+        // 🔥 ENVIAR COMPROBANTE POR CORREO (cuando front entregue la plantilla)
+        /*
+        require_once 'includes/enviar-comprobante.php';
+        
+        $datosCorreo = [
+            'total' => $total,
+            'captureId' => $captureId,
+            'cantidadCursos' => count($cursoIds),
+            'fecha' => date('Y-m-d H:i:s')
+        ];
+        
+        enviarComprobante($payerEmail, $payerNombre, $datosCorreo);
+        */
     }
     
     $conexion->commit();
@@ -109,21 +141,27 @@ try {
 } catch (Throwable $e) {
     $conexion->rollback();
     http_response_code(500);
-    echo json_encode(['error' => 'Pago recibido pero error al guardar: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Error al guardar: ' . $e->getMessage()]);
     exit;
 }
 
-// Limpiar datos temporales de la sesión
+// Limpiar sesión
 unset($_SESSION['paypal_pending']);
 
-// Devolver éxito al frontend
+// Respuesta al frontend
+$mensaje = match($estadoBD) {
+    'Completado' => 'Pago exitoso. Ya estás inscrito.',
+    'Procesando' => 'Pago pendiente de confirmación. Recibirás un correo cuando se complete.',
+    'Fallido' => 'El pago no fue procesado. Intentá de nuevo.',
+    default => 'Estado desconocido'
+};
+
 echo json_encode([
-    'success'      => true,
-    'captureId'    => $captureId,
-    'total'        => $total,
-    'payerEmail'   => $payerEmail,
-    'payerNombre'  => $payerNombre,
-    'cursos'       => count($cursoIds),
-    'idPago'       => $idPago
+    'success' => $pagoExitoso,
+    'estado' => $estadoBD,
+    'mensaje' => $mensaje,
+    'captureId' => $captureId,
+    'total' => $total,
+    'cursos' => count($cursoIds)
 ]);
 ?>
