@@ -1401,7 +1401,7 @@ function actualizarBarraInscripcion() {
         barra.classList.add('visible');
         contador.textContent = `${totalCursos}/5`;
         if (contadorTab) contadorTab.textContent = `${totalCursos}/5 cursos`;
-        total.textContent = `$${totalCosto.toFixed(2)}`;
+        total.textContent = `$${(totalCosto + 25).toFixed(2)}`;
 
         // Crear chips (etiquetas) para cada curso seleccionado
         lista.innerHTML = '';
@@ -1485,7 +1485,7 @@ function abrirModalPago() {
         listaCursos.appendChild(item);
     });
 
-    totalPago.textContent = `$${totalCosto.toFixed(2)}`;
+    totalPago.textContent = `$${(totalCosto + 25).toFixed(2)}`;
 
     modal.classList.add('activo');
     document.body.style.overflow = 'hidden'; // Bloquea scroll del fondo

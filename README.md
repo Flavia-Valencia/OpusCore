@@ -60,6 +60,40 @@ http://localhost/OpusCore/login.php
 - **Correo:** Yamii@gmail.com
 - **Contraseña:** YamiEstudiante-19
 
+## 💳 Credenciales de Prueba — PayPal Sandbox
+
+#### Cuenta PayPal Sandbox (comprador)
+- **Correo:** sb-83pij50925673@personal.example.com
+- **Contraseña:** ,>g/U#3f
+
+#### Tarjeta Mastercard de prueba
+- **Número:** 5110 9212 6151 6739
+- **Fecha de vencimiento:** 05/31
+- **CVV:** cualquier 3 dígitos (ej. 123)
+- **Nombre:** Yammi
+- **Apellidos:** Doe
+- **Dirección:** El salvador
+- **Código postal:** 1111
+- **Ciudad:** Santiago de maria
+- **Departamento:** Usulután
+- **Móvil:** +503 2442 9627
+- **Correo:** sb-dsspy50997240@personal.example.com
+
+#### Tarjeta Visa de prueba
+- **Número:** 4032 0312 6508 1702
+- **Fecha de vencimiento:** 05/2031
+- **CVV:** cualquier 3 dígitos (ej. 123)
+- **Nombre:** Yammi
+- **Apellidos:** Doe
+- **Dirección:** El salvador
+- **Código postal:** 1111
+- **Ciudad:** Santiago de maria
+- **Departamento:** Usulután
+- **Móvil:** +503 2442 9627
+- **Correo:** sb-dsspy50997240@personal.example.com
+
+> ⚠️ Estas credenciales son solo para pruebas en modo sandbox. No usar en producción.
+
 
 ## Equipo Responsable
 En caso de dudas con la instalación, contactar a:
@@ -85,7 +119,7 @@ En caso de dudas con la instalación, contactar a:
 ![Estudiante](Evidencias/docente.png)
 
 ## Version del Sistema
-v0.2 – Sprint 2
+v0.3 – Sprint 3
 
 ## Autor(es)
 OpusCore - Equipo de Desarollo

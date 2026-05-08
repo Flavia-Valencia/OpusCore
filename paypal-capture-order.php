@@ -48,7 +48,6 @@ $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 $capture = json_decode($response, true);
-
 $estadoPayPal = $capture['status'] ?? '';
 
 // Verificar que la respuesta de PayPal fue exitosa (HTTP 201)
@@ -73,11 +72,16 @@ $payerNombre = trim(
     ($capture['payer']['name']['surname']    ?? '')
 );
 
+// Calcular total real: cursos + matrícula ($25.00)
+$costoMatricula = 25.00;
+$totalConMatricula = (float)$total + $costoMatricula;
+
 // Registrar en BD con TRANSACCIÓN
 $conexion->begin_transaction();
 
 try {
-    
+    // 🔥 CORREGIDO: El if estaba mal escrito
+    if ($estadoPayPal === 'COMPLETED') {
         $estadoBD = 'Completado';
         $pagoExitoso = true;
         
@@ -86,7 +90,6 @@ try {
         $pagoExitoso = false;
         
     } else {
-        // DECLINED, EXPIRED, VOIDED, etc.
         $estadoBD = 'Fallido';
         $pagoExitoso = false;
     }
@@ -102,7 +105,8 @@ try {
         ) VALUES (?, 1, ?, ?, ?)
     ");
     
-    $stmtPago->bind_param('idss', $idEstudiante, $total, $captureId, $estadoBD);
+    // 🔥 CORREGIDO: Agregar $estadoBD como 4to parámetro
+    $stmtPago->bind_param('idss', $idEstudiante, $totalConMatricula, $captureId, $estadoBD);
     $stmtPago->execute();
     $idPago = $conexion->insert_id;
     
@@ -121,12 +125,21 @@ try {
             $conexion->query("UPDATE cursos SET cupos = cupos - 1 WHERE id = $idCurso AND cupos > 0");
         }
         
-        // 🔥 ENVIAR COMPROBANTE POR CORREO (cuando front entregue la plantilla)
+        // Registrar matrícula
+        $stmtMatricula = $conexion->prepare("
+            INSERT INTO matricula (idEstudiante, idPeriodo, monto, estado)
+            VALUES (?, ?, ?, 'Pagado')
+            ON DUPLICATE KEY UPDATE estado = 'Pagado'
+        ");
+        $stmtMatricula->bind_param('iid', $idEstudiante, $idPeriodo, $costoMatricula);
+        $stmtMatricula->execute();
+        
+        // 🔥 ENVIAR COMPROBANTE POR CORREO (pendiente plantilla frontend)
         /*
         require_once 'includes/enviar-comprobante.php';
         
         $datosCorreo = [
-            'total' => $total,
+            'total' => $totalConMatricula,
             'captureId' => $captureId,
             'cantidadCursos' => count($cursoIds),
             'fecha' => date('Y-m-d H:i:s')
@@ -161,7 +174,9 @@ echo json_encode([
     'estado' => $estadoBD,
     'mensaje' => $mensaje,
     'captureId' => $captureId,
-    'total' => $total,
-    'cursos' => count($cursoIds)
+    'total' => $totalConMatricula,
+    'cursos' => count($cursoIds),
+    'idPago' => $idPago,
+    'matricula' => $pagoExitoso ? 'Pagado' : 'Pendiente'
 ]);
 ?>
