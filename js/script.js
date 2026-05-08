@@ -687,6 +687,8 @@ function abrirModalNuevoPeriodo() {
     document.getElementById('periodo-nombre').value = '';
     document.getElementById('periodo-fecha-inicio').value = '';
     document.getElementById('periodo-fecha-fin').value = '';
+    document.getElementById('periodo-fecha-inicio-ciclo').value = '';
+    document.getElementById('periodo-fecha-fin-ciclo').value = '';
 
     const modal = document.getElementById('modalPeriodo');
     if (modal) {
@@ -709,6 +711,8 @@ document.querySelectorAll('.abrir-modal-periodo').forEach(btn => {
         document.getElementById('periodo-nombre').value = this.dataset.nombre;
         document.getElementById('periodo-fecha-inicio').value = this.dataset.fecha_inicio;
         document.getElementById('periodo-fecha-fin').value = this.dataset.fecha_fin;
+        document.getElementById('periodo-fecha-inicio-ciclo').value = this.dataset.fecha_inicio_ciclo || '';
+        document.getElementById('periodo-fecha-fin-ciclo').value = this.dataset.fecha_fin_ciclo || '';
 
         modal.classList.add('activo');
         document.body.style.overflow = 'hidden';
@@ -736,9 +740,11 @@ if (formPeriodo) {
         const nombre = document.getElementById('periodo-nombre').value.trim();
         const fechaInicio = document.getElementById('periodo-fecha-inicio').value.trim();
         const fechaFin = document.getElementById('periodo-fecha-fin').value.trim();
+        const fechaInicioCiclo = document.getElementById('periodo-fecha-inicio-ciclo').value.trim();
+        const fechaFinCiclo = document.getElementById('periodo-fecha-fin-ciclo').value.trim();
 
         // Validar campos vacíos
-        if (!nombre || !fechaInicio || !fechaFin) {
+        if (!nombre || !fechaInicio || !fechaFin || !fechaInicioCiclo || !fechaFinCiclo) {
             mostrarToastPremium('Complete todos los campos');
             return;
         }
@@ -750,7 +756,9 @@ if (formPeriodo) {
             id: id,
             nombre: nombre,
             fechaInicio: fechaInicio,
-            fechaFin: fechaFin
+            fechaFin: fechaFin,
+            fechaInicioCiclo: fechaInicioCiclo,
+            fechaFinCiclo: fechaFinCiclo
         });
 
         fetch(archivo, {
@@ -1275,9 +1283,8 @@ async function validarInscripcion(idCurso, btn) {
 
 // 
 
-// ==========================================
-// --- INSCRIPCIÓN DE CURSOS (estudiante-inscripciones.php) ---
-// ==========================================
+
+// INSCRIPCIÓN DE CURSOS (estudiante-inscripciones.php)
 // Gestiona: selección múltiple de cursos (máx 5), barra emergente inferior,
 // modal de pago y notificaciones toast para estudiantes.
 
@@ -1314,6 +1321,31 @@ function closeSidebar() {
     sidebar.classList.remove('open');
     overlay.classList.remove('active');
     toggle.checked = false;
+}
+
+function togglePagosOnline() {
+    const menu = document.getElementById('pagosOnlineMenu');
+    if (menu) menu.classList.toggle('open');
+}
+
+// Para backend: este botón es para pagar una cuota pendiente de un curso ya inscrito.
+// Falta mandar el id de mensualidad al endpoint de PayPal y actualizar esa cuota al aprobar.
+function pagarTramitePendiente(btn) {
+    const curso = btn?.dataset?.curso || 'este curso';
+    const monto = btn?.dataset?.monto || '0.00';
+    const mensaje = `Falta conectar PayPal para pagar la cuota pendiente de ${curso} por $${monto}.`;
+
+    if (window.Swal) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Pago de cuota pendiente',
+            text: mensaje,
+            confirmButtonText: 'Entendido'
+        });
+        return;
+    }
+
+    alert(mensaje);
 }
 
 //  Buscador de cursos por nombre o descripción (filtro en tiempo real)

@@ -12,7 +12,17 @@ if(!isset($_SESSION["usuario"])){
 
 include('includes/conexion.php');
 
-$sql_activo = "SELECT nombre, fechaInicio, fechaFin, estado 
+$columnasPeriodo = [];
+$resColumnas = mysqli_query($conexion, "SHOW COLUMNS FROM PeriodoInscripcion");
+if ($resColumnas) {
+    while ($columna = mysqli_fetch_assoc($resColumnas)) {
+        $columnasPeriodo[] = $columna['Field'];
+    }
+}
+$tieneFechasCiclo = in_array('fechaInicioCiclo', $columnasPeriodo, true) && in_array('fechaFinCiclo', $columnasPeriodo, true);
+$selectFechasCiclo = $tieneFechasCiclo ? ', fechaInicioCiclo, fechaFinCiclo' : ", NULL AS fechaInicioCiclo, NULL AS fechaFinCiclo";
+
+$sql_activo = "SELECT nombre, fechaInicio, fechaFin, estado $selectFechasCiclo
                FROM PeriodoInscripcion 
                WHERE estado = 1 
                LIMIT 1";
@@ -104,14 +114,26 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
             <div class="periodo-info">
                 <div class="periodo-fechas">
                     <div>
-                        <p><strong>Inicio</strong><br>
+                        <p><strong>Inicio inscripción</strong><br>
                             <?php echo $periodo_activo ? htmlspecialchars($periodo_activo['fechaInicio']) : '—'; ?>
                         </p>
                     </div>
 
                     <div>
-                        <p><strong>Fin</strong><br>
+                        <p><strong>Fin inscripción</strong><br>
                             <?php echo $periodo_activo ? htmlspecialchars($periodo_activo['fechaFin']) : '—'; ?>
+                        </p>
+                    </div>
+
+                    <div>
+                        <p><strong>Inicio ciclo</strong><br>
+                            <?php echo $periodo_activo && $periodo_activo['fechaInicioCiclo'] ? htmlspecialchars($periodo_activo['fechaInicioCiclo']) : '—'; ?>
+                        </p>
+                    </div>
+
+                    <div>
+                        <p><strong>Fin ciclo</strong><br>
+                            <?php echo $periodo_activo && $periodo_activo['fechaFinCiclo'] ? htmlspecialchars($periodo_activo['fechaFinCiclo']) : '—'; ?>
                         </p>
                     </div>
                 </div>
@@ -163,13 +185,27 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
                     </div>
 
                     <div class="modal-campo">
-                        <label>Fecha de inicio</label>
+                        <label>Inicio de inscripción</label>
                         <input type="date" name="fecha_inicio" id="periodo-fecha-inicio" required>
                     </div>
 
                     <div class="modal-campo">
-                        <label>Fecha de fin</label>
+                        <label>Fin de inscripción</label>
                         <input type="date" name="fecha_fin" id="periodo-fecha-fin" required>
+                    </div>
+
+                    <div class="modal-campo">
+                        <label>Inicio del ciclo</label>
+                        <input type="date" name="fecha_inicio_ciclo" id="periodo-fecha-inicio-ciclo" required>
+                    </div>
+
+                    <div class="modal-campo">
+                        <label>Fin del ciclo</label>
+                        <input type="date" name="fecha_fin_ciclo" id="periodo-fecha-fin-ciclo" required>
+                    </div>
+
+                    <div class="modal-campo full-width">
+                        <small>FRONTEND: estas fechas de ciclo quedan listas para cuando BD agregue sus columnas.</small>
                     </div>
 
                 </div>
