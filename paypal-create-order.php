@@ -108,13 +108,14 @@ foreach ($cursos as $c) {
         'unit_amount' => ['currency_code' => 'USD', 'value' => number_format($c['costoMensual'], 2, '.', '')],
         'quantity'    => '1',
     ];
+}
 
-    $items[] = [
+// Añadir matrícula una sola vez
+$items[] = [
     'name'        => 'Matrícula',
     'unit_amount' => ['currency_code' => 'USD', 'value' => '25.00'],
     'quantity'    => '1',
 ];
-}
 
 // Obtener token y crear orden en PayPal
 try {
