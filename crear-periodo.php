@@ -9,10 +9,12 @@ try {
     $nombre = $_POST['nombre'];
     $fechaInicio  = $_POST['fechaInicio'];
     $fechaFin     = $_POST['fechaFin'];
+    $fechaInicioCiclo = isset($_POST['fechaInicioCiclo']) ? $_POST['fechaInicioCiclo'] : null;
+    $fechaFinCiclo    = isset($_POST['fechaFinCiclo']) ? $_POST['fechaFinCiclo'] : null;
     $estado       = 1;
 
     // Validación fechas incorrectas
-    if ($fechaFin <= $fechaInicio) {
+    if ($fechaFin <= $fechaInicio || $fechaFinCiclo <= $fechaInicioCiclo) {
         echo json_encode(['success' => false, 'error' => 'fechas']);
         exit();
     }
@@ -27,8 +29,8 @@ try {
     }
 
   
-    $sql_periodo = "INSERT INTO PeriodoInscripcion (id, nombre, fechaInicio, fechaFin, estado)
-                    VALUES ('$id', '$nombre', '$fechaInicio', '$fechaFin', '$estado')";
+    $sql_periodo = "INSERT INTO PeriodoInscripcion (id, nombre, fechaInicio, fechaFin, fechaInicioCiclo, fechaFinCiclo, estado)
+                    VALUES ('$id', '$nombre', '$fechaInicio', '$fechaFin', '$fechaInicioCiclo', '$fechaFinCiclo', '$estado')";
 
     mysqli_query($conexion, $sql_periodo);
 
@@ -38,7 +40,7 @@ try {
 
     $error = $e->getMessage();
 
-    if (strpos($error, 'choca con fechas') !== false || strpos($error, 'traslapar') !== false) {
+    if (strpos($error, 'choca') !== false || strpos($error, 'traslapar') !== false) {
         echo json_encode(['success' => false, 'error' => 'traslape']);
     } else {
         echo json_encode([
