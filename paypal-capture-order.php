@@ -1,6 +1,8 @@
 <?php
+// paypal-capture-order.php
 // Captura el pago aprobado por el comprador en el popup de PayPal.
-// Verifica que el estado sea COMPLETED y registra el pago + inscripciones en la BD.
+// Verifica que el estado sea COMPLETED y registra el pago + inscripciones + matrícula en la BD.
+// Incluye envío de comprobante por correo.
 
 session_start();
 header('Content-Type: application/json');
@@ -62,7 +64,7 @@ $pending      = $_SESSION['paypal_pending'];
 $cursoIds     = $pending['cursoIds'];
 $idPeriodo    = $pending['idPeriodo'];
 $idEstudiante = $pending['idEstudiante'];
-$total        = $pending['total'];
+$totalCursos  = $pending['total'];  // Solo cursos (sin matrícula)
 
 // Datos que devuelve PayPal tras capturar
 $captureId   = $capture['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
@@ -72,15 +74,32 @@ $payerNombre = trim(
     ($capture['payer']['name']['surname']    ?? '')
 );
 
-// Calcular total real: cursos + matrícula ($25.00)
+// Calcular total con matrícula
 $costoMatricula = 25.00;
-$totalConMatricula = (float)$total + $costoMatricula;
+$totalConMatricula = (float)$totalCursos + $costoMatricula;
+
+// Obtener nombres de cursos para el comprobante
+$cursosNombres = [];
+if (!empty($cursoIds)) {
+    $placeholders = implode(',', array_fill(0, count($cursoIds), '?'));
+    $types = str_repeat('i', count($cursoIds));
+    $stmtNombres = $conexion->prepare("SELECT nombre, costoMensual FROM cursos WHERE id IN ($placeholders)");
+    $stmtNombres->bind_param($types, ...$cursoIds);
+    $stmtNombres->execute();
+    $resultNombres = $stmtNombres->get_result();
+    while ($row = $resultNombres->fetch_assoc()) {
+        $cursosNombres[] = [
+            'nombre' => $row['nombre'],
+            'costo' => $row['costoMensual']
+        ];
+    }
+}
 
 // Registrar en BD con TRANSACCIÓN
 $conexion->begin_transaction();
 
 try {
-    // 🔥 CORREGIDO: El if estaba mal escrito
+    // Determinar estado según respuesta de PayPal
     if ($estadoPayPal === 'COMPLETED') {
         $estadoBD = 'Completado';
         $pagoExitoso = true;
@@ -94,7 +113,7 @@ try {
         $pagoExitoso = false;
     }
     
-    // Insertar registro en tabla pagos (SIEMPRE se guarda)
+    // 1. Insertar registro en tabla pagos
     $stmtPago = $conexion->prepare("
         INSERT INTO pagos (
             idEstudiante, 
@@ -105,13 +124,13 @@ try {
         ) VALUES (?, 1, ?, ?, ?)
     ");
     
-    // 🔥 CORREGIDO: Agregar $estadoBD como 4to parámetro
     $stmtPago->bind_param('idss', $idEstudiante, $totalConMatricula, $captureId, $estadoBD);
     $stmtPago->execute();
     $idPago = $conexion->insert_id;
     
-    // Solo si el pago fue COMPLETADO, se registran las inscripciones
+    // 2. Solo si el pago fue COMPLETADO, se registran inscripciones, matrícula y se descuentan cupos
     if ($pagoExitoso) {
+        // Registrar inscripciones
         $stmtIns = $conexion->prepare("
             INSERT INTO inscripciones (idEstudiante, idCurso, idPeriodo, estado_academico)
             VALUES (?, ?, ?, 'Activo')
@@ -134,15 +153,19 @@ try {
         $stmtMatricula->bind_param('iid', $idEstudiante, $idPeriodo, $costoMatricula);
         $stmtMatricula->execute();
         
-        // 🔥 ENVIAR COMPROBANTE POR CORREO (pendiente plantilla frontend)
+        // 3. Enviar comprobante por correo (pendiente plantilla de frontend)
         /*
         require_once 'includes/enviar-comprobante.php';
         
         $datosCorreo = [
             'total' => $totalConMatricula,
+            'costoMatricula' => $costoMatricula,
+            'totalCursos' => $totalCursos,
             'captureId' => $captureId,
             'cantidadCursos' => count($cursoIds),
-            'fecha' => date('Y-m-d H:i:s')
+            'fecha' => date('Y-m-d H:i:s'),
+            'cursos' => $cursosNombres,
+            'payerNombre' => $payerNombre
         ];
         
         enviarComprobante($payerEmail, $payerNombre, $datosCorreo);
@@ -175,6 +198,8 @@ echo json_encode([
     'mensaje' => $mensaje,
     'captureId' => $captureId,
     'total' => $totalConMatricula,
+    'totalCursos' => $totalCursos,
+    'costoMatricula' => $costoMatricula,
     'cursos' => count($cursoIds),
     'idPago' => $idPago,
     'matricula' => $pagoExitoso ? 'Pagado' : 'Pendiente'
