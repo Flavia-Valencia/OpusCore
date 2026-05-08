@@ -257,7 +257,7 @@ require_once 'obtener-cursos-disponibles.php';
                 </div>
 
                 <div class="barra-card-center">
-                    <div class="barra-total-label">Total</div>
+                    <div class="barra-total-label">Total con matrícula</div>
                     <div id="total-costo" class="barra-total-value">$0.00</div>
                     <div id="barra-progreso-dots" class="barra-progreso-dots"></div>
                     <div id="barra-porcentaje" class="barra-porcentaje">0%</div>
@@ -348,6 +348,12 @@ require_once 'obtener-cursos-disponibles.php';
         <div class="pago-resumen">
             <h3>Resumen de Inscripción</h3>
             <div id="pago-lista-cursos" class="pago-lista-cursos"></div>
+            <!-- ← Línea de matrícula -->
+            <div class="pago-total-line">
+                <span>Matrícula</span>
+                <span>$25.00</span>
+            </div>
+            <div class="pago-divider"></div>
             <div class="pago-total-line">
                 <strong>Total a pagar:</strong>
                 <span id="pago-total">$0.00</span>

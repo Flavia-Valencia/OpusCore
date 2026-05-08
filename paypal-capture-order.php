@@ -71,6 +71,10 @@ $payerNombre = trim(
     ($capture['payer']['name']['surname']    ?? '')
 );
 
+// ← Calcular total real: cursos + matrícula ($25.00)
+$costoMatricula = 25.00;
+$totalConMatricula = (float)$total + $costoMatricula;
+
 // Registrar en BD con TRANSACCIÓN
 $conexion->begin_transaction();
   // Insertar registro en tabla pagos
@@ -86,7 +90,7 @@ try {
         ) VALUES (?, 1, ?, ?, 'Completado')
     ");
     
-    $stmtPago->bind_param('ids', $idEstudiante, $total, $captureId);
+    $stmtPago->bind_param('ids', $idEstudiante, $totalConMatricula, $captureId);
     $stmtPago->execute();
     $idPago = $conexion->insert_id; // Guarda por si después se necesita vincular
     
@@ -103,6 +107,15 @@ try {
         // Descontar cupo del curso
         $conexion->query("UPDATE cursos SET cupos = cupos - 1 WHERE id = $idCurso AND cupos > 0");
     }
+
+     // ← Registrar matrícula — el trigger calcula fechaVencimiento y fechaProximaMatricula automáticamente
+    $stmtMatricula = $conexion->prepare("
+        INSERT INTO matricula (idEstudiante, idPeriodo, monto, estado)
+        VALUES (?, ?, ?, 'Pagado')
+        ON DUPLICATE KEY UPDATE estado = 'Pagado'
+    ");
+    $stmtMatricula->bind_param('iid', $idEstudiante, $idPeriodo, $costoMatricula);
+    $stmtMatricula->execute();
     
     $conexion->commit();
     
@@ -124,6 +137,7 @@ echo json_encode([
     'payerEmail'   => $payerEmail,
     'payerNombre'  => $payerNombre,
     'cursos'       => count($cursoIds),
-    'idPago'       => $idPago
+    'idPago'       => $idPago,
+    'matricula'    => 'Pagado'
 ]);
 ?>
