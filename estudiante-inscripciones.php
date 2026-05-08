@@ -43,6 +43,10 @@ require_once 'obtener-cursos-disponibles.php';
             </div>
 
             <nav class="sidebar-nav">
+                <a href="estudiante-cursos.php" class="nav-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Todos los cursos</span>
+                </a>
                 <a href="vista_mis_cursos.php" class="nav-item ">
                     <i class="fas fa-book-open"></i>
                     <span>Mis cursos</span>
