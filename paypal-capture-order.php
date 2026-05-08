@@ -1,5 +1,4 @@
 <?php
-// paypal-capture-order.php
 // Captura el pago aprobado por el comprador en el popup de PayPal.
 // Verifica que el estado sea COMPLETED y registra el pago + inscripciones + matrícula en la BD.
 // Incluye envío de comprobante por correo.
@@ -76,23 +75,53 @@ $payerNombre = trim(
 
 // Calcular total con matrícula
 $costoMatricula = 25.00;
+// Obtener correo y nombre del estudiante desde la BD
+$stmtEstudiante = $conexion->prepare("
+    SELECT u.correo, u.nombre, u.apellido 
+    FROM usuarios u
+    INNER JOIN estudiantes e ON e.usuario_id = u.id
+    WHERE e.id = ?
+");
+$stmtEstudiante->bind_param('i', $idEstudiante);
+$stmtEstudiante->execute();
+$datosEstudiante = $stmtEstudiante->get_result()->fetch_assoc();
+$stmtEstudiante->close();
+
+$correoEstudiante = $datosEstudiante['correo'] ?? $payerEmail;
+$nombreEstudiante = trim(($datosEstudiante['nombre'] ?? '') . ' ' . ($datosEstudiante['apellido'] ?? ''));
 $totalConMatricula = (float)$totalCursos + $costoMatricula;
 
-// Obtener nombres de cursos para el comprobante
-$cursosNombres = [];
-if (!empty($cursoIds)) {
-    $placeholders = implode(',', array_fill(0, count($cursoIds), '?'));
-    $types = str_repeat('i', count($cursoIds));
-    $stmtNombres = $conexion->prepare("SELECT nombre, costoMensual FROM cursos WHERE id IN ($placeholders)");
-    $stmtNombres->bind_param($types, ...$cursoIds);
-    $stmtNombres->execute();
-    $resultNombres = $stmtNombres->get_result();
-    while ($row = $resultNombres->fetch_assoc()) {
-        $cursosNombres[] = [
-            'nombre' => $row['nombre'],
-            'costo' => $row['costoMensual']
-        ];
-    }
+$periodoNombre = "";
+$stmtPeriodo = $conexion->prepare("SELECT nombre FROM PeriodoInscripcion WHERE id = ?");
+$stmtPeriodo->bind_param('i', $idPeriodo);
+$stmtPeriodo->execute();
+$periodoNombre = $stmtPeriodo->get_result()->fetch_assoc()['nombre'] ?? 'Periodo actual';
+
+
+$cursosDetalle = [];
+$stmtCurso = $conexion->prepare("
+    SELECT c.nombre, c.costoMensual,
+           GROUP_CONCAT(DISTINCT CONCAT(ch.dia, ' - ', h.etiqueta) SEPARATOR ', ') AS horario,
+           GROUP_CONCAT(DISTINCT a.aula SEPARATOR ', ') AS aula
+    FROM cursos c
+    LEFT JOIN CursoHorario ch ON c.id = ch.idCurso
+    LEFT JOIN horarios h ON ch.idHorario = h.id
+    LEFT JOIN aulas a ON ch.idAula = a.id
+    WHERE c.id = ?
+    GROUP BY c.id
+");
+
+foreach ($cursoIds as $idCurso) {
+    $stmtCurso->bind_param('i', $idCurso);
+    $stmtCurso->execute();
+    $result = $stmtCurso->get_result()->fetch_assoc();
+    
+    $cursosDetalle[] = [
+        'nombre' => $result['nombre'],
+        'costo' => $result['costoMensual'],
+        'horario' => $result['horario'] ?? 'No asignado',
+        'aula' => $result['aula'] ?? 'N/A'
+    ];
 }
 
 // Registrar en BD con TRANSACCIÓN
@@ -113,7 +142,7 @@ try {
         $pagoExitoso = false;
     }
     
-    // 1. Insertar registro en tabla pagos
+    // Insertar registro en tabla pagos
     $stmtPago = $conexion->prepare("
         INSERT INTO pagos (
             idEstudiante, 
@@ -128,7 +157,7 @@ try {
     $stmtPago->execute();
     $idPago = $conexion->insert_id;
     
-    // 2. Solo si el pago fue COMPLETADO, se registran inscripciones, matrícula y se descuentan cupos
+    // Solo si el pago fue COMPLETADO, se registran inscripciones, matrícula y se descuentan cupos
     if ($pagoExitoso) {
         // Registrar inscripciones
         $stmtIns = $conexion->prepare("
@@ -152,24 +181,20 @@ try {
         ");
         $stmtMatricula->bind_param('iid', $idEstudiante, $idPeriodo, $costoMatricula);
         $stmtMatricula->execute();
-        
-        // 3. Enviar comprobante por correo (pendiente plantilla de frontend)
-        /*
+
         require_once 'includes/enviar-comprobante.php';
         
         $datosCorreo = [
             'total' => $totalConMatricula,
-            'costoMatricula' => $costoMatricula,
-            'totalCursos' => $totalCursos,
             'captureId' => $captureId,
             'cantidadCursos' => count($cursoIds),
             'fecha' => date('Y-m-d H:i:s'),
-            'cursos' => $cursosNombres,
-            'payerNombre' => $payerNombre
+            'estado' => 'Completado',
+            'periodo_nombre' => $periodoNombre, 
+            'cursos' => $cursosDetalle        
         ];
         
-        enviarComprobante($payerEmail, $payerNombre, $datosCorreo);
-        */
+        $resultado = enviarComprobante($correoEstudiante, $nombreEstudiante, $datosCorreo);
     }
     
     $conexion->commit();
