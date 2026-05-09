@@ -1580,6 +1580,12 @@ function pagarTramitePendiente(btn) {
     inicializarPayPalMensualidad();
 }
 
+function normalizarFuentePagoPayPal(data) {
+    const fuente = (data?.fundingSource || data?.paymentSource || '').toLowerCase();
+    if (!fuente) return '';
+    return ['card', 'credit'].includes(fuente) ? 'tarjeta' : 'paypal';
+}
+
 // Inicializa el botón de PayPal para el pago de mensualidades.
 // Crea una orden enviando el id de la mensualidad al backend y,
 // al aprobarse el pago, captura la orden para actualizar el estado
@@ -1587,10 +1593,12 @@ function pagarTramitePendiente(btn) {
 function inicializarPayPalMensualidad() {
     const container = document.getElementById('paypal-button-container');
     if (!container || container.dataset.rendered) return;
+    let metodoPagoSDK = 'paypal';
 
     paypal.Buttons({
 
-        createOrder: async function () {
+        createOrder: async function (paypalData) {
+            metodoPagoSDK = normalizarFuentePagoPayPal(paypalData);
             const res = await fetch('paypal-create-mensualidad.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1610,11 +1618,13 @@ function inicializarPayPalMensualidad() {
         },
 
         onApprove: async function (data) {
+            metodoPagoSDK = normalizarFuentePagoPayPal(data) || metodoPagoSDK;
             const res = await fetch('paypal-capture-mensualidad.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    orderID: data.orderID
+                    orderID: data.orderID,
+                    metodoPago: metodoPagoSDK
                 })
             });
 
@@ -1958,11 +1968,13 @@ function mostrarToast(mensaje, tipo) {
 function inicializarPayPal() {
     const container = document.getElementById('paypal-button-container');
     if (!container || container.dataset.rendered) return;
+    let metodoPagoSDK = 'paypal';
 
     paypal.Buttons({
 
         // Llama al backend para crear la orden en PayPal
-        createOrder: async function () {
+        createOrder: async function (paypalData) {
+            metodoPagoSDK = normalizarFuentePagoPayPal(paypalData);
             const ids = cursosSeleccionados.map(c => parseInt(c.id));
             const res = await fetch('paypal-create-order.php', {
                 method:  'POST',
@@ -1979,10 +1991,11 @@ function inicializarPayPal() {
 
         // El comprador aprobó el pago en el popup de PayPal
         onApprove: async function (data) {
+            metodoPagoSDK = normalizarFuentePagoPayPal(data) || metodoPagoSDK;
             const res = await fetch('paypal-capture-order.php', {
                 method:  'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ orderID: data.orderID }),
+                body:    JSON.stringify({ orderID: data.orderID, metodoPago: metodoPagoSDK }),
             });
             const result = await res.json();
 

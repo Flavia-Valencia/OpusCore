@@ -23,7 +23,7 @@ $orderId = trim($body['orderID'] ?? '');
 // y mostrar el mismo dato en el comprobante.
 $metodoPago = strtolower(trim($body['metodoPago'] ?? 'paypal'));
 $idMetodoPago = match ($metodoPago) {
-    'tarjeta' => 2,
+    'tarjeta', 'card', 'credit' => 2,
     default   => 1,
 };
 
@@ -81,7 +81,7 @@ $captureId   = $capture['purchase_units'][0]['payments']['captures'][0]['id'] ??
 $paymentSource = $capture['payment_source'] ?? [];
 if (isset($paymentSource['card'])) {
     $idMetodoPago = 2; // Tarjeta de Crédito/Débito
-} elseif (isset($paymentSource['paypal'])) {
+} elseif (isset($paymentSource['paypal']) && $idMetodoPago !== 2) {
     $idMetodoPago = 1; // PayPal
 }
 $nombreMetodoPago = match ($idMetodoPago) {

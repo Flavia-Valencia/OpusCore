@@ -22,6 +22,11 @@ require_once 'includes/paypal-config.php';
 
 $body = json_decode(file_get_contents('php://input'), true);
 $orderId = trim($body['orderID'] ?? '');
+$metodoPago = strtolower(trim($body['metodoPago'] ?? 'paypal'));
+$idMetodoPago = match ($metodoPago) {
+    'tarjeta', 'card', 'credit' => 2,
+    default => 1,
+};
 
 if (!$orderId) {
     http_response_code(400);
@@ -77,9 +82,7 @@ $captureId = $result['purchase_units'][0]['payments']['captures'][0]['id'] ?? ''
 $paymentSource = $result['payment_source'] ?? [];
 if (isset($paymentSource['card'])) {
     $idMetodoPago = 2;
-} elseif (isset($paymentSource['paypal'])) {
-    $idMetodoPago = 1;
-} else {
+} elseif (isset($paymentSource['paypal']) && $idMetodoPago !== 2) {
     $idMetodoPago = 1;
 }
 $nombreMetodoPago = match ($idMetodoPago) {
