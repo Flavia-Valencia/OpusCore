@@ -30,7 +30,7 @@ function enviarComprobante($emailDestino, $nombreDestino, $datosPago) {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
         $mail->Debugoutput = 'error_log';
-        $mail->SMTPDebug = 0;  // CAMBIADO: 0 en producción
+        $mail->SMTPDebug = 0; 
         
         // Remitente y destinatario
         $mail->setFrom(CORREO_REMITENTE, 'Academia Futuro Digital');
@@ -49,6 +49,9 @@ function enviarComprobante($emailDestino, $nombreDestino, $datosPago) {
         $metodoPago = 'PayPal';
         $estado = $datosPago['estado'] ?? 'Completado';
         $transaccion = $datosPago['captureId'];
+        date_default_timezone_set('America/El_Salvador');
+        $fecha = date("d/m/Y");
+        $hora  = date("h:i A");
         $fecha = date("d/m/Y");
         $hora = date("h:i A");
         $total = number_format($datosPago['total'], 2);
@@ -60,8 +63,7 @@ function enviarComprobante($emailDestino, $nombreDestino, $datosPago) {
         include $plantillaPath;
         $htmlBody = ob_get_clean();
         
-        // GENERAR PDF
-        /*
+       
         try {
             $options = new Options();
             $options->set('isHtml5ParserEnabled', true);
@@ -80,7 +82,7 @@ function enviarComprobante($emailDestino, $nombreDestino, $datosPago) {
         } catch (Exception $e) {
             error_log("Error generando PDF (pero continuamos): " . $e->getMessage());
         }
-        */
+
         // CONFIGURAR CORREO CON HTML
         $mail->isHTML(true);
         $mail->Subject = 'Comprobante de pago - Academia Futuro Digital';

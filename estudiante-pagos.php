@@ -31,48 +31,25 @@ if (!$estudiante) {
 $idEstudiante = (int) $estudiante['id'];
 $pagosRealizados = [];
 
-// Para backend: esta vista debe traer solo los pagos reales del estudiante logueado.
-// La relación final debería venir del pago/factura que genere PayPal al confirmar la cuota.
-$tablaPagosExiste = $conexion->query("SHOW TABLES LIKE 'pagos'");
-$existePagos = $tablaPagosExiste && $tablaPagosExiste->num_rows > 0;
-
-if ($existePagos) {
-    $stmt = $conexion->prepare("
-        SELECT p.id AS pago_id, p.idTransaccionPasarela, p.estado AS estado_pago, p.fechaPago,
-               p.monto, mp.nombre AS metodo_pago, c.nombre AS curso, pi.nombre AS periodo
-        FROM inscripciones i
-        INNER JOIN cursos c ON i.idCurso = c.id
-        INNER JOIN PeriodoInscripcion pi ON i.idPeriodo = pi.id
-        INNER JOIN pagos p ON i.idFactura = p.id
-        LEFT JOIN MetodosPago mp ON p.idMetodoPago = mp.id
-        WHERE i.idEstudiante = ? AND p.estado IN ('Completado', 'Pagado')
-        ORDER BY p.fechaPago DESC
-    ");
-
-    if ($stmt) {
-        $stmt->bind_param("i", $idEstudiante);
-        $stmt->execute();
-        $resultado = $stmt->get_result();
-        $pagosRealizados = $resultado->fetch_all(MYSQLI_ASSOC);
-    }
-}
-
-// Dato quemado solo para probar la tabla y el botón PDF mientras no hay pagos reales.
-// Cuando backend ya guarde pagos del estudiante, borrar completo este if.
-if (empty($pagosRealizados)) {
-    $pagosRealizados[] = [
-        'pago_id' => 1,
-        'idTransaccionPasarela' => 'PAY-DEMO-2026-0001',
-        'estado_pago' => 'Completado',
-        'fechaPago' => date('Y-m-d H:i:s'),
-        'monto' => 20.00,
-        'metodo_pago' => 'PayPal',
-        'curso' => 'Diseño de Páginas Web',
-        'periodo' => 'Periodo I - 2026'
-    ];
-}
+$stmt = $conexion->prepare("
+    SELECT 
+        p.id AS pago_id,
+        p.idTransaccionPasarela,
+        p.estado AS estado_pago,
+        p.fechaPago,
+        p.monto,
+        mp.nombre AS metodo_pago
+    FROM pagos p
+    INNER JOIN MetodosPago mp ON p.idMetodoPago = mp.id
+    WHERE p.idEstudiante = ? AND p.estado = 'Completado'
+    ORDER BY p.fechaPago DESC
+");
+$stmt->bind_param('i', $idEstudiante);
+$stmt->execute();
+$pagosRealizados = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRealizados));
+
 ?>
 
 <!DOCTYPE html>
@@ -226,8 +203,8 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                                     ?>
                                     <tr>
                                         <td data-label="Código"><?= htmlspecialchars($codigo) ?></td>
-                                        <td data-label="Curso"><?= htmlspecialchars($pago['curso']) ?></td>
-                                        <td data-label="Periodo"><?= htmlspecialchars($pago['periodo']) ?></td>
+                                        <td data-label="Curso">"Espera Factura Electronica"</td> <!-- Esto se modificará cuando se implemente la facturación electronica-->
+                                        <td data-label="Periodo">Espera Factura Electronica</td> <!-- Esto se modificará cuando se implemente la facturación electronica-->
                                         <td data-label="Monto">$<?= number_format((float) $pago['monto'], 2) ?></td>
                                         <td data-label="Método"><?= htmlspecialchars($pago['metodo_pago'] ?: 'PayPal') ?></td>
                                         <td data-label="Fecha"><?= htmlspecialchars($fechaPago) ?></td>

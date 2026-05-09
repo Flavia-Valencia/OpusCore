@@ -51,7 +51,7 @@ curl_close($ch);
 $capture = json_decode($response, true);
 $estadoPayPal = $capture['status'] ?? '';
 
-// Verificar que la respuesta de PayPal fue exitosa (HTTP 201)
+// Verificar que la respuesta de PayPal fue exitosa
 if ($httpCode !== 201) {
     http_response_code(402);
     echo json_encode(['error' => 'Error al comunicarse con PayPal. Código: ' . $httpCode]);
@@ -68,6 +68,13 @@ $yaPayoMatricula = $pending['yaPayoMatricula'] ?? false; // ← nuevo
 
 // Datos que devuelve PayPal tras capturar
 $captureId   = $capture['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
+// Detectar método de pago desde la respuesta de PayPal
+$paymentSource = $capture['payment_source'] ?? [];
+if (isset($paymentSource['card'])) {
+    $idMetodoPago = 2; // Tarjeta de Crédito/Débito
+} else {
+    $idMetodoPago = 1; // PayPal
+}
 $payerEmail  = $capture['payer']['email_address'] ?? '';
 $payerNombre = trim(
     ($capture['payer']['name']['given_name'] ?? '') . ' ' .
@@ -75,7 +82,7 @@ $payerNombre = trim(
 );
 
 // Solo cobrar matrícula si no la ha pagado
-$costoMatricula    = $yaPayoMatricula ? 0 : 25.00;
+$totalConMatricula = (float)$pending['total'];
 // Obtener correo y nombre del estudiante desde la BD
 $stmtEstudiante = $conexion->prepare("
     SELECT u.correo, u.nombre, u.apellido 
@@ -90,7 +97,7 @@ $stmtEstudiante->close();
 
 $correoEstudiante = $datosEstudiante['correo'] ?? $payerEmail;
 $nombreEstudiante = trim(($datosEstudiante['nombre'] ?? '') . ' ' . ($datosEstudiante['apellido'] ?? ''));
-$totalConMatricula = (float)$totalCursos + $costoMatricula;
+$costoMatricula    = $yaPayoMatricula ? 0 : 25.00;
 
 $periodoNombre = "";
 $stmtPeriodo = $conexion->prepare("SELECT nombre FROM PeriodoInscripcion WHERE id = ?");
@@ -151,30 +158,29 @@ try {
             monto, 
             idTransaccionPasarela, 
             estado
-        ) VALUES (?, 1, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?)
     ");
     
-    $stmtPago->bind_param('idss', $idEstudiante, $totalConMatricula, $captureId, $estadoBD);
+    $stmtPago->bind_param('iidss', $idEstudiante, $idMetodoPago, $totalConMatricula, $captureId, $estadoBD);
     $stmtPago->execute();
     $idPago = $conexion->insert_id;
     
     // Solo si el pago fue COMPLETADO, se registran inscripciones, matrícula y se descuentan cupos
     if ($pagoExitoso) {
-        // Registrar inscripciones
         $stmtIns = $conexion->prepare("
-            INSERT INTO inscripciones (idEstudiante, idCurso, idPeriodo, estado_academico)
-            VALUES (?, ?, ?, 'Activo')
+            INSERT INTO inscripciones (idEstudiante, idCurso, idPeriodo, idFactura, estado_academico)
+            VALUES (?, ?, ?, ?, 'Activo')
         ");
         
         foreach ($cursoIds as $idCurso) {
-            $stmtIns->bind_param('iii', $idEstudiante, $idCurso, $idPeriodo);
+            $stmtIns->bind_param('iiii', $idEstudiante, $idCurso, $idPeriodo, $idPago);
             $stmtIns->execute();
             
             // Descontar cupo
             $conexion->query("UPDATE cursos SET cupos = cupos - 1 WHERE id = $idCurso AND cupos > 0");
         }
         
-        // ← Solo registrar matrícula si no la había pagado
+        // Solo registrar matrícula si no la había pagado
         if (!$yaPayoMatricula) {
             $stmtMatricula = $conexion->prepare("
                 INSERT INTO matricula (idEstudiante, idPeriodo, monto, estado)

@@ -15,7 +15,12 @@
 <div class="comprobante">
 
     <div class="header">
-        <img src="../img/logo.svg" alt="Logo Academia Futuro Digital" class="comprobante-logo">
+        <?php
+        $logoPath = __DIR__ . '/../img/logo.svg';
+        $logoBase64 = base64_encode(file_get_contents($logoPath)); // Karla: Te cambié aquí para lo del logo, ahí lo arreglas jeje
+        $logoSrc = 'data:image/svg+xml;base64,' . $logoBase64;
+?>
+        <img src="<?= $logoSrc ?>" alt="Logo Academia Futuro Digital" class="comprobante-logo">
         <div class="fecha">
             <strong>Fecha:</strong> <?= $fecha ?><br>
             <strong>Hora:</strong> <?= $hora ?>
