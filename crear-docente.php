@@ -13,6 +13,25 @@ $telefono = $_POST['telefono'];
 $direccion = $_POST['direccion'];
 $estado = 1;  #envía el estado correctamente a la bd, cuando se modifique la bd, lo cambio
 
+header('Content-Type: application/json');
+
+# Verifica que el año que ingresa sea validado con el año actual (mayor de 18 y mayor de 1950)
+$fechaNac = new DateTime($fecha_nacimiento);
+$hoy      = new DateTime();
+$minima   = new DateTime('1950-01-01');
+$edad     = $hoy->diff($fechaNac)->y;
+if ($fechaNac < $minima || $edad < 18) {
+    echo json_encode(['error' => true, 'mensaje' => 'Fecha de nacimiento inválida']);
+    exit();
+}
+
+# valida correos duplicados
+$check = "SELECT correo FROM usuarios WHERE correo = '$correo'";
+$resultado = mysqli_query($conexion, $check);
+if (mysqli_num_rows($resultado) > 0) {
+    echo json_encode(['error' => true, 'mensaje' => 'Ya existe un usuario con ese correo electrónico']);
+    exit();
+}
 
 # Inserta usuario
 $sql_usuario = "INSERT INTO usuarios
@@ -30,6 +49,6 @@ VALUES
 ('$usuario_id','$especialidad','$fecha_nacimiento','$genero','$salario','$telefono','$direccion')";
 
 mysqli_query($conexion, $sql_docente);
-header("Location: admin-docentes.php");
+echo json_encode(['success' => true]);
 exit();
 ?>
