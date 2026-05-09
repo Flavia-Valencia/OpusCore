@@ -20,6 +20,9 @@ Diseñar un sistema que solucione las dificultades actuales en el ingreso de not
 - CSS -> Diseño visual
 - MySQL -> Base de Datos
 - XAMMP -> Entorno de desarrollo local
+- DomPDF -> Generación de archivos PDF
+- PHPMailer -> Envío de correos electrónicos
+- PayPal Sandbox (Developer Dashboard) -> Simulación de pagos en línea
 
 
 ## Instalación y Ejecución
