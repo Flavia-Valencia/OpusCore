@@ -1809,6 +1809,7 @@ function actualizarBarraInscripcion() {
     if (totalCursos > 0) {
         // Mostrar barra con animación
         barra.classList.add('visible');
+        document.body.classList.add('inscripcion-barra-visible');
         contador.textContent = `${totalCursos}/5`;
         if (contadorTab) contadorTab.textContent = `${totalCursos}/5 cursos`;
         fetch('verificar-matricula.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
@@ -1840,6 +1841,7 @@ function actualizarBarraInscripcion() {
     } else {
         // Ocultar barra si no hay cursos seleccionados
         barra.classList.remove('visible');
+        document.body.classList.remove('inscripcion-barra-visible');
         // Cierra la gaveta móvil al limpiar la selección.
         barra.classList.remove('abierta');
         if (botonTab) botonTab.setAttribute('aria-expanded', 'false');

@@ -204,10 +204,6 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
                         <input type="date" name="fecha_fin_ciclo" id="periodo-fecha-fin-ciclo" required>
                     </div>
 
-                    <div class="modal-campo full-width">
-                        <small>FRONTEND: estas fechas de ciclo quedan listas para cuando BD agregue sus columnas.</small>
-                    </div>
-
                 </div>
 
                 <div class="modal-footer">
