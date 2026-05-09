@@ -9,6 +9,7 @@ $fechaInicio  = $_POST['fechaInicio'];
 $fechaFin     = $_POST['fechaFin'];
 $idDocente    = intval($_POST['idDocente']);
 $idPeriodo = intval($_POST['idPeriodo']);
+$idCategoria = intval($_POST['idCategoria']);
 $estado       = 1;
 
 // Validación fechas incorrectas
@@ -35,8 +36,8 @@ if ($row_limite['total'] >= 4) {
 
 
 // Insertar curso
-$sql_curso = "INSERT INTO cursos (nombre, descripcion, costoMensual, cupos, fechaInicio, fechaFin, estado, idDocente, idPeriodo)
-              VALUES ('$nombre', '$descripcion', '$costoMensual', '$cupos', '$fechaInicio', '$fechaFin', '$estado', '$idDocente', '$idPeriodo')";
+$sql_curso = "INSERT INTO cursos (nombre, descripcion, costoMensual, cupos, fechaInicio, fechaFin, estado, idDocente, idCategoria, idPeriodo)
+              VALUES ('$nombre', '$descripcion', '$costoMensual', '$cupos', '$fechaInicio', '$fechaFin', '$estado', '$idDocente','$idCategoria', '$idPeriodo')";
 mysqli_query($conexion, $sql_curso);
 
 // Obtener el ID del curso recién creado

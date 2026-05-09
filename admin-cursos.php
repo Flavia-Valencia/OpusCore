@@ -24,6 +24,13 @@ $docentes = [];
 while($doc = mysqli_fetch_assoc($res_doc)) {
     $docentes[] = $doc;
 }
+// Carga todas las categorías disponibles -->
+$query_cat = "SELECT id, nombre FROM categorias ORDER BY nombre ASC";
+$res_cat = mysqli_query($conexion, $query_cat);
+$categorias = [];
+while($cat = mysqli_fetch_assoc($res_cat)) {
+    $categorias[] = $cat;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -164,7 +171,6 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                     <label>Periodo</label>
                     <select name="idPeriodo" id="idPeriodo" required>
                         <option value="">Seleccione un periodo</option>
-                    
                     </select>
                 </div>
 
@@ -172,12 +178,22 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                     <label>Descripción</label>
                     <input type="text" name="descripcion" placeholder="Descripción del curso">
                 </div>
-
+                <div class="modal-campo full-width">
+                    <label>Categoría</label>
+                    <select name="idCategoria" id="nuevo-categoria-curso" required>
+                        <option value="">Seleccione una categoría</option>
+                        <?php foreach($categorias as $cat): ?>
+                            <option value="<?php echo $cat['id']; ?>">
+                                <?php echo htmlspecialchars($cat['nombre']); ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 <!-- Select para elegir prerrequisitos Carga cursos activos desde la BD y envía varios IDs al backend (luego lo arreglan)) --> 
 
                 <div class="modal-campo" style="grid-column: span 2;">
                     <label>Prerrequisitos (opcional)</label>
-                    <select name="idPrerrequisitos"  id="nuevo-prerrequisitos">
+                    <select name="idPrerrequisitos"  id="nuevo-prerrequisitos" disabled>
                         <option value="">Ninguno</option>
                         <?php
                         $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
@@ -278,10 +294,21 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                     <label>Descripción</label>
                     <input type="text" name="descripcion" id="edit-descripcion-curso" placeholder="Descripción del curso">
                 </div>
+                <div class="modal-campo full-width">
+                    <label>Categoría</label>
+                    <select name="idCategoria" id="edit-categoria-curso" required>
+                        <option value="">Seleccione una categoría</option>
+                        <?php foreach($categorias as $cat): ?>
+                            <option value="<?php echo $cat['id']; ?>">
+                                <?php echo htmlspecialchars($cat['nombre']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
                 <div class="modal-campo" style="grid-column: span 2;">
                     <label>Prerrequisitos (opcional)</label>
-                    <select name="idPrerrequisitos" id="edit-prerrequisitos">
+                    <select name="idPrerrequisitos" id="edit-prerrequisitos" disabled>
                         <option value="">Ninguno</option>
                         <?php
                         $query = "SELECT id, nombre FROM cursos WHERE estado = 1";

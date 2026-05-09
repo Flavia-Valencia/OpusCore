@@ -159,7 +159,9 @@ if (modalNuevo) {
 // VALIDACIÓN DE CAMPOS EN MODAL EDITAR ESTUDIANTE
 const formEditarEstudiante = document.querySelector('#modalEditar form');
 if (formEditarEstudiante) {
-    formEditarEstudiante.addEventListener('submit', function (e) {
+    formEditarEstudiante.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
         const nombre = document.getElementById('edit-nombre').value.trim();
         const apellido = document.getElementById('edit-apellido').value.trim();
         const telefono = document.getElementById('edit-telefono').value.trim();
@@ -174,6 +176,49 @@ if (formEditarEstudiante) {
             return;
 
         }
+        const hoy      = new Date();
+        const nacimiento = new Date(fechaNac);
+        const minima   = new Date('1940-01-01');
+
+        const anio = nacimiento.getFullYear();
+        if (anio < 1000 || anio > 9999) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un año válido (4 dígitos)');
+            return;
+        }
+
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mDiff = hoy.getMonth() - nacimiento.getMonth();
+        if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--; 
+        }
+
+        if (nacimiento < minima) {
+            e.preventDefault();
+            mostrarToastPremium('La fecha de nacimiento no puede ser anterior a 1940');
+            return;
+        }
+
+        if (edad < 12) {
+            e.preventDefault();
+            mostrarToastPremium('El estudiante debe tener al menos 12 años');
+            return;
+        }
+
+        const formData = new FormData(this);
+        try {
+            const res  = await fetch('editar-estudiante.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModal();
+                mostrarToastPremium('Estudiante editado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
+        }
     });
 }
 
@@ -181,7 +226,9 @@ if (formEditarEstudiante) {
 
 const formNuevoEstudiante = document.querySelector('#modalNuevo form');
 if (formNuevoEstudiante) {
-    formNuevoEstudiante.addEventListener('submit', function (e) {
+    formNuevoEstudiante.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
         const nombre = formNuevoEstudiante.querySelector('[name="nombre"]').value.trim();
         const apellido = formNuevoEstudiante.querySelector('[name="apellido"]').value.trim();
         const telefono = formNuevoEstudiante.querySelector('[name="telefono"]').value.trim();
@@ -195,7 +242,49 @@ if (formNuevoEstudiante) {
             e.preventDefault();
             mostrarToastPremium('Complete todos los campos');
             return;
+        }
+        const hoy      = new Date();
+        const nacimiento = new Date(fechaNac);
+        const minima   = new Date('1940-01-01');
 
+        const anio = nacimiento.getFullYear();
+        if (anio < 1000 || anio > 9999) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un año válido (4 dígitos)');
+            return;
+        }
+
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mDiff = hoy.getMonth() - nacimiento.getMonth();
+        if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--; 
+        }
+
+        if (nacimiento < minima) {
+            e.preventDefault();
+            mostrarToastPremium('La fecha de nacimiento no puede ser anterior a 1940');
+            return;
+        }
+
+        if (edad < 12) {
+            e.preventDefault();
+            mostrarToastPremium('El estudiante debe tener al menos 12 años');
+            return;
+        }
+
+        const formData = new FormData(this);
+        try {
+            const res  = await fetch('crear-estudiante.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalNuevo();
+                mostrarToastPremium('Estudiante creado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
         }
     });
 }
@@ -203,7 +292,8 @@ if (formNuevoEstudiante) {
 // VALIDACIÓN DE CAMPOS EN MODAL EDITAR DOCENTE
 const formEditarDocente = document.querySelector('#modalEditarDocente form');
 if (formEditarDocente) {
-    formEditarDocente.addEventListener('submit', function (e) {
+    formEditarDocente.addEventListener('submit', async function (e) {
+        e.preventDefault();
 
         const nombre = document.getElementById('editd-nombre').value.trim();
         const apellido = document.getElementById('editd-apellido').value.trim();
@@ -220,13 +310,58 @@ if (formEditarDocente) {
             mostrarToastPremium('Complete todos los campos');
             return;
         }
+
+        const hoy      = new Date();
+        const nacimiento = new Date(fechaNac);
+        const minima   = new Date('1950-01-01');
+
+        const anio = nacimiento.getFullYear();
+        if (anio < 1000 || anio > 9999) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un año válido (4 dígitos)');
+            return;
+        }
+
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mDiff = hoy.getMonth() - nacimiento.getMonth();
+        if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--; 
+        }
+
+        if (nacimiento < minima) {
+            e.preventDefault();
+            mostrarToastPremium('La fecha de nacimiento no puede ser anterior a 1950');
+            return;
+        }
+
+        if (edad < 18) {
+            e.preventDefault();
+            mostrarToastPremium('El docente debe tener al menos 18 años');
+            return;
+        }
+
+        const formData = new FormData(this);
+        try {
+            const res  = await fetch('editar-docente.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalDocente();
+                mostrarToastPremium('Docente editado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
+        }
     });
 }
 
 // VALIDACIÓN DE CAMPOS EN MODAL NUEVO DOCENTE
 const formNuevoDocente = document.querySelector('#modalNuevoDocente form');
 if (formNuevoDocente) {
-    formNuevoDocente.addEventListener('submit', function (e) {
+    formNuevoDocente.addEventListener('submit', async function (e) {
+        e.preventDefault();
 
         const nombre = formNuevoDocente.querySelector('[name="nombre"]').value.trim();
         const apellido = formNuevoDocente.querySelector('[name="apellido"]').value.trim();
@@ -242,6 +377,50 @@ if (formNuevoDocente) {
             e.preventDefault();
             mostrarToastPremium('Complete todos los campos');
             return;
+        }
+
+        const hoy      = new Date();
+        const nacimiento = new Date(fechaNac);
+        const minima   = new Date('1950-01-01');
+
+        const anio = nacimiento.getFullYear();
+        if (anio < 1000 || anio > 9999) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un año válido (4 dígitos)');
+            return;
+        }
+
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mDiff = hoy.getMonth() - nacimiento.getMonth();
+        if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--; 
+        }
+
+        if (nacimiento < minima) {
+            e.preventDefault();
+            mostrarToastPremium('La fecha de nacimiento no puede ser anterior a 1950');
+            return;
+        }
+
+        if (edad < 18) {
+            e.preventDefault();
+            mostrarToastPremium('El docente debe tener al menos 18 años');
+            return;
+        }
+
+        const formData = new FormData(this);
+        try {
+            const res  = await fetch('crear-docente.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalNuevoDocente();
+                mostrarToastPremium('Docente creado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
         }
     });
 }
@@ -297,6 +476,7 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
         // Rellenar datos
         document.getElementById('edit-id-curso').value = this.dataset.id;
         document.getElementById('edit-nombre-curso').value = this.dataset.nombre;
+
         const selectDocente = document.getElementById('edit-docente-curso');
         selectDocente.value = this.dataset.docente;
         Array.from(selectDocente.options).forEach(option => {
@@ -306,6 +486,7 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
                 option.disabled = true; // otros llenos: bloqueados
             }
         });
+        document.getElementById('edit-categoria-curso').value = this.dataset.categoria;
         document.getElementById('edit-descripcion-curso').value = this.dataset.descripcion;
         document.getElementById('edit-fecha-inicio').value = this.dataset.fechainicio;
         document.getElementById('edit-fecha-fin').value = this.dataset.fechafin;
@@ -316,50 +497,84 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
             document.getElementById('edit-cupos').value = this.dataset.cupos;
         }
 
-        // Obtiene los prerequisitos del curso actual
         const prerequisitos = this.dataset.prerrequisitos
             ? this.dataset.prerrequisitos.split(",")
             : [];
 
-        const select = document.getElementById('edit-prerrequisitos');
-
-        // Limpia opción previa
-        Array.from(select.options).forEach(option => {
-            option.selected = false;
-        });
-
-        // Selecciona prerequisito correcto
-        prerequisitos.forEach(id => {
-            const option = select.querySelector(`option[value="${id}"]`);
-            if (option) option.selected = true;
-        });
-
-        // Si no hay prerrequisitos, seleccionar "Ninguno"
-        const haySeleccionado = Array.from(select.options).some(o => o.selected);
-        if (!haySeleccionado) {
-            const ninguno = select.querySelector('option[value=""]');
-            if (ninguno) ninguno.selected = true;
-        }
-
-        // No perrmite seleccionar el curso actual como prerrequisito 
-        const idActual = this.dataset.id;
-        Array.from(select.options).forEach(option => {
-            if (option.value === idActual) {
-                option.disabled = true;
-            } else {
-                option.disabled = false;
-            }
-        });
-
-        if (document.getElementById('edit-estado-curso')) {
+            if (document.getElementById('edit-estado-curso')) {
             const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
             document.getElementById('edit-estado-curso').value = estadoTexto;
         }
+
+        const selectCategoriaEditar = document.getElementById('edit-categoria-curso');
+        selectCategoriaEditar.dataset.preSeleccionado = prerequisitos[0] || '';
+        selectCategoriaEditar.dispatchEvent(new Event('change'));
         cargarPeriodos('edit-idPeriodo', this.dataset.periodo);
         modal.classList.add('activo');
         document.body.style.overflow = 'hidden';
     });
 });
+
+const selectCategoriaNuevo = document.getElementById('nuevo-categoria-curso');
+const selectPreNuevo       = document.getElementById('nuevo-prerrequisitos');
+
+if (selectCategoriaNuevo && selectPreNuevo) {
+    selectCategoriaNuevo.addEventListener('change', async function () {
+        const idCategoria = this.value;
+
+        if (!idCategoria) {
+            selectPreNuevo.innerHTML = '<option value="">Ninguno</option>';
+            selectPreNuevo.disabled = true;
+            return;
+        }
+
+        const res    = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}`);
+        const cursos = await res.json();
+
+        selectPreNuevo.innerHTML = '<option value="">Ninguno</option>';
+        cursos.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = c.nombre;
+            selectPreNuevo.appendChild(opt);
+        });
+
+        selectPreNuevo.disabled = cursos.length === 0;
+    });
+}
+
+const selectCategoriaEditar = document.getElementById('edit-categoria-curso');
+const selectPreEditar        = document.getElementById('edit-prerrequisitos');
+
+if (selectCategoriaEditar && selectPreEditar) {
+    selectCategoriaEditar.addEventListener('change', async function () {
+        const idCategoria   = this.value;
+        const idCursoActual = document.getElementById('edit-id-curso').value;
+
+        if (!idCategoria) {
+            selectPreEditar.innerHTML = '<option value="">Ninguno</option>';
+            selectPreEditar.disabled = true;
+            return;
+        }
+
+        const res    = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}&idCursoActual=${idCursoActual}`);
+        const cursos = await res.json();
+
+        selectPreEditar.innerHTML = '<option value="">Ninguno</option>';
+        cursos.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = c.nombre;
+            selectPreEditar.appendChild(opt);
+        });
+
+        selectPreEditar.disabled = cursos.length === 0;
+
+        // Selecciona el prerrequisito guardado si existe en la lista filtrada
+        const preGuardado = selectCategoriaEditar.dataset.preSeleccionado;
+        if (preGuardado) selectPreEditar.value = preGuardado;
+    });
+}
 
 
 // --- NUEVO UI MODAL (Inyectado en body) esto sirve para generar modal de advertencia dinámicamente y reutilizar el mismo modal en diferentes acciones sin duplicar código en el HTML
