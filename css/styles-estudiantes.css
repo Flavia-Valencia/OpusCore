@@ -1137,6 +1137,10 @@ body {
     pointer-events: auto;
 }
 
+body.inscripcion-barra-visible .content {
+    padding-bottom: 210px;
+}
+
 .barra-inscripcion-tab {
     display: none;
 }
@@ -1288,6 +1292,10 @@ body {
 }
 
 @media (max-width: 768px) {
+    body.inscripcion-barra-visible .content {
+        padding-bottom: 32px;
+    }
+
     /* En móvil la barra se convierte en una gaveta lateral para no cubrir las tarjetas. */
     .barra-inscripcion {
         top: 50%;
