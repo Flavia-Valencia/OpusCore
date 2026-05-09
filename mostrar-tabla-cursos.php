@@ -11,6 +11,8 @@ $sql = "SELECT c.id,
                c.estado,
                c.idDocente,
                c.idPeriodo,
+               c.idCategoria,
+               ca.nombre AS categoria_nombre,
                pi.nombre AS periodo_nombre,
                CONCAT(u.nombre, ' ', u.apellido) AS docente_full,
                GROUP_CONCAT(p.idCursoPrevio) AS prerrequisitos
@@ -19,6 +21,7 @@ $sql = "SELECT c.id,
         LEFT JOIN docentes d ON c.idDocente = d.id
         LEFT JOIN usuarios u ON d.usuario_id = u.id
         LEFT JOIN PeriodoInscripcion pi ON c.idPeriodo = pi.id
+        LEFT JOIN categorias ca ON c.idCategoria = ca.id
         GROUP BY c.id
         ORDER BY c.estado DESC, c.nombre ASC"; // Ordena alfebéticamente las tablas
 
@@ -80,6 +83,7 @@ if (mysqli_num_rows($resultado) > 0 ){
                             data-docente="<?php echo $fila['idDocente']; ?>"
                             data-periodo="<?php echo $fila['idPeriodo']; ?>"
                             data-descripcion="<?php echo htmlspecialchars($fila['descripcion']); ?>"
+                            data-categoria="<?php echo $fila['idCategoria']; ?>"
                             data-fechainicio="<?php echo $fila['fechaInicio']; ?>"
                             data-fechafin="<?php echo $fila['fechaFin']; ?>"
                             data-costo="<?php echo $fila['costoMensual']; ?>"

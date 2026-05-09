@@ -121,6 +121,7 @@ $pagos = $result->fetch_all(MYSQLI_ASSOC);
                             <th>Método</th>
                             <th>Fecha</th>
                             <th>Estado</th>
+                            <th>Comprobante</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -140,6 +141,19 @@ $pagos = $result->fetch_all(MYSQLI_ASSOC);
                                     <span class="estado-pago-admin <?php echo $estadoClase; ?>">
                                         <?php echo htmlspecialchars($pago['estado']); ?>
                                     </span>
+                                </td>
+                                <td data-label="Comprobante" class="acciones-cell">
+                                    <div class="acciones-texto">
+                                        <!-- FRONTEND: boton visual pendiente; backend definira que comprobante debe abrir/descargar. -->
+                                        <a
+                                            class="link-accion horarios"
+                                            href="#"
+                                            aria-disabled="true"
+                                            onclick="return false;"
+                                        >
+                                            <i class="fas fa-file-pdf"></i> PDF
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

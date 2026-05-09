@@ -121,6 +121,10 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
             </div>
 
             <nav class="sidebar-nav">
+                <a href="estudiante-cursos.php" class="nav-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Todos los cursos</span>
+                </a>
                 <a href="vista_mis_cursos.php" class="nav-item">
                     <i class="fas fa-book-open"></i>
                     <span>Mis cursos</span>
@@ -134,7 +138,7 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
                     <span>Calificaciones</span>
                 </a>
                 <div class="nav-dropdown open">
-                    <button type="button" class="nav-item nav-dropdown-toggle active" onclick="togglePagosOnline()">
+                    <button type="button" class="nav-item nav-dropdown-toggle active" onclick="togglePagosOnline()" aria-expanded="true" aria-controls="pagosOnlineMenu">
                         <i class="fas fa-credit-card"></i>
                         <span>Pagos en línea</span>
                         <i class="fas fa-chevron-down nav-arrow"></i>
@@ -247,7 +251,7 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
                                                 onclick="pagarTramitePendiente(this)"
                                                 data-id="<?= $tramite['id'] ?>"
                                                 data-curso="<?= htmlspecialchars($tramite['curso']) ?>"
-                                                data-monto="<?= number_format((float)$tramite['monto'], 2, '.', '') ?>">
+                                                data-monto="<?= number_format((float) $tramite['monto'], 2, '.', '') ?>">
                                                 Pagar cuota
                                             </button>
                                         </td>
@@ -278,6 +282,39 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
         <div id="paypal-button-container"></div>
     </div>
 </div>
+
+    <div id="modalPagoCuota" class="modal-overlay">
+        <div class="modal-contenido modal-pago">
+            <button class="modal-cerrar" onclick="cerrarModalPagoCuota()">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h2 class="modal-titulo">
+                <i class="fas fa-credit-card"></i> Pagar cuota
+            </h2>
+
+            <div class="pago-resumen">
+                <h3>Resumen de Pago</h3>
+                <div id="cuota-pago-lista" class="pago-lista-cursos"></div>
+                <div class="pago-divider"></div>
+                <div class="pago-total-line">
+                    <strong>Total a pagar:</strong>
+                    <span id="cuota-pago-total">$0.00</span>
+                </div>
+            </div>
+
+            <div class="pago-metodo">
+                <h3>Método de Pago</h3>
+                <div class="pago-paypal-container">
+                    <div id="paypal-cuota-button-container"></div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" onclick="cerrarModalPagoCuota()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>

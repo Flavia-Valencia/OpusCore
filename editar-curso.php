@@ -11,6 +11,7 @@ $cupos        = intval($_POST['cupos']);
 $idDocente    = intval($_POST['idDocente']);
 $idPeriodo = !empty($_POST['idPeriodo']) ? intval($_POST['idPeriodo']) : NULL;
 $idPeriodo_sql = ($idPeriodo !== NULL) ? "$idPeriodo" : "NULL"; // Si se seleccionó un período se guarda su ID, de lo contrario se guarda NULL para evitar error de FK
+$idCategoria  = intval($_POST['idCategoria']);
 $estado       = $_POST['estado'] == 'Activo' ? 1 : 0;
 
 // Validación fechas incorrectas
@@ -53,7 +54,8 @@ $sql = "UPDATE cursos SET
     cupos         = '$cupos',
     estado        = '$estado',
     idDocente     = '$idDocente',
-    idPeriodo = $idPeriodo_sql
+    idPeriodo = $idPeriodo_sql,
+    idCategoria   = '$idCategoria'
 WHERE id = '$id'";
 mysqli_query($conexion, $sql);
 
