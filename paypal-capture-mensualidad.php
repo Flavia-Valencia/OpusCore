@@ -71,6 +71,12 @@ $idEstudiante = (int)$pending['idEstudiante'];
 $monto = (float)$pending['monto'];
 
 $captureId = $result['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
+$paymentSource = $result['payment_source'] ?? [];
+if (isset($paymentSource['card'])) {
+    $idMetodoPago = 2;
+} else {
+    $idMetodoPago = 1;
+}
 
 $conexion->begin_transaction();
 
@@ -84,12 +90,13 @@ try {
             monto,
             idTransaccionPasarela,
             estado
-        ) VALUES (?, 1, ?, ?, 'Completado')
+        ) VALUES (?, ?, ?, ?, 'Completado')
     ");
 
     $stmtPago->bind_param(
-        "ids",
+        "iids",
         $idEstudiante,
+        $idMetodoPago,
         $monto,
         $captureId
     );
@@ -118,6 +125,57 @@ try {
     ]);
     exit;
 }
+// Obtener datos del estudiante para el correo
+$stmtDatos = $conexion->prepare("
+    SELECT u.correo, u.nombre, u.apellido
+    FROM usuarios u
+    INNER JOIN estudiantes e ON e.usuario_id = u.id
+    WHERE e.id = ?
+");
+$stmtDatos->bind_param('i', $idEstudiante);
+$stmtDatos->execute();
+$datosEst = $stmtDatos->get_result()->fetch_assoc();
+$stmtDatos->close();
+
+// Obtener datos de la mensualidad para el comprobante
+$stmtMens = $conexion->prepare("
+    SELECT c.nombre AS curso_nombre, c.costoMensual,
+           pi.nombre AS periodo_nombre,
+           m.mesPagado,
+           GROUP_CONCAT(DISTINCT CONCAT(ch.dia, ' - ', h.etiqueta) SEPARATOR ', ') AS horario,
+           GROUP_CONCAT(DISTINCT a.aula SEPARATOR ', ') AS aula
+    FROM mensualidades m
+    INNER JOIN cursos c ON m.idCurso = c.id
+    INNER JOIN PeriodoInscripcion pi ON m.idPeriodo = pi.id
+    LEFT JOIN CursoHorario ch ON c.id = ch.idCurso
+    LEFT JOIN horarios h ON ch.idHorario = h.id
+    LEFT JOIN aulas a ON ch.idAula = a.id
+    WHERE m.id = ?
+    GROUP BY m.id
+");
+$stmtMens->bind_param('i', $mensualidadId);
+$stmtMens->execute();
+$datosMens = $stmtMens->get_result()->fetch_assoc();
+$stmtMens->close();
+
+// Enviar comprobante por correo
+require_once 'includes/enviar-comprobante.php';
+
+$datosCorreo = [
+    'total'          => $monto,
+    'captureId'      => $captureId,
+    'estado'         => 'Completado',
+    'periodo_nombre' => $datosMens['periodo_nombre'] ?? 'Periodo actual',
+    'cursos'         => [[
+        'nombre'  => ($datosMens['curso_nombre'] ?? 'Curso') . ' — ' . ($datosMens['mesPagado'] ?? ''),
+        'costo'   => $monto,
+        'horario' => $datosMens['horario'] ?? 'No asignado',
+        'aula'    => $datosMens['aula'] ?? 'N/A',
+    ]],
+];
+
+$nombreEst = trim(($datosEst['nombre'] ?? '') . ' ' . ($datosEst['apellido'] ?? ''));
+enviarComprobante($datosEst['correo'] ?? '', $nombreEst, $datosCorreo);
 
 unset($_SESSION['paypal_mensualidad']);
 
