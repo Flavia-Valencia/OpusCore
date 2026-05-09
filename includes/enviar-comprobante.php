@@ -46,7 +46,7 @@ function enviarComprobante($emailDestino, $nombreDestino, $datosPago) {
         // Preparar variables para la plantilla
         $estudiante = $nombreDestino;
         $correo = $emailDestino;
-        $metodoPago = 'PayPal';
+        $metodoPago = $datosPago['metodoPago'] ?? 'PayPal';
         $estado = $datosPago['estado'] ?? 'Completado';
         $transaccion = $datosPago['captureId'];
         date_default_timezone_set('America/El_Salvador');

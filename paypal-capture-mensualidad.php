@@ -22,6 +22,11 @@ require_once 'includes/paypal-config.php';
 
 $body = json_decode(file_get_contents('php://input'), true);
 $orderId = trim($body['orderID'] ?? '');
+$metodoPago = strtolower(trim($body['metodoPago'] ?? 'paypal'));
+$idMetodoPago = match ($metodoPago) {
+    'tarjeta', 'card', 'credit' => 2,
+    default => 1,
+};
 
 if (!$orderId) {
     http_response_code(400);
@@ -71,12 +76,19 @@ $idEstudiante = (int)$pending['idEstudiante'];
 $monto = (float)$pending['monto'];
 
 $captureId = $result['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
+
+// Yahir: se detecta la fuente real del pago para registrar correctamente
+// si la mensualidad fue pagada con PayPal o tarjeta.
 $paymentSource = $result['payment_source'] ?? [];
 if (isset($paymentSource['card'])) {
     $idMetodoPago = 2;
-} else {
+} elseif (isset($paymentSource['paypal']) && $idMetodoPago !== 2) {
     $idMetodoPago = 1;
 }
+$nombreMetodoPago = match ($idMetodoPago) {
+    2       => 'Tarjeta de Crédito/Débito',
+    default => 'PayPal',
+};
 
 $conexion->begin_transaction();
 
@@ -165,6 +177,7 @@ $datosCorreo = [
     'total'          => $monto,
     'captureId'      => $captureId,
     'estado'         => 'Completado',
+    'metodoPago'     => $nombreMetodoPago,
     'periodo_nombre' => $datosMens['periodo_nombre'] ?? 'Periodo actual',
     'cursos'         => [[
         'nombre'  => ($datosMens['curso_nombre'] ?? 'Curso') . ' — ' . ($datosMens['mesPagado'] ?? ''),

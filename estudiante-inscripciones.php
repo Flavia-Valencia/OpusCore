@@ -368,8 +368,7 @@ require_once 'obtener-cursos-disponibles.php';
             <h3>Método de Pago</h3>
             <div class="pago-paypal-container">
                 <!-- PayPal Buttons Placeholder -->
-                <div id="paypal-button-container">
-
+                <div id="paypal-button-container"></div>
             </div>
         </div>
 

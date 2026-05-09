@@ -89,10 +89,16 @@ if (!isset($estudiante)) {
     <div class="header">
         <?php
         $logoPath = __DIR__ . '/../img/logo.svg';
-        $logoBase64 = base64_encode(file_get_contents($logoPath)); // Karla: Te cambié aquí para lo del logo, ahí lo arreglas jeje
-        $logoSrc = 'data:image/svg+xml;base64,' . $logoBase64;
+        $logoSrc = '';
+
+        if (is_readable($logoPath)) {
+            $logoBase64 = base64_encode(file_get_contents($logoPath));
+            $logoSrc = 'data:image/svg+xml;base64,' . $logoBase64;
+        }
 ?>
-        <img src="<?= $logoSrc ?>" alt="Logo Academia Futuro Digital" class="comprobante-logo">
+        <?php if ($logoSrc): ?>
+            <img src="<?= $logoSrc ?>" alt="Logo Academia Futuro Digital" class="comprobante-logo">
+        <?php endif; ?>
         <div class="fecha">
             <strong>Fecha:</strong> <?= $fecha ?><br>
             <strong>Hora:</strong> <?= $hora ?>
@@ -152,7 +158,7 @@ if (!isset($estudiante)) {
     </div>
 
     <div class="footer">
-        Este comprobante fue generado automáticamente por OpusCore.
+        Este comprobante fue generado automáticamente por Academia Futuro Digital.
     </div>
 
 </div>
