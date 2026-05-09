@@ -1953,10 +1953,6 @@ function mostrarToast(mensaje, tipo) {
 }
 
 // ── PAYPAL ────────────────────────────────────────────────────────────────────
-function obtenerMetodoPagoSeleccionado() {
-    return document.querySelector('input[name="metodoPago"]:checked')?.value || 'paypal';
-}
-
 // Inicializa el botón de PayPal dentro del modal de pago.
 // Se llama desde abrirModalPago() una sola vez gracias al flag data-rendered.
 function inicializarPayPal() {
@@ -1968,11 +1964,10 @@ function inicializarPayPal() {
         // Llama al backend para crear la orden en PayPal
         createOrder: async function () {
             const ids = cursosSeleccionados.map(c => parseInt(c.id));
-            const metodoPago = obtenerMetodoPagoSeleccionado();
             const res = await fetch('paypal-create-order.php', {
                 method:  'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ cursos: ids, metodoPago }),
+                body:    JSON.stringify({ cursos: ids }),
             });
             const data = await res.json();
             if (data.error) {
@@ -1984,11 +1979,10 @@ function inicializarPayPal() {
 
         // El comprador aprobó el pago en el popup de PayPal
         onApprove: async function (data) {
-            const metodoPago = obtenerMetodoPagoSeleccionado();
             const res = await fetch('paypal-capture-order.php', {
                 method:  'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ orderID: data.orderID, metodoPago }),
+                body:    JSON.stringify({ orderID: data.orderID }),
             });
             const result = await res.json();
 
