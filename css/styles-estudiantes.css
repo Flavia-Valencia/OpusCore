@@ -1403,6 +1403,44 @@ body {
     padding-bottom: 8px;
 }
 
+.pago-opciones {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.pago-opcion {
+    cursor: pointer;
+}
+
+.pago-opcion input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pago-opcion span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    border: 1px solid #d7e3f3;
+    border-radius: 8px;
+    background: #fff;
+    color: #1d3355;
+    font-size: 14px;
+    font-weight: 700;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.pago-opcion input:checked + span {
+    border-color: #069dbf;
+    background: #e8f7fb;
+    color: #053170;
+}
+
 .pago-paypal-container {
     text-align: center;
 }

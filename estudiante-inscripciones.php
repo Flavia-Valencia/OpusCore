@@ -366,10 +366,19 @@ require_once 'obtener-cursos-disponibles.php';
 
         <div class="pago-metodo">
             <h3>Método de Pago</h3>
+            <div class="pago-opciones" role="radiogroup" aria-label="Método de pago">
+                <label class="pago-opcion">
+                    <input type="radio" name="metodoPago" value="paypal" checked>
+                    <span><i class="fab fa-paypal"></i> PayPal</span>
+                </label>
+                <label class="pago-opcion">
+                    <input type="radio" name="metodoPago" value="tarjeta">
+                    <span><i class="fas fa-credit-card"></i> Tarjeta</span>
+                </label>
+            </div>
             <div class="pago-paypal-container">
                 <!-- PayPal Buttons Placeholder -->
-                <div id="paypal-button-container">
-
+                <div id="paypal-button-container"></div>
             </div>
         </div>
 

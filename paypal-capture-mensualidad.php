@@ -71,12 +71,21 @@ $idEstudiante = (int)$pending['idEstudiante'];
 $monto = (float)$pending['monto'];
 
 $captureId = $result['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
+
+// Yahir: se detecta la fuente real del pago para registrar correctamente
+// si la mensualidad fue pagada con PayPal o tarjeta.
 $paymentSource = $result['payment_source'] ?? [];
 if (isset($paymentSource['card'])) {
     $idMetodoPago = 2;
+} elseif (isset($paymentSource['paypal'])) {
+    $idMetodoPago = 1;
 } else {
     $idMetodoPago = 1;
 }
+$nombreMetodoPago = match ($idMetodoPago) {
+    2       => 'Tarjeta de Crédito/Débito',
+    default => 'PayPal',
+};
 
 $conexion->begin_transaction();
 
@@ -165,6 +174,7 @@ $datosCorreo = [
     'total'          => $monto,
     'captureId'      => $captureId,
     'estado'         => 'Completado',
+    'metodoPago'     => $nombreMetodoPago,
     'periodo_nombre' => $datosMens['periodo_nombre'] ?? 'Periodo actual',
     'cursos'         => [[
         'nombre'  => ($datosMens['curso_nombre'] ?? 'Curso') . ' — ' . ($datosMens['mesPagado'] ?? ''),

@@ -19,6 +19,14 @@ require_once 'includes/paypal-config.php';
 $body    = json_decode(file_get_contents('php://input'), true);
 $orderId = trim($body['orderID'] ?? '');
 
+// Yahir: se recibe el método seleccionado para registrar PayPal o tarjeta
+// y mostrar el mismo dato en el comprobante.
+$metodoPago = strtolower(trim($body['metodoPago'] ?? 'paypal'));
+$idMetodoPago = match ($metodoPago) {
+    'tarjeta' => 2,
+    default   => 1,
+};
+
 if (!$orderId) {
     http_response_code(400);
     echo json_encode(['error' => 'Order ID no recibido']);
@@ -68,13 +76,18 @@ $yaPayoMatricula = $pending['yaPayoMatricula'] ?? false; // ← nuevo
 
 // Datos que devuelve PayPal tras capturar
 $captureId   = $capture['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
-// Detectar método de pago desde la respuesta de PayPal
+// Yahir: se prioriza la fuente real devuelta por PayPal para que pagos
+// y comprobantes no queden con métodos distintos.
 $paymentSource = $capture['payment_source'] ?? [];
 if (isset($paymentSource['card'])) {
     $idMetodoPago = 2; // Tarjeta de Crédito/Débito
-} else {
+} elseif (isset($paymentSource['paypal'])) {
     $idMetodoPago = 1; // PayPal
 }
+$nombreMetodoPago = match ($idMetodoPago) {
+    2       => 'Tarjeta de Crédito/Débito',
+    default => 'PayPal',
+};
 $payerEmail  = $capture['payer']['email_address'] ?? '';
 $payerNombre = trim(
     ($capture['payer']['name']['given_name'] ?? '') . ' ' .
@@ -199,6 +212,7 @@ try {
             'cantidadCursos' => count($cursoIds),
             'fecha' => date('Y-m-d H:i:s'),
             'estado' => 'Completado',
+            'metodoPago' => $nombreMetodoPago,
             'periodo_nombre' => $periodoNombre, 
             'cursos' => $cursosDetalle        
         ];
