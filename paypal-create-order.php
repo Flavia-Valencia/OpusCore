@@ -89,18 +89,29 @@ foreach ($cursoIds as $idCurso) {
     }
 }
 
-// Calcular total
-$total = number_format(array_sum(array_column($cursos, 'costoMensual')) + 25.00, 2, '.', '');
+// ← Verificar si ya pagó matrícula en este periodo
+$stmtMat = $conexion->prepare("
+    SELECT id FROM matricula 
+    WHERE idEstudiante = ? AND idPeriodo = ? AND estado = 'Pagado'
+");
+$stmtMat->bind_param('ii', $idEstudiante, $idPeriodo);
+$stmtMat->execute();
+$yaPayoMatricula = $stmtMat->get_result()->num_rows > 0;
+
+// Calcular total — solo agregar matrícula si no la ha pagado
+$totalCursos = array_sum(array_column($cursos, 'costoMensual'));
+$total = number_format($totalCursos + ($yaPayoMatricula ? 0 : 25.00), 2, '.', '');
 
 // Guardar en sesión para usarlo al capturar sin recalcular
 $_SESSION['paypal_pending'] = [
-    'cursoIds'     => $cursoIds,
-    'idPeriodo'    => $idPeriodo,
-    'idEstudiante' => $idEstudiante,
-    'total'        => $total,
+    'cursoIds'        => $cursoIds,
+    'idPeriodo'       => $idPeriodo,
+    'idEstudiante'    => $idEstudiante,
+    'total'           => $total,
+    'yaPayoMatricula' => $yaPayoMatricula, // ← nuevo
 ];
 
-//  Construir items para PayPal
+// Construir items
 $items = [];
 foreach ($cursos as $c) {
     $items[] = [
@@ -110,12 +121,14 @@ foreach ($cursos as $c) {
     ];
 }
 
-// Añadir matrícula una sola vez
-$items[] = [
-    'name'        => 'Matrícula',
-    'unit_amount' => ['currency_code' => 'USD', 'value' => '25.00'],
-    'quantity'    => '1',
-];
+// ← Solo agregar matrícula si no la ha pagado
+if (!$yaPayoMatricula) {
+    $items[] = [
+        'name'        => 'Matrícula',
+        'unit_amount' => ['currency_code' => 'USD', 'value' => '25.00'],
+        'quantity'    => '1',
+    ];
+}
 
 // Obtener token y crear orden en PayPal
 try {

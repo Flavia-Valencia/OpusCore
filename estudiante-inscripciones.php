@@ -349,7 +349,7 @@ require_once 'obtener-cursos-disponibles.php';
             <h3>Resumen de Inscripción</h3>
             <div id="pago-lista-cursos" class="pago-lista-cursos"></div>
             <!-- ← Línea de matrícula -->
-            <div class="pago-total-line">
+            <div class="pago-total-line" id="linea-matricula">
                 <span>Matrícula</span>
                 <span>$25.00</span>
             </div>

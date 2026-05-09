@@ -63,7 +63,8 @@ $pending      = $_SESSION['paypal_pending'];
 $cursoIds     = $pending['cursoIds'];
 $idPeriodo    = $pending['idPeriodo'];
 $idEstudiante = $pending['idEstudiante'];
-$totalCursos  = $pending['total'];  // Solo cursos (sin matrícula)
+$totalCursos     = $pending['total'];
+$yaPayoMatricula = $pending['yaPayoMatricula'] ?? false; // ← nuevo
 
 // Datos que devuelve PayPal tras capturar
 $captureId   = $capture['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
@@ -73,8 +74,8 @@ $payerNombre = trim(
     ($capture['payer']['name']['surname']    ?? '')
 );
 
-// Calcular total con matrícula
-$costoMatricula = 25.00;
+// Solo cobrar matrícula si no la ha pagado
+$costoMatricula    = $yaPayoMatricula ? 0 : 25.00;
 // Obtener correo y nombre del estudiante desde la BD
 $stmtEstudiante = $conexion->prepare("
     SELECT u.correo, u.nombre, u.apellido 
@@ -173,14 +174,16 @@ try {
             $conexion->query("UPDATE cursos SET cupos = cupos - 1 WHERE id = $idCurso AND cupos > 0");
         }
         
-        // Registrar matrícula
-        $stmtMatricula = $conexion->prepare("
-            INSERT INTO matricula (idEstudiante, idPeriodo, monto, estado)
-            VALUES (?, ?, ?, 'Pagado')
-            ON DUPLICATE KEY UPDATE estado = 'Pagado'
-        ");
-        $stmtMatricula->bind_param('iid', $idEstudiante, $idPeriodo, $costoMatricula);
-        $stmtMatricula->execute();
+        // ← Solo registrar matrícula si no la había pagado
+        if (!$yaPayoMatricula) {
+            $stmtMatricula = $conexion->prepare("
+                INSERT INTO matricula (idEstudiante, idPeriodo, monto, estado)
+                VALUES (?, ?, 25.00, 'Pagado')
+                ON DUPLICATE KEY UPDATE estado = 'Pagado'
+            ");
+            $stmtMatricula->bind_param('ii', $idEstudiante, $idPeriodo);
+            $stmtMatricula->execute();
+        }
 
         require_once 'includes/enviar-comprobante.php';
         
