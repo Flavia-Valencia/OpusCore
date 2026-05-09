@@ -10,45 +10,32 @@ if(!isset($_SESSION["usuario"])){
     exit();
 }
 
-// FRONTEND: Datos demo hasta que backend conecte la tabla real de pagos/facturas.
-$pagos = [
-    [
-        'codigo' => 'PAY-2026-0001',
-        'estudiante' => 'María Fernanda López',
-        'correo' => 'maria.lopez@correo.com',
-        'monto' => 75.00,
-        'metodo' => 'Tarjeta',
-        'fecha' => '2026-05-07 09:35',
-        'estado' => 'Pagado'
-    ],
-    [
-        'codigo' => 'PAY-2026-0002',
-        'estudiante' => 'Carlos Méndez',
-        'correo' => 'carlos.mendez@correo.com',
-        'monto' => 50.00,
-        'metodo' => 'Tarjeta',
-        'fecha' => '2026-05-07 10:12',
-        'estado' => 'Pendiente'
-    ],
-    [
-        'codigo' => 'PAY-2026-0003',
-        'estudiante' => 'Andrea Morales',
-        'correo' => 'andrea.morales@correo.com',
-        'monto' => 100.00,
-        'metodo' => 'Tarjeta',
-        'fecha' => '2026-05-07 11:04',
-        'estado' => 'Fallido'
-    ],
-    [
-        'codigo' => 'PAY-2026-0004',
-        'estudiante' => 'Luis Hernández',
-        'correo' => 'luis.hernandez@correo.com',
-        'monto' => 60.00,
-        'metodo' => 'Tarjeta',
-        'fecha' => '2026-05-07 12:20',
-        'estado' => 'Pagado'
-    ]
-];
+require_once 'includes/conexion.php';
+// conexión a la tabla de pagos
+$sql = "
+    SELECT 
+        CONCAT('PAY-', LPAD(p.id, 4, '0')) AS codigo,
+        CONCAT(u.nombre, ' ', u.apellido) AS estudiante,
+        u.correo,
+        p.monto,
+        mp.nombre AS metodo,
+        DATE_FORMAT(p.fechaPago, '%Y-%m-%d %H:%i') AS fecha,
+        CASE p.estado
+            WHEN 'Completado' THEN 'Pagado'
+            WHEN 'Procesando' THEN 'Pendiente'
+            WHEN 'Fallido' THEN 'Fallido'
+            ELSE p.estado
+        END AS estado
+    FROM pagos p
+    INNER JOIN estudiantes e ON p.idEstudiante = e.id
+    INNER JOIN usuarios u ON e.usuario_id = u.id
+    INNER JOIN MetodosPago mp ON p.idMetodoPago = mp.id
+    ORDER BY p.fechaPago DESC
+";
+
+$result = $conexion->query($sql);
+$pagos = $result->fetch_all(MYSQLI_ASSOC);
+
 ?>
 
 <!DOCTYPE html>

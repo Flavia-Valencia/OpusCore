@@ -57,8 +57,19 @@ http://localhost/OpusCore/login.php
 - **Contraseña:** KarliDocente_22
 
 ##### Estudiante
-- **Correo:** Yamii@gmail.com
+- **Correo:** yamiiacademia3@gmail.com
 - **Contraseña:** YamiEstudiante-19
+
+#### Correo para verificación de comprobantes
+- **Cuenta Gmail:** yamiiacademia3@gmail.com
+
+> Esta cuenta se utiliza para recibir y verificar comprobantes de pago enviados automáticamente por el sistema durante las pruebas de pagos en línea.
+
+#### Cuenta institucional de la academia
+- **Correo:** academiafuturodigital6@gmail.com
+- **Contraseña:** AcademiaFuturoDigital!3
+
+> Utilizada para pruebas de correos automáticos y recepción de comprobantes del sistema.
 
 ## 💳 Credenciales de Prueba — PayPal Sandbox
 

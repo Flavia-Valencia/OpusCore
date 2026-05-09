@@ -12,12 +12,26 @@ if (!isset($_SESSION["usuario"])) {
 require_once 'includes/conexion.php';
 
 $correo = $_SESSION["usuario"];
+
 $stmt = $conexion->prepare("
     SELECT e.id, CONCAT(u.nombre, ' ', u.apellido) AS estudiante_nombre
     FROM estudiantes e
     INNER JOIN usuarios u ON e.usuario_id = u.id
     WHERE u.correo = ?
 ");
+
+$stmt->bind_param("s", $correo);
+$stmt->execute();
+$resultado = $stmt->get_result();
+$estudiante = $resultado->fetch_assoc();
+
+if (!$estudiante) {
+    header("Location: login.php");
+    exit();
+}
+
+$idEstudiante = (int)$estudiante['id'];
+
 $stmt->bind_param("s", $correo);
 $stmt->execute();
 $resultado = $stmt->get_result();
@@ -38,7 +52,13 @@ $existeMensualidades = $tablaMensualidadesExiste && $tablaMensualidadesExiste->n
 
 if ($existeMensualidades) {
     $stmt = $conexion->prepare("
-        SELECT c.nombre AS curso, pi.nombre AS periodo, m.monto, m.fechaVencimiento, m.estado
+        SELECT 
+            m.id,
+            c.nombre AS curso,
+            pi.nombre AS periodo,
+            m.monto,
+            m.fechaVencimiento,
+            m.estado
         FROM mensualidades m
         INNER JOIN cursos c ON m.idCurso = c.id
         INNER JOIN PeriodoInscripcion pi ON m.idPeriodo = pi.id
@@ -229,8 +249,8 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
                                                 type="button"
                                                 class="pago-accion pago-accion-secundaria"
                                                 onclick="pagarTramitePendiente(this)"
+                                                data-id="<?= $tramite['id'] ?>"
                                                 data-curso="<?= htmlspecialchars($tramite['curso']) ?>"
-                                                data-periodo="<?= htmlspecialchars($tramite['periodo']) ?>"
                                                 data-monto="<?= number_format((float) $tramite['monto'], 2, '.', '') ?>">
                                                 Pagar cuota
                                             </button>
@@ -244,6 +264,24 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
             </section>
         </div>
     </div>
+    <div id="modalPago" class="modal-overlay">
+    <div class="modal-pago-content">
+        <button class="modal-cerrar" onclick="cerrarModalPago()">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h2>Resumen de pago</h2>
+
+        <div id="pago-lista-cursos"></div>
+
+        <div>
+            Total:
+            <strong id="pago-total">$0.00</strong>
+        </div>
+
+        <div id="paypal-button-container"></div>
+    </div>
+</div>
 
     <div id="modalPagoCuota" class="modal-overlay">
         <div class="modal-contenido modal-pago">

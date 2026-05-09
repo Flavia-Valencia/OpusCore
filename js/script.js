@@ -1552,55 +1552,102 @@ function togglePagosOnline() {
     if (toggle) toggle.setAttribute('aria-expanded', estaAbierto ? 'true' : 'false');
 }
 
-let tramitePendienteSeleccionado = null;
-
-// front: abre el modal visual para pagar una cuota pendiente.
-// No registra pagos ni actualiza cuotas en BD; eso queda para backend.
+// Abre el modal de pago para cancelar una mensualidad pendiente del estudiante.
+// Obtiene el id, nombre del curso y monto desde el botón seleccionado,
+// muestra el resumen en pantalla y prepara el botón de PayPal para procesar la cuota.
 function pagarTramitePendiente(btn) {
-    const modal = document.getElementById('modalPagoCuota');
-    if (!modal) return;
-
-    if (!window.paypal) {
-        mostrarToast('No se pudo cargar PayPal. Intentá de nuevo.', 'error');
-        return;
-    }
-
-    tramitePendienteSeleccionado = {
-        curso: btn?.dataset?.curso || 'Curso',
-        periodo: btn?.dataset?.periodo || 'Periodo no especificado',
-        monto: btn?.dataset?.monto || '0.00'
+    mensualidadSeleccionada = {
+        id: btn.dataset.id,
+        curso: btn.dataset.curso,
+        monto: parseFloat(btn.dataset.monto)
     };
 
-    const lista = document.getElementById('cuota-pago-lista');
-    const total = document.getElementById('cuota-pago-total');
-    const monto = parseFloat(tramitePendienteSeleccionado.monto || '0');
+    const modal = document.getElementById('modalPago');
+    const listaCursos = document.getElementById('pago-lista-cursos');
+    const totalPago = document.getElementById('pago-total');
 
-    // front: reutiliza el mismo estilo/listado del modal de pago de inscripcion.
-    if (lista) {
-        lista.innerHTML = '';
+    listaCursos.innerHTML = `
+        <div class="pago-curso-item">
+            <span>${mensualidadSeleccionada.curso}</span>
+            <span>$${mensualidadSeleccionada.monto.toFixed(2)}</span>
+        </div>
+    `;
 
-        const item = document.createElement('div');
-        item.className = 'pago-curso-item';
-        item.innerHTML = `
-            <span>${tramitePendienteSeleccionado.curso}</span>
-            <span>$${monto.toFixed(2)}</span>
-        `;
-        lista.appendChild(item);
-
-        const periodo = document.createElement('div');
-        periodo.className = 'pago-curso-item';
-        periodo.innerHTML = `
-            <span>Periodo</span>
-            <span>${tramitePendienteSeleccionado.periodo}</span>
-        `;
-        lista.appendChild(periodo);
-    }
-
-    if (total) total.textContent = `$${monto.toFixed(2)}`;
+    totalPago.textContent = `$${mensualidadSeleccionada.monto.toFixed(2)}`;
 
     modal.classList.add('activo');
     document.body.style.overflow = 'hidden';
-    inicializarPayPalCuota();
+    inicializarPayPalMensualidad();
+}
+
+// Inicializa el botón de PayPal para el pago de mensualidades.
+// Crea una orden enviando el id de la mensualidad al backend y,
+// al aprobarse el pago, captura la orden para actualizar el estado
+// de la cuota a "Pagado" en la base de datos.
+function inicializarPayPalMensualidad() {
+    const container = document.getElementById('paypal-button-container');
+    if (!container || container.dataset.rendered) return;
+
+    paypal.Buttons({
+
+        createOrder: async function () {
+            const res = await fetch('paypal-create-mensualidad.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    mensualidadId: mensualidadSeleccionada.id
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.error) {
+                mostrarToast(data.error, 'error');
+                throw new Error(data.error);
+            }
+
+            return data.id;
+        },
+
+        onApprove: async function (data) {
+            const res = await fetch('paypal-capture-mensualidad.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    orderID: data.orderID
+                })
+            });
+
+            const result = await res.json();
+
+            if (result.success) {
+                cerrarModalPago();
+                mostrarToast('¡Mensualidad pagada correctamente!', 'success');
+                setTimeout(() => window.location.reload(), 2000);
+            } else {
+                mostrarToast(result.error || 'Error al procesar pago', 'error');
+            }
+        },
+
+        onCancel: function () {
+            mostrarToast('Pago cancelado', 'error');
+        },
+
+        onError: function (err) {
+            console.error(err);
+            mostrarToast('Error de PayPal', 'error');
+        },
+
+        style: {
+            layout: 'vertical',
+            color: 'blue',
+            shape: 'pill',
+            label: 'pay'
+        }
+
+    }).render('#paypal-button-container');
+
+    container.dataset.rendered = 'true';
 }
 
 function cerrarModalPagoCuota() {
@@ -1754,7 +1801,14 @@ function actualizarBarraInscripcion() {
         barra.classList.add('visible');
         contador.textContent = `${totalCursos}/5`;
         if (contadorTab) contadorTab.textContent = `${totalCursos}/5 cursos`;
-        total.textContent = `$${(totalCosto + 25).toFixed(2)}`;
+        fetch('verificar-matricula.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' })
+            .then(r => r.json())
+            .then(data => {
+                const extra = data.yaPayoMatricula ? 0 : 25;
+                total.textContent = `$${(totalCosto + extra).toFixed(2)}`;
+                const label = document.querySelector('.barra-total-label');
+                if (label) label.textContent = data.yaPayoMatricula ? 'Total' : 'Total con matrícula';
+            });
 
         // Crear chips (etiquetas) para cada curso seleccionado
         lista.innerHTML = '';
@@ -1819,31 +1873,42 @@ function confirmarInscripcion() {
 
 //  Abrir modal de pago con resumen de cursos y total
 // BACKEND: Aquí se preparan datos para enviar a PayPal
-function abrirModalPago() {
+async function abrirModalPago(){
     const modal = document.getElementById('modalPago');
     if (!modal) return;
 
     const listaCursos = document.getElementById('pago-lista-cursos');
     const totalPago = document.getElementById('pago-total');
+    const lineaMatricula = document.getElementById('linea-matricula');
+
+        // Consultar si ya pagó matrícula
+    const ids = cursosSeleccionados.map(c => parseInt(c.id));
+    const res = await fetch('verificar-matricula.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cursos: ids })
+    });
+    const data = await res.json();
+    const yaPayoMatricula = data.yaPayoMatricula ?? false;
 
     // Construir lista de cursos con precios individuales
     listaCursos.innerHTML = '';
     cursosSeleccionados.forEach(curso => {
         const item = document.createElement('div');
         item.className = 'pago-curso-item';
-        item.innerHTML = `
-            <span>${curso.nombre}</span>
-            <span>$${curso.costo.toFixed(2)}</span>
-        `;
+        item.innerHTML = `<span>${curso.nombre}</span><span>$${curso.costo.toFixed(2)}</span>`;
         listaCursos.appendChild(item);
     });
 
-    totalPago.textContent = `$${(totalCosto + 25).toFixed(2)}`;
+    if (lineaMatricula) {
+        lineaMatricula.style.display = yaPayoMatricula ? 'none' : '';
+    }
+
+    totalPago.textContent = `$${(totalCosto + (yaPayoMatricula ? 0 : 25)).toFixed(2)}`;
 
     modal.classList.add('activo');
-    document.body.style.overflow = 'hidden'; // Bloquea scroll del fondo
-
-    inicializarPayPal(); // Renderiza el botón de PayPal dentro del modal
+    document.body.style.overflow = 'hidden';
+    inicializarPayPal();
 }
 
 // Cerrar modal de pago
@@ -1925,8 +1990,8 @@ function inicializarPayPal() {
                 cerrarModalPago();
                 cancelarInscripcion();
                 mostrarToast(
-                    '¡Pago completado! Inscrito en ' + result.cursos + ' curso(s). Total: $' + result.total,
-                    'success'
+                    '¡Pago completado! Inscrito en ' + result.cursos + ' curso(s). Total: $' + result.totalCursos,
+                     'success'
                 );
                 setTimeout(() => window.location.reload(), 2500);
             } else {
@@ -1951,6 +2016,3 @@ function inicializarPayPal() {
 
     container.dataset.rendered = 'true'; // evita renderizar el botón dos veces
 }
-
-
-
