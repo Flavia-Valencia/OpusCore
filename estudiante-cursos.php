@@ -57,6 +57,9 @@ $sqlCursos = "
 
 $resultadoCursos = $conexion->query($sqlCursos);
 $cursos = $resultadoCursos ? $resultadoCursos->fetch_all(MYSQLI_ASSOC) : [];
+// Llama categorias para el filtro 
+$categorias = array_unique(array_column($cursos, 'categoria_nombre'));
+sort($categorias);
 ?>
 
 <!DOCTYPE html>
@@ -161,6 +164,14 @@ $cursos = $resultadoCursos ? $resultadoCursos->fetch_all(MYSQLI_ASSOC) : [];
 
             <div class="inscripcion-toolbar">
                 <input type="text" id="buscador-curso" placeholder="Buscar curso..." class="inscripcion-buscador">
+                <select id="filtro-categoria" class="inscripcion-filtro">
+                <option value="">Todas las categorías</option>
+                <?php foreach ($categorias as $cat): ?>
+                    <option value="<?= htmlspecialchars($cat) ?>">
+                        <?= htmlspecialchars($cat) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
             </div>
 
             <?php if (empty($cursos)): ?>
