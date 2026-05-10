@@ -65,6 +65,7 @@ http://localhost/OpusCore/login.php
 
 #### Correo para verificación de comprobantes
 - **Cuenta Gmail:** yamiiacademia3@gmail.com
+- **Contraseña:** AcademiaFuturoDigital
 
 > Esta cuenta se utiliza para recibir y verificar comprobantes de pago enviados automáticamente por el sistema durante las pruebas de pagos en línea.
 
