@@ -1741,6 +1741,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+// Filtra los cursos por categoría seleccionada
+const filtroCategoria = document.getElementById('filtro-categoria');
+if (filtroCategoria) {
+    filtroCategoria.addEventListener('change', function () {
+        const categoria = this.value.toLowerCase();
+        const filtro = document.getElementById('buscador-curso')?.value.toLowerCase() || '';
+
+        document.querySelectorAll('.curso-card').forEach(card => {
+            const nombre = card.querySelector('.curso-nombre')?.textContent.toLowerCase() || '';
+            const desc = card.querySelector('.curso-desc')?.textContent.toLowerCase() || '';
+            const cat = card.querySelector('.meta-value')?.textContent.toLowerCase() || '';
+            const categoriaSeleccionada = document.getElementById('filtro-categoria')?.value.toLowerCase() || '';
+
+            const coincideTexto = nombre.includes(filtro) || desc.includes(filtro);
+            const coincideCategoria = categoria === '' || cat.includes(categoria);
+
+            card.style.display = coincideTexto && coincideCategoria ? '' : 'none';
+        });
+    });
+}
 
 // FUNCIÓN PRINCIPAL: Toggle de selección de cursos (máximo 5)
 // Cambios visuales: tarjeta → color azul, botón → "Deseleccionar"
