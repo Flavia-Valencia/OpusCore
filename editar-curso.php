@@ -9,7 +9,16 @@ $fechaInicio  = $_POST['fechaInicio'];
 $fechaFin     = $_POST['fechaFin'];
 $cupos        = intval($_POST['cupos']);
 $idDocente    = intval($_POST['idDocente']);
+$idPeriodo = !empty($_POST['idPeriodo']) ? intval($_POST['idPeriodo']) : NULL;
+$idPeriodo_sql = ($idPeriodo !== NULL) ? "$idPeriodo" : "NULL"; // Si se seleccionó un período se guarda su ID, de lo contrario se guarda NULL para evitar error de FK
+$idCategoria  = intval($_POST['idCategoria']);
 $estado       = $_POST['estado'] == 'Activo' ? 1 : 0;
+
+// Validación fechas incorrectas
+    if ($fechaFin <= $fechaInicio) {
+    header("Location: admin-cursos.php?error=fechas");
+    exit();
+}
 
 # Verificar que el nombre no lo use OTRO curso (distinto al que estamos editando)
 $sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre') AND id != '$id'";
@@ -44,12 +53,14 @@ $sql = "UPDATE cursos SET
     fechaFin      = '$fechaFin',
     cupos         = '$cupos',
     estado        = '$estado',
-    idDocente     = '$idDocente'
+    idDocente     = '$idDocente',
+    idPeriodo = $idPeriodo_sql,
+    idCategoria   = '$idCategoria'
 WHERE id = '$id'";
 mysqli_query($conexion, $sql);
 
 
-// inserta nuevos
+// inserta nuevos prerrequisitos si se seleccionó alguno
 mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
 $idPrerrequisito = isset($_POST['idPrerrequisitos']) ? intval($_POST['idPrerrequisitos']) : 0;
 if ($idPrerrequisito > 0 && $idPrerrequisito != $id) {

@@ -159,7 +159,7 @@ body {
 /* ── LAYOUT: MAIN CONTENT ── */
 .main {
     padding: 30px 40px;
-    max-width: 1400px;
+    max-width: 1550px;
     margin: 0 auto;
 }
 
@@ -272,7 +272,8 @@ body {
     white-space: nowrap !important;
 }
 
-.col-docente {
+.col-docente,
+.col-periodo {
     white-space: nowrap !important;
     min-width: 150px !important;
 }
@@ -304,6 +305,7 @@ body {
 /* Acciones agrupadas para abrir modales */
 .link-accion.abrir-modal-estudiante,
 .link-accion.abrir-modal-docente,
+.link-accion.abrir-modal-periodo,
 .link-accion.abrir-modal-curso {
     color: var(--accent-teal);
     background: var(--accent-teal-light);
@@ -311,6 +313,7 @@ body {
 
 .link-accion.abrir-modal-estudiante:hover,
 .link-accion.abrir-modal-docente:hover,
+.link-accion.abrir-modal-periodo:hover,
 .link-accion.abrir-modal-curso:hover {
     background: var(--accent-teal);
     color: white;
@@ -339,12 +342,28 @@ body {
 /* Etiquetas de Estado */
 .estado-activo {
     background-color: #e8f5e9 !important;
-    color: #2e7d32 !important;
+    color: #2e7d32 ;
 }
 
 .estado-inactivo {
     background-color: #ffebee !important;
     color: #c62828 !important;
+}
+
+.estado-pendiente {
+    background-color: #fff7e6 !important;
+    color: #9a5b00 !important;
+}
+
+.estado-pago-admin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 82px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 /* ── componentes de modales ── */
@@ -887,6 +906,43 @@ body {
     z-index: 998;
 }
 
+.periodo-info {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.periodo-fechas {
+  display: flex;
+  gap: 2rem;
+}
+
+.periodo-fechas p {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.estado-periodo {
+  color: white;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  width: max-content;
+}
+
+.estado-periodo.activo {
+  background: rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.4);
+}
+
+.estado-periodo.sin-periodo {
+  background: rgba(231, 76, 60, 0.35);
+  border: 1.5px solid rgba(231, 76, 60, 0.8);
+}
+
+
 /* ── responsivo para desktop (min-width: 769px) ────────────────── */
 @media (min-width: 769px) {
     .data-table tbody td {
@@ -935,6 +991,8 @@ body {
         pointer-events: auto;
     }
 }
+
+
 
 /* ── responsive mobile (max-width: 768px) ── */
 @media (max-width: 768px) {
@@ -1163,6 +1221,11 @@ body {
         align-items: flex-end;
     }
 
+    #modalPeriodo.modal-overlay {
+    align-items: flex-start;
+    padding-top: 200px;
+    }
+
     .modal-contenido {
         padding: 24px;
         border-radius: 16px;
@@ -1206,5 +1269,66 @@ body {
         transform: translate(-50%, 0);
         opacity: 1;
         pointer-events: auto;
+    }
+
+    .banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+    }
+
+    .banner > span {
+        align-self: flex-end;
+    }
+
+    .banner-texto h1 {
+    font-size: 21px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    }
+
+    .periodo-info {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+    }
+
+    /* mantiene las fechas en pares horizontales.
+       Fila 1: inicio/fin inscripcion. Fila 2: inicio/fin ciclo. */
+    .periodo-fechas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+    margin-top: 6px;
+    width: 100%;
+    }
+
+    .periodo-fechas p {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+    overflow-wrap: anywhere;
+    }
+
+    .estado-periodo {
+    color: white;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    width: max-content;
+    max-width: 100%;
+   
+    }
+
+    .estado-periodo.activo {
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    }
+
+    .estado-periodo.sin-periodo {
+    background: rgba(231, 76, 60, 0.35);
+    border: 1.5px solid rgba(231, 76, 60, 0.8);
     }
 }

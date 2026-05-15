@@ -59,6 +59,11 @@ if(!isset($_SESSION["usuario"])){
                 <span>Ver mis cursos</span>
             </a>
 
+            <a href="estudiante-inscripciones.php" class="card-opcion">  <!-- NUEVA -->
+                <i class="fas fa-pen-to-square icono"></i>
+                <span>Inscribirme a cursos</span>
+            </a>
+
             <a href="#" class="card-opcion">
                 <i class="fas fa-graduation-cap icono"></i>
                 <span>Ver calificaciones</span>

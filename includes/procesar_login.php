@@ -30,7 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($usuario["rol_id"] == 1) {
                 header("Location: ../admin-inicio.php");
             } elseif ($usuario["rol_id"] == 2) {
-                header("Location: ../estudiantes.php"); 
+                // Yahir: el estudiante entra primero a Mis cursos para ver su estado académico.
+                header("Location: ../vista_mis_cursos.php");
             } elseif ($usuario["rol_id"] == 3) {
                 header("Location: ../docentes.php"); 
             }

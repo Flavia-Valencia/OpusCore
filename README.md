@@ -20,6 +20,9 @@ Diseñar un sistema que solucione las dificultades actuales en el ingreso de not
 - CSS -> Diseño visual
 - MySQL -> Base de Datos
 - XAMMP -> Entorno de desarrollo local
+- DomPDF -> Generación de archivos PDF
+- PHPMailer -> Envío de correos electrónicos
+- PayPal Sandbox (Developer Dashboard) -> Simulación de pagos en línea
 
 
 ## Instalación y Ejecución
@@ -41,7 +44,7 @@ C:\xampp\htdocs\
 - Ingresar a: http://localhost/phpmyadmin/
 - Crear una nueva base de datos, con el siguiente nombre: db_academiadigital
 - Importar desde el repositorio OpusCore el script de la base de datos:
-    db_academiadigital.sql
+    script_completo.sql
   
 #### 5. Ejecutar el sistema:
 Abrir el navegador y acceder a:
@@ -57,8 +60,66 @@ http://localhost/OpusCore/login.php
 - **Contraseña:** KarliDocente_22
 
 ##### Estudiante
-- **Correo:** Yamii@gmail.com
+- **Correo:** yamiiacademia3@gmail.com
 - **Contraseña:** YamiEstudiante-19
+
+#### Correo para verificación de comprobantes
+- **Cuenta Gmail:** yamiiacademia3@gmail.com
+- **Contraseña:** AcademiaFuturoDigital
+
+> Esta cuenta se utiliza para recibir y verificar comprobantes de pago enviados automáticamente por el sistema durante las pruebas de pagos en línea.
+
+#### Cuenta institucional de la academia
+- **Correo:** academiafuturodigital6@gmail.com
+- **Contraseña:** AcademiaFuturoDigital!3
+
+> Utilizada para pruebas de correos automáticos y recepción de comprobantes del sistema.
+
+### Acceso y seguridad
+- La cuenta institucional tiene **verificación en 2 pasos** habilitada.
+- Para acceder, primero debe iniciarse sesión con el correo y contraseña correspondientes.
+- Posteriormente, Google solicitará una validación de seguridad para autorizar el acceso.
+
+### Encargada de verificación
+- **Responsable:** Karla Morales  
+- **Contacto:**  7012-5338
+- **Correo:** [u20240731 @univo.edu.sv](mailto:u20240731@univo.edu.sv)
+
+> **Nota:** Una vez ingresadas las credenciales, la encargada deberá aprobar o proporcionar la verificación necesaria para completar el acceso a la cuenta.
+
+## 💳 Credenciales de Prueba — PayPal Sandbox
+
+#### Cuenta PayPal Sandbox (comprador)
+- **Correo:** sb-83pij50925673@personal.example.com
+- **Contraseña:** ,>g/U#3f
+
+#### Tarjeta Mastercard de prueba
+- **Número:** 5110 9212 6151 6739
+- **Fecha de vencimiento:** 05/31
+- **CVV:** cualquier 3 dígitos (ej. 123)
+- **Nombre:** Yammi
+- **Apellidos:** Doe
+- **Dirección:** El salvador
+- **Código postal:** 1111
+- **Ciudad:** Santiago de maria
+- **Departamento:** Usulután
+- **Móvil:** +503 2442 9627
+- **Correo:** sb-dsspy50997240@personal.example.com
+
+#### Tarjeta Visa de prueba
+- **Número:** 4032 0312 6508 1702
+- **Fecha de vencimiento:** 05/2031
+- **CVV:** cualquier 3 dígitos (ej. 123)
+- **Nombre:** Yammi
+- **Apellidos:** Doe
+- **Dirección:** El salvador
+- **Código postal:** 1111
+- **Ciudad:** Santiago de maria
+- **Departamento:** Usulután
+- **Móvil:** +503 2442 9627
+- **Correo:** sb-dsspy50997240@personal.example.com
+
+> ⚠️ Estas credenciales son solo para pruebas en modo sandbox. No usar en producción.
 
 
 ## Equipo Responsable
@@ -85,7 +146,7 @@ En caso de dudas con la instalación, contactar a:
 ![Estudiante](Evidencias/docente.png)
 
 ## Version del Sistema
-v0.2 – Sprint 2
+v0.3 – Sprint 3
 
 ## Autor(es)
 OpusCore - Equipo de Desarollo

@@ -8,8 +8,15 @@ $cupos        = $_POST['cupos'];
 $fechaInicio  = $_POST['fechaInicio'];
 $fechaFin     = $_POST['fechaFin'];
 $idDocente    = intval($_POST['idDocente']);
+$idPeriodo = intval($_POST['idPeriodo']);
+$idCategoria = intval($_POST['idCategoria']);
 $estado       = 1;
 
+// Validación fechas incorrectas
+    if ($fechaFin <= $fechaInicio) {
+    header("Location: admin-cursos.php?error=fechas");
+    exit();
+}
 // Verifica si ya existe un curso con ese nombre
 $sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre')";
 $resultado_verificar = mysqli_query($conexion, $sql_verificar);
@@ -29,8 +36,8 @@ if ($row_limite['total'] >= 4) {
 
 
 // Insertar curso
-$sql_curso = "INSERT INTO cursos (nombre, descripcion, costoMensual, cupos, fechaInicio, fechaFin, estado, idDocente)
-              VALUES ('$nombre', '$descripcion', '$costoMensual', '$cupos', '$fechaInicio', '$fechaFin', '$estado', '$idDocente')";
+$sql_curso = "INSERT INTO cursos (nombre, descripcion, costoMensual, cupos, fechaInicio, fechaFin, estado, idDocente, idCategoria, idPeriodo)
+              VALUES ('$nombre', '$descripcion', '$costoMensual', '$cupos', '$fechaInicio', '$fechaFin', '$estado', '$idDocente','$idCategoria', '$idPeriodo')";
 mysqli_query($conexion, $sql_curso);
 
 // Obtener el ID del curso recién creado

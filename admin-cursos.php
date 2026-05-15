@@ -24,6 +24,13 @@ $docentes = [];
 while($doc = mysqli_fetch_assoc($res_doc)) {
     $docentes[] = $doc;
 }
+// Carga todas las categorías disponibles -->
+$query_cat = "SELECT id, nombre FROM categorias ORDER BY nombre ASC";
+$res_cat = mysqli_query($conexion, $query_cat);
+$categorias = [];
+while($cat = mysqli_fetch_assoc($res_cat)) {
+    $categorias[] = $cat;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -71,9 +78,11 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
             <!-------------->
 
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
+            <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
             <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
             <a href="./admin-cursos.php" class="btn-nav active">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
+            <a href="./admin-pagos.php" class="btn-nav">Pagos</a>
         
             <!--Boton para cerrar sesión en celu-->
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
@@ -98,16 +107,17 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
         </div>
 
         <!--Mensaje de validación del curso-->
-        <?php if(isset($_GET['error'])): ?>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                <?php if($_GET['error'] == 'existe'): ?>
-                    mostrarToastPremium('El curso ya existe. Intenta con otro nombre.');
-                <?php endif; ?>
-            });
-        </script>
-
+       <?php if(isset($_GET['error'])): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        <?php if($_GET['error'] == 'existe'): ?>
+            mostrarToastPremium('El curso ya existe. Intenta con otro nombre.');
+        <?php elseif($_GET['error'] == 'fechas'): ?>
+            mostrarToastPremium('La fecha de fin no debe ser menor a la fecha de inicio. Intente con otras fechas');
         <?php endif; ?>
+    });
+</script>
+<?php endif; ?>
         
         <div class="card">
             <div class="toolbar">
@@ -158,15 +168,32 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                 </div>
 
                 <div class="modal-campo full-width">
+                    <label>Periodo</label>
+                    <select name="idPeriodo" id="idPeriodo" required>
+                        <option value="">Seleccione un periodo</option>
+                    </select>
+                </div>
+
+                <div class="modal-campo full-width">
                     <label>Descripción</label>
                     <input type="text" name="descripcion" placeholder="Descripción del curso">
                 </div>
-
+                <div class="modal-campo full-width">
+                    <label>Categoría</label>
+                    <select name="idCategoria" id="nuevo-categoria-curso" required>
+                        <option value="">Seleccione una categoría</option>
+                        <?php foreach($categorias as $cat): ?>
+                            <option value="<?php echo $cat['id']; ?>">
+                                <?php echo htmlspecialchars($cat['nombre']); ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 <!-- Select para elegir prerrequisitos Carga cursos activos desde la BD y envía varios IDs al backend (luego lo arreglan)) --> 
 
                 <div class="modal-campo" style="grid-column: span 2;">
                     <label>Prerrequisitos (opcional)</label>
-                    <select name="idPrerrequisitos"  id="nuevo-prerrequisitos">
+                    <select name="idPrerrequisitos"  id="nuevo-prerrequisitos" disabled>
                         <option value="">Ninguno</option>
                         <?php
                         $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
@@ -254,14 +281,34 @@ while($doc = mysqli_fetch_assoc($res_doc)) {
                     </select>
                 </div>
 
+                
+                <div class="modal-campo full-width">
+                    <label>Periodo</label>
+                   <select name="idPeriodo" id="edit-idPeriodo" required>
+                        <option value="">Seleccione un periodo</option>
+                    
+                    </select>
+                </div>
+
                 <div class="modal-campo full-width" style="grid-column: span 2;">
                     <label>Descripción</label>
                     <input type="text" name="descripcion" id="edit-descripcion-curso" placeholder="Descripción del curso">
                 </div>
+                <div class="modal-campo full-width">
+                    <label>Categoría</label>
+                    <select name="idCategoria" id="edit-categoria-curso" required>
+                        <option value="">Seleccione una categoría</option>
+                        <?php foreach($categorias as $cat): ?>
+                            <option value="<?php echo $cat['id']; ?>">
+                                <?php echo htmlspecialchars($cat['nombre']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
                 <div class="modal-campo" style="grid-column: span 2;">
                     <label>Prerrequisitos (opcional)</label>
-                    <select name="idPrerrequisitos" id="edit-prerrequisitos">
+                    <select name="idPrerrequisitos" id="edit-prerrequisitos" disabled>
                         <option value="">Ninguno</option>
                         <?php
                         $query = "SELECT id, nombre FROM cursos WHERE estado = 1";

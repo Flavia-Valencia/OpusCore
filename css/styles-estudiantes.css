@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 
-/* Fuente importada de Google Fonts */
+/* fuente importada de Google Fonts */
 .raleway-all {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
@@ -17,18 +17,18 @@ body {
     background-size: 200% 200%;
 }
 
-/* ── HEADER ──────────────────────────────────────────────── */
+/* ── HEADER (pantalla de inicio - estudiantes.php) ───────── */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    /* este tiene un color extra al de docentes (el morado al final) */
-    background: linear-gradient(135deg,#069DBF,#1D4B73, #053170, #5624cc);
+    /* color extra al de docentes: el morado al final */
+    background: linear-gradient(135deg, #069DBF, #1D4B73, #053170, #5624cc);
     color: white;
 }
 
-/* logo: ícono + texto apilado en columna */
+/* logo: ícono + texto apilado */
 .logo {
     display: flex;
     align-items: center;
@@ -53,7 +53,7 @@ body {
     font-weight: bold;
 }
 
-/* botón de perfil/logout — fondo traslúcido con blur (glassmorphism) */
+/* botón de perfil/logout — glassmorphism */
 .user-profile {
     display: flex;
     align-items: center;
@@ -85,9 +85,9 @@ body {
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* ícono y botón de cerrar sesión */
+/* ícono de cerrar sesión */
 .logout-icon {
-    font-size: 20px;
+    font-size: 18px;
     color: white;
 }
 
@@ -95,12 +95,7 @@ body {
     color: white;
 }
 
-/* pisa el font-size de .logout-icon definido arriba */
-.logout-icon {
-    font-size: 18px;
-}
-
-/* ── CONTENIDO PRINCIPAL ─────────────────────────────────── */
+/* ── CONTENIDO PRINCIPAL (estudiantes.php) ───────────────── */
 .main {
     padding: 40px;
 }
@@ -110,14 +105,14 @@ body {
     margin-bottom: 30px;
 }
 
-/* tarjetas de opciones — grilla que acomoda sola las columnas según el espacio */
+/* grilla de opciones del panel de inicio */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
 }
 
-/* cada tarjeta/opción del menú principal */
+/* cada tarjeta/opción */
 .card-opcion {
     background: white;
     padding: 25px;
@@ -128,7 +123,7 @@ body {
     text-decoration: none;
     color: #053170;
     font-weight: 600;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     transition: all 0.2s ease;
 }
 
@@ -136,11 +131,1574 @@ body {
     transform: translateY(-4px);
 }
 
-/* ícono de cada tarjeta — gradiente aplicado al texto via background-clip */
+/* ícono de cada tarjeta */
 .icono {
     font-size: 22px;
-    background: linear-gradient(135deg,#053170,#069DBF);
+    background: linear-gradient(135deg, #053170, #069DBF);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+}
+
+/* ── LAYOUT CON SIDEBAR (inscripciones y siguientes vistas) ─ */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ── SIDEBAR ──────────────────────────────────────────────── */
+
+.sidebar {
+    width: 230px;
+    min-height: 100vh;
+    background: linear-gradient(to top, #04224e 75%);
+    color: white;
+    padding: 24px 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+}
+
+/* logo */
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    margin-bottom: 20px;
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.sidebar-brand {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* navegación */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-item i {
+    width: 16px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+/* activo */
+.nav-item.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 600;
+}
+
+.nav-dropdown {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-dropdown-toggle {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.nav-dropdown-toggle .nav-arrow {
+    margin-left: auto;
+    width: auto;
+    font-size: 11px;
+    transition: transform 0.2s ease;
+}
+
+.nav-dropdown.open .nav-arrow {
+    transform: rotate(180deg);
+}
+
+.nav-submenu {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    margin-left: 30px;
+}
+
+.nav-dropdown.open .nav-submenu,
+.nav-submenu.open {
+    display: flex;
+}
+
+.nav-submenu a {
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.nav-submenu a:hover,
+.nav-submenu a.active {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+/* footer */
+.sidebar-footer {
+    margin-top: auto;
+}
+
+.logout-item {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* overlay oscuro para cerrar sidebar en móvil */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 99;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* ── CONTENIDO DERECHO AL SIDEBAR ────────────────────────── */
+.content {
+    margin-left: 230px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ── HEADER PANEL (barra superior de las vistas con sidebar) ─ */
+.header-panel {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+    gap: 12px;
+}
+
+/* botón hamburguesa para móvil */
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-right: auto;
+}
+
+/* perfil en el header del panel */
+.user-profile-panel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.user-profile-panel:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── BANNER ──────────────────────────────────────────────── */
+.banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+    color: white;
+    padding: 28px 36px;
+    margin: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(5, 49, 112, 0.25);
+}
+
+.banner-left h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.banner-left p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.banner-left p strong {
+    color: white;
+}
+
+.banner-fecha {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    text-align: right;
+}
+
+.periodo-banner p + p {
+  margin-top: 6px;
+}
+
+/* ── SECCIÓN DE INSCRIPCIONES ────────────────────────────── */
+
+/* barra con buscador */
+.inscripcion-toolbar {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 0 24px 16px;
+}
+
+/* Buscador de inscripciones: glass suave, aislado de los .input-buscar del admin. */
+.inscripcion-buscador {
+    width: 100%;
+    max-width: 350px;
+    padding: 13px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.48);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.42);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 28px rgba(5, 49, 112, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    color: #1d3355;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.inscripcion-buscador::placeholder {
+    color: rgba(29, 51, 85, 0.62);
+    font-weight: 600;
+}
+
+.inscripcion-buscador:focus {
+    border-color: rgba(6, 157, 191, 0.65);
+    background: rgba(255, 255, 255, 0.68);
+    box-shadow: 0 14px 34px rgba(5, 49, 112, 0.14), 0 0 0 4px rgba(6, 157, 191, 0.12);
+}
+/*Estilo para el filtro selector de categorías*/
+.inscripcion-filtro {
+    padding: 13px 36px 13px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.48);
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.42);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231d3355' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 28px rgba(5, 49, 112, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    color: #1d3355;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: "Raleway", sans-serif;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.inscripcion-filtro:focus {
+    border-color: rgba(6, 157, 191, 0.65);
+    background-color: rgba(255, 255, 255, 0.68);
+    box-shadow: 0 14px 34px rgba(5, 49, 112, 0.14), 0 0 0 4px rgba(6, 157, 191, 0.12);
+}
+
+/* grilla de tarjetas de cursos */
+.courses-inscripcion {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 0 24px 32px;
+}
+
+/* tarjeta de cada curso */
+.curso-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    border-left: 4px solid #069DBF;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.curso-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* tarjeta sin cupos — borde gris y opacidad reducida */
+.curso-card.sin-cupos {
+    border-left-color: #ccc;
+    opacity: 0.7;
+}
+
+/* fila superior: nombre + badge */
+.curso-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.curso-nombre {
+    font-size: 15px;
+    font-weight: 700;
+    color: #053170;
+    line-height: 1.3;
+}
+
+/* badges de disponibilidad */
+.curso-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.curso-badge.disponible {
+    background: #e0f5f0;
+    color: #0a7a5a;
+}
+
+.curso-badge.ultimos {
+    background: #fff4e0;
+    color: #b06a00;
+}
+
+.curso-badge.sin-cupos {
+    background: #f0f0f0;
+    color: #888;
+}
+
+/* descripción del curso */
+.curso-desc {
+    font-size: 13px;
+    color: #5a6a82;
+    line-height: 1.5;
+}
+
+/* línea divisoria dentro de la tarjeta */
+.curso-divider {
+    height: 1px;
+    background: #eef1f6;
+}
+
+/* metadatos: inicio, fin, cupos, costo */
+.curso-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.meta-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #9aa5b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meta-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a2a4a;
+}
+
+.meta-value.sin-cupos-text {
+    color: #aaa;
+}
+
+/* precio en verde azulado */
+.meta-value.price {
+    color: #069DBF;
+}
+
+/* botón de inscripción */
+.btn-inscribir {
+    width: 100%;
+    padding: 11px;
+    background: linear-gradient(135deg, #053170, #1D4B73);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: "Raleway", sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s, transform 0.2s;
+    margin-top: auto;
+}
+
+.btn-inscribir:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* botón deshabilitado cuando no hay cupos */
+.btn-inscribir.lleno {
+    background: #ddd;
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* contenedor de botones */
+.curso-botones {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.curso-botones .btn-inscribir {
+    flex: 1;
+    margin-top: 0;
+}
+
+/* tarjeta seleccionada — cambio de color a oscuro */
+.curso-card.seleccionado {
+    background: linear-gradient(135deg, #053170, #1D4B73);
+    color: white;
+    border-left-color: #069DBF;
+    box-shadow: 0 6px 24px rgba(5, 49, 112, 0.3);
+}
+
+.curso-card.seleccionado .curso-nombre {
+    color: white;
+}
+
+.curso-card.seleccionado .curso-desc {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.curso-card.seleccionado .meta-label {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.curso-card.seleccionado .meta-value {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.curso-card.seleccionado .meta-value.price {
+    color: #69d7ff;
+}
+
+.curso-card.seleccionado .curso-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.curso-card.seleccionado .curso-divider {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* botones blancos en tarjeta seleccionada */
+.curso-card.seleccionado .btn-inscribir {
+    background: white;
+    color: #053170;
+    font-weight: 700;
+}
+
+.curso-card.seleccionado .btn-inscribir:hover {
+    background: rgba(255, 255, 255, 0.9);
+    opacity: 1;
+}
+
+.curso-card.seleccionado .btn-inscribir i {
+    color: #069DBF;
+}
+
+/* estado vacío: sin periodo o sin cursos */
+.inscripcion-vacia {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 60px 24px;
+    color: #8a99b3;
+    text-align: center;
+}
+
+.inscripcion-vacia i {
+    font-size: 40px;
+    color: #c0cadb;
+}
+
+.inscripcion-vacia p {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.inscripcion-vacia small {
+    font-size: 13px;
+    color: #aab5c8;
+}
+
+/* ── NOMBRE DEL USUARIO EN EL HEADER ─────────────────────── */
+.user-nombre {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+}
+
+
+#sidebar-toggle {
+    display: none;
+}
+
+.logo-text-sidebar {
+    font-family: "Raleway", sans-serif;
+    line-height: 1.2;
+}
+
+.logo-text-sidebar span {
+    display: block;
+    font-size: 9px;
+    font-weight: 500;
+    opacity: 0.65;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.logo-text-sidebar strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.sidebar {
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar-close,
+.sidebar-logout {
+    display: none;
+}
+
+.menu-user {
+    display: none;
+}
+
+.custom-modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+.modal-overlay.activo {
+    display: flex;
+}
+
+
+
+
+/* ── ESTILOS DEL MODAL ──────────────────────────────────── */
+.modal-contenido {
+    background: white;
+    border-radius: 16px;
+    width: min(680px, calc(100% - 40px));
+    max-width: 680px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    padding: 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    box-shadow: 0 25px 60px rgba(5, 49, 112, 0.25);
+    animation: slideUp 0.25s ease;
+}
+
+.modal-pago-content {
+    background: #ffffff;
+    border-radius: 16px;
+    width: min(520px, calc(100% - 40px));
+    max-width: 520px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    padding: 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 25px 60px rgba(5, 49, 112, 0.25);
+    animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-cerrar {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #f0f4f8;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: #555;
+    transition: all 0.2s;
+}
+
+.modal-cerrar:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+.modal-titulo {
+    font-size: 20px;
+    font-weight: 700;
+    color: #053170;
+    margin-bottom: 20px;
+}
+
+.modal-titulo i {
+    color: #069DBF;
+    margin-right: 8px;
+}
+
+.modal-subtitulo {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #069DBF;
+    border-bottom: 2px solid #e8f4fc;
+    padding-bottom: 6px;
+    margin: 20px 0 14px;
+}
+
+.modal-horarios-premium {
+    max-width: 650px !important;
+    padding: 45px !important;
+    background: #ffffff !important;
+}
+
+.horario-card-registro {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 24px;
+}
+
+.horario-campo {
+    margin-top: 14px;
+}
+
+.horario-campo label {
+    display: flex;
+    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #4a5568;
+    gap: 6px;
+    letter-spacing: 0.5px;
+}
+
+.horario-campo p {
+    font-size: 14px;
+    color: #1a2a4a;
+    font-weight: 500;
+}
+
+.horario-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.horario-campo p {
+    margin: 0;
+    font-size: 14px;
+    color: #1a2a4a;
+}
+
+.modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+}
+
+.btn-cancelar {
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #555;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancelar:hover {
+    background: #f5f5f5;
+}
+
+.btn-guardar-premium {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #053170, #1D4B73);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-guardar-premium:hover {
+    box-shadow: 0 6px 16px rgba(5, 49, 112, 0.3);
+    transform: translateY(-1px);
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+
+    /* ocultar sidebar por defecto en móvil */
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    /* mostrar sidebar cuando tiene clase open */
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* quitar margen izquierdo que deja el sidebar */
+    .content {
+        margin-left: 0;
+    }
+
+    /* mostrar botón hamburguesa */
+    .hamburger {
+        display: block;
+    }
+
+    /* banner en columna en pantallas pequeñas */
+    .banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 16px;
+        padding: 20px;
+    }
+
+    .banner-fecha {
+        text-align: left;
+    }
+
+    /* tarjetas en una sola columna */
+    .courses-inscripcion {
+        grid-template-columns: 1fr;
+        padding: 0 16px 24px;
+    }
+
+    /* sidebar mobile: logo spacing */
+    .sidebar-logo {
+        margin-bottom: 16px;
+    }
+
+    /* sidebar mobile: nav list reset */
+    .sidebar nav ul {
+        margin-top: 10px;
+    }
+
+    /* sidebar mobile: nav container */
+    .sidebar-nav {
+        margin-top: 10px;
+    }
+
+    /* sidebar mobile: list items */
+    .sidebar li {
+        justify-content: flex-start;
+        padding: 12px 14px;
+    }
+
+    /* sidebar mobile: nav links */
+    .nav-item {
+        justify-content: flex-start;
+        padding: 12px 14px;
+    }
+
+    .horario-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .horario-campo.full-width {
+        grid-column: span 1;
+    }
+
+    .inscripcion-toolbar {
+        padding: 0 16px 12px;
+    }
+
+    /* cards del panel inicio en móvil */
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar-close {
+    display: block;
+    margin-left: auto;
+    position: absolute;
+    background: none;
+    border: 0;
+    color: inherit;
+    font-size: 20px;
+    cursor: pointer;
+    top: 10px;
+    right: 14px;
+    }
+
+    .menu-user {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 5px 6px;
+        color: white;
+        margin-top: 6px;
+    }
+
+    .logo-text-sidebar {
+        display: none;
+    }
+
+    .sidebar-logout {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: auto;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255,255,255,0.15);
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .user-profile,
+    .user-profile-panel {
+        display: none !important;
+    }
+}
+
+/* ── TOAST PREMIUM NOTIFICATIONS ────────────────────────── */
+.toast-premium {
+    position: fixed;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s ease;
+    bottom: 30px;
+    right: 30px;
+}
+
+.toast-premium.toast-error {
+    background: #fff5f5;
+    color: #c53030;
+    border-left: 5px solid #c53030;
+}
+
+.toast-premium.toast-success {
+    background: #f0fff4;
+    color: #2f855a;
+    border-left: 5px solid #2f855a;
+}
+
+.toast-premium i {
+    font-size: 18px;
+}
+
+.toast-premium.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ── BARRA DE INSCRIPCIÓN EMERGENTE ────────────────────────── */
+.barra-inscripcion {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 20px 24px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.barra-inscripcion.visible {
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+body.inscripcion-barra-visible .content {
+    padding-bottom: 210px;
+}
+
+.barra-inscripcion-tab {
+    display: none;
+}
+
+.barra-card {
+    max-width: 1180px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(210px, 1fr) minmax(220px, auto);
+    gap: 18px;
+    align-items: center;
+}
+
+.barra-card-left,
+.barra-card-center,
+.barra-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.barra-card-status {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.barra-status-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #053170, #069dbf);
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 16px;
+}
+
+.barra-status-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1d3355;
+}
+
+.barra-status-subtitle {
+    font-size: 14px;
+    color: #069dbf;
+    font-weight: 700;
+}
+
+.barra-cursos-nombres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.barra-curso-chip {
+    background: rgba(6, 157, 191, 0.1);
+    color: #053170;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.barra-card-center {
+    background: #f8fbff;
+    border-radius: 16px;
+    padding: 16px;
+    align-items: flex-start;
+}
+
+.barra-total-label {
+    color: #6b7a97;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.barra-total-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #053170;
+}
+
+.barra-progreso-dots {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.barra-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dfe5f0;
+}
+
+.barra-dot.activo {
+    background: #069dbf;
+}
+
+.barra-porcentaje {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #6b7a97;
+    font-weight: 700;
+}
+
+.barra-card-actions {
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.barra-card-actions .btn-cancelar,
+.barra-card-actions .btn-guardar-premium {
+    width: 100%;
+}
+
+.barra-card-actions .btn-cancelar {
+    background: #fff5f5;
+    color: #e13f4d;
+    border: 1px solid #f7d2d3;
+}
+
+.barra-card-actions .btn-cancelar:hover {
+    background: #ffecec;
+}
+
+.barra-card-actions .btn-guardar-premium {
+    width: 100%;
+}
+
+@media (max-width: 980px) {
+    .barra-card {
+        grid-template-columns: 1fr;
+    }
+
+    .barra-card-actions {
+        flex-direction: row;
+        align-items: center;
+        justify-content: stretch;
+    }
+}
+
+@media (max-width: 768px) {
+    body.inscripcion-barra-visible .content {
+        padding-bottom: 32px;
+    }
+
+    /* En móvil la barra se convierte en una gaveta lateral para no cubrir las tarjetas. */
+    .barra-inscripcion {
+        top: 50%;
+        right: 0;
+        bottom: auto;
+        left: auto;
+        width: min(330px, calc(100vw - 58px));
+        padding: 0;
+        transform: translate(100%, -50%);
+        transition: transform 0.28s ease;
+    }
+
+    .barra-inscripcion.visible {
+        transform: translate(100%, -50%);
+    }
+
+    .barra-inscripcion.visible.abierta {
+        transform: translate(0, -50%);
+    }
+
+    /* Pestaña fija que muestra el contador y permite desplegar el resumen seleccionado. */
+    .barra-inscripcion-tab {
+        position: absolute;
+        top: 50%;
+        left: -52px;
+        width: 52px;
+        min-height: 132px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 8px;
+        background: #053170;
+        color: white;
+        border: 0;
+        border-radius: 14px 0 0 14px;
+        box-shadow: -8px 10px 24px rgba(5, 49, 112, 0.2);
+        cursor: pointer;
+        transform: translateY(-50%);
+        pointer-events: auto;
+    }
+
+    .barra-inscripcion:not(.visible) .barra-inscripcion-tab {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Texto vertical para ahorrar espacio horizontal en pantallas pequeñas. */
+    .barra-inscripcion-tab span {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .barra-card {
+        max-height: min(82vh, 560px);
+        margin: 0;
+        overflow-y: auto;
+        border-radius: 18px 0 0 18px;
+        box-shadow: -14px 0 34px rgba(0, 0, 0, 0.16);
+    }
+
+    .barra-card {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .barra-card-center {
+        align-items: stretch;
+    }
+
+    .barra-card-actions {
+        flex-direction: column;
+    }
+
+}
+
+/* ── MODAL DE PAGO ────────────────────────── */
+.modal-pago {
+    max-width: 500px !important;
+}
+
+.pago-resumen {
+    margin-bottom: 24px;
+}
+
+.pago-resumen h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #053170;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #e8f4fc;
+    padding-bottom: 8px;
+}
+
+.pago-lista-cursos {
+    margin-bottom: 16px;
+}
+
+.pago-curso-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.pago-curso-item:last-child {
+    border-bottom: none;
+}
+
+.pago-curso-item span:first-child {
+    font-weight: 500;
+    color: #1d3355;
+}
+
+.pago-curso-item span:last-child {
+    font-weight: 600;
+    color: #069dbf;
+}
+
+.pago-total-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-top: 2px solid #e8f4fc;
+    font-size: 18px;
+    font-weight: 700;
+    color: #053170;
+}
+
+.pago-metodo {
+    margin-bottom: 24px;
+}
+
+.pago-metodo h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #053170;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #e8f4fc;
+    padding-bottom: 8px;
+}
+
+.pago-paypal-container {
+    text-align: center;
+}
+
+.pago-nota {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #6b7a97;
+    font-style: italic;
+}
+
+/* ── HISTORIAL DE PAGOS DEL ESTUDIANTE ───────────────────── */
+.pagos-resumen {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    padding: 0 24px 18px;
+}
+
+.pago-resumen-card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    border-left: 4px solid #069dbf;
+}
+
+.pago-resumen-card span {
+    display: block;
+    color: #6b7a97;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.pago-resumen-card strong {
+    display: block;
+    margin-top: 8px;
+    color: #053170;
+    font-size: 26px;
+}
+
+.pagos-panel {
+    margin: 0 24px 32px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+}
+
+.pagos-panel-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: center;
+    padding: 18px 20px;
+    border-bottom: 1px solid #e8f4fc;
+}
+
+.pagos-panel-header h2 {
+    margin: 0;
+    color: #053170;
+    font-size: 18px;
+}
+
+.pagos-panel-header small {
+    display: block;
+    margin-top: 4px;
+    color: #6b7a97;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pagos-panel-header span {
+    color: #6b7a97;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.pagos-categorias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 20px 0;
+}
+
+.pagos-categorias a {
+    background: #f8fbff;
+    color: #053170;
+    border: 1px solid #e8f4fc;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.pagos-categorias a.active {
+    background: #053170;
+    border-color: #053170;
+    color: white;
+}
+
+.pagos-tabla-wrap {
+    overflow-x: auto;
+}
+
+.pagos-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.pagos-tabla th {
+    background: #f8fbff;
+    color: #053170;
+    font-size: 12px;
+    text-align: left;
+    text-transform: uppercase;
+    padding: 14px 16px;
+}
+
+.pagos-tabla td {
+    padding: 15px 16px;
+    color: #1d3355;
+    border-top: 1px solid #f0f0f0;
+}
+
+.pagos-tabla-admin tbody tr:hover {
+    background: #f5f9ff;
+}
+
+.pagos-tabla-admin th:last-child,
+.pagos-tabla-admin td:last-child {
+    text-align: center;
+}
+
+.pago-estado-badge {
+    display: inline-flex;
+    min-width: 92px;
+    justify-content: center;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.pago-estado-badge.estado-completado {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.pago-estado-badge.estado-pagado {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.pago-estado-badge.estado-procesando {
+    background: #fff7e6;
+    color: #9a5b00;
+}
+
+.pago-estado-badge.estado-fallido {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.pago-estado-badge.estado-pendiente {
+    background: #eef2f7;
+    color: #4b5563;
+}
+
+.pago-estado-badge.estado-vencido {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.pago-accion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #053170;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.pago-accion-secundaria {
+    background: #069dbf;
+}
+
+.pago-accion-texto {
+    color: #6b7a97;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.pagos-vacio {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+@media (max-width: 768px) {
+    .pagos-resumen {
+        grid-template-columns: 1fr;
+        padding: 0 16px 16px;
+    }
+
+    .pagos-panel {
+        margin: 0 16px 24px;
+    }
+
+    .pagos-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .pagos-tabla,
+    .pagos-tabla tbody,
+    .pagos-tabla tr {
+        display: block;
+    }
+
+    .pagos-tabla thead {
+        display: none;
+    }
+
+    .pagos-tabla tr {
+        padding: 14px 16px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .pagos-tabla td {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 10px 0;
+        border-top: 0;
+        text-align: right;
+    }
+
+    .pagos-tabla td::before {
+        content: attr(data-label);
+        color: #6b7a97;
+        font-size: 12px;
+        font-weight: 800;
+        text-align: left;
+        text-transform: uppercase;
+    }
 }
