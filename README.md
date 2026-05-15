@@ -44,7 +44,7 @@ C:\xampp\htdocs\
 - Ingresar a: http://localhost/phpmyadmin/
 - Crear una nueva base de datos, con el siguiente nombre: db_academiadigital
 - Importar desde el repositorio OpusCore el script de la base de datos:
-    db_academiadigital.sql
+    script_completo.sql
   
 #### 5. Ejecutar el sistema:
 Abrir el navegador y acceder a:
@@ -74,6 +74,18 @@ http://localhost/OpusCore/login.php
 - **Contraseña:** AcademiaFuturoDigital!3
 
 > Utilizada para pruebas de correos automáticos y recepción de comprobantes del sistema.
+
+### Acceso y seguridad
+- La cuenta institucional tiene **verificación en 2 pasos** habilitada.
+- Para acceder, primero debe iniciarse sesión con el correo y contraseña correspondientes.
+- Posteriormente, Google solicitará una validación de seguridad para autorizar el acceso.
+
+### Encargada de verificación
+- **Responsable:** Karla Morales  
+- **Contacto:**  7012-5338
+- **Correo:** [u20240731 @univo.edu.sv](mailto:u20240731@univo.edu.sv)
+
+> **Nota:** Una vez ingresadas las credenciales, la encargada deberá aprobar o proporcionar la verificación necesaria para completar el acceso a la cuenta.
 
 ## 💳 Credenciales de Prueba — PayPal Sandbox
 
