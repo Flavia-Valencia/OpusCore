@@ -10,15 +10,20 @@ function getCursosDocente($conexion, $correoDocente) {
     // y GROUP BY Agrupa los cursos para que el COUNT funcione correctamente por cada curso
     $query = "
         SELECT c.id, c.nombre, c.descripcion, c.costoMensual, 
-               c.cupos, c.fechaInicio, c.fechaFin, COUNT(i.id) AS alumnos_inscritos, p.nombre AS periodo_nombre
+            c.cupos, c.fechaInicio, c.fechaFin,
+            COUNT(i.id) AS alumnos_inscritos,
+            p.nombre AS periodo_nombre
         FROM cursos c
         INNER JOIN docentes d ON c.idDocente = d.id
         INNER JOIN usuarios u ON d.usuario_id = u.id
+        INNER JOIN PeriodoInscripcion p ON c.idPeriodo = p.id
         LEFT JOIN inscripciones i ON i.idCurso = c.id
-        LEFT JOIN PeriodoInscripcion p ON c.idPeriodo = p.id
         WHERE u.correo = '$correo'
-          AND c.estado = 1
-          GROUP BY c.id, c.nombre, c.descripcion, c.costoMensual, c.cupos, c.fechaInicio, c.fechaFin, p.nombre
+        AND c.estado = 1
+        AND CURDATE() BETWEEN p.fechaInicio AND p.fechaFin
+        AND p.estado = 1
+        GROUP BY c.id, c.nombre, c.descripcion, c.costoMensual,
+                c.cupos, c.fechaInicio, c.fechaFin, p.nombre
     ";
 
     $result = mysqli_query($conexion, $query);
