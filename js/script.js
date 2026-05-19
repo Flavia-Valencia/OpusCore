@@ -2065,6 +2065,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 campo.classList.remove('facturacion-campo-error');
             });
         }
+        const correoInput = document.getElementById('factura-correo');
+        if (correoInput) correoInput.value = '';
+        if (typeof resetDetalle === 'function') resetDetalle();
     };
 
     if (btnNuevaFactura) btnNuevaFactura.addEventListener('click', abrirModalFactura);
@@ -2185,3 +2188,76 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+// tabla de ítems dentro del modal (funciones globales llamadas con oninput/onclick desde el HTML)
+(function () {
+    let filaId = 1;
+ 
+    // Recalcula subtotal de una fila y actualiza el total general
+    window.recalcFila = function (id) {
+        const cant   = parseFloat(document.getElementById('cant-'   + id)?.value) || 0;
+        const precio = parseFloat(document.getElementById('precio-' + id)?.value) || 0;
+        const celda  = document.getElementById('sub-' + id);
+        if (celda) celda.textContent = '$' + (cant * precio).toFixed(2);
+        recalcTotal();
+    };
+ 
+    function recalcTotal() {
+        let total = 0;
+        document.querySelectorAll('[id^="sub-"]').forEach(el => {
+            total += parseFloat(el.textContent.replace('$', '')) || 0;
+        });
+        const label = document.getElementById('facturaTotal');
+        if (label) label.textContent = '$' + total.toFixed(2);
+    }
+ 
+    // Agrega una nueva fila
+    window.agregarFila = function () {
+        filaId++;
+        const id    = filaId;
+        const tbody = document.getElementById('detalleBody');
+        if (!tbody) return;
+ 
+        const tr = document.createElement('tr');
+        tr.dataset.fila = id;
+        tr.innerHTML = `
+            <td><input type="text" placeholder="Descripción" oninput="recalcFila(${id})"></td>
+            <td><input type="number" id="cant-${id}" value="1" min="1" step="1" oninput="recalcFila(${id})"></td>
+            <td><input type="number" id="precio-${id}" placeholder="0.00" min="0" step="0.01" oninput="recalcFila(${id})"></td>
+            <td class="subtotal-cell" id="sub-${id}">$0.00</td>
+            <td>
+                <button type="button" class="btn-eliminar-fila" onclick="eliminarFila(${id})" aria-label="Eliminar fila">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>`;
+        tbody.appendChild(tr);
+    };
+ 
+    // Elimina las filas dejando solo 1
+    window.eliminarFila = function (id) {
+        if (document.querySelectorAll('#detalleBody tr').length <= 1) return;
+        const tr = document.querySelector(`[data-fila="${id}"]`);
+        if (tr) { tr.remove(); recalcTotal(); }
+    };
+ 
+    // Resetea la tabla al cerrar el modal
+    window.resetDetalle = function () {
+        filaId = 1;
+        const tbody = document.getElementById('detalleBody');
+        if (!tbody) return;
+        tbody.innerHTML = `
+            <tr data-fila="1">
+                <td><input type="text" placeholder="Ej: Clases mayo 2026" oninput="recalcFila(1)"></td>
+                <td><input type="number" id="cant-1" value="1" min="1" step="1" oninput="recalcFila(1)"></td>
+                <td><input type="number" id="precio-1" placeholder="0.00" min="0" step="0.01" oninput="recalcFila(1)"></td>
+                <td class="subtotal-cell" id="sub-1">$0.00</td>
+                <td>
+                    <button type="button" class="btn-eliminar-fila" onclick="eliminarFila(1)" aria-label="Eliminar fila">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>`;
+        const label = document.getElementById('facturaTotal');
+        if (label) label.textContent = '$0.00';
+    };
+})();

@@ -252,13 +252,8 @@ $facturas = [
             </h2>
 
             <form id="formNuevaFactura" novalidate>
-                <h3 class="modal-subtitulo">Datos principales</h3>
+                <h3 class="modal-subtitulo">Datos del docente</h3>
                 <div class="modal-grid">
-                    <div class="modal-campo full-width">
-                        <label for="factura-academia">Academia pagadora</label>
-                        <input type="text" id="factura-academia" name="academia" value="Academia Futuro Digital" required>
-                    </div>
-
                     <div class="modal-campo full-width">
                         <label for="factura-docente-id">Docente</label>
                         <select id="factura-docente-id" name="idDocente" required>
@@ -269,63 +264,79 @@ $facturas = [
                                 data-nombre="Andrea Lopez"
                                 data-correo="andrea.lopez@academia.test"
                             >
-                                Andrea Lopez - Programación
+                                Andrea Lopez
                             </option>
                             <option
                                 value="2"
                                 data-nombre="Carlos Mejia"
                                 data-correo="carlos.mejia@academia.test"
                             >
-                                Carlos Mejia - Diseño web
+                                Carlos Mejia
                             </option>
                         </select>
                     </div>
 
                     <div class="modal-campo full-width">
                         <label for="factura-correo">Correo</label>
-                        <input type="email" id="factura-correo" name="correo" placeholder="Autocompletado desde usuario" readonly>
+                        <input type="email" id="factura-correo" name="correo" 
+                        placeholder="Autocompletado al seleccionar docente" readonly class="input-readonly">
                     </div>
                 </div>
 
                 <h3 class="modal-subtitulo">Detalle del pago</h3>
                 <div class="modal-grid">
+                    <div class="detalle-tabla-wrap full-width">
+                        <table class="detalle-tabla" id="tablaDetalle">
+                            <thead>
+                                <tr>
+                                    <th class="col-desc">Descripción</th>
+                                    <th class="col-cant">Cant.</th>
+                                    <th class="col-precio">Precio unit.</th>
+                                    <th class="col-sub">Subtotal</th>
+                                    <th class="col-accion"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="detalleBody">
+                                <tr data-fila="1">
+                                    <td><input type="text" placeholder="Ej: Mayo - 2026" oninput="recalcFila(1)"></td>
+                                    <td><input type="number" id="cant-1" value="1" min="1" step="1" oninput="recalcFila(1)"></td>
+                                    <td><input type="number" id="precio-1" placeholder="0.00" min="0" step="0.01" oninput="recalcFila(1)"></td>
+                                    <td class="subtotal-cell" id="sub-1">$0.00</td>
+                                    <td>
+                                        <button type="button" class="btn-eliminar-fila" onclick="eliminarFila(1)" aria-label="Eliminar fila">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn-agregar-fila full-width" onclick="agregarFila()">
+                        <i class="fas fa-plus"></i> Agregar ítem
+                    </button>
+
+                    <div class="detalle-total">
+                        Total: <strong id="facturaTotal">$0.00</strong>
+                    </div>
+                </div>
+
+                <h3 class="modal-subtitulo">Detalle de la factura</h3>
+                <div class="modal-grid">
+
                     <div class="modal-campo">
-                        <label for="factura-tipo">Concepto de pago</label>
-                        <select id="factura-tipo" name="concepto" required>
-                            <option value="">Seleccione un concepto</option>
-                            <option value="Pago mensual">Pago mensual</option>
-                            <option value="Bonificación">Bonificación</option>
-                            <option value="Ajuste">Ajuste</option>
-                        </select>
+                            <label for="factura-metodo">Método de pago</label>
+                            <input type="text" id="factura-metodo" name="metodoPago" placeholder="Ej: Efectivo, Transferencia" required>
                     </div>
 
                     <div class="modal-campo">
-                        <label for="factura-metodo">Método de pago</label>
-                        <select id="factura-metodo" name="idMetodoPago" required>
-                            <option value="">Seleccione método</option>
-                            <!-- FRONTEND: ids segun tabla MetodosPago del script actual. -->
-                            <option value="1">PayPal</option>
-                            <option value="2">Tarjeta de Crédito/Débito</option>
-                        </select>
-                    </div>
-
-                    <div class="modal-campo">
-                        <label for="factura-monto">Monto pagado</label>
-                        <input type="number" id="factura-monto" name="monto" min="0.01" step="0.01" placeholder="0.00" required>
-                    </div>
-
-                    <div class="modal-campo">
-                        <label for="factura-referencia">No. referencia</label>
-                        <input type="text" id="factura-referencia" name="referencia" placeholder="Transacción o referencia de pago">
+                        <label for="factura-referencia">No. referencia<span class="label-opcional"> (opcional)</span></label>
+                        <input type="text" id="factura-referencia" name="noReferencia" placeholder="Código o comprobante">
                     </div>
 
                     <div class="modal-campo">
                         <label for="factura-fecha">Fecha de emisión</label>
                         <input type="date" id="factura-fecha" name="fecha" required>
                     </div>
-
-                    <input type="hidden" id="factura-estado-modal" name="estado" value="Emitida">
-                    <input type="hidden" id="factura-condicion" name="condicion" value="CONTADO">
 
                     <div class="modal-campo full-width">
                         <label for="factura-observaciones">Observaciones</label>
