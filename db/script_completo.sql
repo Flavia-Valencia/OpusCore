@@ -167,7 +167,6 @@ CREATE TABLE `inscripciones` (
     `idEstudiante` INT NOT NULL,
     `idCurso` INT NOT NULL,
     `idPeriodo` INT NOT NULL,
-    `idFactura` INT DEFAULT NULL, 
     `fecha_registro` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `estado_academico` ENUM('Activo', 'Finalizado', 'Retirado') DEFAULT 'Activo',
     UNIQUE KEY `unique_estudiante_curso_periodo` (`idEstudiante`, `idCurso`, `idPeriodo`),
@@ -180,7 +179,6 @@ CREATE TABLE `matricula` (
     `id` int PRIMARY KEY AUTO_INCREMENT,
     `idEstudiante` int NOT NULL,
     `idPeriodo` int NOT NULL,
-    `idFactura` int DEFAULT NULL,
     `monto` decimal(10,2) NOT NULL,
     `estado` enum('Pendiente','Pagado','Mora') DEFAULT 'Pendiente',
     `fechaCreacion` timestamp DEFAULT CURRENT_TIMESTAMP,
@@ -196,7 +194,6 @@ CREATE TABLE `mensualidades` (
     `idEstudiante` int NOT NULL,
     `idCurso` int NOT NULL,
     `idPeriodo` int NOT NULL,
-    `idFactura` int DEFAULT NULL,
     `mesPagado` enum('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto',
                      'Septiembre','Octubre','Noviembre','Diciembre') NOT NULL,
     `monto` decimal(10,2) NOT NULL,
@@ -206,6 +203,41 @@ CREATE TABLE `mensualidades` (
     CONSTRAINT `fk_mens_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`id`),
     CONSTRAINT `fk_mens_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`),
     CONSTRAINT `fk_mens_periodo` FOREIGN KEY (`idPeriodo`) REFERENCES `PeriodoInscripcion` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tabla de facturas y detalle de facturas para registrar las transacciones de pagos, matrículas e inscripciones.
+-- Se deberá automatizar solo si el pago fue aprobado en estduaintes
+CREATE TABLE `facturas` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `numeroFactura` VARCHAR(20) UNIQUE NOT NULL,
+    `tipoFactura` ENUM('Estudiante','Docente') NOT NULL,
+    `idReceptor` INT NOT NULL,
+    `tipoReceptor` ENUM('Estudiante','Docente') NOT NULL,
+    `idPago` INT DEFAULT NULL,
+    `metodoPago` VARCHAR(50) NOT NULL,
+    `noReferencia` VARCHAR(100) DEFAULT NULL,
+    `observaciones` TEXT DEFAULT NULL,
+    `total` DECIMAL(10,2) NOT NULL,
+    `estado` ENUM('Emitida','Anulada') DEFAULT 'Emitida',
+    `fechaEmision` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `generadoPor` INT NOT NULL,
+    CONSTRAINT `fk_factura_pago` FOREIGN KEY (`idPago`) 
+    REFERENCES `pagos` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Registra la cantidad de cada concepto, ya sea para el docente o estudiante, colocando cantidad, precio unitario 
+-- y subtotal para cada concepto registrado en la factura.
+CREATE TABLE `detalle_facturas` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `idFactura` INT NOT NULL,
+    `tipoOrigen` ENUM('Matricula','Inscripcion','Mensualidad','PagoDocente') NOT NULL,
+    `idOrigen` INT DEFAULT NULL,
+    `descripcion` VARCHAR(200) NOT NULL,
+    `cantidad` INT DEFAULT 1,
+    `precioUnitario` DECIMAL(10,2) NOT NULL,
+    `subtotal` DECIMAL(10,2) NOT NULL,
+    CONSTRAINT `fk_detalle_factura` FOREIGN KEY (`idFactura`) 
+    REFERENCES `facturas` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DELIMITER //
