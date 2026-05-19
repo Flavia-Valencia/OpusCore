@@ -1,12 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 
-/* ─── RESET & VARIABLES ──────────────────────────────────────────── */
-*, *::before, *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
+/* ─── VARIABLES ──────────────────────────────────────────────────── */
 :root {
     --ink:       #111827;
     --ink-soft:  #4b5563;
@@ -14,43 +8,28 @@
     --rule-dark: #6b7280;
     --accent:    #102a43;
     --accent-lt: #edf1f5;
-    --success:   #263f5d;
     --paper:     #f7f8fa;
     --white:     #ffffff;
-    --red:       #4f5965;
-    --gold:      #4f5965;
     --mono:      'IBM Plex Mono', monospace;
     --sans:      'IBM Plex Sans', sans-serif;
     --serif:     'Source Serif 4', serif;
 }
 
-/* ─── BASE ───────────────────────────────────────────────────────── */
-html {
-    background: #eceff3;
-}
-
-body {
-    font-family: var(--sans);
-    font-size: 12px;
-    color: var(--ink);
-    background: #eceff3;
-    padding: 24px 0 48px;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-}
-
-/* ─── DOCUMENTO (hoja A4) ────────────────────────────────────────── */
+/* ─── DOCUMENTO A4 ───────────────────────────────────────────────── */
 .doc {
     width: 210mm;
     min-height: 297mm;
     margin: 0 auto;
     background: var(--white);
     border: 1px solid #d8dde5;
-    box-shadow: 0 10px 34px rgba(17, 24, 39, .14);
+    box-shadow: 0 10px 34px rgba(17,24,39,.14);
     display: flex;
     flex-direction: column;
     position: relative;
     overflow: hidden;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink);
 }
 
 /* Franja lateral de acento */
@@ -65,7 +44,7 @@ body {
 }
 
 /* ─── CABECERA ───────────────────────────────────────────────────── */
-.header {
+.doc .header {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -87,7 +66,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 52px;
+    height: 52px; 
     width: 52px;
     border-radius: 4px;
     background: var(--accent);
@@ -95,7 +74,6 @@ body {
     font-family: var(--serif);
     font-size: 22px;
     font-weight: 700;
-    letter-spacing: -1px;
 }
 
 /* Info del emisor en cabecera */
@@ -108,7 +86,6 @@ body {
     font-size: 18px;
     font-weight: 700;
     color: var(--accent);
-    letter-spacing: 0;
     line-height: 1.2;
 }
 
@@ -128,7 +105,6 @@ body {
     line-height: 1.6;
 }
 
-/* Badge de número de documento */
 .doc-badge {
     text-align: right;
     min-width: 165px;
@@ -143,7 +119,6 @@ body {
     color: var(--accent);
     text-transform: uppercase;
     letter-spacing: .7px;
-    line-height: 1.2;
 }
 
 .doc-badge .doc-num {
@@ -180,7 +155,7 @@ body {
 }
 
 .estado-Completado {
-    background: #eef2f6;
+    background: #eef2f6; 
     color: #223a57;
     border: 1px solid #ccd5df;
 }
@@ -239,11 +214,11 @@ body {
     flex-shrink: 0;
 }
 
-.parte-fila .val {
+.parte-fila .val { 
     color: var(--ink);
 }
 
-/* ─── WRAPPER TABLA ──────────────────────────────────────────────── */
+/* ─── WRAPPER TABLA ─────────────────────────────────────────────── */
 .tabla-wrap {
     padding: 0 30px;
     margin-top: 10px;
@@ -257,7 +232,7 @@ table.items {
     border: 1px solid var(--rule);
 }
 
-table.items thead tr {
+table.items thead tr { 
     background: #102a43;
     color: #fff;
 }
@@ -274,12 +249,12 @@ table.items thead th {
 
 table.items thead th:last-child,
 table.items tbody td:last-child,
-table.items tfoot td:last-child {
-    text-align: right;
+table.items tfoot td:last-child { 
+    text-align: right; 
 }
 
-table.items thead th.center {
-    text-align: center;
+table.items thead th.center { 
+    text-align: center; 
 }
 
 table.items tbody tr:nth-child(even) { background: #f8fafc; }
@@ -307,11 +282,11 @@ table.items tbody td.num    { font-family: var(--mono); font-size: 10px; }
     text-transform: uppercase;
 }
 
-.tipo-Inscripción,
+.tipo-Inscripción, 
 .tipo-Inscripcion,
-.tipo-Mensualidad,
+.tipo-Mensualidad, 
 .tipo-Matrícula,
-.tipo-Matricula,
+.tipo-Matricula,  
 .tipo-Docente {
     background: #eef2f6;
     color: #263f5d;
@@ -386,7 +361,6 @@ table.totales tr.total-row .tv { font-family: var(--mono); color: #fff; }
 .observaciones .letras {
     font-family: var(--serif);
     font-size: 11.2px;
-    font-style: normal;
     font-weight: 600;
     color: var(--ink-soft);
     margin-top: 2px;
@@ -408,7 +382,7 @@ table.totales tr.total-row .tv { font-family: var(--mono); color: #fff; }
 }
 
 /* ─── PIE DE DOCUMENTO ───────────────────────────────────────────── */
-.footer {
+.doc .footer {
     margin-top: auto;
     padding: 14px 30px 20px;
     border-top: 1px solid var(--rule);
@@ -419,11 +393,10 @@ table.totales tr.total-row .tv { font-family: var(--mono); color: #fff; }
     color: var(--ink-soft);
 }
 
-.footer .footer-left {
+.doc .footer .footer-left {
     line-height: 1.6;
 }
-
-.footer .footer-right {
+.doc .footer .footer-right {
     text-align: right;
     font-family: var(--mono);
     font-size: 9px;
@@ -448,14 +421,325 @@ table.totales tr.total-row .tv { font-family: var(--mono); color: #fff; }
     transition: background .2s;
 }
 
-.print-btn:hover {
-    background: #0b223d;
+.print-btn:hover { background: #0b223d; }
+
+/* ─── MODAL NUEVA FACTURA ────────────────────────────────────────── */
+.facturacion-modal .modal-contenido {
+    max-width: 760px !important;
 }
+
+/* ── Subtítulos de sección ───────────────────────────────────────── */
+.facturacion-modal .modal-subtitulo {
+    margin: 20px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e8f4fc;
+    font-size: 12px;
+    font-weight: 700;
+    color: #069DBF;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+/* ── Input readonly ──────────────────────────────────────────────── */
+.facturacion-modal .input-readonly {
+    background: #f3f6f9 !important;
+    color: #9ca3af !important;
+    cursor: default !important;
+}
+
+/* ── Label opcional ──────────────────────────────────────────────── */
+.label-opcional {
+    font-size: 11px;
+    color: #9ca3af;
+    font-weight: 400;
+    margin-left: 3px;
+}
+
+/* ─── TABLA DETALLE DEL PAGO ─────────────────────────────────────── */
+.detalle-tabla-wrap {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+
+.detalle-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    table-layout: auto;
+}
+
+.detalle-tabla thead tr { background: #f0f4f8; }
+
+.detalle-tabla thead th {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    border-bottom: 2px solid #d1d5db;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.detalle-tabla .col-desc   { width: 44%; }
+.detalle-tabla .col-cant   { width: 12%; text-align: center; }
+.detalle-tabla .col-precio { width: 19%; text-align: right; }
+.detalle-tabla .col-sub    { width: 18%; text-align: right; }
+.detalle-tabla .col-accion { width: 7%; }
+
+.detalle-tabla tbody tr { border-top: 1px solid #f0f0f0; }
+.detalle-tabla tbody tr:first-child { border-top: none; }
+
+.detalle-tabla tbody td {
+    padding: 8px 10px;
+    vertical-align: middle;
+    background: #fff;
+
+    /* cancela stylesAdmin */
+    display: table-cell !important;
+    width: auto !important;
+    flex: unset !important;
+    justify-content: initial !important;
+    align-items: initial !important;
+
+    border-bottom: 1px solid #f0f0f0 !important;
+    white-space: normal !important;
+    position: static !important;
+}
+
+/* cancela labels fantasmas mobile-cards */
+.detalle-tabla tbody td::before {
+    display: none !important;
+    content: none !important;
+}
+.detalle-tabla input {
+    min-width: 0 !important;
+}
+
+/* ── Inputs dentro de la tabla ───────────────────────────────────── */
+.detalle-tabla tbody td input[type="text"],
+.detalle-tabla tbody td input[type="number"] {
+    display: block;
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #111827;
+    border: 1px solid #d1d5db !important;
+    border-radius: 4px;
+    background: #fff !important;
+    box-sizing: border-box;
+    transition: border-color .15s, background .15s;
+    /* neutraliza stylesAdmin */
+    box-shadow: none !important;
+}
+
+.detalle-tabla tbody td input[type="number"]        { text-align: right; }
+.detalle-tabla .col-cant input[type="number"]       { text-align: center; }
+
+.detalle-tabla tbody td input:focus {
+    outline: none;
+    border-color: #069DBF !important;
+    background: #f0fbff !important;
+    box-shadow: 0 0 0 3px rgba(6,157,191,.12) !important;
+}
+
+.subtotal-cell {
+    text-align: right !important;
+    font-size: 13px;
+    color: #111827;
+    font-weight: 500;
+    white-space: nowrap !important;
+}
+
+/* ── Botón eliminar fila ─────────────────────────────────────────── */
+.btn-eliminar-fila {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    padding: 4px 6px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color .15s, background .15s;
+}
+
+.btn-eliminar-fila:hover { color: #ef4444; background: #fef2f2; }
+.btn-eliminar-fila i { font-size: 13px; }
+
+/* ── Botón agregar ítem ──────────────────────────────────────────── */
+.btn-agregar-fila {
+    width: 100%;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: #6b7280;
+    background: none;
+    border: none !important;
+    border-top: 1px dashed #d1d5db !important;
+    border-radius: 0;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: background .15s, color .15s;
+}
+
+.btn-agregar-fila:hover { background: #f9fafb; color: #374151; }
+.btn-agregar-fila i { font-size: 12px; margin-right: 4px; }
+
+/* ── Total ───────────────────────────────────────────────────────── */
+.detalle-total {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #6b7280;
+    margin: 4px 0 16px;
+}
+
+.detalle-total strong { font-size: 15px; font-weight: 600; color: #111827; }
 
 /* ─── MEDIA PRINT ────────────────────────────────────────────────── */
 @media print {
-    html  { background: #fff; }
-    body  { padding: 0; background: #fff; }
-    .doc  { box-shadow: none; width: 100%; min-height: auto; }
+    body   { padding: 0; background: #fff; }
+    .doc   { box-shadow: none; width: 100%; min-height: auto; }
     .print-btn { display: none; }
+}
+
+/* ─── RESPONSIVE MODAL FACTURACION ──────────────────────────────── */
+@media (max-width: 768px) {
+
+    .facturacion-modal .modal-contenido {
+        width: calc(100vw - 20px) !important;
+        max-width: none !important;
+        padding: 16px;
+        border-radius: 12px;
+        max-height: 94vh;
+    }
+
+    .facturacion-modal .modal-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .detalle-tabla-wrap {
+        overflow: visible;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .detalle-tabla,
+    .detalle-tabla thead,
+    .detalle-tabla tbody,
+    .detalle-tabla tr,
+    .detalle-tabla td {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    .detalle-tabla thead {
+        display: none !important;
+    }
+
+    .detalle-tabla tbody tr {
+        background: #fff;
+        border: 1px solid #dbe2ea;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,.05);
+    }
+
+    .detalle-tabla tbody td {
+        border: none !important;
+        padding: 0 !important;
+        margin-bottom: 10px;
+    }
+
+    .detalle-tabla tbody td:last-child {
+        margin-bottom: 0;
+    }
+
+    /* labels mobile */
+    .detalle-tabla tbody td:nth-child(1)::before {
+        content: "Descripción";
+    }
+
+    .detalle-tabla tbody td:nth-child(2)::before {
+        content: "Cantidad";
+    }
+
+    .detalle-tabla tbody td:nth-child(3)::before {
+        content: "Precio unitario";
+    }
+
+    .detalle-tabla tbody td:nth-child(4)::before {
+        content: "Subtotal";
+    }
+
+    .detalle-tabla tbody td::before {
+        display: block !important;
+        margin-bottom: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #64748b;
+        letter-spacing: .4px;
+    }
+
+    .detalle-tabla tbody td input {
+        width: 100% !important;
+        height: 42px;
+        font-size: 14px;
+    }
+
+    .subtotal-cell {
+        display: flex !important;
+        align-items: center;
+        min-height: 42px;
+        padding: 0 2px !important;
+        font-size: 15px;
+    }
+
+    .btn-eliminar-fila {
+        width: 100%;
+        height: 42px;
+        color: #dc2626;
+        border-radius: 8px;
+        margin-top: 4px;
+    }
+
+    .btn-agregar-fila {
+        border: 1px dashed #cbd5e1 !important;
+        border-radius: 10px;
+        background: #fff;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .detalle-total {
+        justify-content: space-between;
+        padding: 14px 2px 0;
+        font-size: 15px;
+    }
+
+    .detalle-total strong {
+        font-size: 18px;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .modal-footer button {
+        width: 100%;
+    }
 }
