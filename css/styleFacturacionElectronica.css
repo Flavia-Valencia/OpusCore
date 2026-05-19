@@ -1,0 +1,461 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+/* ─── RESET & VARIABLES ──────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --ink:       #111827;
+    --ink-soft:  #4b5563;
+    --rule:      #d9dee6;
+    --rule-dark: #6b7280;
+    --accent:    #102a43;
+    --accent-lt: #edf1f5;
+    --success:   #263f5d;
+    --paper:     #f7f8fa;
+    --white:     #ffffff;
+    --red:       #4f5965;
+    --gold:      #4f5965;
+    --mono:      'IBM Plex Mono', monospace;
+    --sans:      'IBM Plex Sans', sans-serif;
+    --serif:     'Source Serif 4', serif;
+}
+
+/* ─── BASE ───────────────────────────────────────────────────────── */
+html {
+    background: #eceff3;
+}
+
+body {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink);
+    background: #eceff3;
+    padding: 24px 0 48px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+/* ─── DOCUMENTO (hoja A4) ────────────────────────────────────────── */
+.doc {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    background: var(--white);
+    border: 1px solid #d8dde5;
+    box-shadow: 0 10px 34px rgba(17, 24, 39, .14);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Franja lateral de acento */
+.doc::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent);
+}
+
+/* ─── CABECERA ───────────────────────────────────────────────────── */
+.header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 30px 20px;
+    border-bottom: 1.5px solid var(--accent);
+    background: var(--white);
+}
+
+/* Logo */
+.logo-wrap img,
+.logo-wrap .logo-placeholder {
+    height: 52px;
+    width: auto;
+    display: block;
+}
+
+.logo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    width: 52px;
+    border-radius: 4px;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+/* Info del emisor en cabecera */
+.emisor-info {
+    padding-left: 4px;
+}
+
+.emisor-info .org-name {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0;
+    line-height: 1.2;
+}
+
+.emisor-info .org-sub {
+    font-size: 10px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+    font-weight: 500;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.emisor-info .org-meta {
+    margin-top: 6px;
+    font-size: 9.7px;
+    color: #5f6b7a;
+    line-height: 1.6;
+}
+
+/* Badge de número de documento */
+.doc-badge {
+    text-align: right;
+    min-width: 165px;
+    padding-left: 18px;
+    border-left: 1px solid var(--rule);
+}
+
+.doc-badge .doc-type {
+    font-family: var(--serif);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    line-height: 1.2;
+}
+
+.doc-badge .doc-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    margin-top: 6px;
+    letter-spacing: .4px;
+}
+
+.doc-badge .doc-fecha {
+    margin-top: 8px;
+    font-size: 10px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+}
+
+/* ─── BADGE DE ESTADO ────────────────────────────────────────────── */
+.estado-badge {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+}
+
+.estado-Emitida {
+    background: #eef2f6;
+    color: #223a57;
+    border: 1px solid #ccd5df;
+}
+
+.estado-Completado {
+    background: #eef2f6;
+    color: #223a57;
+    border: 1px solid #ccd5df;
+}
+
+.estado-Procesando {
+    background: #f6f4ef;
+    color: #4f5965;
+    border: 1px solid #d9d4ca;
+}
+
+.estado-Fallido {
+    background: #f1f2f4;
+    color: #4f5965;
+    border: 1px solid #d2d5da;
+}
+
+/* ─── SECCIÓN EMISOR / RECEPTOR ──────────────────────────────────── */
+.partes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--rule);
+    background: #fbfcfd;
+}
+
+.parte {
+    padding: 16px 30px;
+}
+
+.parte + .parte {
+    border-left: 1px solid var(--rule);
+}
+
+.parte-titulo {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid #dfe5ec;
+    padding-bottom: 5px;
+    margin-bottom: 8px;
+}
+
+.parte-fila {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 3px;
+    font-size: 10.4px;
+    line-height: 1.5;
+}
+
+.parte-fila .lbl {
+    font-weight: 600;
+    color: #566273;
+    min-width: 72px;
+    flex-shrink: 0;
+}
+
+.parte-fila .val {
+    color: var(--ink);
+}
+
+/* ─── WRAPPER TABLA ──────────────────────────────────────────────── */
+.tabla-wrap {
+    padding: 0 30px;
+    margin-top: 10px;
+}
+
+/* ─── TABLA DE ÍTEMS ─────────────────────────────────────────────── */
+table.items {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.4px;
+    border: 1px solid var(--rule);
+}
+
+table.items thead tr {
+    background: #102a43;
+    color: #fff;
+}
+
+table.items thead th {
+    padding: 8px 9px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 9.5px;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+table.items thead th:last-child,
+table.items tbody td:last-child,
+table.items tfoot td:last-child {
+    text-align: right;
+}
+
+table.items thead th.center {
+    text-align: center;
+}
+
+table.items tbody tr:nth-child(even) { background: #f8fafc; }
+table.items tbody tr:nth-child(odd)  { background: var(--white); }
+table.items tbody tr:hover           { background: #f5f7fa; }
+
+table.items tbody td {
+    padding: 8px 9px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--ink);
+}
+
+table.items tbody td.center { text-align: center; }
+table.items tbody td.num    { font-family: var(--mono); font-size: 10px; }
+
+/* Badges de tipo dentro de la tabla */
+.tipo-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-size: 8.8px;
+    font-weight: 600;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+}
+
+.tipo-Inscripción,
+.tipo-Inscripcion,
+.tipo-Mensualidad,
+.tipo-Matrícula,
+.tipo-Matricula,
+.tipo-Docente {
+    background: #eef2f6;
+    color: #263f5d;
+    border: 1px solid #d2dae4;
+}
+
+/* ─── TOTALES ────────────────────────────────────────────────────── */
+.totales-wrap {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 30px 10px;
+}
+
+table.totales {
+    width: 245px;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+table.totales td {
+    padding: 5px 9px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+table.totales .tl {
+    color: var(--ink-soft);
+    text-align: right;
+}
+
+table.totales .tv {
+    font-family: var(--mono);
+    text-align: right;
+    color: var(--ink);
+}
+
+table.totales tr.total-row {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+}
+
+table.totales tr.total-row td { padding: 6px 8px; font-size: 12px; }
+table.totales tr.total-row .tv { font-family: var(--mono); color: #fff; }
+
+/* ─── OBSERVACIONES / VALOR EN LETRAS ────────────────────────────── */
+.observaciones {
+    margin: 6px 30px 0;
+    padding: 12px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: var(--paper);
+    font-size: 10.5px;
+    line-height: 1.7;
+}
+
+.observaciones .obs-fila {
+    display: flex;
+    gap: 6px;
+}
+
+.observaciones .obs-lbl {
+    font-weight: 600;
+    color: var(--ink-soft);
+    min-width: 110px;
+    flex-shrink: 0;
+}
+
+.observaciones .obs-val {
+    color: var(--ink);
+}
+
+.observaciones .letras {
+    font-family: var(--serif);
+    font-size: 11.2px;
+    font-style: normal;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-top: 2px;
+}
+
+/* ─── SELLO NO DEVOLUCIÓN ────────────────────────────────────────── */
+.sello {
+    margin: 6px 30px 0;
+    font-family: var(--serif);
+    font-size: 11px;
+    font-weight: 700;
+    color: #4f5965;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1.5px solid #8a929c;
+    display: inline-block;
+    padding: 3px 12px;
+    opacity: .85;
+}
+
+/* ─── PIE DE DOCUMENTO ───────────────────────────────────────────── */
+.footer {
+    margin-top: auto;
+    padding: 14px 30px 20px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 9.3px;
+    color: var(--ink-soft);
+}
+
+.footer .footer-left {
+    line-height: 1.6;
+}
+
+.footer .footer-right {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--rule-dark);
+}
+
+/* ─── BOTÓN IMPRIMIR (solo pantalla) ─────────────────────────────── */
+.print-btn {
+    display: block;
+    width: 210mm;
+    margin: 16px auto 0;
+    padding: 11px;
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid #0d2238;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .4px;
+    cursor: pointer;
+    text-align: center;
+    transition: background .2s;
+}
+
+.print-btn:hover {
+    background: #0b223d;
+}
+
+/* ─── MEDIA PRINT ────────────────────────────────────────────────── */
+@media print {
+    html  { background: #fff; }
+    body  { padding: 0; background: #fff; }
+    .doc  { box-shadow: none; width: 100%; min-height: auto; }
+    .print-btn { display: none; }
+}

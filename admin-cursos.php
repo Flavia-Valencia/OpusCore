@@ -83,6 +83,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
             <a href="./admin-cursos.php" class="btn-nav active">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
             <a href="./admin-pagos.php" class="btn-nav">Pagos</a>
+            <a href="./admin-facturacion.php" class="btn-nav">Facturación</a>
         
             <!--Boton para cerrar sesión en celu-->
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
