@@ -62,6 +62,7 @@ if(!isset($_SESSION["usuario"])){
             <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav active">Docentes</a>
             <a href="./admin-pagos.php" class="btn-nav">Pagos</a>
+            <a href="./admin-facturacion.php" class="btn-nav">Facturación</a>
 
             <!--Boton para cerrar sesión en celu-->
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
