@@ -72,6 +72,7 @@ $facturas = [
     <title>ADF | Facturación</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/stylesAdmin.css">
+    <link rel="stylesheet" href="css/styleFacturacionElectronica.css">
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
 </head>
 
@@ -284,8 +285,7 @@ $facturas = [
                 </div>
 
                 <h3 class="modal-subtitulo">Detalle del pago</h3>
-                <div class="modal-grid">
-                    <div class="detalle-tabla-wrap full-width">
+                    <div class="detalle-tabla-wrap">
                         <table class="detalle-tabla" id="tablaDetalle">
                             <thead>
                                 <tr>
@@ -310,45 +310,43 @@ $facturas = [
                                 </tr>
                             </tbody>
                         </table>
+                        <button type="button" class="btn-agregar-fila" onclick="agregarFila()">
+                            <i class="fas fa-plus"></i> Agregar ítem
+                        </button>
                     </div>
-                    <button type="button" class="btn-agregar-fila full-width" onclick="agregarFila()">
-                        <i class="fas fa-plus"></i> Agregar ítem
-                    </button>
-
-                    <div class="detalle-total">
+                    <div class="detalle-total full-width">
                         Total: <strong id="facturaTotal">$0.00</strong>
                     </div>
-                </div>
-
-                <h3 class="modal-subtitulo">Detalle de la factura</h3>
-                <div class="modal-grid">
-
-                    <div class="modal-campo">
+                    
+                    <h3 class="modal-subtitulo">Detalle de la factura</h3>
+                    <div class="modal-grid">
+                        <div class="modal-campo">
                             <label for="factura-metodo">Método de pago</label>
                             <input type="text" id="factura-metodo" name="metodoPago" placeholder="Ej: Efectivo, Transferencia" required>
+                        </div>
+                        
+                        <div class="modal-campo">
+                            <label for="factura-referencia">No. referencia<span class="label-opcional"> (opcional)</span></label>
+                            <input type="text" id="factura-referencia" name="noReferencia" placeholder="Código o comprobante">
+                        </div>
+                        
+                        <div class="modal-campo">
+                            <label for="factura-fecha">Fecha de emisión</label>
+                            <input type="date" id="factura-fecha" name="fechaEmision" required>
+                        </div>
+                        
+                        <div class="modal-campo full-width">
+                            <label for="factura-observaciones">Observaciones</label>
+                            <textarea id="factura-observaciones" name="observaciones" rows="3" placeholder="Detalle opcional del pago"></textarea>
+                        </div>
                     </div>
-
-                    <div class="modal-campo">
-                        <label for="factura-referencia">No. referencia<span class="label-opcional"> (opcional)</span></label>
-                        <input type="text" id="factura-referencia" name="noReferencia" placeholder="Código o comprobante">
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancelar" id="cancelarFactura">Cancelar</button>
+                        <button type="submit" class="btn-guardar">
+                            <i class="fas fa-file-circle-plus"></i> Generar factura
+                        </button>
                     </div>
-
-                    <div class="modal-campo">
-                        <label for="factura-fecha">Fecha de emisión</label>
-                        <input type="date" id="factura-fecha" name="fecha" required>
-                    </div>
-
-                    <div class="modal-campo full-width">
-                        <label for="factura-observaciones">Observaciones</label>
-                        <textarea id="factura-observaciones" name="observaciones" rows="3" placeholder="Detalle opcional del pago"></textarea>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn-cancelar" id="cancelarFactura">Cancelar</button>
-                    <button type="submit" class="btn-guardar">
-                        <i class="fas fa-file-circle-plus"></i> Generar factura
-                    </button>
                 </div>
             </form>
         </div>
