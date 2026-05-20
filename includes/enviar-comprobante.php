@@ -62,16 +62,28 @@ function enviarComprobante($emailDestino, $nombreDestino, $datosPago) {
         ob_start();
         include $plantillaPath;
         $htmlBody = ob_get_clean();
-        
+
+        // Cambio: el PDF adjunto usa CSS compatible con Dompdf.
+        $htmlPdf = $htmlBody;
+        $cssPdfPath = __DIR__ . '/../css/styleComprobantePdf.css';
+        if (is_readable($cssPdfPath)) {
+            $cssPdf = file_get_contents($cssPdfPath);
+            $htmlPdf = preg_replace(
+                '/<link\s+rel="stylesheet"\s+href="\.\.\/css\/styleComprobante\.css"\s*>/i',
+                '<style>' . $cssPdf . '</style>',
+                $htmlPdf
+            );
+        }
+         
        
         try {
             $options = new Options();
             $options->set('isHtml5ParserEnabled', true);
             $options->set('isRemoteEnabled', true);
             $options->set('defaultFont', 'Arial');
-            
+             
             $dompdf = new Dompdf($options);
-            $dompdf->loadHtml($htmlBody);
+            $dompdf->loadHtml($htmlPdf);
             $dompdf->setPaper('A4', 'portrait');
             $dompdf->render();
             $pdfOutput = $dompdf->output();

@@ -75,57 +75,62 @@ $totalLetras = numeroALetrasDocente((float)$total);
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Factura Docente #<?= htmlspecialchars($facturaId ?: '—') ?> — Academia Futuro Digital</title>
-<link rel="stylesheet" href="../css/styleFacturacionElectronica.css">
+<link rel="stylesheet" href="../css/styleFacturacionElectronicaPdf.css">
 </head>
 <body>
 
 <div class="doc">
     <header class="header">
-        <div class="logo-wrap">
-            <img src="../img/logo.svg" alt="Academia Futuro Digital">
-        </div>
-
-        <div class="emisor-info">
-            <div class="org-name">Academia Futuro Digital</div>
-            <div class="org-sub">Institución Educativa Tecnológica</div>
-            <div class="org-meta">
-                Correo: facturacion@academiafuturodigital.edu.sv &nbsp;|&nbsp; Tel: (503) 0000-0000<br>
-                Dirección: San Salvador, El Salvador &nbsp;|&nbsp; NIT: 0000-000000-000-0
-            </div>
-        </div>
-
-        <div class="doc-badge">
-            <div class="doc-type">Factura<br>Docente</div>
-            <div class="doc-num">N° <?= htmlspecialchars($facturaId ?: '000000') ?></div>
-            <div class="doc-fecha">
-                <strong>Fecha:</strong> <?= htmlspecialchars($fecha) ?><br>
-                <strong>Hora:</strong> <?= htmlspecialchars($hora) ?>
-            </div>
-            <span class="estado-badge estado-<?= htmlspecialchars($estado) ?>">
-                <?= htmlspecialchars($estado) ?>
-            </span>
-        </div>
+        <table class="header-table">
+            <tr>
+                <td class="header-logo">
+                    <img src="../img/logo.svg" alt="Academia Futuro Digital">
+                </td>
+                <td class="header-info">
+                    <div class="org-name">Academia Futuro Digital</div>
+                    <div class="org-sub">Institución Educativa Tecnológica</div>
+                    <div class="org-meta">
+                        Correo: facturacion@academiafuturodigital.edu.sv<br>
+                        Tel: (503) 0000-0000<br>
+                        Dirección: San Salvador, El Salvador
+                    </div>
+                </td>
+                <td class="header-badge">
+                    <div class="doc-type">Factura<br>Docente</div>
+                    <div class="doc-num">N° <?= htmlspecialchars($facturaId ?: '000000') ?></div>
+                    <div class="doc-fecha">
+                        <strong>Fecha:</strong> <?= htmlspecialchars($fecha) ?><br>
+                        <strong>Hora:</strong> <?= htmlspecialchars($hora) ?>
+                    </div>
+                    <span class="estado-badge estado-<?= htmlspecialchars($estado) ?>">
+                        <?= htmlspecialchars($estado) ?>
+                    </span>
+                </td>
+            </tr>
+        </table>
     </header>
 
     <section class="partes">
-        <div class="parte">
-            <div class="parte-titulo">Pagador / Academia</div>
-            <div class="parte-fila"><span class="lbl">Nombre:</span>   <span class="val">Academia Futuro Digital</span></div>
-            <div class="parte-fila"><span class="lbl">Correo:</span>   <span class="val">facturacion@academiafuturodigital.edu.sv</span></div>
-            <div class="parte-fila"><span class="lbl">Dirección:</span><span class="val">San Salvador, El Salvador</span></div>
-            <div class="parte-fila"><span class="lbl">Teléfono:</span> <span class="val">(503) 0000-0000</span></div>
-            <div class="parte-fila"><span class="lbl">NIT:</span>      <span class="val">0000-000000-000-0</span></div>
-            <div class="parte-fila"><span class="lbl">Actividad:</span><span class="val">EDUCACIÓN</span></div>
-        </div>
-
-        <div class="parte">
-            <div class="parte-titulo">Beneficiario / Docente</div>
-            <div class="parte-fila"><span class="lbl">Nombre:</span>      <span class="val"><?= htmlspecialchars($docente) ?></span></div>
-            <div class="parte-fila"><span class="lbl">Correo:</span>      <span class="val"><?= htmlspecialchars($correo) ?></span></div>
-            <div class="parte-fila"><span class="lbl">Dirección:</span>   <span class="val"><?= htmlspecialchars($direccion) ?></span></div>
-            <div class="parte-fila"><span class="lbl">Teléfono:</span>    <span class="val"><?= htmlspecialchars($telefono) ?></span></div>
-            <div class="parte-fila"><span class="lbl">Área:</span>        <span class="val"><?= htmlspecialchars($especialidad) ?></span></div>
-        </div>
+        <table class="partes-table">
+            <tr>
+                <td class="parte">
+                    <div class="parte-titulo">Emisor</div>
+                    <div class="parte-fila"><span class="lbl">Nombre:</span> <span class="val">Academia Futuro Digital</span></div>
+                    <div class="parte-fila"><span class="lbl">Correo:</span> <span class="val">facturacion@academiafuturodigital.edu.sv</span></div>
+                    <div class="parte-fila"><span class="lbl">Dirección:</span> <span class="val">San Salvador, El Salvador</span></div>
+                    <div class="parte-fila"><span class="lbl">Teléfono:</span> <span class="val">(503) 0000-0000</span></div>
+                    <div class="parte-fila"><span class="lbl">Actividad:</span> <span class="val">EDUCACIÓN</span></div>
+                </td>
+                <td class="parte">
+                    <div class="parte-titulo">Receptor / Docente</div>
+                    <div class="parte-fila"><span class="lbl">Nombre:</span> <span class="val"><?= htmlspecialchars($docente) ?></span></div>
+                    <div class="parte-fila"><span class="lbl">Correo:</span> <span class="val"><?= htmlspecialchars($correo) ?></span></div>
+                    <div class="parte-fila"><span class="lbl">Dirección:</span> <span class="val"><?= htmlspecialchars($direccion) ?></span></div>
+                    <div class="parte-fila"><span class="lbl">Teléfono:</span> <span class="val"><?= htmlspecialchars($telefono) ?></span></div>
+                    <div class="parte-fila"><span class="lbl">Área:</span> <span class="val"><?= htmlspecialchars($especialidad) ?></span></div>
+                </td>
+            </tr>
+        </table>
     </section>
 
     <div class="tabla-wrap" style="margin-top:14px;">
@@ -144,7 +149,7 @@ $totalLetras = numeroALetrasDocente((float)$total);
             <tbody>
                 <?php if (empty($items)): ?>
                 <tr>
-                    <td colspan="7" style="text-align:center;color:var(--ink-soft);padding:18px;">
+                    <td colspan="7" style="text-align:center;color:#4b5563;padding:18px;">
                         Sin detalle registrado.
                     </td>
                 </tr>
@@ -191,36 +196,32 @@ $totalLetras = numeroALetrasDocente((float)$total);
         <div class="letras">
             Valor en Letras: <?= htmlspecialchars($totalLetras) ?>
         </div>
-        <div style="margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:4px 12px;">
-            <div class="obs-fila">
-                <span class="obs-lbl">Condición:</span>
-                <span class="obs-val"><?= htmlspecialchars($condicion) ?></span>
-            </div>
-            <div class="obs-fila">
-                <span class="obs-lbl">Método de pago:</span>
-                <span class="obs-val"><?= htmlspecialchars($metodoPago) ?></span>
-            </div>
-            <div class="obs-fila">
-                <span class="obs-lbl">No. Referencia:</span>
-                <span class="obs-val" style="font-family:var(--mono)"><?= htmlspecialchars($referencia) ?></span>
-            </div>
-            <div class="obs-fila">
-                <span class="obs-lbl">Observación:</span>
-                <span class="obs-val"><?= htmlspecialchars($observaciones) ?></span>
-            </div>
-        </div>
+        <table class="obs-table">
+            <tr>
+                <td><span class="obs-lbl">Condición:</span> <span class="obs-val"><?= htmlspecialchars($condicion) ?></span></td>
+                <td><span class="obs-lbl">Método de pago:</span> <span class="obs-val"><?= htmlspecialchars($metodoPago) ?></span></td>
+            </tr>
+            <tr>
+                <td><span class="obs-lbl">No. Referencia:</span> <span class="obs-val"><?= htmlspecialchars($referencia) ?></span></td>
+                <td><span class="obs-lbl">Observación:</span> <span class="obs-val"><?= htmlspecialchars($observaciones) ?></span></td>
+            </tr>
+        </table>
     </div>
 
     <footer class="footer">
-        <div class="footer-left">
-            <strong>Pagador del documento:</strong> Academia Futuro Digital<br>
-            Este documento registra un pago emitido al docente indicado.<br>
-            Cualquier consulta: <span style="color:var(--accent)">soporte@academiafuturodigital.edu.sv</span>
-        </div>
-        <div class="footer-right">
-            N° de Documento: <?= htmlspecialchars($facturaId ?: '000000') ?><br>
-            Generado: <?= date('d/m/Y H:i:s') ?>
-        </div>
+        <table class="footer-table">
+            <tr>
+                <td class="footer-left">
+                    <strong>Emisor del documento:</strong> Academia Futuro Digital<br>
+                    Este documento registra un pago emitido al docente indicado.<br>
+                    Cualquier consulta: soporte@academiafuturodigital.edu.sv
+                </td>
+                <td class="footer-right">
+                    N° de Documento: <?= htmlspecialchars($facturaId ?: '000000') ?><br>
+                    Generado: <?= date('d/m/Y H:i:s') ?>
+                </td>
+            </tr>
+        </table>
     </footer>
 </div>
 

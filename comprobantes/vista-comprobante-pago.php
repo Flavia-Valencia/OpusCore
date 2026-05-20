@@ -6,7 +6,9 @@ date_default_timezone_set('America/El_Salvador');
 // Si las variables no vienen de enviar-comprobante.php,
 // se carga desde la BD usando el pago_id de la URL
 if (!isset($estudiante)) {
-    session_start();
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
 
     if (!isset($_SESSION['usuario'])) {
         header("Location: ../login.php");

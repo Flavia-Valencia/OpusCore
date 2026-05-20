@@ -152,7 +152,7 @@ $facturas = [
                 </div>
                 <div class="facturacion-metrica">
                     <span>Total facturado</span>
-                    <strong>$8,540.00</strong>
+                    <strong>$8,999,834.00</strong>
                 </div>
             </div>
         </section>
@@ -225,9 +225,6 @@ $facturas = [
                                     <div class="facturacion-acciones">
                                         <button type="button" class="link-accion facturacion-accion facturacion-accion-pdf" data-accion="pdf">
                                             <i class="fas fa-file-pdf"></i> PDF
-                                        </button>
-                                        <button type="button" class="link-accion facturacion-accion facturacion-accion-enviar" data-accion="enviar">
-                                            <i class="fas fa-paper-plane"></i> Enviar
                                         </button>
                                     </div>
                                 </td>

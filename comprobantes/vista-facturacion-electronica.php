@@ -5,7 +5,9 @@ $pagoId = isset($_GET['pago_id']) ? (int)$_GET['pago_id'] : 0;
 
 // ─── Carga desde BD 
 if (!isset($estudiante) && $pagoId > 0) {
-    session_start();
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     if (!isset($_SESSION['usuario'])) {
         $pagoId = 0;
     }
@@ -174,62 +176,65 @@ if (is_readable($logoPath)) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Comprobante de Pago #<?= $pagoId ?? '—' ?> — Academia Futuro Digital</title>
-<link rel="stylesheet" href="../css/styleFacturacionElectronica.css">
+<link rel="stylesheet" href="../css/styleFacturacionElectronicaPdf.css">
 </head>
 <body>
 
 <div class="doc">
     <header class="header">
-        <div class="logo-wrap">
-            <?php if ($logoSrc): ?>
-                <img src="../img/logo.svg" alt="Academia Futuro Digital">
-            <?php else: ?>
-                <div class="logo-placeholder">AF</div>
-            <?php endif; ?>
-        </div>
-
-        <div class="emisor-info">
-            <div class="org-name">Academia Futuro Digital</div>
-            <div class="org-sub">Institución Educativa Tecnológica</div>
-            <div class="org-meta">
-                Correo: facturacion@academiafuturodigital.edu.sv &nbsp;|&nbsp; Tel: (503) 0000-0000<br>
-                Dirección: San Salvador, El Salvador &nbsp;|&nbsp; NIT: 0000-000000-000-0
-            </div>
-        </div>
-
-        <div class="doc-badge">
-            <div class="doc-type">Comprobante<br>de Pago</div>
-            <div class="doc-num">N° <?= str_pad($pagoId ?? 0, 6, '0', STR_PAD_LEFT) ?></div>
-            <div class="doc-fecha">
-                <strong>Fecha:</strong> <?= htmlspecialchars($fecha) ?><br>
-                <strong>Hora:</strong>  <?= htmlspecialchars($hora)  ?>
-            </div>
-            <span class="estado-badge estado-<?= htmlspecialchars($estado) ?>">
-                <?= htmlspecialchars($estado) ?>
-            </span>
-        </div>
+        <table class="header-table">
+            <tr>
+                <td class="header-logo">
+                    <?php if ($logoSrc): ?>
+                        <img src="<?= htmlspecialchars($logoSrc) ?>" alt="Academia Futuro Digital">
+                    <?php else: ?>
+                        <div class="logo-placeholder">AF</div>
+                    <?php endif; ?>
+                </td>
+                <td class="header-info">
+                    <div class="org-name">Academia Futuro Digital</div>
+                    <div class="org-sub">Institución Educativa Tecnológica</div>
+                    <div class="org-meta">
+                        Correo: facturacion@academiafuturodigital.edu.sv<br>
+                        Tel: (503) 0000-0000<br>
+                        Dirección: San Salvador, El Salvador
+                    </div>
+                </td>
+                <td class="header-badge">
+                    <div class="doc-type">Facturacion de Comprobante<br>de Pago</div>
+                    <div class="doc-num">N° <?= str_pad($pagoId ?? 0, 6, '0', STR_PAD_LEFT) ?></div>
+                    <div class="doc-fecha">
+                        <strong>Fecha:</strong> <?= htmlspecialchars($fecha) ?><br>
+                        <strong>Hora:</strong> <?= htmlspecialchars($hora) ?>
+                    </div>
+                    <span class="estado-badge estado-<?= htmlspecialchars($estado) ?>">
+                        <?= htmlspecialchars($estado) ?>
+                    </span>
+                </td>
+            </tr>
+        </table>
     </header>
 
     <section class="partes">
-        <div class="parte">
-            <div class="parte-titulo">Pagador / Alumno</div>
-            <div class="parte-fila"><span class="lbl">Nombre:</span>   <span class="val"><?= htmlspecialchars($estudiante) ?></span></div>
-            <div class="parte-fila"><span class="lbl">Correo:</span>   <span class="val"><?= htmlspecialchars($correo) ?></span></div>
-            <div class="parte-fila"><span class="lbl">Dirección:</span><span class="val"><?= htmlspecialchars($direccion ?? '—') ?></span></div>
-            <div class="parte-fila"><span class="lbl">Teléfono:</span> <span class="val"><?= htmlspecialchars($telefono ?? '—') ?></span></div>
-            <?php if (!empty($dui) && $dui !== '—'): ?>
-            <div class="parte-fila"><span class="lbl">DUI:</span>      <span class="val"><?= htmlspecialchars($dui) ?></span></div>
-            <?php endif; ?>
-        </div>
-        <div class="parte">
-            <div class="parte-titulo">Beneficiario / Academia</div>
-            <div class="parte-fila"><span class="lbl">Nombre:</span>   <span class="val">Academia Futuro Digital</span></div>
-            <div class="parte-fila"><span class="lbl">Correo:</span>   <span class="val">facturacion@academiafuturodigital.edu.sv</span></div>
-            <div class="parte-fila"><span class="lbl">Dirección:</span><span class="val">San Salvador, El Salvador</span></div>
-            <div class="parte-fila"><span class="lbl">Teléfono:</span> <span class="val">(503) 0000-0000</span></div>
-            <div class="parte-fila"><span class="lbl">NIT:</span>      <span class="val">0000-000000-000-0</span></div>
-            <div class="parte-fila"><span class="lbl">Actividad:</span><span class="val">EDUCACIÓN</span></div>
-        </div>
+        <table class="partes-table">
+            <tr>
+                <td class="parte">
+                    <div class="parte-titulo">Emisor</div>
+                    <div class="parte-fila"><span class="lbl">Nombre:</span> <span class="val">Academia Futuro Digital</span></div>
+                    <div class="parte-fila"><span class="lbl">Correo:</span> <span class="val">facturacion@academiafuturodigital.edu.sv</span></div>
+                    <div class="parte-fila"><span class="lbl">Dirección:</span> <span class="val">San Salvador, El Salvador</span></div>
+                    <div class="parte-fila"><span class="lbl">Teléfono:</span> <span class="val">(503) 0000-0000</span></div>
+                    <div class="parte-fila"><span class="lbl">Actividad:</span> <span class="val">EDUCACIÓN</span></div>
+                </td>
+                <td class="parte">
+                    <div class="parte-titulo">Receptor / Alumno</div>
+                    <div class="parte-fila"><span class="lbl">Nombre:</span> <span class="val"><?= htmlspecialchars($estudiante) ?></span></div>
+                    <div class="parte-fila"><span class="lbl">Correo:</span> <span class="val"><?= htmlspecialchars($correo) ?></span></div>
+                    <div class="parte-fila"><span class="lbl">Dirección:</span> <span class="val"><?= htmlspecialchars($direccion ?? '') ?></span></div>
+                    <div class="parte-fila"><span class="lbl">Teléfono:</span> <span class="val"><?= htmlspecialchars($telefono ?? '') ?></span></div>
+                </td>
+            </tr>
+        </table>
     </section>
 
     <div class="tabla-wrap" style="margin-top:14px;">
@@ -251,7 +256,7 @@ if (is_readable($logoPath)) {
                 if (empty($items)):
                 ?>
                 <tr>
-                    <td colspan="7" style="text-align:center;color:var(--ink-soft);padding:18px;">
+                    <td colspan="7" style="text-align:center;color:#4b5563;padding:18px;">
                         Sin ítems registrados.
                     </td>
                 </tr>
@@ -305,42 +310,38 @@ if (is_readable($logoPath)) {
         <div class="letras">
             Valor en Letras: <?= htmlspecialchars($totalLetras) ?>
         </div>
-        <div style="margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:4px 12px;">
-            <div class="obs-fila">
-                <span class="obs-lbl">Condición:</span>
-                <span class="obs-val">CONTADO</span>
-            </div>
-            <div class="obs-fila">
-                <span class="obs-lbl">Método de pago:</span>
-                <span class="obs-val"><?= htmlspecialchars($metodoPago) ?></span>
-            </div>
-            <div class="obs-fila">
-                <span class="obs-lbl">No. Referencia:</span>
-                <span class="obs-val" style="font-family:var(--mono)"><?= htmlspecialchars($transaccion) ?></span>
-            </div>
-            <div class="obs-fila">
-                <span class="obs-lbl">Observación:</span>
-                <span class="obs-val">Pago registrado correctamente.</span>
-            </div>
-        </div>
+        <table class="obs-table">
+            <tr>
+                <td><span class="obs-lbl">Condición:</span> <span class="obs-val">CONTADO</span></td>
+                <td><span class="obs-lbl">Método de pago:</span> <span class="obs-val"><?= htmlspecialchars($metodoPago) ?></span></td>
+            </tr>
+            <tr>
+                <td><span class="obs-lbl">No. Referencia:</span> <span class="obs-val"><?= htmlspecialchars($transaccion) ?></span></td>
+                <td><span class="obs-lbl">Observación:</span> <span class="obs-val">Pago registrado correctamente.</span></td>
+            </tr>
+        </table>
     </div>
 
     <!-- ── PIE -->
     <footer class="footer">
-        <div class="footer-left">
-            <strong>Beneficiario del pago:</strong> Academia Futuro Digital<br>
-            Este comprobante fue generado automáticamente por el sistema de Academia Futuro Digital.<br>
-            Cualquier consulta: <span style="color:var(--accent)">soporte@academiafuturodigital.edu.sv</span>
-        </div>
-        <div class="footer-right">
-            N° de Documento: <?= str_pad($pagoId ?? 0, 6, '0', STR_PAD_LEFT) ?><br>
-            Generado: <?= date('d/m/Y H:i:s') ?>
-        </div>
+        <table class="footer-table">
+            <tr>
+                <td class="footer-left">
+                    <strong>Emisor del documento:</strong> Academia Futuro Digital<br>
+                    Este comprobante fue generado automáticamente por el sistema de Academia Futuro Digital.<br>
+                    Cualquier consulta: soporte@academiafuturodigital.edu.sv
+                </td>
+                <td class="footer-right">
+                    N° de Documento: <?= str_pad($pagoId ?? 0, 6, '0', STR_PAD_LEFT) ?><br>
+                    Generado: <?= date('d/m/Y H:i:s') ?>
+                </td>
+            </tr>
+        </table>
     </footer>
 
 </div><!-- /.doc -->
 
-<button class="print-btn" onclick="window.print()">🖨 Imprimir / Guardar como PDF</button>
+<button class="print-btn" onclick="window.print()">Imprimir / Guardar como PDF</button>
 
 </body>
 </html>

@@ -2187,10 +2187,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 mostrarToastPremium(`Descarga PDF de ${numero} pendiente de integración backend.`, 'success');
             }
 
-            if (accion === 'enviar') {
-                mostrarToastPremium('Función pendiente de integración backend.', 'success');
-            }
-
         });
     }
 

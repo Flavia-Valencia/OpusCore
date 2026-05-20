@@ -173,16 +173,6 @@
     color: white;
 }
 
-.facturacion-accion-enviar {
-    background: #eaf2ff;
-    color: var(--primary-blue);
-}
-
-.facturacion-accion-enviar:hover {
-    background: var(--primary-blue);
-    color: white;
-}
-
 .facturacion-accion:disabled {
     cursor: not-allowed;
     opacity: 0.45;

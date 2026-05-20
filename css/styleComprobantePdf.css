@@ -1,0 +1,151 @@
+/* CSS para Dompdf: comprobante de pago sin flex, grid ni variables. */
+@page {
+    margin: 24px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #111827;
+    font-family: DejaVu Sans, Arial, sans-serif;
+    font-size: 10px;
+}
+
+.comprobante {
+    width: 94%;
+    margin: 0 auto;
+    padding: 24px;
+    border: 1px solid #cfd6df;
+    border-left: 4px solid #102a43;
+    background: #ffffff;
+}
+
+.header {
+    width: 100%;
+    border-bottom: 2px solid #102a43;
+    padding-bottom: 12px;
+}
+
+.comprobante-logo {
+    width: 82px;
+    height: auto;
+}
+
+.fecha {
+    float: right;
+    width: 150px;
+    text-align: right;
+    font-size: 9px;
+    line-height: 1.45;
+    color: #4b5563;
+}
+
+.fecha strong {
+    font-size: 9px;
+    color: #102a43;
+}
+
+.titulo {
+    clear: both;
+    text-align: center;
+    margin-top: 24px;
+    margin-bottom: 18px;
+}
+
+.titulo h2 {
+    margin: 0;
+    color: #102a43;
+    font-family: Georgia, DejaVu Serif, serif;
+    font-size: 16px;
+    letter-spacing: .2px;
+}
+
+.titulo p {
+    margin-top: 7px;
+    font-size: 10px;
+    color: #4b5563;
+    font-weight: bold;
+}
+
+.box {
+    border: 1px solid #d9dee6;
+    background: #f8fafc;
+    padding: 11px 12px;
+    margin-bottom: 14px;
+}
+
+.fila {
+    margin-bottom: 6px;
+    font-size: 9.5px;
+    line-height: 1.45;
+}
+
+.label {
+    display: inline-block;
+    width: 94px;
+    color: #4b5563;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+}
+
+th,
+td {
+    border: 1px solid #d9dee6;
+    padding: 6px 6px;
+    font-size: 8.5px;
+    vertical-align: top;
+}
+
+th {
+    background: #102a43;
+    color: #ffffff;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+tbody tr:nth-child(even) {
+    background: #f8fafc;
+}
+
+.estado {
+    color: #166534;
+    font-weight: bold;
+}
+
+.total-table {
+    width: 245px;
+    margin-left: auto;
+    margin-top: 0;
+}
+
+.total-label {
+    text-align: right;
+    color: #4b5563;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.total-monto {
+    width: 92px;
+    background: #102a43;
+    color: #ffffff;
+    text-align: right;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.footer {
+    margin-top: 24px;
+    padding-top: 10px;
+    border-top: 1px solid #d9dee6;
+    text-align: center;
+    font-size: 8.5px;
+    color: #4b5563;
+}
