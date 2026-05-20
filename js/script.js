@@ -2120,8 +2120,68 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            // recoger ítems de la tabla
+const filas = document.querySelectorAll('#detalleBody tr');
+const items = [];
+filas.forEach(fila => {
+    const inputs  = fila.querySelectorAll('input');
+    const desc    = inputs[0]?.value.trim();
+    const cantidad = inputs[1]?.value;
+    const precio  = inputs[2]?.value;
+    if (desc && parseFloat(precio) > 0) {
+        items.push({ descripcion: desc, cantidad, precio });
+    }
+});
+
+if (items.length === 0) {
+    mostrarToastPremium('Agrega al menos un ítem con monto válido');
+    return;
+}
+
+const idDocente    = document.getElementById('factura-docente-id').value;
+const metodoPago   = document.getElementById('factura-metodo').value.trim();
+const noReferencia = document.getElementById('factura-referencia').value.trim();
+const observ       = document.getElementById('factura-observaciones').value.trim();
+const fechaEmis    = document.getElementById('factura-fecha').value;
+
+const fd = new FormData();
+fd.append('idDocente',     idDocente);
+fd.append('metodoPago',    metodoPago);
+fd.append('noReferencia',  noReferencia);
+fd.append('observaciones', observ);
+fd.append('fechaEmision',  fechaEmis);
+items.forEach((it, i) => {
+    fd.append(`items[${i}][descripcion]`, it.descripcion);
+    fd.append(`items[${i}][cantidad]`,    it.cantidad);
+    fd.append(`items[${i}][precio]`,      it.precio);
+});
+
+const btnSubmit = formNuevaFactura.querySelector('button[type="submit"]');
+if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.textContent = 'Generando...'; }
+
+fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
             cerrarModalFactura();
-            mostrarToastPremium('Factura preparada visualmente. Backend pendiente de integración.', 'success');
+            Swal.fire({
+                icon: 'success',
+                title: '¡Factura generada!',
+                html: `<b>${data.numeroFactura}</b><br>Total: $${data.total}<br>${data.mensaje}`,
+            }).then(() => location.reload());
+        } else {
+            mostrarToastPremium(data.error || 'Error al generar la factura');
+        }
+    })
+    .catch(err => mostrarToastPremium('Error de red: ' + err.message))
+    .finally(() => {
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '<i class="fas fa-file-circle-plus"></i> Generar factura';
+        }
+    });
+
+            
         });
 
         formNuevaFactura.addEventListener('input', function (e) {
@@ -2182,11 +2242,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const accion = boton.dataset.accion;
             const fila = boton.closest('tr');
             const numero = fila?.querySelector('[data-label="N° Factura"]')?.textContent?.trim() || 'la factura';
-
-            if (accion === 'pdf') {
-                mostrarToastPremium(`Descarga PDF de ${numero} pendiente de integración backend.`, 'success');
-            }
-
+            
             if (accion === 'enviar') {
                 mostrarToastPremium('Función pendiente de integración backend.', 'success');
             }

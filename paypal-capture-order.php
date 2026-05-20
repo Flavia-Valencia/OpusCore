@@ -14,6 +14,8 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['paypal_pending'])) {
 
 require_once 'includes/conexion.php';
 require_once 'includes/paypal-config.php';
+ use Dompdf\Dompdf;
+use Dompdf\Options;
 
 // Leer el Order ID que manda el SDK de PayPal tras la aprobación
 $body    = json_decode(file_get_contents('php://input'), true);
@@ -181,12 +183,12 @@ try {
     // Solo si el pago fue COMPLETADO, se registran inscripciones, matrícula y se descuentan cupos
     if ($pagoExitoso) {
         $stmtIns = $conexion->prepare("
-            INSERT INTO inscripciones (idEstudiante, idCurso, idPeriodo, idFactura, estado_academico)
-            VALUES (?, ?, ?, ?, 'Activo')
+            INSERT INTO inscripciones (idEstudiante, idCurso, idPeriodo, estado_academico)
+            VALUES (?, ?, ?, 'Activo')
         ");
         
         foreach ($cursoIds as $idCurso) {
-            $stmtIns->bind_param('iiii', $idEstudiante, $idCurso, $idPeriodo, $idPago);
+            $stmtIns->bind_param('iii', $idEstudiante, $idCurso, $idPeriodo);
             $stmtIns->execute();
             
             // Descontar cupo
@@ -204,20 +206,139 @@ try {
             $stmtMatricula->execute();
         }
 
-        require_once 'includes/enviar-comprobante.php';
-        
-        $datosCorreo = [
-            'total' => $totalConMatricula,
-            'captureId' => $captureId,
-            'cantidadCursos' => count($cursoIds),
-            'fecha' => date('Y-m-d H:i:s'),
-            'estado' => 'Completado',
-            'metodoPago' => $nombreMetodoPago,
-            'periodo_nombre' => $periodoNombre, 
-            'cursos' => $cursosDetalle        
+        // FACTURA ELECTRONICA
+         $anio = date('Y');
+        $stmtUltima = $conexion->prepare("
+            SELECT COUNT(*) AS total FROM facturas WHERE YEAR(fechaEmision) = ?
+        ");
+        $stmtUltima->bind_param('i', $anio);
+        $stmtUltima->execute();
+        $totalFacturas = $stmtUltima->get_result()->fetch_assoc()['total'] ?? 0;
+        $stmtUltima->close();
+        $numeroFactura = 'ADFE-' . $anio . '-' . str_pad($totalFacturas + 1, 6, '0', STR_PAD_LEFT);
+         $stmtFactura = $conexion->prepare("
+            INSERT INTO facturas 
+                (numeroFactura, tipoFactura, idReceptor, tipoReceptor, idPago, 
+                 metodoPago, noReferencia, observaciones, total, estado, generadoPor)
+            VALUES (?, 'Estudiante', ?, 'Estudiante', ?, ?, ?, 'Pago registrado correctamente.', ?, 'Emitida', ?)
+        ");
+
+        $obsFactura  = 'Pago registrado correctamente.';
+        $stmtFactura->bind_param(
+            'siissdi',
+            $numeroFactura,
+            $idEstudiante,
+            $idPago,
+            $nombreMetodoPago,
+            $captureId,
+            $totalConMatricula,
+            $idEstudiante
+        );
+        $stmtFactura->execute();
+        $idFactura = $conexion->insert_id;
+        $stmtFactura->close();
+
+             $stmtDetalle = $conexion->prepare("
+            INSERT INTO detalle_facturas 
+                (idFactura, tipoOrigen, idOrigen, descripcion, cantidad, precioUnitario, subtotal)
+            VALUES (?, 'Inscripcion', ?, ?, 1, ?, ?)
+        ");
+        foreach ($cursoIds as $idx => $idCurso) {
+            $nombreCurso  = $cursosDetalle[$idx]['nombre'] ?? 'Curso';
+            $costoCurso   = (float)($cursosDetalle[$idx]['costo'] ?? 0);
+            $descDetalle  = 'Inscripción — ' . $nombreCurso . ' / ' . $periodoNombre;
+            $stmtDetalle->bind_param('iisdd', $idFactura, $idCurso, $descDetalle, $costoCurso, $costoCurso);
+            $stmtDetalle->execute();
+        }
+        $stmtDetalle->close();
+
+        // Inserta matricula solo si se cobró
+        if (!$yaPayoMatricula) {
+            $stmtDetalleMatricula = $conexion->prepare("
+                INSERT INTO detalle_facturas 
+                    (idFactura, tipoOrigen, idOrigen, descripcion, cantidad, precioUnitario, subtotal)
+                VALUES (?, 'Matricula', NULL, ?, 1, 25.00, 25.00)
+            ");
+            $descMatricula = 'Matrícula — ' . $periodoNombre;
+            $stmtDetalleMatricula->bind_param('is', $idFactura, $descMatricula);
+            $stmtDetalleMatricula->execute();
+            $stmtDetalleMatricula->close();
+        }
+    // FACTURA ELECTRONICA END
+       require_once 'includes/enviar-comprobante.php';
+
+// ── Generar PDF de la factura electrónica para adjuntarlo al correo ──
+$pdfFactura = null;
+try {
+
+    // Variables que necesita vista-facturacion-electronica.php
+    $pagoId      = $idPago;
+    $estudiante  = $nombreEstudiante;
+    $correo      = $correoEstudiante;
+    $telefono    = $datosEstudiante['telefono'] ?? '';
+    $direccion   = $datosEstudiante['direccion'] ?? '';
+    $dui         = '';
+    $metodoPago  = $nombreMetodoPago;
+    $estado      = 'Emitida';
+    $transaccion = $captureId;
+    $total       = $totalConMatricula;
+    date_default_timezone_set('America/El_Salvador');
+    $fecha = date('d/m/Y');
+    $hora  = date('h:i A');
+    $periodo     = $periodoNombre;
+
+    // Construir $items para la vista
+    $items = [];
+    foreach ($cursosDetalle as $c) {
+        $items[] = [
+            'tipo'        => 'Inscripción',
+            'descripcion' => $c['nombre'],
+            'periodo'     => $periodoNombre,
+            'monto'       => $c['costo'],
         ];
-        
-        $resultado = enviarComprobante($correoEstudiante, $nombreEstudiante, $datosCorreo);
+    }
+    if (!$yaPayoMatricula) {
+        $items[] = [
+            'tipo'        => 'Matrícula',
+            'descripcion' => 'Matrícula',
+            'periodo'     => $periodoNombre,
+            'monto'       => 25.00,
+        ];
+    }
+
+    ob_start();
+    include __DIR__ . '/comprobantes/vista-facturacion-electronica.php';
+    $htmlFactura = ob_get_clean();
+
+    $optPdf = new Options();
+    $optPdf->set('isHtml5ParserEnabled', true);
+    $optPdf->set('isRemoteEnabled', true);
+    $optPdf->set('defaultFont', 'Arial');
+
+    $dompdf = new Dompdf($optPdf);
+    $dompdf->loadHtml($htmlFactura);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $pdfFactura = $dompdf->output();
+
+} catch (Throwable $e) {
+    error_log('Error generando PDF factura estudiante: ' . $e->getMessage());
+}
+
+$datosCorreo = [
+    'total'          => $totalConMatricula,
+    'captureId'      => $captureId,
+    'cantidadCursos' => count($cursoIds),
+    'fecha'          => date('Y-m-d H:i:s'),
+    'estado'         => 'Completado',
+    'metodoPago'     => $nombreMetodoPago,
+    'periodo_nombre' => $periodoNombre,
+    'cursos'         => $cursosDetalle,
+    'pdfFactura'     => $pdfFactura,         // ← PDF adjunto
+    'numeroFactura'  => $numeroFactura,      // ← para el nombre del archivo
+];
+
+$resultado = enviarComprobante($correoEstudiante, $nombreEstudiante, $datosCorreo);
     }
     
     $conexion->commit();
