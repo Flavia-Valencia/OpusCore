@@ -2200,31 +2200,77 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
     };
 
     const aplicarFiltrosFactura = () => {
+
         if (!tablaFacturas) return;
 
-        const filas = Array.from(tablaFacturas.querySelectorAll('tbody tr:not(.facturacion-sin-resultados)'));
-        const texto = filtros.busqueda?.value.trim().toLowerCase() || '';
-        const destino = filtros.destino?.value || '';
-        const concepto = filtros.concepto?.value || '';
+        const filas = Array.from(
+            tablaFacturas.querySelectorAll('tbody tr:not(.facturacion-sin-resultados)')
+        );
+
+        const texto = (filtros.busqueda?.value || '').toLowerCase().trim();
+
+        const destino = (filtros.destino?.value || '')
+            .toLowerCase()
+            .trim();
+
+        const concepto = (filtros.concepto?.value || '')
+            .toLowerCase()
+            .trim();
+
         const desde = filtros.desde?.value || '';
         const hasta = filtros.hasta?.value || '';
+
         let visibles = 0;
 
         filas.forEach(fila => {
-            const coincideTexto = !texto || (fila.dataset.busqueda || '').includes(texto);
-            const coincideDestino = !destino || fila.dataset.destino === destino;
-            const coincideConcepto = !concepto || fila.dataset.concepto === concepto;
-            const fecha = fila.dataset.fecha || '';
-            const coincideDesde = !desde || fecha >= desde;
-            const coincideHasta = !hasta || fecha <= hasta;
-            const mostrar = coincideTexto && coincideDestino && coincideConcepto && coincideDesde && coincideHasta;
 
-            fila.hidden = !mostrar;
+            const dataBusqueda = (fila.dataset.busqueda || '')
+                .toLowerCase()
+                .trim();
+
+            const dataDestino = (fila.dataset.destino || '')
+                .toLowerCase()
+                .trim();
+
+            const dataConcepto = (fila.dataset.concepto || '')
+                .toLowerCase()
+                .trim();
+
+            const fecha = fila.dataset.fecha || '';
+
+            const coincideTexto =
+                !texto || dataBusqueda.includes(texto);
+
+            const coincideDestino =
+                !destino || dataDestino.includes(destino);
+
+            const coincideConcepto =
+                !concepto || dataConcepto.includes(concepto);
+
+            const coincideDesde =
+                !desde || fecha >= desde;
+
+            const coincideHasta =
+                !hasta || fecha <= hasta;
+
+            const mostrar =
+                coincideTexto &&
+                coincideDestino &&
+                coincideConcepto &&
+                coincideDesde &&
+                coincideHasta;
+
+            fila.style.display = mostrar ? '' : 'none';
+
             if (mostrar) visibles++;
         });
 
         const sinResultados = document.getElementById('facturasSinResultados');
-        if (sinResultados) sinResultados.hidden = visibles > 0;
+
+        if (sinResultados) {
+            sinResultados.style.display =
+                visibles === 0 ? '' : 'none';
+        }
     };
 
     Object.values(filtros).forEach(control => {
