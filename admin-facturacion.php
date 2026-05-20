@@ -30,6 +30,11 @@ $sql = "
             WHERE df.idFactura = f.id
             LIMIT 1
         ) AS concepto,
+        (
+            SELECT GROUP_CONCAT(LOWER(df.tipoOrigen) SEPARATOR ',')
+            FROM detalle_facturas df
+            WHERE df.idFactura = f.id
+        ) AS tipoOrigen,
         f.total AS monto,
         f.metodoPago AS metodo,
         DATE_FORMAT(f.fechaEmision, '%Y-%m-%d') AS fecha,
@@ -214,11 +219,10 @@ $docentes = $resDocentes ? $resDocentes->fetch_all(MYSQLI_ASSOC) : [];
 
                 <select id="factura-concepto" class="facturacion-filtro-control" aria-label="Filtrar por tipo o concepto">
                     <option value="">Todos los conceptos</option>
-                    <option value="matrícula">Matrícula</option>
+                    <option value="matricula">Matrícula</option>
                     <option value="mensualidad">Mensualidad</option>
-                    <option value="inscripción">Inscripción</option>
-                    <option value="curso">Curso</option>
-                    <option value="otros">Otros</option>
+                    <option value="inscripcion">Inscripción</option>
+                    <option value="pagodocente">Pago docente</option>
                 </select>
 
                 <input type="date" id="factura-fecha-desde" class="facturacion-filtro-control" aria-label="Fecha desde">
@@ -248,9 +252,9 @@ $docentes = $resDocentes ? $resDocentes->fetch_all(MYSQLI_ASSOC) : [];
                             ?>
                             <tr
                                 data-busqueda="<?php echo strtolower($factura['numero'] . ' ' . $factura['destino'] . ' ' . $factura['receptor']); ?>"
-                                data-destino="<?php echo strtolower($factura['destino']); ?>"
+                                data-destino="<?php echo strtolower(trim($factura['destino'])); ?>"
                                 data-estado="<?php echo $estadoClase; ?>"
-                                data-concepto="<?php echo strtolower($factura['concepto']); ?>"
+                                data-concepto="<?php echo strtolower(trim($factura['tipoOrigen'])); ?>"
                                 data-fecha="<?php echo htmlspecialchars($factura['fecha']); ?>"
                             >
                                 <td data-label="ID"><?php echo $factura['id']; ?></td>
