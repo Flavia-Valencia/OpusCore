@@ -1090,7 +1090,8 @@ body {
     font-family: 'Raleway', sans-serif;
     font-size: 14px;
     font-weight: 600;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    color: #ffffff;
+    box-shadow: 0 14px 28px rgba(6, 157, 191, 0.22);
     opacity: 0;
     pointer-events: none;
     transition: all 0.4s ease;
@@ -1099,15 +1100,13 @@ body {
 }
 
 .toast-premium.toast-error {
-    background: #fff5f5;
-    color: #c53030;
-    border-left: 5px solid #c53030;
+    background: linear-gradient(135deg, #b42335, #ef5b6b);
+    border-left: 5px solid #7f1d1d;
 }
 
 .toast-premium.toast-success {
-    background: #f0fff4;
-    color: #2f855a;
-    border-left: 5px solid #2f855a;
+    background: linear-gradient(135deg, #15803d, #22c55e);
+    border-left: 5px solid #86efac;
 }
 
 .toast-premium i {
