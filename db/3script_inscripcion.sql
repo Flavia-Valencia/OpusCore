@@ -90,15 +90,15 @@ CREATE TABLE `facturas` (
     `idReceptor` INT NOT NULL,
     `tipoReceptor` ENUM('Estudiante','Docente') NOT NULL,
     `idPago` INT DEFAULT NULL,
-    `metodoPago` VARCHAR(50) NOT NULL,
+    `metodoPago` VARCHAR(50) DEFAULT NULL,
     `noReferencia` VARCHAR(100) DEFAULT NULL,
     `observaciones` TEXT DEFAULT NULL,
     `total` DECIMAL(10,2) NOT NULL,
     `estado` ENUM('Emitida','Anulada') DEFAULT 'Emitida',
     `fechaEmision` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `generadoPor` INT NOT NULL,
-    CONSTRAINT `fk_factura_pago` FOREIGN KEY (`idPago`) 
-    REFERENCES `pagos` (`id`)
+    `generadoPor` INT NULL,
+    CONSTRAINT `fk_factura_pago` FOREIGN KEY (`idPago`) REFERENCES `pagos` (`id`),
+    CONSTRAINT `fk_factura_usuario` FOREIGN KEY (`generadoPor`) REFERENCES `usuarios` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `detalle_facturas` (
