@@ -10,53 +10,98 @@ if(!isset($_SESSION["usuario"])){
     exit();
 }
 
-// FRONTEND: datos de muestra. Backend conectara historial real, PDF y envio
-$facturas = [
-    [
-        'id' => 1,
-        'numero' => 'FE-2026-0001',
-        'destino' => 'Docente',
-        'docente' => 'Andrea Lopez',
-        'concepto' => 'Mensualidad',
-        'monto' => 350.00,
-        'metodo' => 'Tarjeta de Crédito/Débito',
-        'fecha' => '2026-05-15',
-        'estado' => 'Emitida'
-    ],
-    [
-        'id' => 2,
-        'numero' => 'FE-2026-0002',
-        'destino' => 'Docente',
-        'docente' => 'Carlos Mejia',
-        'concepto' => 'Curso',
-        'monto' => 280.00,
-        'metodo' => 'PayPal',
-        'fecha' => '2026-05-16',
-        'estado' => 'Emitida'
-    ],
-    [
-        'id' => 3,
-        'numero' => 'FE-2026-0003',
-        'destino' => 'Estudiante',
-        'docente' => 'Sofia Hernandez',
-        'concepto' => 'Matrícula',
-        'monto' => 420.00,
-        'metodo' => 'Tarjeta de Crédito/Débito',
-        'fecha' => '2026-05-17',
-        'estado' => 'Emitida'
-    ],
-    [
-        'id' => 4,
-        'numero' => 'FE-2026-0004',
-        'destino' => 'Estudiante',
-        'docente' => 'Miguel Rivera',
-        'concepto' => 'Inscripción',
-        'monto' => 75.00,
-        'metodo' => 'PayPal',
-        'fecha' => '2026-05-18',
-        'estado' => 'Emitida'
-    ],
-];
+require_once 'includes/conexion.php';
+
+// Consulta real: facturas de estudiantes (generadas automáticamente por pagos)
+// y facturas de docentes (generadas manualmente por el admin)
+$sql = "
+    SELECT 
+        f.id,
+        f.numeroFactura AS numero,
+        f.tipoReceptor AS destino,
+        CASE f.tipoReceptor
+            WHEN 'Estudiante' THEN CONCAT(u_est.nombre, ' ', u_est.apellido)
+            WHEN 'Docente'    THEN CONCAT(u_doc.nombre, ' ', u_doc.apellido)
+            ELSE '—'
+        END AS receptor,
+        (
+            SELECT df.descripcion
+            FROM detalle_facturas df
+            WHERE df.idFactura = f.id
+            LIMIT 1
+        ) AS concepto,
+        f.total AS monto,
+        f.metodoPago AS metodo,
+        DATE_FORMAT(f.fechaEmision, '%Y-%m-%d') AS fecha,
+        f.estado
+    FROM facturas f
+
+    LEFT JOIN estudiantes est ON f.tipoReceptor = 'Estudiante' AND f.idReceptor = est.id
+    LEFT JOIN usuarios u_est  ON est.usuario_id = u_est.id
+
+    LEFT JOIN docentes doc    ON f.tipoReceptor = 'Docente' AND f.idReceptor = doc.id
+    LEFT JOIN usuarios u_doc  ON doc.usuario_id = u_doc.id
+    ORDER BY f.fechaEmision DESC
+";
+
+$result   = $conexion->query($sql);
+$facturas = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+// MÉTRICAS REALES 
+$totalFacturas = 0;
+$totalDocentes = 0;
+$totalEstudiantes = 0;
+$totalFacturado = 0;
+
+// Total de facturas
+$qTotal = $conexion->query("SELECT COUNT(*) AS total FROM facturas");
+if ($qTotal && $row = $qTotal->fetch_assoc()) {
+    $totalFacturas = (int)$row['total'];
+}
+
+// Facturas a docentes
+$qDoc = $conexion->query("
+    SELECT COUNT(*) AS total 
+    FROM facturas 
+    WHERE tipoReceptor = 'Docente'
+");
+if ($qDoc && $row = $qDoc->fetch_assoc()) {
+    $totalDocentes = (int)$row['total'];
+}
+
+// Facturas a estudiantes
+$qEst = $conexion->query("
+    SELECT COUNT(*) AS total 
+    FROM facturas 
+    WHERE tipoReceptor = 'Estudiante'
+");
+if ($qEst && $row = $qEst->fetch_assoc()) {
+    $totalEstudiantes = (int)$row['total'];
+}
+
+// Total facturado
+$qMonto = $conexion->query("
+    SELECT COALESCE(SUM(total), 0) AS total 
+    FROM facturas
+");
+if ($qMonto && $row = $qMonto->fetch_assoc()) {
+    $totalFacturado = (float)$row['total'];
+}
+
+// DOCENTES PARA EL MODAL 
+$sqlDocentes = "
+    SELECT 
+        d.id,
+        CONCAT(u.nombre, ' ', u.apellido) AS nombreCompleto,
+        u.correo
+    FROM docentes d
+    INNER JOIN usuarios u ON d.usuario_id = u.id
+    ORDER BY u.nombre ASC
+";
+
+$resDocentes = $conexion->query($sqlDocentes);
+$docentes = $resDocentes ? $resDocentes->fetch_all(MYSQLI_ASSOC) : [];
+
 ?>
 
 <!DOCTYPE html>
@@ -140,19 +185,19 @@ $facturas = [
             <div class="facturacion-metricas">
                 <div class="facturacion-metrica">
                     <span>Facturas emitidas</span>
-                    <strong>128</strong>
+                    <strong><?php echo $totalFacturas; ?></strong>
                 </div>
                 <div class="facturacion-metrica">
                     <span>Facturas a docentes</span>
-                    <strong>82</strong>
+                    <strong><?php echo $totalDocentes; ?></strong>
                 </div>
                 <div class="facturacion-metrica">
                     <span>Facturas a estudiantes</span>
-                    <strong>46</strong>
+                    <strong><?php echo $totalEstudiantes; ?></strong>
                 </div>
                 <div class="facturacion-metrica">
                     <span>Total facturado</span>
-                    <strong>$8,540.00</strong>
+                    <strong>$<?php echo number_format($totalFacturado, 2); ?></strong>
                 </div>
             </div>
         </section>
@@ -202,7 +247,7 @@ $facturas = [
                                 $estadoClase = strtolower($factura['estado']);
                             ?>
                             <tr
-                                data-busqueda="<?php echo strtolower($factura['numero'] . ' ' . $factura['destino'] . ' ' . $factura['docente']); ?>"
+                                data-busqueda="<?php echo strtolower($factura['numero'] . ' ' . $factura['destino'] . ' ' . $factura['receptor']); ?>"
                                 data-destino="<?php echo strtolower($factura['destino']); ?>"
                                 data-estado="<?php echo $estadoClase; ?>"
                                 data-concepto="<?php echo strtolower($factura['concepto']); ?>"
@@ -211,7 +256,7 @@ $facturas = [
                                 <td data-label="ID"><?php echo $factura['id']; ?></td>
                                 <td data-label="N° Factura"><?php echo htmlspecialchars($factura['numero']); ?></td>
                                 <td data-label="Destino"><?php echo htmlspecialchars($factura['destino']); ?></td>
-                                <td data-label="Docente / Estudiante"><?php echo htmlspecialchars($factura['docente']); ?></td>
+                                <td data-label="Docente / Estudiante"><?php echo htmlspecialchars($factura['receptor']); ?></td>
                                 <td data-label="Concepto"><?php echo htmlspecialchars($factura['concepto']); ?></td>
                                 <td data-label="Monto">$<?php echo number_format($factura['monto'], 2); ?></td>
                                 <td data-label="Método"><?php echo htmlspecialchars($factura['metodo']); ?></td>
@@ -223,9 +268,12 @@ $facturas = [
                                 </td>
                                 <td data-label="Acciones" class="acciones-cell">
                                     <div class="facturacion-acciones">
-                                        <button type="button" class="link-accion facturacion-accion facturacion-accion-pdf" data-accion="pdf">
-                                            <i class="fas fa-file-pdf"></i> PDF
-                                        </button>
+                                    <a href="comprobantes/vista-facturacion-electronica.php?pago_id=<?php echo $factura['id']; ?>"
+                                        target="_blank"
+                                         class="link-accion facturacion-accion facturacion-accion-pdf">
+                                        <i class="fas fa-file-pdf"></i> PDF
+                                    </a>
+                                        
                                         <button type="button" class="link-accion facturacion-accion facturacion-accion-enviar" data-accion="enviar">
                                             <i class="fas fa-paper-plane"></i> Enviar
                                         </button>
@@ -259,21 +307,15 @@ $facturas = [
                         <label for="factura-docente-id">Docente</label>
                         <select id="factura-docente-id" name="idDocente" required>
                             <option value="">Seleccione un docente</option>
-                            <!-- FRONTEND: opciones mock. Backend cargara docentes desde tabla docentes + usuarios. -->
-                            <option
-                                value="1"
-                                data-nombre="Andrea Lopez"
-                                data-correo="andrea.lopez@academia.test"
-                            >
-                                Andrea Lopez
-                            </option>
-                            <option
-                                value="2"
-                                data-nombre="Carlos Mejia"
-                                data-correo="carlos.mejia@academia.test"
-                            >
-                                Carlos Mejia
-                            </option>
+                            <?php foreach ($docentes as $docente): ?>
+                                <option
+                                    value="<?php echo $docente['id']; ?>"
+                                    data-nombre="<?php echo htmlspecialchars($docente['nombreCompleto']); ?>"
+                                    data-correo="<?php echo htmlspecialchars($docente['correo']); ?>"
+                                >
+                                     <?php echo htmlspecialchars($docente['nombreCompleto']); ?>
+                                </option>
+                            <?php endforeach; ?>                 
                         </select>
                     </div>
 

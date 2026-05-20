@@ -114,6 +114,7 @@ try {
     );
 
     $stmtPago->execute();
+    $idPago = $conexion->insert_id; // id del pago recién registrado
 
     // Actualizar mensualidad
     $stmtMensualidad = $conexion->prepare("
@@ -169,6 +170,54 @@ $stmtMens->bind_param('i', $mensualidadId);
 $stmtMens->execute();
 $datosMens = $stmtMens->get_result()->fetch_assoc();
 $stmtMens->close();
+
+// FACTURA ELECTRONICA
+
+ $anio = date('Y');
+        $stmtUltima = $conexion->prepare("
+            SELECT COUNT(*) AS total FROM facturas WHERE YEAR(fechaEmision) = ?
+        ");
+        $stmtUltima->bind_param('i', $anio);
+        $stmtUltima->execute();
+        $totalFacturas = $stmtUltima->get_result()->fetch_assoc()['total'] ?? 0;
+        $stmtUltima->close();
+        $numeroFactura = 'ADFE-' . $anio . '-' . str_pad($totalFacturas + 1, 6, '0', STR_PAD_LEFT);
+
+         $nombreMetodoPagoFact = match ($idMetodoPago) {
+            2       => 'Tarjeta de Crédito/Débito',
+            default => 'PayPal',
+        };
+
+        $stmtFact = $conexion->prepare("
+            INSERT INTO facturas 
+                (numeroFactura, tipoFactura, idReceptor, tipoReceptor, idPago,
+                 metodoPago, noReferencia, observaciones, total, estado, generadoPor)
+            VALUES (?, 'Estudiante', ?, 'Estudiante', ?, ?, ?, 'Pago de mensualidad.', ?, 'Emitida', ?)
+        ");
+        $stmtFact->bind_param(
+            'siissdi',
+            $numeroFactura,
+            $idEstudiante,
+            $idPago,          
+            $nombreMetodoPagoFact,
+            $captureId,
+            $monto,
+            $idEstudiante
+        );
+        $stmtFact->execute();
+        $idFactura = $conexion->insert_id;
+        $stmtFact->close();
+
+        $stmtDetFact = $conexion->prepare("
+            INSERT INTO detalle_facturas
+                (idFactura, tipoOrigen, idOrigen, descripcion, cantidad, precioUnitario, subtotal)
+            VALUES (?, 'Mensualidad', ?, ?, 1, ?, ?)
+        ");
+        $descMens = ($datosMens['curso_nombre'] ?? 'Curso') . ' — ' . ($datosMens['mesPagado'] ?? '') . ' / ' . ($datosMens['periodo_nombre'] ?? '');
+        $stmtDetFact->bind_param('iisdd', $idFactura, $mensualidadId, $descMens, $monto, $monto);
+        $stmtDetFact->execute();
+        $stmtDetFact->close();
+          // FACTURA ELECTRONICA END
 
 // Enviar comprobante por correo
 require_once 'includes/enviar-comprobante.php';
