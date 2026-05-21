@@ -13,7 +13,7 @@ USE db_academiadigital;
 INSERT INTO `usuarios` (`nombre`, `apellido`, `correo`, `password_hash`, `estado`, `rol_id`) VALUES 
 ('Sabrina', 'Saravia', 'sabrina@gmail.com', 'SabriAdmin-12', 1, 1),
 ('Yamileth', 'Valencia', 'yamiiacademia3@gmail.com', 'YamiEstudiante-19', 1, 2),
-('Karla', 'Morales', 'karli@gmail.com', 'KarliDocente_22', 1, 3),
+('Karla', 'Morales', 'karladocente19@gmail.com', 'KarliDocente_22', 1, 3),
 ('Daniel', 'García', 'daniel@gmail.com', 'Daniel123', 1, 2),
 ('Yahir', 'Romero', 'yahir@gmail.com', 'Yahir123', 1, 3),
 ('Keyri', 'Sanchez', 'keyri@gmail.com', 'keyri123', 1, 3);  
@@ -61,3 +61,16 @@ INSERT INTO `inscripciones` (`idEstudiante`, `idCurso`, `idPeriodo`) VALUES
 (1, 1, 1),
 (2, 1, 1), 
 (1, 2, 1);
+
+-- Insetar valores en las tablas de sesiones y archivos de sesiones.
+INSERT INTO `sesionContenido` (`idCurso`, `titulo`, `descripcion`, `fecha`, `estado`) VALUES
+(1, 'Clase I: Introducción a la Programación', 'Sesión introductoria para conocer los conceptos básicos de programación.', '2026-05-19', 1),
+(1, 'Clase II: Estructuras de Control', 'Aprenderemos sobre condicionales y bucles en programación.', '2026-05-21', 1),
+(2, 'Clase I: Fundamentos de Diseño Gráfico', 'Exploraremos los principios básicos del diseño gráfico y su aplicación.', '2026-05-19', 1),
+(2, 'Clase II: Herramientas de Diseño', 'Conoceremos las principales herramientas utilizadas en diseño gráfico.', '2026-05-21', 1);
+
+INSERT INTO `sesionArchivos` (`idSesion`, `nombreArchivo`, `rutaArchivo`, `tipo`) VALUES
+(1, 'Introducción a la Programación.pdf', 'editarurl', 'Archivo'),
+(1, 'Video de Introducción', 'https://youtu.be/rDynuZstCwU?si=SjoR8Y7QBGY32RIj', 'Enlace'),
+(2, 'Fundamentos de Diseño Gráfico.pdf', 'editarurl', 'Archivo'),
+(2, 'Video de Fundamentos de Diseño', 'https://youtu.be/7N2v0bpNFKA?si=I6VwB2sOqINrPdkM', 'Enlace');
