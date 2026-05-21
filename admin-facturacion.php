@@ -276,9 +276,6 @@ $docentes = $resDocentes ? $resDocentes->fetch_all(MYSQLI_ASSOC) : [];
                                             class="link-accion facturacion-accion facturacion-accion-pdf">
                                              <i class="fas fa-file-pdf"></i> PDF
                                         </a>         
-                                        <button type="button" class="link-accion facturacion-accion facturacion-accion-enviar" data-accion="enviar">
-                                            <i class="fas fa-paper-plane"></i> Enviar
-                                        </button>
                                     </div>
                                 </td>
                             </tr>

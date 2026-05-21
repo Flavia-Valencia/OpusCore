@@ -20,7 +20,7 @@ function getCursosDocente($conexion, $correoDocente) {
         LEFT JOIN inscripciones i ON i.idCurso = c.id
         WHERE u.correo = '$correo'
         AND c.estado = 1
-        AND CURDATE() BETWEEN p.fechaInicio AND p.fechaFin
+        AND CURDATE() BETWEEN p.fechaInicioCiclo AND p.fechaFinCiclo
         AND p.estado = 1
         GROUP BY c.id, c.nombre, c.descripcion, c.costoMensual,
                 c.cupos, c.fechaInicio, c.fechaFin, p.nombre

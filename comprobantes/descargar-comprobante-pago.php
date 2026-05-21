@@ -7,6 +7,7 @@ if (!isset($_SESSION["usuario"])) {
 }
 
 require_once '../includes/conexion.php';
+require_once '../includes/dompdf/autoload.inc.php';
 
 $pagoId = filter_input(INPUT_GET, 'pago_id', FILTER_VALIDATE_INT);
 
@@ -100,88 +101,40 @@ if (!$pago) {
 }
 
 $codigo = $pago['idTransaccionPasarela'] ?: 'PAY-' . str_pad((string) $pago['pago_id'], 5, '0', STR_PAD_LEFT);
-$fechaPago = $pago['fechaPago'] ? date('d/m/Y h:i A', strtotime($pago['fechaPago'])) : date('d/m/Y h:i A');
-$monto = '$' . number_format((float) $pago['monto'], 2);
 $nombreArchivo = 'comprobante-pago-' . preg_replace('/[^A-Za-z0-9_-]/', '-', $codigo) . '.pdf';
 
-$lineas = [
-    ['size' => 18, 'text' => 'COMPROBANTE DE PAGO E INSCRIPCION'],
-    ['size' => 12, 'text' => 'Academia Futuro Digital'],
-    ['size' => 11, 'text' => 'Fecha de emision: ' . date('d/m/Y h:i A')],
-    ['size' => 11, 'text' => ''],
-    ['size' => 13, 'text' => 'Datos del estudiante'],
-    ['size' => 11, 'text' => 'Estudiante: ' . $estudiante['estudiante_nombre']],
-    ['size' => 11, 'text' => 'Correo: ' . $estudiante['correo']],
-    ['size' => 11, 'text' => ''],
-    ['size' => 13, 'text' => 'Detalle del pago'],
-    ['size' => 11, 'text' => 'Curso: ' . ($pago['curso'] ?: 'No especificado')],
-    ['size' => 11, 'text' => 'Periodo: ' . ($pago['periodo'] ?: 'No especificado')],
-    ['size' => 11, 'text' => 'Horario y aula: ' . ($pago['horario_aula'] ?: 'No especificado')],
-    ['size' => 11, 'text' => 'Metodo: ' . ($pago['metodo_pago'] ?: 'PayPal')],
-    ['size' => 11, 'text' => 'Estado: ' . $pago['estado_pago']],
-    ['size' => 11, 'text' => 'Fecha de pago: ' . $fechaPago],
-    ['size' => 11, 'text' => 'ID de transaccion: ' . $codigo],
-    ['size' => 14, 'text' => 'Total pagado: ' . $monto],
-    ['size' => 10, 'text' => ''],
-    ['size' => 10, 'text' => 'Este comprobante fue generado automaticamente por Academia Futuro Digital.']
-];
+// Variables que consume la plantilla HTML del comprobante.
+$estudianteNombre = $estudiante['estudiante_nombre'];
+$correo = $estudiante['correo'];
+$metodoPago = $pago['metodo_pago'] ?: 'PayPal';
+$estado = $pago['estado_pago'];
+$transaccion = $codigo;
+$total = (float) $pago['monto'];
+$periodo = $pago['periodo'] ?: 'No especificado';
+$fecha = $pago['fechaPago'] ? date('d/m/Y', strtotime($pago['fechaPago'])) : date('d/m/Y');
+$hora = $pago['fechaPago'] ? date('h:i A', strtotime($pago['fechaPago'])) : date('h:i A');
+$cursos = [[
+    'nombre' => $pago['curso'] ?: 'No especificado',
+    'periodo_nombre' => $periodo,
+    'horario' => $pago['horario_aula'] ?: 'No asignado',
+    'aula' => 'N/A',
+    'costo' => $total,
+]];
+$estudiante = $estudianteNombre;
 
-function textoPdf(string $texto): string
-{
-    $textoConvertido = iconv('UTF-8', 'Windows-1252//TRANSLIT', $texto);
-    $texto = $textoConvertido === false ? $texto : $textoConvertido;
+// Genera el PDF usando la misma plantilla visual del comprobante.
+ob_start();
+include __DIR__ . '/vista-comprobante-pago.php';
+$html = ob_get_clean();
 
-    return str_replace(['\\', '(', ')'], ['\\\\', '\\(', '\\)'], $texto);
-}
+$options = new \Dompdf\Options();
+$options->set('isHtml5ParserEnabled', true);
+$options->set('isRemoteEnabled', true);
+$options->set('defaultFont', 'Arial');
 
-function agregarLineaPdf(string &$contenido, int $x, int &$y, int $size, string $texto): void
-{
-    $segmentos = $texto === '' ? [''] : explode("\n", wordwrap($texto, 88, "\n", false));
-
-    foreach ($segmentos as $segmento) {
-        $contenido .= "BT /F1 {$size} Tf {$x} {$y} Td (" . textoPdf($segmento) . ") Tj ET\n";
-        $y -= $size + 8;
-    }
-}
-
-$contenido = "";
-$y = 770;
-
-foreach ($lineas as $linea) {
-    agregarLineaPdf($contenido, 55, $y, $linea['size'], $linea['text']);
-}
-
-$objetos = [];
-$objetos[] = "<< /Type /Catalog /Pages 2 0 R >>";
-$objetos[] = "<< /Type /Pages /Kids [3 0 R] /Count 1 >>";
-$objetos[] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>";
-$objetos[] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
-$objetos[] = "<< /Length " . strlen($contenido) . " >>\nstream\n{$contenido}endstream";
-
-$pdf = "%PDF-1.4\n";
-$offsets = [0];
-
-foreach ($objetos as $indice => $objeto) {
-    $offsets[] = strlen($pdf);
-    $numero = $indice + 1;
-    $pdf .= "{$numero} 0 obj\n{$objeto}\nendobj\n";
-}
-
-$xref = strlen($pdf);
-$pdf .= "xref\n0 " . (count($objetos) + 1) . "\n";
-$pdf .= "0000000000 65535 f \n";
-
-for ($i = 1; $i <= count($objetos); $i++) {
-    $pdf .= sprintf("%010d 00000 n \n", $offsets[$i]);
-}
-
-$pdf .= "trailer\n<< /Size " . (count($objetos) + 1) . " /Root 1 0 R >>\n";
-$pdf .= "startxref\n{$xref}\n%%EOF";
-
-header('Content-Type: application/pdf');
-header('Content-Disposition: attachment; filename="' . $nombreArchivo . '"');
-header('Content-Length: ' . strlen($pdf));
-header('Cache-Control: private, must-revalidate');
-
-echo $pdf;
+$dompdf = new \Dompdf\Dompdf($options);
+$dompdf->loadHtml($html);
+$dompdf->setPaper('letter', 'portrait');
+$dompdf->render();
+$dompdf->stream($nombreArchivo, ['Attachment' => true]);
 exit();
