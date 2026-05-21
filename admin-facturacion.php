@@ -272,12 +272,10 @@ $docentes = $resDocentes ? $resDocentes->fetch_all(MYSQLI_ASSOC) : [];
                                 </td>
                                 <td data-label="Acciones" class="acciones-cell">
                                     <div class="facturacion-acciones">
-                                    <a href="comprobantes/vista-facturacion-electronica.php?pago_id=<?php echo $factura['id']; ?>"
-                                        target="_blank"
-                                         class="link-accion facturacion-accion facturacion-accion-pdf">
-                                        <i class="fas fa-file-pdf"></i> PDF
-                                    </a>
-                                        
+                                        <a href="comprobantes/descargar-factura.php?factura_id=<?php echo $factura['id']; ?>"
+                                            class="link-accion facturacion-accion facturacion-accion-pdf">
+                                             <i class="fas fa-file-pdf"></i> PDF
+                                        </a>         
                                         <button type="button" class="link-accion facturacion-accion facturacion-accion-enviar" data-accion="enviar">
                                             <i class="fas fa-paper-plane"></i> Enviar
                                         </button>

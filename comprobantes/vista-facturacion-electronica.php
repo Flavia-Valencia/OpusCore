@@ -199,7 +199,7 @@ if (is_readable($logoPath)) {
 
         <div class="doc-badge">
             <div class="doc-type">Comprobante<br>de Pago</div>
-            <div class="doc-num">N° <?= str_pad($pagoId ?? 0, 6, '0', STR_PAD_LEFT) ?></div>
+            <div class="doc-num">N° <?= htmlspecialchars($numeroFacturaVista ?? str_pad($pagoId ?? 0, 6, '0', STR_PAD_LEFT)) ?></div>
             <div class="doc-fecha">
                 <strong>Fecha:</strong> <?= htmlspecialchars($fecha) ?><br>
                 <strong>Hora:</strong>  <?= htmlspecialchars($hora)  ?>
@@ -333,7 +333,7 @@ if (is_readable($logoPath)) {
             Cualquier consulta: <span style="color:var(--accent)">soporte@academiafuturodigital.edu.sv</span>
         </div>
         <div class="footer-right">
-            N° de Documento: <?= str_pad($pagoId ?? 0, 6, '0', STR_PAD_LEFT) ?><br>
+            N° de Documento: <?= htmlspecialchars($numeroFacturaVista ?? str_pad($pagoId ?? 0, 6, '0', STR_PAD_LEFT)) ?><br>
             Generado: <?= date('d/m/Y H:i:s') ?>
         </div>
     </footer>

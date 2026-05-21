@@ -14,6 +14,7 @@ require_once 'includes/conexion.php';
 // conexión a la tabla de pagos
 $sql = "
     SELECT 
+        p.id,
         CONCAT('PAY-', LPAD(p.id, 4, '0')) AS codigo,
         CONCAT(u.nombre, ' ', u.apellido) AS estudiante,
         u.correo,
@@ -145,12 +146,9 @@ $pagos = $result->fetch_all(MYSQLI_ASSOC);
                                 </td>
                                 <td data-label="Comprobante" class="acciones-cell">
                                     <div class="acciones-texto">
-                                        <!-- FRONTEND: boton visual pendiente; backend definira que comprobante debe abrir/descargar. -->
                                         <a
                                             class="link-accion horarios"
-                                            href="#"
-                                            aria-disabled="true"
-                                            onclick="return false;"
+                                             href="comprobantes/descargar-comprobante-pago.php?pago_id=<?php echo $pago['id']; ?>"
                                         >
                                             <i class="fas fa-file-pdf"></i> PDF
                                         </a>
