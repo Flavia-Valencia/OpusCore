@@ -2367,3 +2367,245 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
         if (label) label.textContent = '$0.00';
     };
 })();
+
+// MODULO ORGANIZACION DE CLASES DOCENTE
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('modalContenido');
+    const form = document.getElementById('formContenidoClase');
+    const btnNuevo = document.getElementById('btnNuevoContenido');
+    const btnCerrar = document.getElementById('cerrarModalContenido');
+    const btnCancelar = document.getElementById('cancelarContenido');
+    const tbody = document.getElementById('tablaContenidosBody');
+    const buscar = document.getElementById('buscarContenido');
+    const filtroCurso = document.getElementById('filtroCursoContenido');
+    const filtroEstado = document.getElementById('filtroEstadoContenido');
+
+    if (!modal || !form || !tbody) return;
+
+    const campos = {
+        id: document.getElementById('contenidoId'),
+        curso: document.getElementById('contenidoCurso'),
+        sesion: document.getElementById('contenidoSesion'),
+        titulo: document.getElementById('contenidoTitulo'),
+        descripcion: document.getElementById('contenidoDescripcion'),
+        fecha: document.getElementById('contenidoFecha'),
+        estado: document.getElementById('contenidoEstado'),
+        archivo: document.getElementById('contenidoArchivo'),
+        archivoActual: document.getElementById('contenidoArchivoActual'),
+        modalTitulo: document.getElementById('contenidoModalTitulo')
+    };
+
+    function abrirModalContenido(modo = 'crear', fila = null) {
+        form.reset();
+        limpiarValidacionContenido();
+        campos.id.value = '';
+        campos.modalTitulo.textContent = modo === 'editar' ? 'Editar contenido' : 'Nuevo contenido';
+        campos.archivoActual.textContent = 'Backend integrará la carga real del archivo.';
+
+        if (fila) {
+            campos.id.value = fila.dataset.id || '';
+            campos.curso.value = fila.dataset.curso || '';
+            campos.sesion.value = obtenerNumeroSesion(fila.dataset.sesion || '');
+            campos.titulo.value = fila.dataset.titulo || '';
+            campos.descripcion.value = fila.dataset.descripcion || '';
+            campos.fecha.value = fila.dataset.fecha || '';
+            campos.estado.value = fila.dataset.estado || 'Publicado';
+            campos.archivoActual.textContent = fila.dataset.archivo
+                ? `Archivo actual: ${fila.dataset.archivo}`
+                : 'Sin archivo adjunto actualmente.';
+        }
+
+        modal.classList.add('activo');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModalContenido() {
+        modal.classList.remove('activo');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    function limpiarValidacionContenido() {
+        form.querySelectorAll('.contenido-field').forEach(field => field.classList.remove('is-invalid'));
+    }
+
+    function validarContenido() {
+        limpiarValidacionContenido();
+        const requeridos = [campos.curso, campos.sesion, campos.titulo, campos.descripcion, campos.fecha, campos.estado];
+        let valido = true;
+
+        requeridos.forEach(campo => {
+            if (!campo.value.trim() || (campo === campos.sesion && parseInt(campo.value, 10) < 1)) {
+                campo.closest('.contenido-field')?.classList.add('is-invalid');
+                valido = false;
+            }
+        });
+
+        if (!valido) mostrarToastPremium('Complete los campos obligatorios del contenido');
+        return valido;
+    }
+
+    function crearBadgeEstado(estado) {
+        const clase = estado.toLowerCase();
+        return `<span class="contenido-badge estado-${clase}">${escapeContenido(estado)}</span>`;
+    }
+
+    function nombreArchivoVisible(fila, inputArchivo) {
+        if (inputArchivo?.files?.length) return inputArchivo.files[0].name;
+        return fila?.dataset.archivo || '';
+    }
+
+    function renderArchivo(nombre) {
+        if (!nombre) return '<span class="contenido-muted">Sin archivo</span>';
+        return `<span class="contenido-archivo"><i class="fas fa-paperclip"></i>${escapeContenido(nombre)}</span>`;
+    }
+
+    function escapeContenido(valor) {
+        return String(valor || '').replace(/[&<>"']/g, caracter => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        }[caracter]));
+    }
+
+    function actualizarFila(fila, usarFormulario = true) {
+        if (usarFormulario) {
+            fila.dataset.curso = campos.curso.value;
+            fila.dataset.sesion = formatearSesion(campos.sesion.value);
+            fila.dataset.titulo = campos.titulo.value.trim();
+            fila.dataset.descripcion = campos.descripcion.value.trim();
+            fila.dataset.fecha = campos.fecha.value;
+            fila.dataset.archivo = nombreArchivoVisible(fila, campos.archivo);
+            fila.dataset.estado = campos.estado.value;
+        }
+
+        const archivo = fila.dataset.archivo || '';
+
+        fila.innerHTML = `
+            <td data-label="ID">${escapeContenido(fila.dataset.id)}</td>
+            <td data-label="Curso">${escapeContenido(fila.dataset.curso)}</td>
+            <td data-label="Sesión">${escapeContenido(fila.dataset.sesion)}</td>
+            <td data-label="Título">
+                <strong>${escapeContenido(fila.dataset.titulo)}</strong>
+                <span class="contenido-desc">${escapeContenido(fila.dataset.descripcion)}</span>
+            </td>
+            <td data-label="Fecha publicación">${escapeContenido(formatearFechaContenido(fila.dataset.fecha))}</td>
+            <td data-label="Archivo">${renderArchivo(archivo)}</td>
+            <td data-label="Estado">${crearBadgeEstado(fila.dataset.estado)}</td>
+            <td data-label="Acciones">
+                <div class="contenido-acciones">
+                    <button type="button" class="contenido-icon-btn editar-contenido" title="Editar contenido">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button type="button" class="contenido-toggle" data-action="toggle">
+                        ${fila.dataset.estado === 'Deshabilitado' ? 'Habilitar' : 'Deshabilitar'}
+                    </button>
+                </div>
+            </td>`;
+    }
+
+    function crearFila() {
+        tbody.querySelector('.contenido-empty')?.remove();
+        const ids = Array.from(tbody.querySelectorAll('tr:not(.contenido-empty)')).map(row => parseInt(row.dataset.id, 10) || 0);
+        const nuevoId = Math.max(0, ...ids) + 1;
+        const fila = document.createElement('tr');
+        fila.dataset.id = nuevoId;
+        tbody.prepend(fila);
+        actualizarFila(fila);
+    }
+
+    function formatearFechaContenido(valor) {
+        if (!valor) return '';
+        const partes = valor.split('-');
+        if (partes.length !== 3) return valor;
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    function formatearSesion(valor) {
+        const numero = parseInt(valor, 10);
+        if (!numero || numero < 1) return '';
+        return `Sesión ${String(numero).padStart(2, '0')}`;
+    }
+
+    function obtenerNumeroSesion(valor) {
+        const coincidencia = String(valor || '').match(/\d+/);
+        return coincidencia ? String(parseInt(coincidencia[0], 10)) : '';
+    }
+
+    function filtrarContenidos() {
+        const texto = (buscar?.value || '').toLowerCase().trim();
+        const curso = filtroCurso?.value || '';
+        const estado = filtroEstado?.value || '';
+
+        tbody.querySelectorAll('tr:not(.contenido-empty)').forEach(fila => {
+            const coincideTexto = !texto || [
+                fila.dataset.titulo,
+                fila.dataset.curso,
+                fila.dataset.sesion,
+                fila.dataset.descripcion
+            ].some(valor => (valor || '').toLowerCase().includes(texto));
+            const coincideCurso = !curso || fila.dataset.curso === curso;
+            const coincideEstado = !estado || fila.dataset.estado === estado;
+
+            fila.style.display = coincideTexto && coincideCurso && coincideEstado ? '' : 'none';
+        });
+    }
+
+    btnNuevo?.addEventListener('click', () => abrirModalContenido('crear'));
+    btnCerrar?.addEventListener('click', cerrarModalContenido);
+    btnCancelar?.addEventListener('click', cerrarModalContenido);
+
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) cerrarModalContenido();
+    });
+
+    tbody.addEventListener('click', function (e) {
+        const btnEditar = e.target.closest('.editar-contenido');
+        const btnToggle = e.target.closest('.contenido-toggle');
+        const fila = e.target.closest('tr');
+        if (!fila) return;
+
+        if (btnEditar) {
+            abrirModalContenido('editar', fila);
+            return;
+        }
+
+        if (btnToggle) {
+            const deshabilitado = fila.dataset.estado === 'Deshabilitado';
+            fila.dataset.estado = deshabilitado ? 'Publicado' : 'Deshabilitado';
+            actualizarFila(fila, false);
+            filtrarContenidos();
+            mostrarToastPremium(
+                deshabilitado ? 'Contenido habilitado visualmente.' : 'Contenido deshabilitado visualmente.',
+                'success'
+            );
+        }
+    });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!validarContenido()) return;
+
+        const id = campos.id.value;
+        const fila = id ? tbody.querySelector(`tr[data-id="${id}"]`) : null;
+
+        if (fila) {
+            actualizarFila(fila);
+            mostrarToastPremium('Contenido actualizado visualmente.', 'success');
+        } else {
+            crearFila();
+            mostrarToastPremium('Contenido creado visualmente.', 'success');
+        }
+
+        cerrarModalContenido();
+        filtrarContenidos();
+    });
+
+    [buscar, filtroCurso, filtroEstado].forEach(control => {
+        control?.addEventListener('input', filtrarContenidos);
+        control?.addEventListener('change', filtrarContenidos);
+    });
+});

@@ -51,7 +51,7 @@ if(!isset($_SESSION["usuario"])){
             <nav>
 
                 <ul>
-                    <li class="active">
+                    <li class="active" onclick="window.location.href='docentes.php'">
                         <i class="fas fa-book"></i> Mis Cursos
                     </li>
                     <li>
@@ -157,6 +157,13 @@ if(!isset($_SESSION["usuario"])){
                                     <span class="meta-value price">$<?php echo number_format($curso['costoMensual'], 2); ?></span>
                                 </div>
                             </div>
+                            <a
+                                class="card-action"
+                                href="docente-organizacion-clases.php?curso_id=<?= urlencode($curso['id']) ?>&curso=<?= urlencode($curso['nombre']) ?>"
+                            >
+                                <i class="fas fa-folder-open"></i>
+                                Organizar clases
+                            </a>
                         </div>
                     <?php endforeach;
                 else: ?>
