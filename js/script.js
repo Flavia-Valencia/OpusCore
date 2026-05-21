@@ -2280,22 +2280,6 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
         }
     });
 
-    if (tablaFacturas) {
-        tablaFacturas.addEventListener('click', function (e) {
-            const boton = e.target.closest('.facturacion-accion');
-            if (!boton || boton.disabled) return;
-
-            const accion = boton.dataset.accion;
-            const fila = boton.closest('tr');
-            const numero = fila?.querySelector('[data-label="N° Factura"]')?.textContent?.trim() || 'la factura';
-            
-            if (accion === 'enviar') {
-                mostrarToastPremium('Función pendiente de integración backend.', 'success');
-            }
-
-        });
-    }
-
     if (selectDocenteFactura) {
         selectDocenteFactura.addEventListener('change', function () {
             const option = this.selectedOptions[0];
