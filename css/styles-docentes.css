@@ -991,6 +991,110 @@ body {
   transform: translateY(0);
 }
 
+  .adjunto-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #f5f7fa;
+    border: 1px solid #dde3ec;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+  .adjunto-tipo {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #4a5568;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+  }
+
+  .adjunto-item input[type="file"],
+  .adjunto-item input[type="text"],
+  .adjunto-item input[type="url"] {
+      flex: 1;
+      min-width: 150px;
+      padding: 6px 10px;
+      border: 1px solid #dde3ec;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-family: inherit;
+      background: #fff;
+  }
+
+  .adjunto-remove {
+      background: none;
+      border: none;
+      color: #e53e3e;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+  }
+
+  .adjunto-remove:hover {
+      background: #fff5f5;
+  }
+
+  .contenido-adjunto-btns {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+  }
+  .adjunto-file-input {
+    display: none; /* oculta el input nativo */
+  }
+
+  .adjunto-file-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      padding: 7px 14px;
+      background: #fff;
+      border: 1.5px dashed #a0aec0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: #4a5568;
+      transition: border-color 0.2s, background 0.2s;
+      min-width: 150px;
+  }
+
+  .adjunto-file-label:hover {
+      border-color: #3182ce;
+      background: #ebf8ff;
+      color: #2b6cb0;
+  }
+
+  .adjunto-file-texto {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+  }
+.fila-deshabilitada {
+    opacity: 0.5;
+    background-color: #f1f5f9;
+}
+
+.fila-deshabilitada td {
+    color: #94a3b8;
+}
+.btn-habilitar {
+    background-color: #e6f4ea;
+    color: #2e7d32;
+    border-color: #a5d6a7;
+}
+
+.btn-habilitar:hover {
+    background-color: #c8e6c9;
+}
 @media (max-width: 900px) {
   .organizacion-topbar,
   .organizacion-banner {
@@ -1097,7 +1201,6 @@ body {
   .contenido-modal-actions .contenido-btn {
     width: 100%;
   }
-
   .toast-premium {
     bottom: 16px;
     right: 16px;

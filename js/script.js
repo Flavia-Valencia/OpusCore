@@ -2369,6 +2369,14 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
 })();
 
 // MODULO ORGANIZACION DE CLASES DOCENTE
+// Abre y cierra el modal para crear o editar contenidos
+// Valida los campos obligatorios del formulario
+// Gestiona archivos y enlaces adjuntos dinámicamente
+// Actualiza filas y estados de contenidos en la tabla
+// Filtra contenidos por búsqueda, curso y estado
+// Actualiza contadores de contenidos publicados y deshabilitados
+// Guarda y actualiza contenidos mediante peticiones fetch
+
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('modalContenido');
     const form = document.getElementById('formContenidoClase');
@@ -2390,29 +2398,24 @@ document.addEventListener('DOMContentLoaded', function () {
         descripcion: document.getElementById('contenidoDescripcion'),
         fecha: document.getElementById('contenidoFecha'),
         estado: document.getElementById('contenidoEstado'),
-        archivo: document.getElementById('contenidoArchivo'),
-        archivoActual: document.getElementById('contenidoArchivoActual'),
         modalTitulo: document.getElementById('contenidoModalTitulo')
     };
 
     function abrirModalContenido(modo = 'crear', fila = null) {
         form.reset();
         limpiarValidacionContenido();
+        document.getElementById('listaAdjuntos').innerHTML = ''; 
         campos.id.value = '';
         campos.modalTitulo.textContent = modo === 'editar' ? 'Editar contenido' : 'Nuevo contenido';
-        campos.archivoActual.textContent = 'Backend integrará la carga real del archivo.';
 
         if (fila) {
-            campos.id.value = fila.dataset.id || '';
-            campos.curso.value = fila.dataset.curso || '';
-            campos.sesion.value = obtenerNumeroSesion(fila.dataset.sesion || '');
-            campos.titulo.value = fila.dataset.titulo || '';
+            campos.id.value        = fila.dataset.id || '';
+            campos.curso.value     = fila.dataset.curso || '';
+            campos.sesion.value    = obtenerNumeroSesion(fila.dataset.sesion || '');
+            campos.titulo.value    = fila.dataset.titulo || '';
             campos.descripcion.value = fila.dataset.descripcion || '';
-            campos.fecha.value = fila.dataset.fecha || '';
-            campos.estado.value = fila.dataset.estado || 'Publicado';
-            campos.archivoActual.textContent = fila.dataset.archivo
-                ? `Archivo actual: ${fila.dataset.archivo}`
-                : 'Sin archivo adjunto actualmente.';
+            campos.fecha.value     = fila.dataset.fecha || '';
+            campos.estado.value    = fila.dataset.estado || 'Publicado';
         }
 
         modal.classList.add('activo');
@@ -2424,6 +2427,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.classList.remove('activo');
         modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
+        document.getElementById('listaAdjuntos').innerHTML = '';
     }
 
     function limpiarValidacionContenido() {
@@ -2473,39 +2477,46 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function actualizarFila(fila, usarFormulario = true) {
         if (usarFormulario) {
-            fila.dataset.curso = campos.curso.value;
-            fila.dataset.sesion = formatearSesion(campos.sesion.value);
-            fila.dataset.titulo = campos.titulo.value.trim();
+            fila.dataset.curso       = campos.curso.value;
+            fila.dataset.sesion      = formatearSesion(campos.sesion.value);
+            fila.dataset.titulo      = campos.titulo.value.trim();
             fila.dataset.descripcion = campos.descripcion.value.trim();
-            fila.dataset.fecha = campos.fecha.value;
-            fila.dataset.archivo = nombreArchivoVisible(fila, campos.archivo);
-            fila.dataset.estado = campos.estado.value;
+            fila.dataset.fecha       = campos.fecha.value;
+            fila.dataset.estado      = campos.estado.value;
+            
+        }
+        if (fila.dataset.estado === 'Deshabilitado') {
+            fila.classList.add('fila-deshabilitada');
+            tbody.appendChild(fila);
+        } else {
+            fila.classList.remove('fila-deshabilitada');
         }
 
         const archivo = fila.dataset.archivo || '';
 
         fila.innerHTML = `
-            <td data-label="ID">${escapeContenido(fila.dataset.id)}</td>
-            <td data-label="Curso">${escapeContenido(fila.dataset.curso)}</td>
-            <td data-label="Sesión">${escapeContenido(fila.dataset.sesion)}</td>
-            <td data-label="Título">
-                <strong>${escapeContenido(fila.dataset.titulo)}</strong>
-                <span class="contenido-desc">${escapeContenido(fila.dataset.descripcion)}</span>
-            </td>
-            <td data-label="Fecha publicación">${escapeContenido(formatearFechaContenido(fila.dataset.fecha))}</td>
-            <td data-label="Archivo">${renderArchivo(archivo)}</td>
-            <td data-label="Estado">${crearBadgeEstado(fila.dataset.estado)}</td>
-            <td data-label="Acciones">
-                <div class="contenido-acciones">
-                    <button type="button" class="contenido-icon-btn editar-contenido" title="Editar contenido">
-                        <i class="fas fa-pen"></i>
-                    </button>
-                    <button type="button" class="contenido-toggle" data-action="toggle">
-                        ${fila.dataset.estado === 'Deshabilitado' ? 'Habilitar' : 'Deshabilitar'}
-                    </button>
-                </div>
-            </td>`;
+                <td data-label="ID">${escapeContenido(fila.dataset.id)}</td>
+                <td data-label="Curso">${escapeContenido(fila.dataset.curso)}</td>
+                <td data-label="Sesión">${escapeContenido(fila.dataset.sesion)}</td>
+                <td data-label="Título">
+                    <strong>${escapeContenido(fila.dataset.titulo)}</strong>
+                    <span class="contenido-desc">${escapeContenido(fila.dataset.descripcion)}</span>
+                </td>
+                <td data-label="Fecha publicación">${escapeContenido(formatearFechaContenido(fila.dataset.fecha))}</td>
+                <td data-label="Archivo">${renderArchivo(archivo)}</td>
+                <td data-label="Estado">${crearBadgeEstado(fila.dataset.estado)}</td>
+                <td data-label="Acciones">
+                    <div class="contenido-acciones">
+                        <button type="button" class="contenido-icon-btn editar-contenido" title="Editar contenido">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button type="button" class="contenido-toggle ${fila.dataset.estado === 'Deshabilitado' ? 'btn-habilitar' : ''}" data-action="toggle">
+                            ${fila.dataset.estado === 'Deshabilitado' ? 'Habilitar' : 'Deshabilitar'}
+                        </button>
+                    </div>
+                </td>`;
     }
+    
 
     function crearFila() {
         tbody.querySelector('.contenido-empty')?.remove();
@@ -2553,7 +2564,60 @@ document.addEventListener('DOMContentLoaded', function () {
             fila.style.display = coincideTexto && coincideCurso && coincideEstado ? '' : 'none';
         });
     }
+    let adjuntoCount = 0;
 
+    function crearItemAdjunto(tipo) {
+        adjuntoCount++;
+        const id = `adj_${adjuntoCount}`;
+        const div = document.createElement('div');
+        div.className = 'adjunto-item';
+        div.dataset.tipo = tipo;
+        div.dataset.id = id;
+
+        if (tipo === 'Archivo') {
+            div.innerHTML = `
+                    <span class="adjunto-tipo"><i class="fas fa-paperclip"></i> Archivo</span>
+                    <label class="adjunto-file-label">
+                        <i class="fas fa-folder-open"></i>
+                        <span class="adjunto-file-texto">Seleccionar archivo</span>
+                        <input type="file" name="archivos[]"
+                            accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,.png,.jpg,.jpeg"
+                            class="adjunto-file-input">
+                    </label>
+                    <button type="button" class="adjunto-remove" data-id="${id}">
+                        <i class="fas fa-times"></i>
+                    </button>`;
+
+                div.querySelector('.adjunto-file-input').addEventListener('change', function () {
+                    const texto = div.querySelector('.adjunto-file-texto');
+                    texto.textContent = this.files[0]?.name || 'Seleccionar archivo';
+                });
+        } else {
+            div.innerHTML = `
+                <span class="adjunto-tipo"><i class="fas fa-link"></i> Enlace</span>
+                <input type="text" name="enlaces[${adjuntoCount}][nombre]" placeholder="Nombre del enlace">
+                <input type="url"  name="enlaces[${adjuntoCount}][url]"    placeholder="https://...">
+                <button type="button" class="adjunto-remove" data-id="${id}">
+                    <i class="fas fa-times"></i>
+                </button>`;
+        }
+        return div;
+    }
+
+    document.getElementById('btnAgregarArchivo')?.addEventListener('click', () => {
+        document.getElementById('listaAdjuntos').appendChild(crearItemAdjunto('Archivo'));
+    });
+
+    document.getElementById('btnAgregarEnlace')?.addEventListener('click', () => {
+        document.getElementById('listaAdjuntos').appendChild(crearItemAdjunto('Enlace'));
+    });
+
+    document.getElementById('listaAdjuntos')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('.adjunto-remove');
+        if (btn) {
+            document.querySelector(`.adjunto-item[data-id="${btn.dataset.id}"]`)?.remove();
+        }
+    });
     btnNuevo?.addEventListener('click', () => abrirModalContenido('crear'));
     btnCerrar?.addEventListener('click', cerrarModalContenido);
     btnCancelar?.addEventListener('click', cerrarModalContenido);
@@ -2569,43 +2633,86 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!fila) return;
 
         if (btnEditar) {
+            if (fila.dataset.estado === 'Deshabilitado') {
+                mostrarToastPremium('No puedes editar un contenido deshabilitado.', 'error');
+                return;
+            }
             abrirModalContenido('editar', fila);
             return;
         }
 
         if (btnToggle) {
             const deshabilitado = fila.dataset.estado === 'Deshabilitado';
-            fila.dataset.estado = deshabilitado ? 'Publicado' : 'Deshabilitado';
-            actualizarFila(fila, false);
-            filtrarContenidos();
-            mostrarToastPremium(
-                deshabilitado ? 'Contenido habilitado visualmente.' : 'Contenido deshabilitado visualmente.',
-                'success'
-            );
+            const nuevoEstado   = deshabilitado ? 'Publicado' : 'Deshabilitado';
+            const nuevoValor    = deshabilitado ? 1 : 0;
+
+            fetch('toggle_contenido.php', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    id: fila.dataset.id,
+                    estado: nuevoValor
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.ok) {
+                    fila.dataset.estado = nuevoEstado;
+                    actualizarFila(fila, false);
+                    filtrarContenidos();
+                    actualizarContadores();
+
+                } else {
+                    mostrarToastPremium('Error al cambiar estado.');
+                }
+            })
+            .catch(() => mostrarToastPremium('Error de conexión.'));
+        }
+    });
+    function actualizarContadores() {
+        const filas = Array.from(tbody.querySelectorAll('tr:not(.contenido-empty)'));
+        const publicados     = filas.filter(f => f.dataset.estado === 'Publicado').length;
+        const deshabilitados = filas.filter(f => f.dataset.estado === 'Deshabilitado').length;
+
+        const metricas = document.querySelectorAll('.organizacion-metricas div strong');
+        if (metricas[0]) metricas[0].textContent = String(publicados).padStart(2, '0');
+        if (metricas[2]) metricas[2].textContent = String(deshabilitados).padStart(2, '0');
+    }
+    tbody.querySelectorAll('tr:not(.contenido-empty)').forEach(fila => {
+        if (fila.dataset.estado === 'Deshabilitado') {
+            fila.classList.add('fila-deshabilitada');
+            tbody.appendChild(fila);
         }
     });
 
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', async function (e) {
         e.preventDefault();
         if (!validarContenido()) return;
 
-        const id = campos.id.value;
-        const fila = id ? tbody.querySelector(`tr[data-id="${id}"]`) : null;
+        const formData = new FormData(form);
+        formData.set('id', campos.id.value || 0);
+        formData.set('idCurso', document.getElementById('contenidoCursoId').value);
+        formData.set('titulo',      campos.titulo.value.trim());
+        formData.set('descripcion', campos.descripcion.value.trim());
+        formData.set('fecha',       campos.fecha.value);
+        formData.set('estado',      campos.estado.value === 'Publicado' ? 1 : 0);
 
-        if (fila) {
-            actualizarFila(fila);
-            mostrarToastPremium('Contenido actualizado visualmente.', 'success');
-        } else {
-            crearFila();
-            mostrarToastPremium('Contenido creado visualmente.', 'success');
+        try {
+            const resp = await fetch('/OpusCore/guardar_contenido.php', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await resp.json();
+
+            if (data.ok) {
+                mostrarToastPremium('Contenido guardado correctamente.', 'success');
+                cerrarModalContenido();
+                setTimeout(() => location.reload(), 1500); 
+            } else {
+                mostrarToastPremium('Error: ' + data.msg);
+            }
+        } catch (err) {
+            mostrarToastPremium('Error de conexión: ' + err.message);
         }
-
-        cerrarModalContenido();
-        filtrarContenidos();
     });
-
-    [buscar, filtroCurso, filtroEstado].forEach(control => {
-        control?.addEventListener('input', filtrarContenidos);
-        control?.addEventListener('change', filtrarContenidos);
-    });
+    
 });

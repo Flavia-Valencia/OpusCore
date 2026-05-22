@@ -30,7 +30,10 @@ Pasos detallados para instalar y ejecutar el proyecto en un entorno local.
 
 #### 1. Clonar el repositorio:
 En la terminal de Visual Studio Code ejecutar:
+
+```bash
 git clone https://github.com/Flavia-Valencia/OpusCore.git
+```
 
 #### 2. Iniciar el servidor local:
 Instalar XAMMP luego abrirlo y activar los siguientes servicios:
@@ -38,17 +41,35 @@ Instalar XAMMP luego abrirlo y activar los siguientes servicios:
 - MySQL
 
 #### 3. Mover la carpeta del proyecto a la siguiente ruta:
+
+```txt
 C:\xampp\htdocs\
+```
 
 #### 4. Configurar la base de datos:
-- Ingresar a: http://localhost/phpmyadmin/
-- Crear una nueva base de datos, con el siguiente nombre: db_academiadigital
+- Ingresar a:
+
+```txt
+http://localhost/phpmyadmin/
+```
+- Crear una nueva base de datos, con el siguiente nombre: 
+
+```txt
+db_academiadigital
+```
+
 - Importar desde el repositorio OpusCore el script de la base de datos:
-    script_completo.sql
+  
+```txt
+script_completo.sql
+```
   
 #### 5. Ejecutar el sistema:
 Abrir el navegador y acceder a:
+
+```txt
 http://localhost/OpusCore/login.php
+```
 
 #### 6. Credenciales del Sistema:
 ##### Administrador
@@ -56,14 +77,20 @@ http://localhost/OpusCore/login.php
 - **Contraseña:** SabriAdmin-12
 
 ##### Docente
-- **Correo:** karli@gmail.com
+- **Correo:** karladocente19@gmail.com
 - **Contraseña:** KarliDocente_22
 
 ##### Estudiante
 - **Correo:** yamiiacademia3@gmail.com
 - **Contraseña:** YamiEstudiante-19
 
-#### Correo para verificación de comprobantes
+#### Correo para verificación de Facturación en docente
+- **Cuenta Gmail:** karladocente19@gmail.com
+- **Contraseña:** KarlaDocenteAcadem!a19
+
+> Esta cuenta se utiliza para recibir y verificar facturas de pago enviados manualmente desde admintrador del sistema.
+
+#### Correo para verificación de comprobantes de estudiantes
 - **Cuenta Gmail:** yamiiacademia3@gmail.com
 - **Contraseña:** AcademiaFuturoDigital
 
@@ -83,7 +110,7 @@ http://localhost/OpusCore/login.php
 ### Encargada de verificación
 - **Responsable:** Karla Morales  
 - **Contacto:**  7012-5338
-- **Correo:** [u20240731 @univo.edu.sv](mailto:u20240731@univo.edu.sv)
+- **Correo:** [u20240731@univo.edu.sv](mailto:u20240731@univo.edu.sv)
 
 > **Nota:** Una vez ingresadas las credenciales, la encargada deberá aprobar o proporcionar la verificación necesaria para completar el acceso a la cuenta.
 
@@ -146,7 +173,7 @@ En caso de dudas con la instalación, contactar a:
 ![Estudiante](Evidencias/docente.png)
 
 ## Version del Sistema
-v0.3 – Sprint 3
+v0.4 – Sprint 4
 
 ## Autor(es)
 OpusCore - Equipo de Desarollo
