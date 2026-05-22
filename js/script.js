@@ -2408,10 +2408,16 @@ document.addEventListener('DOMContentLoaded', function () {
         campos.id.value = '';
         campos.modalTitulo.textContent = modo === 'editar' ? 'Editar contenido' : 'Nuevo contenido';
 
+        if(modo === 'crear'){
+            const totalSesiones = tbody.querySelectorAll('tr:not(.contenido-empty)').length;
+            const siguienteNumero = totalSesiones + 1;
+            campos.sesion.value = `Sesión ${String(siguienteNumero).padStart(2, '0')}`;
+        }
+
         if (fila) {
             campos.id.value        = fila.dataset.id || '';
             campos.curso.value     = fila.dataset.curso || '';
-            campos.sesion.value    = obtenerNumeroSesion(fila.dataset.sesion || '');
+            campos.sesion.value    = fila.dataset.sesion || '';
             campos.titulo.value    = fila.dataset.titulo || '';
             campos.descripcion.value = fila.dataset.descripcion || '';
             campos.fecha.value     = fila.dataset.fecha || '';
@@ -2433,22 +2439,35 @@ document.addEventListener('DOMContentLoaded', function () {
     function limpiarValidacionContenido() {
         form.querySelectorAll('.contenido-field').forEach(field => field.classList.remove('is-invalid'));
     }
-
+    
     function validarContenido() {
-        limpiarValidacionContenido();
-        const requeridos = [campos.curso, campos.sesion, campos.titulo, campos.descripcion, campos.fecha, campos.estado];
-        let valido = true;
+    limpiarValidacionContenido();
+    let valido = true;
+    let mensajeError = '';
 
-        requeridos.forEach(campo => {
-            if (!campo.value.trim() || (campo === campos.sesion && parseInt(campo.value, 10) < 1)) {
-                campo.closest('.contenido-field')?.classList.add('is-invalid');
-                valido = false;
-            }
-        });
+    const requeridos = [campos.curso, campos.sesion, campos.titulo, campos.descripcion, campos.fecha, campos.estado];
+    requeridos.forEach(campo => {
+        if (!campo.value.trim()) {
+            campo.closest('.contenido-field')?.classList.add('is-invalid');
+            valido = false;
+            if (!mensajeError) mensajeError = 'Complete los campos obligatorios del contenido';
+        }
+    });
 
-        if (!valido) mostrarToastPremium('Complete los campos obligatorios del contenido');
-        return valido;
+    if (campos.fecha.value) {
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        const fechaSel = new Date(campos.fecha.value + 'T00:00:00');
+        if (fechaSel < hoy) {
+            campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
+            mensajeError = 'La fecha de la publicación no puede ser menor que la fecha actual';
+            valido = false;
+        }
     }
+
+    if (!valido) mostrarToastPremium(mensajeError);
+    return valido;
+}
 
     function crearBadgeEstado(estado) {
         const clase = estado.toLowerCase();
@@ -2715,4 +2734,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     
+    // Buscador y filtro estado
+if (buscar) buscar.addEventListener('input', filtrarContenidos);
+if (filtroCurso) filtroCurso.addEventListener('change', filtrarContenidos);
+if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
 });
