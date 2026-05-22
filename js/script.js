@@ -2385,8 +2385,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnCancelar = document.getElementById('cancelarContenido');
     const tbody = document.getElementById('tablaContenidosBody');
     const buscar = document.getElementById('buscarContenido');
-    const filtroCurso = document.getElementById('filtroCursoContenido');
     const filtroEstado = document.getElementById('filtroEstadoContenido');
+    const adjuntosActuales = document.getElementById('adjuntosActuales');
 
     if (!modal || !form || !tbody) return;
 
@@ -2405,6 +2405,7 @@ document.addEventListener('DOMContentLoaded', function () {
         form.reset();
         limpiarValidacionContenido();
         document.getElementById('listaAdjuntos').innerHTML = ''; 
+        if (adjuntosActuales) adjuntosActuales.innerHTML = '';
         campos.id.value = '';
         campos.modalTitulo.textContent = modo === 'editar' ? 'Editar contenido' : 'Nuevo contenido';
 
@@ -2422,6 +2423,7 @@ document.addEventListener('DOMContentLoaded', function () {
             campos.descripcion.value = fila.dataset.descripcion || '';
             campos.fecha.value     = fila.dataset.fecha || '';
             campos.estado.value    = fila.dataset.estado || 'Publicado';
+            renderAdjuntosActuales(fila);
         }
 
         modal.classList.add('activo');
@@ -2434,6 +2436,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
         document.getElementById('listaAdjuntos').innerHTML = '';
+        if (adjuntosActuales) adjuntosActuales.innerHTML = '';
     }
 
     function limpiarValidacionContenido() {
@@ -2482,6 +2485,43 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderArchivo(nombre) {
         if (!nombre) return '<span class="contenido-muted">Sin archivo</span>';
         return `<span class="contenido-archivo"><i class="fas fa-paperclip"></i>${escapeContenido(nombre)}</span>`;
+    }
+
+    function obtenerAdjuntosFila(fila) {
+        const archivos = (fila?.dataset.archivo || '')
+            .split(',')
+            .map(nombre => nombre.trim())
+            .filter(Boolean)
+            .map(nombre => ({ tipo: 'Archivo', nombre }));
+        const enlaces = (fila?.dataset.enlaces || '')
+            .split(',')
+            .map(nombre => nombre.trim())
+            .filter(Boolean)
+            .map(nombre => ({ tipo: 'Enlace', nombre }));
+
+        return [...archivos, ...enlaces];
+    }
+
+    function renderAdjuntosActuales(fila) {
+        if (!adjuntosActuales) return;
+
+        const adjuntos = obtenerAdjuntosFila(fila);
+        if (!adjuntos.length) {
+            adjuntosActuales.innerHTML = '<span class="contenido-muted">Sin adjuntos guardados</span>';
+            return;
+        }
+
+        adjuntosActuales.innerHTML = adjuntos.map(adjunto => `
+            <div class="adjunto-item adjunto-existente">
+                <span class="adjunto-tipo">
+                    <i class="fas ${adjunto.tipo === 'Enlace' ? 'fa-link' : 'fa-paperclip'}"></i>
+                    ${escapeContenido(adjunto.nombre)}
+                </span>
+                <button type="button" class="adjunto-remove adjunto-remove-existente" title="Quitar adjunto de la vista">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `).join('');
     }
 
     function escapeContenido(valor) {
@@ -2536,7 +2576,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         fila.innerHTML = `
                 <td data-label="ID">${escapeContenido(fila.dataset.id)}</td>
-                <td data-label="Curso">${escapeContenido(fila.dataset.curso)}</td>
                 <td data-label="Sesión">${escapeContenido(fila.dataset.sesion)}</td>
                 <td data-label="Título">
                     <strong>${escapeContenido(fila.dataset.titulo)}</strong>
@@ -2588,20 +2627,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function filtrarContenidos() {
         const texto = (buscar?.value || '').toLowerCase().trim();
-        const curso = filtroCurso?.value || '';
         const estado = filtroEstado?.value || '';
 
         tbody.querySelectorAll('tr:not(.contenido-empty)').forEach(fila => {
             const coincideTexto = !texto || [
                 fila.dataset.titulo,
-                fila.dataset.curso,
                 fila.dataset.sesion,
                 fila.dataset.descripcion
             ].some(valor => (valor || '').toLowerCase().includes(texto));
-            const coincideCurso = !curso || fila.dataset.curso === curso;
             const coincideEstado = !estado || fila.dataset.estado === estado;
 
-            fila.style.display = coincideTexto && coincideCurso && coincideEstado ? '' : 'none';
+            fila.style.display = coincideTexto && coincideEstado ? '' : 'none';
         });
     }
     let adjuntoCount = 0;
@@ -2656,6 +2692,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const btn = e.target.closest('.adjunto-remove');
         if (btn) {
             document.querySelector(`.adjunto-item[data-id="${btn.dataset.id}"]`)?.remove();
+        }
+    });
+
+    adjuntosActuales?.addEventListener('click', (e) => {
+        const btn = e.target.closest('.adjunto-remove-existente');
+        if (!btn) return;
+
+        btn.closest('.adjunto-existente')?.remove();
+
+        if (!adjuntosActuales.querySelector('.adjunto-existente')) {
+            adjuntosActuales.innerHTML = '<span class="contenido-muted">Sin adjuntos guardados</span>';
         }
     });
     btnNuevo?.addEventListener('click', () => abrirModalContenido('crear'));
@@ -2753,6 +2800,221 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Buscador y filtro estado
 if (buscar) buscar.addEventListener('input', filtrarContenidos);
-if (filtroCurso) filtroCurso.addEventListener('change', filtrarContenidos);
 if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
+});
+
+// Panel de acciones en las tarjetas de cursos del docente
+document.addEventListener('DOMContentLoaded', function () {
+    const contenedorCursos = document.querySelector('.courses');
+    if (!contenedorCursos) return;
+
+    contenedorCursos.addEventListener('click', function (e) {
+        const tarjeta = e.target.closest('.curso-card-docente');
+        if (!tarjeta || e.target.closest('a')) return;
+
+        const abrir = !tarjeta.classList.contains('is-selected');
+
+        contenedorCursos.querySelectorAll('.curso-card-docente').forEach(card => {
+            card.classList.remove('is-selected');
+            card.querySelector('.curso-acciones-panel')?.setAttribute('aria-hidden', 'true');
+        });
+
+        if (abrir) {
+            tarjeta.classList.add('is-selected');
+            tarjeta.querySelector('.curso-acciones-panel')?.setAttribute('aria-hidden', 'false');
+        }
+    });
+});
+
+// Interacciones frontend para gestion de tareas del docente
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('modalTarea');
+    const form = document.getElementById('formTareaDocente');
+    const tbody = document.getElementById('tablaTareasBody');
+    const btnNueva = document.getElementById('btnNuevaTarea');
+    const btnCerrar = document.getElementById('cerrarModalTarea');
+    const btnCancelar = document.getElementById('cancelarTarea');
+    const total = document.getElementById('tareasTotal');
+    const tareaArchivoTexto = document.getElementById('tareaArchivoTexto');
+    const limpiarArchivoTarea = document.getElementById('limpiarArchivoTarea');
+
+    if (!modal || !form || !tbody) return;
+
+    let filaEditando = null;
+
+    const campos = {
+        titulo: document.getElementById('tareaTitulo'),
+        descripcion: document.getElementById('tareaDescripcion'),
+        fecha: document.getElementById('tareaFecha'),
+        puntaje: document.getElementById('tareaPuntaje'),
+        estado: document.getElementById('tareaEstado'),
+        archivo: document.getElementById('tareaArchivo'),
+        modalTitulo: document.getElementById('tareaModalTitulo')
+    };
+
+    function abrirModalTarea(fila = null) {
+        form.reset();
+        limpiarValidacionTarea();
+        filaEditando = fila;
+        campos.modalTitulo.textContent = fila ? 'Editar tarea' : 'Nueva tarea';
+        if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
+
+        if (fila) {
+            campos.titulo.value = fila.dataset.titulo || '';
+            campos.descripcion.value = fila.dataset.descripcion || '';
+            campos.fecha.value = fila.dataset.fecha || '';
+            campos.puntaje.value = fila.dataset.puntaje || '';
+            campos.estado.value = fila.dataset.estado || 'Activa';
+            if (tareaArchivoTexto && fila.dataset.archivo) {
+                tareaArchivoTexto.textContent = fila.dataset.archivo;
+            }
+        }
+
+        modal.classList.add('activo');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModalTarea() {
+        modal.classList.remove('activo');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        filaEditando = null;
+    }
+
+    function limpiarValidacionTarea() {
+        form.querySelectorAll('.contenido-field').forEach(field => field.classList.remove('is-invalid'));
+    }
+
+    function validarTarea() {
+        limpiarValidacionTarea();
+        const requeridos = [campos.titulo, campos.descripcion, campos.fecha, campos.puntaje, campos.estado];
+        let valido = true;
+
+        requeridos.forEach(campo => {
+            const numeroInvalido = campo === campos.puntaje && parseInt(campo.value, 10) < 1;
+            if (!campo.value.trim() || numeroInvalido) {
+                campo.closest('.contenido-field')?.classList.add('is-invalid');
+                valido = false;
+            }
+        });
+
+        if (!valido) mostrarToastPremium('Complete los campos obligatorios de la tarea');
+        return valido;
+    }
+
+    function escapeTarea(valor) {
+        return String(valor || '').replace(/[&<>"']/g, caracter => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        }[caracter]));
+    }
+
+    function formatearFechaTarea(valor) {
+        if (!valor) return '';
+        const partes = valor.split('-');
+        if (partes.length !== 3) return valor;
+        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    function renderArchivoTarea(nombre) {
+        if (!nombre) return '<span class="contenido-muted">Opcional</span>';
+        return `<span class="contenido-archivo"><i class="fas fa-paperclip"></i>${escapeTarea(nombre)}</span>`;
+    }
+
+    function renderFilaTarea(fila) {
+        fila.innerHTML = `
+            <td data-label="Título">
+                <strong>${escapeTarea(fila.dataset.titulo)}</strong>
+                <span class="contenido-desc">${escapeTarea(fila.dataset.descripcion)}</span>
+            </td>
+            <td data-label="Fecha límite">${escapeTarea(formatearFechaTarea(fila.dataset.fecha))}</td>
+            <td data-label="Puntaje">${escapeTarea(fila.dataset.puntaje)} pts</td>
+            <td data-label="Apoyo">${renderArchivoTarea(fila.dataset.archivo)}</td>
+            <td data-label="Estado">
+                <span class="contenido-badge estado-${String(fila.dataset.estado || '').toLowerCase()}">
+                    ${escapeTarea(fila.dataset.estado)}
+                </span>
+            </td>
+            <td data-label="Acciones">
+                <div class="contenido-acciones">
+                    <button type="button" class="contenido-icon-btn editar-tarea" title="Editar tarea">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                </div>
+            </td>`;
+    }
+
+    function guardarFilaTarea() {
+        const fila = filaEditando || document.createElement('tr');
+        const archivoNuevo = campos.archivo.files?.[0]?.name || '';
+
+        fila.dataset.titulo = campos.titulo.value.trim();
+        fila.dataset.descripcion = campos.descripcion.value.trim();
+        fila.dataset.fecha = campos.fecha.value;
+        fila.dataset.puntaje = campos.puntaje.value;
+        fila.dataset.estado = campos.estado.value;
+        fila.dataset.archivo = archivoNuevo || fila.dataset.archivo || '';
+
+        renderFilaTarea(fila);
+
+        if (!filaEditando) {
+            tbody.prepend(fila);
+            if (total) total.textContent = String(tbody.querySelectorAll('tr').length);
+        }
+    }
+
+    btnNueva?.addEventListener('click', () => abrirModalTarea());
+    btnCerrar?.addEventListener('click', cerrarModalTarea);
+    btnCancelar?.addEventListener('click', cerrarModalTarea);
+
+    campos.archivo?.addEventListener('change', function () {
+        if (tareaArchivoTexto) {
+            tareaArchivoTexto.textContent = this.files[0]?.name || 'Seleccionar archivo';
+        }
+    });
+
+    limpiarArchivoTarea?.addEventListener('click', function () {
+        if (campos.archivo) campos.archivo.value = '';
+        if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
+    });
+
+    modal.addEventListener('click', function (e) {
+        if (e.target === modal) cerrarModalTarea();
+    });
+
+    tbody.addEventListener('click', function (e) {
+        const btnEditar = e.target.closest('.editar-tarea');
+        if (!btnEditar) return;
+        abrirModalTarea(btnEditar.closest('tr'));
+    });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!validarTarea()) return;
+        guardarFilaTarea();
+        cerrarModalTarea();
+        mostrarToastPremium('Tarea actualizada en la vista.', 'success');
+    });
+
+    document.querySelectorAll('.btn-calificar-tarea').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const fila = this.closest('tr');
+            const input = fila?.querySelector('.tarea-calificacion input');
+            const nota = parseFloat(input?.value || '');
+
+            if (!input || Number.isNaN(nota) || nota < 0) {
+                mostrarToastPremium('Ingresa una calificación válida');
+                input?.focus();
+                return;
+            }
+
+            fila.classList.add('tarea-row-calificada');
+            this.textContent = 'Calificada';
+            mostrarToastPremium('Calificación asignada en la vista.', 'success');
+        });
+    });
 });

@@ -6,7 +6,7 @@
     --accent-teal-hover: #057a96;
     --bg-main: radial-gradient(circle at top left, #c7e0ff, #eaf4ff, #ffffff);
     --header-gradient: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
-    --btn-gradient: linear-gradient(135deg, #1a5276, #053170);
+    --btn-gradient: linear-gradient(135deg, #053170, #069DBF);
     --danger: #e74c3c;
     --danger-light: #fee2e2;
     --success: #27ae60;
@@ -426,7 +426,7 @@ body {
 
 .btn-nuevo:hover {
     background: var(--btn-gradient);
-    box-shadow: 0 10px 20px #c9c9c9;
+    box-shadow: 0 10px 20px rgba(6, 157, 191, 0.18);
     transition: all 0.3s ease;
     transform: translateX(-1px);
 }
@@ -757,7 +757,7 @@ body {
 }
 
 .btn-guardar:hover {
-    box-shadow: 0 6px 16px rgba(5, 49, 112, 0.3);
+    box-shadow: 0 10px 20px rgba(6, 157, 191, 0.18);
     transform: translateY(-1px);
 }
 
@@ -1066,7 +1066,7 @@ body {
 }
 
 .btn-guardar-premium {
-    background: var(--primary-blue) !important;
+    background: var(--btn-gradient) !important;
     color: white !important;
     padding: 12px 30px !important;
     border-radius: 10px !important;
@@ -1104,15 +1104,15 @@ body {
 }
 
 .toast-premium.toast-error {
-    background: #fff5f5;
-    color: #c53030;
-    border-left: 5px solid #c53030;
+    background: linear-gradient(135deg, #b42335, #ef5b6b);
+    color: #ffffff;
+    border-left: 5px solid #7f1d1d;
 }
 
 .toast-premium.toast-success {
-    background: #f0fff4;
-    color: #2f855a;
-    border-left: 5px solid #2f855a;
+    background: linear-gradient(135deg, #15803d, #22c55e);
+    color: #ffffff;
+    border-left: 5px solid #86efac;
 }
 
 .toast-premium i {

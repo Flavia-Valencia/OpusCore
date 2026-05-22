@@ -197,7 +197,6 @@ if ($cursoId > 0) {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Curso</th>
                                 <th>Sesión</th>
                                 <th>Título</th>
                                 <th>Fecha publicación</th>
@@ -209,7 +208,7 @@ if ($cursoId > 0) {
                         <tbody id="tablaContenidosBody">
                             <?php if (empty($contenidos)): ?>
                                 <tr class="contenido-empty">
-                                    <td colspan="8">Este curso aún no tiene contenidos registrados.</td>
+                                    <td colspan="7">Este curso aún no tiene contenidos registrados.</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($contenidos as $i => $contenido): ?>
@@ -225,10 +224,10 @@ if ($cursoId > 0) {
                                         data-descripcion="<?= htmlspecialchars($contenido['descripcion'] ?? '') ?>"
                                         data-fecha="<?= htmlspecialchars($contenido['fecha']) ?>"
                                         data-archivo="<?= htmlspecialchars($contenido['archivos'] ?? '') ?>"
+                                        data-enlaces="<?= htmlspecialchars($contenido['enlaces'] ?? '') ?>"
                                         data-estado="<?= $estadoTexto ?>"
                                     >
                                         <td data-label="ID"><?= (int)$contenido['id'] ?></td>
-                                        <td data-label="Curso"><?= htmlspecialchars($contenido['curso']) ?></td>
                                         <td data-label="Sesión">Sesión <?= $sesionNum ?></td>
                                         <td data-label="Título">
                                             <strong><?= htmlspecialchars($contenido['titulo']) ?></strong>
@@ -332,6 +331,7 @@ if ($cursoId > 0) {
                     <div class="contenido-field contenido-field-wide">
                         <label>Archivos adjuntos <span class="contenido-muted">(opcional)</span></label>
 
+                        <div id="adjuntosActuales" class="adjuntos-actuales"></div>
                         <div id="listaAdjuntos">
                             <!-- Los items se agregan dinámicamente -->
                         </div>
