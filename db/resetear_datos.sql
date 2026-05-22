@@ -12,7 +12,7 @@ DELETE FROM pagos;
 DELETE FROM inscripciones;
 DELETE FROM cursoHorario;
 DELETE FROM prerrequisitos;
-DELETE FROM cursos; -- se eliminan en cascada las sesiones y archivos de sesiones relacionados con los cursos.
+DELETE FROM cursos; -- se eliminan en cascada las sesiones, tareas y archivos  relacionados con los cursos.
 DELETE FROM PeriodoInscripcion;
 DELETE FROM docentes;
 DELETE FROM estudiantes;
@@ -29,6 +29,8 @@ ALTER TABLE cursoHorario AUTO_INCREMENT = 1;
 ALTER TABLE prerrequisitos AUTO_INCREMENT = 1;
 ALTER TABLE sesionContenido AUTO_INCREMENT = 1;
 ALTER TABLE sesionArchivos AUTO_INCREMENT = 1;
+ALTER TABLE tareas AUTO_INCREMENT = 1;
+ALTER TABLE tareasArchivos AUTO_INCREMENT = 1;
 ALTER TABLE cursos AUTO_INCREMENT = 1;
 ALTER TABLE PeriodoInscripcion AUTO_INCREMENT = 1;
 ALTER TABLE docentes AUTO_INCREMENT = 1;

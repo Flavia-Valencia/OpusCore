@@ -262,6 +262,29 @@ CREATE TABLE `sesionArchivos` (
     CONSTRAINT `fk_archivo_sesion` FOREIGN KEY (`idSesion`) REFERENCES `sesionContenido` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- Insertar tablas para las tareas y tabla de archivos de apoyo para la tarea.
+CREATE TABLE `tareas` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `idCurso` INT NOT NULL,
+    `idSesion` INT DEFAULT NULL, -- esto va a permitir vincular la tarea a una sesion si asím lo desea
+    `titulo` VARCHAR(150) NOT NULL,
+    `descripcion` TEXT NOT NULL,
+    `puntajeMaximo` INT DEFAULT 10,
+    `fechaLimite` DATETIME NOT NULL,
+    `fechaCreacion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_tarea_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_tarea_sesion` FOREIGN KEY (`idSesion`) REFERENCES `sesionContenido` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `tareasArchivos` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `idTarea` INT NOT NULL,
+    `nombreArchivo` VARCHAR(255) NOT NULL,
+    `tipo` ENUM('Archivo', 'Enlace') DEFAULT 'Archivo',
+    `rutaArchivo` TEXT NOT NULL,
+    `fechaSubida` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_archivos_tarea_doc` FOREIGN KEY (`idTarea`) REFERENCES `tareas` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 DELIMITER //
 
 -- Triger para validar y evitar traslapes al insertar un nuevo periodo
@@ -411,7 +434,7 @@ INSERT INTO `usuarios` (`nombre`, `apellido`, `correo`, `password_hash`, `estado
 ('Yamileth', 'Valencia', 'yamiiacademia3@gmail.com', 'YamiEstudiante-19', 1, 2),
 ('Karla', 'Morales', 'karladocente19@gmail.com', 'KarliDocente_22', 1, 3),
 ('Daniel', 'García', 'daniel@gmail.com', 'Daniel123', 1, 2),
-('Yahir', '', 'yahir@gmail.com', 'Yahir123', 1, 3),
+('Yahir', 'Romero', 'yahir@gmail.com', 'Yahir123', 1, 3),
 ('Keyri', 'Sanchez', 'keyri@gmail.com', 'keyri123', 1, 3); 
 
 INSERT INTO `administradores` (`usuario_id`, `fecha_nacimiento`, `genero`, `salario`, `telefono`, `direccion`) VALUES
@@ -444,8 +467,8 @@ INSERT INTO categorias(`nombre`, `descripcion`) VALUES
 ('Infraestructura y Sistemas','Gestión, configuración y mantenimiento de sistemas operativos, servidores y redes informáticas.');
 
 INSERT INTO `PeriodoInscripcion` (`nombre`, `fechaInicio`, `fechaFin`,`fechaInicioCiclo`,`fechaFinCiclo`,`estado`) VALUES 
-('Periodo I - 2026', '2026-05-01', '2026-05-15','2026-01-01','2026-06-30', 1),
-('Periodo II - 2026', '2026-05-16', '2026-05-30','2026-07-01','2026-12-31', 0);
+('Periodo I - 2026', '2026-05-01', '2026-05-31','2026-01-01','2026-06-30', 1),
+('Periodo II - 2026', '2026-07-01', '2026-07-31','2026-07-01','2026-12-31', 0);
 
 -- Insertar datos en las tablas de cursos, horarios, aulas, prerrequisitos y cursoHorario.
 -- Nota: Asegurarse de que idDocente coincida con los ids existentes en la tabla docentes (1 o 2 en una base limpia)
@@ -486,3 +509,16 @@ INSERT INTO `sesionArchivos` (`idSesion`, `nombreArchivo`, `rutaArchivo`, `tipo`
 (1, 'Video de Introducción', 'https://youtu.be/rDynuZstCwU?si=SjoR8Y7QBGY32RIj', 'Enlace'),
 (2, 'Fundamentos de Diseño Gráfico.pdf', 'editarurl', 'Archivo'),
 (2, 'Video de Fundamentos de Diseño', 'https://youtu.be/7N2v0bpNFKA?si=I6VwB2sOqINrPdkM', 'Enlace');
+
+-- Insertar datos para las sesiones ya creadas y sus archivos de apoyo en la tarea
+INSERT INTO `tareas` (`idCurso`, `idSesion`, `titulo`, `descripcion`, `puntajeMaximo`, `fechaLimite`) VALUES
+(1, 1, 'Tarea 1: Algoritmos Básicos', 'Desarrolla algoritmos para resolver problemas simples utilizando pseudocódigo.', 10, '2026-05-30 23:59:59'),
+(1, 2, 'Tarea 2: Estructuras de Control', 'Crea programas que utilicen condicionales y bucles para resolver problemas específicos.', 10, '2026-05-30 23:59:59'),
+(2, 3, 'Tarea 1: Diseño de Logotipo', 'Diseña un logotipo para una empresa ficticia utilizando los principios de diseño gráfico.', 10, '2026-05-30 23:59:59'),
+(2, 4, 'Tarea 2: Prototipo de Página Web', 'Crea un prototipo de página web utilizando herramientas de diseño como Figma o Adobe XD.', 10, '2026-05-30 23:59:59');
+
+INSERT INTO `tareasArchivos` (`idTarea`, `nombreArchivo`, `tipo`, `rutaArchivo`) VALUES
+(1, 'Ejemplo de Algoritmo.pdf', 'Archivo', 'editarurl'),
+(2, 'Ejemplo de Estructuras de Control.pdf', 'Archivo', 'editarurl'),
+(3, 'Ejemplo de Logotipo.pdf', 'Archivo', 'editarurl'),
+(4, 'Ejemplo de Prototipo Web.pdf', 'Archivo', 'editarurl');
