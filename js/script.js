@@ -2673,10 +2673,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!fila) return;
 
         if (btnEditar) {
-            if (fila.dataset.estado === 'Deshabilitado') {
-                mostrarToastPremium('No puedes editar un contenido deshabilitado.', 'error');
-                return;
-            }
             abrirModalContenido('editar', fila);
             return;
         }

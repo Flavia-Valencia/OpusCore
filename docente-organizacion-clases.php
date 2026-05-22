@@ -173,7 +173,7 @@ if ($cursoId > 0) {
             <section class="contenido-card contenido-filtros" aria-label="Filtros de contenidos">
                 <div class="contenido-field contenido-field-wide">
                     <label for="buscarContenido">Buscar contenido</label>
-                    <input type="search" id="buscarContenido" placeholder="Título, curso o sesión">
+                    <input type="search" id="buscarContenido" placeholder="Título o sesión">
                 </div>
                 <div class="contenido-field">
                     <label for="filtroEstadoContenido">Estado</label>
