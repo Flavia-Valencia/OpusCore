@@ -162,10 +162,7 @@ if ($cursoId > 0) {
                         <span>Publicados</span>
                         <strong><?= $publicados ?></strong>
                     </div>
-                    <div>
-                        <span>Borradores</span>
-                        <strong>03</strong>
-                    </div>
+                  
                     <div>
                         <span>Deshabilitados</span>
                         <strong><?= $deshabilitados ?></strong>
@@ -183,7 +180,6 @@ if ($cursoId > 0) {
                     <select id="filtroEstadoContenido">
                         <option value="">Todos</option>
                         <option value="Publicado">Publicado</option>
-                        <option value="Borrador">Borrador</option>
                         <option value="Deshabilitado">Deshabilitado</option>
                     </select>
                 </div>
@@ -307,7 +303,7 @@ if ($cursoId > 0) {
 
                     <div class="contenido-field">
                         <label for="contenidoSesion">Número de sesión</label>
-                        <input type="number" id="contenidoSesion" min="1" step="1" placeholder="Ej: 5" required>
+                        <input type="text" id="contenidoSesion" readonly tabindex = "-1">
                     </div>
 
                     <div class="contenido-field contenido-field-wide">
@@ -329,7 +325,6 @@ if ($cursoId > 0) {
                         <label for="contenidoEstado">Estado</label>
                         <select id="contenidoEstado" required>
                             <option value="Publicado">Publicado</option>
-                            <option value="Borrador">Borrador</option>
                             <option value="Deshabilitado">Deshabilitado</option>
                         </select>
                     </div>

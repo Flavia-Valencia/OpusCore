@@ -2408,10 +2408,16 @@ document.addEventListener('DOMContentLoaded', function () {
         campos.id.value = '';
         campos.modalTitulo.textContent = modo === 'editar' ? 'Editar contenido' : 'Nuevo contenido';
 
+        if(modo === 'crear'){
+            const totalSesiones = tbody.querySelectorAll('tr:not(.contenido-empty)').length;
+            const siguienteNumero = totalSesiones + 1;
+            campos.sesion.value = `Sesión ${String(siguienteNumero).padStart(2, '0')}`;
+        }
+
         if (fila) {
             campos.id.value        = fila.dataset.id || '';
             campos.curso.value     = fila.dataset.curso || '';
-            campos.sesion.value    = obtenerNumeroSesion(fila.dataset.sesion || '');
+            campos.sesion.value    = fila.dataset.sesion || '';
             campos.titulo.value    = fila.dataset.titulo || '';
             campos.descripcion.value = fila.dataset.descripcion || '';
             campos.fecha.value     = fila.dataset.fecha || '';
@@ -2435,20 +2441,33 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function validarContenido() {
-        limpiarValidacionContenido();
-        const requeridos = [campos.curso, campos.sesion, campos.titulo, campos.descripcion, campos.fecha, campos.estado];
-        let valido = true;
+    limpiarValidacionContenido();
+    let valido = true;
+    let mensajeError = '';
 
-        requeridos.forEach(campo => {
-            if (!campo.value.trim() || (campo === campos.sesion && parseInt(campo.value, 10) < 1)) {
-                campo.closest('.contenido-field')?.classList.add('is-invalid');
-                valido = false;
-            }
-        });
+    const requeridos = [campos.curso, campos.sesion, campos.titulo, campos.descripcion, campos.fecha, campos.estado];
+    requeridos.forEach(campo => {
+        if (!campo.value.trim()) {
+            campo.closest('.contenido-field')?.classList.add('is-invalid');
+            valido = false;
+            if (!mensajeError) mensajeError = 'Complete los campos obligatorios del contenido';
+        }
+    });
 
-        if (!valido) mostrarToastPremium('Complete los campos obligatorios del contenido');
-        return valido;
+    if (campos.fecha.value) {
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        const fechaSel = new Date(campos.fecha.value + 'T00:00:00');
+        if (fechaSel < hoy) {
+            campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
+            mensajeError = 'La fecha de la publicación no puede ser menor que la fecha actual';
+            valido = false;
+        }
     }
+
+    if (!valido) mostrarToastPremium(mensajeError);
+    return valido;
+}
 
     function crearBadgeEstado(estado) {
         const clase = estado.toLowerCase();
@@ -2486,11 +2505,32 @@ document.addEventListener('DOMContentLoaded', function () {
             
         }
         if (fila.dataset.estado === 'Deshabilitado') {
-            fila.classList.add('fila-deshabilitada');
-            tbody.appendChild(fila);
-        } else {
-            fila.classList.remove('fila-deshabilitada');
+    fila.classList.add('fila-deshabilitada');
+    tbody.appendChild(fila);
+} else {
+    fila.classList.remove('fila-deshabilitada');
+
+    const filasActivas = Array.from(
+        tbody.querySelectorAll('tr:not(.contenido-empty):not(.fila-deshabilitada)')
+    ).filter(f => f !== fila);
+
+    let insertado = false;
+
+    for (const otraFila of filasActivas) {
+        const idActual = parseInt(fila.dataset.id);
+        const otroId = parseInt(otraFila.dataset.id);
+
+        if (idActual < otroId) {
+            tbody.insertBefore(fila, otraFila);
+            insertado = true;
+            break;
         }
+    }
+
+    if (!insertado) {
+        tbody.appendChild(fila);
+    }
+}
 
         const archivo = fila.dataset.archivo || '';
 
@@ -2675,7 +2715,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const metricas = document.querySelectorAll('.organizacion-metricas div strong');
         if (metricas[0]) metricas[0].textContent = String(publicados).padStart(2, '0');
-        if (metricas[2]) metricas[2].textContent = String(deshabilitados).padStart(2, '0');
+        if (metricas[1]) metricas[1].textContent = String(deshabilitados).padStart(2, '0');
     }
     tbody.querySelectorAll('tr:not(.contenido-empty)').forEach(fila => {
         if (fila.dataset.estado === 'Deshabilitado') {
@@ -2715,4 +2755,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
     
+    // Buscador y filtro estado
+if (buscar) buscar.addEventListener('input', filtrarContenidos);
+if (filtroCurso) filtroCurso.addEventListener('change', filtrarContenidos);
+if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
 });
