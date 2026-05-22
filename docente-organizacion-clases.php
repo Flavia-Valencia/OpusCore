@@ -14,43 +14,44 @@ $cursoId = filter_input(INPUT_GET, 'curso_id', FILTER_VALIDATE_INT) ?: 0;
 $cursoSeleccionado = trim($_GET['curso'] ?? '');
 $cursoSeleccionado = $cursoSeleccionado !== '' ? $cursoSeleccionado : 'Curso seleccionado';
 
-$contenidos = [
-    [
-        'id' => 1,
-        'curso' => 'Diseño de Páginas Web',
-        'sesion' => 'Sesión 01',
-        'titulo' => 'Introducción a HTML semántico',
-        'descripcion' => 'Material base para reconocer estructura semántica y etiquetas principales.',
-        'fecha' => '2026-05-18',
-        'archivo' => 'guia-html-semantico.pdf',
-        'estado' => 'Publicado'
-    ],
-    [
-        'id' => 2,
-        'curso' => 'Administración de Sistemas Operativos',
-        'sesion' => 'Sesión 03',
-        'titulo' => 'Comandos básicos de terminal',
-        'descripcion' => 'Resumen de comandos iniciales y práctica guiada para consola.',
-        'fecha' => '2026-05-22',
-        'archivo' => 'terminal-basica.docx',
-        'estado' => 'Borrador'
-    ],
-    [
-        'id' => 3,
-        'curso' => 'Diseño de Páginas Web',
-        'sesion' => 'Sesión 02',
-        'titulo' => 'Selectores CSS y cascada',
-        'descripcion' => 'Ejemplos de selectores, especificidad y reglas visuales.',
-        'fecha' => '2026-05-25',
-        'archivo' => '',
-        'estado' => 'Deshabilitado'
-    ],
-];
+require_once 'includes/conexion.php';
 
-if ($cursoId > 0 && $cursoSeleccionado !== 'Curso seleccionado') {
-    $contenidos = array_values(array_filter($contenidos, function ($contenido) use ($cursoSeleccionado) {
-        return $contenido['curso'] === $cursoSeleccionado;
-    }));
+$contenidos = [];
+$publicados = 0;
+$deshabilitados = 0;
+
+if ($cursoId > 0) {
+    $stmt = $conexion->prepare("
+        SELECT 
+            sc.id,
+            c.nombre AS curso,
+            sc.titulo,
+            sc.descripcion,
+            sc.fecha,
+            sc.estado,
+            GROUP_CONCAT(
+                CASE WHEN sa.tipo = 'Archivo' THEN sa.nombreArchivo END
+                ORDER BY sa.id SEPARATOR ', '
+            ) AS archivos,
+            GROUP_CONCAT(
+                CASE WHEN sa.tipo = 'Enlace' THEN sa.nombreArchivo END
+                ORDER BY sa.id SEPARATOR ', '
+            ) AS enlaces
+        FROM sesionContenido sc
+        INNER JOIN cursos c ON c.id = sc.idCurso
+        LEFT JOIN sesionArchivos sa ON sa.idSesion = sc.id
+        WHERE sc.idCurso = ?
+        GROUP BY sc.id
+        ORDER BY sc.fecha ASC
+    ");
+    $stmt->bind_param('i', $cursoId);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $contenidos = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+
+    $publicados     = count(array_filter($contenidos, fn($c) => $c['estado'] == 1));
+    $deshabilitados = count(array_filter($contenidos, fn($c) => $c['estado'] == 0));
 }
 ?>
 
@@ -159,7 +160,7 @@ if ($cursoId > 0 && $cursoSeleccionado !== 'Curso seleccionado') {
                 <div class="organizacion-metricas">
                     <div>
                         <span>Publicados</span>
-                        <strong>08</strong>
+                        <strong><?= $publicados ?></strong>
                     </div>
                     <div>
                         <span>Borradores</span>
@@ -167,7 +168,7 @@ if ($cursoId > 0 && $cursoSeleccionado !== 'Curso seleccionado') {
                     </div>
                     <div>
                         <span>Deshabilitados</span>
-                        <strong>01</strong>
+                        <strong><?= $deshabilitados ?></strong>
                     </div>
                 </div>
             </section>
@@ -214,50 +215,64 @@ if ($cursoId > 0 && $cursoSeleccionado !== 'Curso seleccionado') {
                                 <tr class="contenido-empty">
                                     <td colspan="8">Este curso aún no tiene contenidos registrados.</td>
                                 </tr>
+                            <?php else: ?>
+                                <?php foreach ($contenidos as $i => $contenido): ?>
+                                    <?php
+                                        $estadoTexto = $contenido['estado'] == 1 ? 'Publicado' : 'Deshabilitado';
+                                        $sesionNum   = str_pad($i + 1, 2, '0', STR_PAD_LEFT);
+                                    ?>
+                                    <tr
+                                        data-id="<?= (int)$contenido['id'] ?>"
+                                        data-curso="<?= htmlspecialchars($contenido['curso']) ?>"
+                                        data-sesion="Sesión <?= $sesionNum ?>"
+                                        data-titulo="<?= htmlspecialchars($contenido['titulo']) ?>"
+                                        data-descripcion="<?= htmlspecialchars($contenido['descripcion'] ?? '') ?>"
+                                        data-fecha="<?= htmlspecialchars($contenido['fecha']) ?>"
+                                        data-archivo="<?= htmlspecialchars($contenido['archivos'] ?? '') ?>"
+                                        data-estado="<?= $estadoTexto ?>"
+                                    >
+                                        <td data-label="ID"><?= (int)$contenido['id'] ?></td>
+                                        <td data-label="Curso"><?= htmlspecialchars($contenido['curso']) ?></td>
+                                        <td data-label="Sesión">Sesión <?= $sesionNum ?></td>
+                                        <td data-label="Título">
+                                            <strong><?= htmlspecialchars($contenido['titulo']) ?></strong>
+                                            <span class="contenido-desc"><?= htmlspecialchars($contenido['descripcion'] ?? '') ?></span>
+                                        </td>
+                                        <td data-label="Fecha publicación"><?= date('d/m/Y', strtotime($contenido['fecha'])) ?></td>
+                                        <td data-label="Archivo">
+                                            <?php if (!empty($contenido['archivos'])): ?>
+                                                <span class="contenido-archivo">
+                                                    <i class="fas fa-paperclip"></i><?= htmlspecialchars($contenido['archivos']) ?>
+                                                </span>
+                                            <?php endif; ?>
+                                            <?php if (!empty($contenido['enlaces'])): ?>
+                                                <span class="contenido-archivo">
+                                                    <i class="fas fa-link"></i><?= htmlspecialchars($contenido['enlaces']) ?>
+                                                </span>
+                                            <?php else: ?>
+                                                <?php if (empty($contenido['archivos'])): ?>
+                                                    <span class="contenido-muted">Sin adjuntos</span>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td data-label="Estado">
+                                            <span class="contenido-badge estado-<?= strtolower($estadoTexto) ?>">
+                                                <?= $estadoTexto ?>
+                                            </span>
+                                        </td>
+                                        <td data-label="Acciones">
+                                            <div class="contenido-acciones">
+                                                <button type="button" class="contenido-icon-btn editar-contenido" title="Editar contenido">
+                                                    <i class="fas fa-pen"></i>
+                                                </button>
+                                                <button type="button" class="contenido-toggle <?= $contenido['estado'] == 0 ? 'btn-habilitar' : '' ?>" data-action="toggle">
+                                                    <?= $contenido['estado'] == 0 ? 'Habilitar' : 'Deshabilitar' ?>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
                             <?php endif; ?>
-                            <?php foreach ($contenidos as $contenido): ?>
-                                <tr
-                                    data-id="<?= (int)$contenido['id'] ?>"
-                                    data-curso="<?= htmlspecialchars($contenido['curso']) ?>"
-                                    data-sesion="<?= htmlspecialchars($contenido['sesion']) ?>"
-                                    data-titulo="<?= htmlspecialchars($contenido['titulo']) ?>"
-                                    data-descripcion="<?= htmlspecialchars($contenido['descripcion']) ?>"
-                                    data-fecha="<?= htmlspecialchars($contenido['fecha']) ?>"
-                                    data-archivo="<?= htmlspecialchars($contenido['archivo']) ?>"
-                                    data-estado="<?= htmlspecialchars($contenido['estado']) ?>"
-                                >
-                                    <td data-label="ID"><?= (int)$contenido['id'] ?></td>
-                                    <td data-label="Curso"><?= htmlspecialchars($contenido['curso']) ?></td>
-                                    <td data-label="Sesión"><?= htmlspecialchars($contenido['sesion']) ?></td>
-                                    <td data-label="Título">
-                                        <strong><?= htmlspecialchars($contenido['titulo']) ?></strong>
-                                        <span class="contenido-desc"><?= htmlspecialchars($contenido['descripcion']) ?></span>
-                                    </td>
-                                    <td data-label="Fecha publicación"><?= date('d/m/Y', strtotime($contenido['fecha'])) ?></td>
-                                    <td data-label="Archivo">
-                                        <?php if (!empty($contenido['archivo'])): ?>
-                                            <span class="contenido-archivo"><i class="fas fa-paperclip"></i><?= htmlspecialchars($contenido['archivo']) ?></span>
-                                        <?php else: ?>
-                                            <span class="contenido-muted">Sin archivo</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td data-label="Estado">
-                                        <span class="contenido-badge estado-<?= strtolower($contenido['estado']) ?>">
-                                            <?= htmlspecialchars($contenido['estado']) ?>
-                                        </span>
-                                    </td>
-                                    <td data-label="Acciones">
-                                        <div class="contenido-acciones">
-                                            <button type="button" class="contenido-icon-btn editar-contenido" title="Editar contenido">
-                                                <i class="fas fa-pen"></i>
-                                            </button>
-                                            <button type="button" class="contenido-toggle" data-action="toggle">
-                                                <?= $contenido['estado'] === 'Deshabilitado' ? 'Habilitar' : 'Deshabilitar' ?>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
@@ -282,12 +297,12 @@ if ($cursoId > 0 && $cursoSeleccionado !== 'Curso seleccionado') {
 
             <form id="formContenidoClase" novalidate>
                 <input type="hidden" id="contenidoId">
-                <input type="hidden" id="contenidoCurso" value="<?= htmlspecialchars($cursoSeleccionado) ?>">
+                <input type="hidden" id="contenidoCursoId" value="<?= (int)$cursoId ?>">
 
                 <div class="contenido-form-grid">
                     <div class="contenido-field">
                         <label>Curso</label>
-                        <input type="text" value="<?= htmlspecialchars($cursoSeleccionado) ?>" readonly>
+                        <input type="text" id="contenidoCurso" value="<?= htmlspecialchars($cursoSeleccionado) ?>" readonly>
                     </div>
 
                     <div class="contenido-field">
@@ -320,9 +335,19 @@ if ($cursoId > 0 && $cursoSeleccionado !== 'Curso seleccionado') {
                     </div>
 
                     <div class="contenido-field contenido-field-wide">
-                        <label for="contenidoArchivo">Archivo adjunto opcional</label>
-                        <input type="file" id="contenidoArchivo" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,.png,.jpg,.jpeg">
-                        <small id="contenidoArchivoActual">Backend integrará la carga real del archivo.</small>
+                        <label>Archivos adjuntos <span class="contenido-muted">(opcional)</span></label>
+
+                        <div id="listaAdjuntos">
+                            <!-- Los items se agregan dinámicamente -->
+                        </div>
+                        <div class="contenido-adjunto-btns">
+                            <button type="button" class="contenido-btn contenido-btn-light" id="btnAgregarArchivo">
+                                <i class="fas fa-paperclip"></i> Agregar archivo
+                            </button>
+                            <button type="button" class="contenido-btn contenido-btn-light" id="btnAgregarEnlace">
+                                <i class="fas fa-link"></i> Agregar enlace
+                            </button>
+                        </div>
                     </div>
                 </div>
 
