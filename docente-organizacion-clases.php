@@ -36,13 +36,21 @@ if ($cursoId > 0) {
             GROUP_CONCAT(
                 CASE WHEN sa.tipo = 'Enlace' THEN sa.nombreArchivo END
                 ORDER BY sa.id SEPARATOR ', '
-            ) AS enlaces
+            ) AS enlaces,
+            GROUP_CONCAT(
+                CASE WHEN sa.tipo = 'Archivo' THEN sa.id END
+                ORDER BY sa.id SEPARATOR ','
+            ) AS archivo_ids,
+            GROUP_CONCAT(
+                CASE WHEN sa.tipo = 'Enlace' THEN sa.id END
+                ORDER BY sa.id SEPARATOR ','
+            ) AS enlace_ids
         FROM sesionContenido sc
         INNER JOIN cursos c ON c.id = sc.idCurso
         LEFT JOIN sesionArchivos sa ON sa.idSesion = sc.id
         WHERE sc.idCurso = ?
         GROUP BY sc.id
-        ORDER BY sc.fecha ASC
+        ORDER BY sc.id ASC
     ");
     $stmt->bind_param('i', $cursoId);
     $stmt->execute();
@@ -160,12 +168,12 @@ if ($cursoId > 0) {
                 <div class="organizacion-metricas">
                     <div>
                         <span>Publicados</span>
-                        <strong><?= $publicados ?></strong>
+                        <strong><?= str_pad($publicados, 2, '0', STR_PAD_LEFT) ?></strong>
                     </div>
                   
                     <div>
                         <span>Deshabilitados</span>
-                        <strong><?= $deshabilitados ?></strong>
+                        <strong><?= str_pad($deshabilitados, 2, '0', STR_PAD_LEFT) ?></strong>
                     </div>
                 </div>
             </section>
@@ -225,6 +233,8 @@ if ($cursoId > 0) {
                                         data-fecha="<?= htmlspecialchars($contenido['fecha']) ?>"
                                         data-archivo="<?= htmlspecialchars($contenido['archivos'] ?? '') ?>"
                                         data-enlaces="<?= htmlspecialchars($contenido['enlaces'] ?? '') ?>"
+                                        data-archivo-ids="<?= htmlspecialchars($contenido['archivo_ids'] ?? '') ?>"
+                                        data-enlace-ids="<?= htmlspecialchars($contenido['enlace_ids'] ?? '') ?>"
                                         data-estado="<?= $estadoTexto ?>"
                                     >
                                         <td data-label="ID"><?= (int)$contenido['id'] ?></td>

@@ -2376,6 +2376,8 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
 // Filtra contenidos por búsqueda, curso y estado
 // Actualiza contadores de contenidos publicados y deshabilitados
 // Guarda y actualiza contenidos mediante peticiones fetch
+// Habilita y deshabilita contenidos con persistencia en base de datos
+// Elimina archivos físicos del servidor y registros de enlaces desde el modal de edición
 
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('modalContenido');
@@ -2387,6 +2389,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const buscar = document.getElementById('buscarContenido');
     const filtroEstado = document.getElementById('filtroEstadoContenido');
     const adjuntosActuales = document.getElementById('adjuntosActuales');
+    
 
     if (!modal || !form || !tbody) return;
 
@@ -2488,16 +2491,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function obtenerAdjuntosFila(fila) {
-        const archivos = (fila?.dataset.archivo || '')
-            .split(',')
-            .map(nombre => nombre.trim())
-            .filter(Boolean)
-            .map(nombre => ({ tipo: 'Archivo', nombre }));
-        const enlaces = (fila?.dataset.enlaces || '')
-            .split(',')
-            .map(nombre => nombre.trim())
-            .filter(Boolean)
-            .map(nombre => ({ tipo: 'Enlace', nombre }));
+        const nombresArchivos = (fila?.dataset.archivo || '').split(',').map(s => s.trim()).filter(Boolean);
+        const idsArchivos     = (fila?.dataset.archivoIds || '').split(',').map(s => s.trim()).filter(Boolean);
+        const nombresEnlaces  = (fila?.dataset.enlaces || '').split(',').map(s => s.trim()).filter(Boolean);
+        const idsEnlaces      = (fila?.dataset.enlaceIds || '').split(',').map(s => s.trim()).filter(Boolean);
+
+        const archivos = nombresArchivos.map((nombre, i) => ({ tipo: 'Archivo', nombre, id: idsArchivos[i] || '' }));
+        const enlaces  = nombresEnlaces.map((nombre, i) => ({ tipo: 'Enlace', nombre, id: idsEnlaces[i] || '' }));
 
         return [...archivos, ...enlaces];
     }
@@ -2517,7 +2517,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     <i class="fas ${adjunto.tipo === 'Enlace' ? 'fa-link' : 'fa-paperclip'}"></i>
                     ${escapeContenido(adjunto.nombre)}
                 </span>
-                <button type="button" class="adjunto-remove adjunto-remove-existente" title="Quitar adjunto de la vista">
+                <button type="button" class="adjunto-remove adjunto-remove-existente" 
+                    data-id-archivo="${adjunto.id}" title="Eliminar adjunto">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -2699,10 +2700,28 @@ document.addEventListener('DOMContentLoaded', function () {
         const btn = e.target.closest('.adjunto-remove-existente');
         if (!btn) return;
 
-        btn.closest('.adjunto-existente')?.remove();
+        const idArchivo = btn.dataset.idArchivo;
 
-        if (!adjuntosActuales.querySelector('.adjunto-existente')) {
-            adjuntosActuales.innerHTML = '<span class="contenido-muted">Sin adjuntos guardados</span>';
+
+        if (idArchivo) {
+            fetch('/OpusCore/eliminar-adjunto.php', {
+                method: 'POST',
+                body: new URLSearchParams({ id: idArchivo })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.ok) {
+                    btn.closest('.adjunto-existente')?.remove();
+                    if (!adjuntosActuales.querySelector('.adjunto-existente')) {
+                        adjuntosActuales.innerHTML = '<span class="contenido-muted">Sin adjuntos guardados</span>';
+                    }
+                } else {
+                    mostrarToastPremium('Error al eliminar adjunto.');
+                }
+            })
+            .catch(() => mostrarToastPremium('Error de conexión.'));
+        } else {
+            btn.closest('.adjunto-existente')?.remove();
         }
     });
     btnNuevo?.addEventListener('click', () => abrirModalContenido('crear'));
