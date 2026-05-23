@@ -124,7 +124,12 @@ if(!isset($_SESSION["usuario"])){
 
                 if (!empty($cursos)):
                     foreach ($cursos as $curso): ?>
-                        <div class="card">
+                        <div
+                            class="card curso-card-docente"
+                            data-curso-id="<?= (int)$curso['id'] ?>"
+                            data-curso-nombre="<?= htmlspecialchars($curso['nombre']) ?>"
+                            tabindex="0"
+                        >
                             <div class="card-header">
                                 <h3 class="card-title"><?php echo htmlspecialchars($curso['nombre']); ?></h3>
 
@@ -157,13 +162,26 @@ if(!isset($_SESSION["usuario"])){
                                     <span class="meta-value price">$<?php echo number_format($curso['costoMensual'], 2); ?></span>
                                 </div>
                             </div>
-                            <a
-                                class="card-action"
-                                href="docente-organizacion-clases.php?curso_id=<?= urlencode($curso['id']) ?>&curso=<?= urlencode($curso['nombre']) ?>"
-                            >
-                                <i class="fas fa-folder-open"></i>
-                                Organizar clases
-                            </a>
+                            <!-- Panel de acciones del curso seleccionado -->
+                            <div class="curso-acciones-panel" aria-hidden="true">
+                                <p>¿Qué quieres gestionar?</p>
+                                <div class="curso-acciones-grid">
+                                    <a
+                                        class="card-action"
+                                        href="docente-organizacion-clases.php?curso_id=<?= urlencode($curso['id']) ?>&curso=<?= urlencode($curso['nombre']) ?>"
+                                    >
+                                        <i class="fas fa-folder-open"></i>
+                                        Organizar clases
+                                    </a>
+                                    <a
+                                        class="card-action card-action-secondary"
+                                        href="docente-gestion-tareas.php?curso_id=<?= urlencode($curso['id']) ?>&curso=<?= urlencode($curso['nombre']) ?>"
+                                    >
+                                        <i class="fas fa-clipboard-list"></i>
+                                        Gestionar tareas
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     <?php endforeach;
                 else: ?>

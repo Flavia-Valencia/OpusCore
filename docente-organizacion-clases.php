@@ -36,13 +36,21 @@ if ($cursoId > 0) {
             GROUP_CONCAT(
                 CASE WHEN sa.tipo = 'Enlace' THEN sa.nombreArchivo END
                 ORDER BY sa.id SEPARATOR ', '
-            ) AS enlaces
+            ) AS enlaces,
+            GROUP_CONCAT(
+                CASE WHEN sa.tipo = 'Archivo' THEN sa.id END
+                ORDER BY sa.id SEPARATOR ','
+            ) AS archivo_ids,
+            GROUP_CONCAT(
+                CASE WHEN sa.tipo = 'Enlace' THEN sa.id END
+                ORDER BY sa.id SEPARATOR ','
+            ) AS enlace_ids
         FROM sesionContenido sc
         INNER JOIN cursos c ON c.id = sc.idCurso
         LEFT JOIN sesionArchivos sa ON sa.idSesion = sc.id
         WHERE sc.idCurso = ?
         GROUP BY sc.id
-        ORDER BY sc.fecha ASC
+        ORDER BY sc.id ASC
     ");
     $stmt->bind_param('i', $cursoId);
     $stmt->execute();
@@ -160,12 +168,12 @@ if ($cursoId > 0) {
                 <div class="organizacion-metricas">
                     <div>
                         <span>Publicados</span>
-                        <strong><?= $publicados ?></strong>
+                        <strong><?= str_pad($publicados, 2, '0', STR_PAD_LEFT) ?></strong>
                     </div>
                   
                     <div>
                         <span>Deshabilitados</span>
-                        <strong><?= $deshabilitados ?></strong>
+                        <strong><?= str_pad($deshabilitados, 2, '0', STR_PAD_LEFT) ?></strong>
                     </div>
                 </div>
             </section>
@@ -197,7 +205,6 @@ if ($cursoId > 0) {
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Curso</th>
                                 <th>Sesión</th>
                                 <th>Título</th>
                                 <th>Fecha publicación</th>
@@ -209,7 +216,7 @@ if ($cursoId > 0) {
                         <tbody id="tablaContenidosBody">
                             <?php if (empty($contenidos)): ?>
                                 <tr class="contenido-empty">
-                                    <td colspan="8">Este curso aún no tiene contenidos registrados.</td>
+                                    <td colspan="7">Este curso aún no tiene contenidos registrados.</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($contenidos as $i => $contenido): ?>
@@ -225,10 +232,12 @@ if ($cursoId > 0) {
                                         data-descripcion="<?= htmlspecialchars($contenido['descripcion'] ?? '') ?>"
                                         data-fecha="<?= htmlspecialchars($contenido['fecha']) ?>"
                                         data-archivo="<?= htmlspecialchars($contenido['archivos'] ?? '') ?>"
+                                        data-enlaces="<?= htmlspecialchars($contenido['enlaces'] ?? '') ?>"
+                                        data-archivo-ids="<?= htmlspecialchars($contenido['archivo_ids'] ?? '') ?>"
+                                        data-enlace-ids="<?= htmlspecialchars($contenido['enlace_ids'] ?? '') ?>"
                                         data-estado="<?= $estadoTexto ?>"
                                     >
                                         <td data-label="ID"><?= (int)$contenido['id'] ?></td>
-                                        <td data-label="Curso"><?= htmlspecialchars($contenido['curso']) ?></td>
                                         <td data-label="Sesión">Sesión <?= $sesionNum ?></td>
                                         <td data-label="Título">
                                             <strong><?= htmlspecialchars($contenido['titulo']) ?></strong>
@@ -332,6 +341,7 @@ if ($cursoId > 0) {
                     <div class="contenido-field contenido-field-wide">
                         <label>Archivos adjuntos <span class="contenido-muted">(opcional)</span></label>
 
+                        <div id="adjuntosActuales" class="adjuntos-actuales"></div>
                         <div id="listaAdjuntos">
                             <!-- Los items se agregan dinámicamente -->
                         </div>
