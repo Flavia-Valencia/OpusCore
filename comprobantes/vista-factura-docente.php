@@ -68,6 +68,12 @@ function numeroALetrasDocente(float $n): string {
 }
 
 $totalLetras = numeroALetrasDocente((float)$total);
+
+$logoSrc = '';
+$logoPath = __DIR__ . '/../img/logo.svg';
+if (is_readable($logoPath)) {
+    $logoSrc = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($logoPath));
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -92,7 +98,11 @@ if (is_readable($cssPdfPath)) {
         <table class="header-table">
             <tr>
                 <td class="logo-cell">
-                    <img src="../img/logo.svg" alt="Academia Futuro Digital">
+                    <?php if ($logoSrc): ?>
+                        <img src="<?= $logoSrc ?>" alt="Academia Futuro Digital">
+                    <?php else: ?>
+                        <div class="logo-placeholder">AF</div>
+                    <?php endif; ?>    
                 </td>
                 <td class="emisor-info">
                     <div class="org-name">Academia Futuro Digital</div>
