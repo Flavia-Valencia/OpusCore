@@ -87,3 +87,18 @@ INSERT INTO `tareasArchivos` (`idTarea`, `nombreArchivo`, `tipo`, `rutaArchivo`)
 (2, 'Ejemplo de Estructuras de Control.pdf', 'Archivo', 'editarurl'),
 (3, 'Ejemplo de Logotipo.pdf', 'Archivo', 'editarurl'),
 (4, 'Ejemplo de Prototipo Web.pdf', 'Archivo', 'editarurl');
+
+-- insertar datos en entrgas del estudiante
+INSERT INTO `entregablesTarea` (`idTarea`, `idEstudiante`, `estado`, `nota`, `fechaRevision`) VALUES
+(1, 1, 'Revisado', 9.00, '2026-05-25 10:00:00'),
+(2, 1, 'Entregado', NULL, NULL),
+(3, 1, 'Revisado', 8.50, '2026-05-25 11:00:00'),
+(4, 1, 'Entregado', NULL, NULL),
+(1, 2, 'Pendiente', NULL, NULL),
+(2, 2, 'Pendiente', NULL, NULL);
+
+INSERT INTO `entregaArchivos` (`idEntrega`, `nombreArchivo`, `tipo`, `rutaArchivo`) VALUES
+(1, 'Algoritmos-Yamileth.pdf', 'Archivo', 'editarurl'),
+(2, 'EstructurasControl-Yamileth.pdf', 'Archivo', 'editarurl'),
+(3, 'Logotipo-Yamileth.pdf', 'Archivo', 'editarurl'),
+(4, 'Prototipo-Yamileth.pdf', 'Archivo', 'editarurl');
