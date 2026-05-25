@@ -21,7 +21,7 @@ require_once 'mis_cursos.php';
     <input type="checkbox" id="sidebar-toggle">
 
     <!-- overlay para cerrar sidebar en móvil -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar-overlay js-sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="layout">
 
@@ -34,7 +34,7 @@ require_once 'mis_cursos.php';
                     <div class="menu-user-role">Estudiante</div>
                     <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
                 </div>
-                <button type="button" class="sidebar-close" onclick="closeSidebar()" aria-label="Cerrar menu">
+                <button type="button" class="sidebar-close js-sidebar-close" aria-label="Cerrar menu">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -57,7 +57,7 @@ require_once 'mis_cursos.php';
                     <span>Calificaciones</span>
                 </a>
                 <div class="nav-dropdown">
-                    <button type="button" class="nav-item nav-dropdown-toggle" onclick="togglePagosOnline()">
+                    <button type="button" class="nav-item nav-dropdown-toggle js-pagos-toggle">
                         <i class="fas fa-credit-card"></i>
                         <span>Pagos en línea</span>
                         <i class="fas fa-chevron-down nav-arrow"></i>
@@ -89,7 +89,7 @@ require_once 'mis_cursos.php';
 
             <!-- header -->
             <header class="header-panel">
-                <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+                <button class="hamburger js-sidebar-toggle" id="hamburgerBtn">
                     <i class="fas fa-bars"></i>
                 </button>
                 <a href="includes/logout.php" class="user-profile-panel">
@@ -126,7 +126,7 @@ require_once 'mis_cursos.php';
                     <?php else: ?>
                         <section class="courses-inscripcion">
                             <?php foreach ($cursos as $curso): ?>
-                             <div class="curso-card">
+                             <a class="curso-card curso-card-link" href="estudiante-detalle-curso.php?curso_id=<?= urlencode($curso['id']) ?>">
                                     <div class="curso-card-top">
                                         <h3 class="curso-nombre">
                                             <?= htmlspecialchars($curso['nombre']) ?>
@@ -172,7 +172,7 @@ require_once 'mis_cursos.php';
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             <?php endforeach; ?>
                         </section>
                 <?php endif; ?>
@@ -182,28 +182,5 @@ require_once 'mis_cursos.php';
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.getElementById('sidebar-toggle');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-            if (toggle) {
-                toggle.checked = sidebar.classList.contains('open');
-            }
-        }
-
-        function closeSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.getElementById('sidebar-toggle');
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            if (toggle) {
-                toggle.checked = false;
-            }
-        }
-    </script>
 </body>
 </html>
