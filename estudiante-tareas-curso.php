@@ -426,11 +426,16 @@ foreach ($tareas as $tarea) {
                                         </div>
                                     </div>
                                     <div class="tarea-estudiante-actions">
-                                        <?php if ($ruta): ?>
-                                            <a href="<?= e($ruta) ?>" target="_blank" rel="noopener" class="contenido-ver">
-                                                Apoyo
-                                                <i class="fas fa-chevron-right"></i>
-                                            </a>
+                                        <?php if (!empty($tarea['nombre_archivo'])): ?>
+                                            <?php if ($tarea['tipo_archivo'] === 'Enlace' && $ruta): ?>
+                                                <a href="<?= e($ruta) ?>" target="_blank" rel="noopener" class="contenido-ver">
+                                                    Apoyo <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                            <?php elseif ($tarea['tipo_archivo'] === 'Archivo' && $ruta): ?>
+                                                <a href="<?= e($ruta) ?>" download="<?= e($tarea['nombre_archivo']) ?>" class="contenido-ver">
+                                                    Apoyo <i class="fas fa-chevron-right"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         <?php endif; ?>
                                         <button
                                             type="button"
@@ -477,8 +482,6 @@ foreach ($tareas as $tarea) {
                         </button>
                     </div>
                 </div>
-                <label for="comentarioEntregaTarea">Comentario</label>
-                <textarea id="comentarioEntregaTarea" rows="4" placeholder="Agrega una nota para el docente"></textarea>
                 <div class="entrega-modal-actions">
                     <button type="button" class="entrega-modal-btn entrega-modal-btn-light js-cerrar-entrega-tarea">Cancelar</button>
                     <button type="submit" class="entrega-modal-btn entrega-modal-btn-primary">Marcar como entregada</button>
