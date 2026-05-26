@@ -162,44 +162,19 @@ if (tablaExiste($conexion, 'sesionContenido')) {
 $tareas = [];
 if (tablaExiste($conexion, 'tareas')) {
     $stmt = $conexion->prepare("
-        SELECT id, titulo, descripcion, puntajeMaximo, fechaLimite
-        FROM tareas
-        WHERE idCurso = ?
-        ORDER BY fechaLimite ASC, id ASC
+        SELECT t.id, t.titulo, t.descripcion, t.puntajeMaximo, t.fechaLimite,
+            COALESCE(et.estado, 'Pendiente') AS estadoEntrega
+        FROM tareas t
+        LEFT JOIN entregablesTarea et 
+            ON et.idTarea = t.id AND et.idEstudiante = ?
+        WHERE t.idCurso = ? AND t.estado = 1
+        ORDER BY t.fechaLimite ASC, t.id ASC
         LIMIT 5
     ");
-    $stmt->bind_param("i", $cursoId);
+    $stmt->bind_param("ii", $idEstudiante, $cursoId);
     $stmt->execute();
     $tareas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
-
-// DATOS QUEMADOS TEMPORALES: borrar todo este bloque cuando tareas docentes guarde datos reales en BD.
-if (empty($tareas)) {
-    $tareas = [
-        [
-            'id' => -1,
-            'titulo' => 'Ejercicio: Estructura HTML',
-            'descripcion' => 'Crea la estructura base de una página web usando etiquetas semánticas.',
-            'puntajeMaximo' => 20,
-            'fechaLimite' => '2026-06-04 23:59:59',
-        ],
-        [
-            'id' => -2,
-            'titulo' => 'Estilos con CSS',
-            'descripcion' => 'Aplica estilos a la página creada en el ejercicio anterior.',
-            'puntajeMaximo' => 25,
-            'fechaLimite' => '2026-06-11 23:59:59',
-        ],
-        [
-            'id' => -3,
-            'titulo' => 'Proyecto: Landing Page',
-            'descripcion' => 'Desarrolla una landing page completa y responsiva.',
-            'puntajeMaximo' => 40,
-            'fechaLimite' => '2026-06-18 23:59:59',
-        ],
-    ];
-}
-
 ?>
 
 <!DOCTYPE html>

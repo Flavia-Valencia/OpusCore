@@ -1554,6 +1554,8 @@ function togglePagosOnline() {
     if (toggle) toggle.setAttribute('aria-expanded', estaAbierto ? 'true' : 'false');
 }
 
+// MODULO DE ENTREABLES - ESTUDIANTES
+
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.js-sidebar-toggle').forEach(btn => {
         btn.addEventListener('click', toggleSidebar);
@@ -1768,38 +1770,64 @@ function inicializarTareasEstudiante() {
     });
 
     // Marca la tarea como entregada solo en frontend hasta que exista backend de entregas.
-    form?.addEventListener('submit', function (event) {
+    form?.addEventListener('submit', async function (event) {
         event.preventDefault();
+
         if (!tieneAdjuntoEntregaValido()) {
-            if (typeof mostrarToastPremium === 'function') {
-                mostrarToastPremium('Agrega un archivo o enlace para entregar la tarea');
-            }
+            mostrarToastPremium('Agrega un archivo o enlace para entregar la tarea');
             return;
         }
 
-        if (tareaActiva) {
-            tareaActiva.dataset.status = 'entregada';
-            const estado = tareaActiva.querySelector('.tarea-estado');
-            const boton = tareaActiva.querySelector('.btn-entregar-tarea');
-            if (estado) {
-                estado.textContent = 'Entregada';
-                estado.className = 'tarea-estado entregada';
-            }
-            if (boton) {
-                boton.textContent = 'Entregada';
-                boton.classList.add('is-done');
-            }
-        }
+        const idTarea = tareaId?.value;
+        if (!idTarea) return;
 
-        cerrarModalEntrega();
-        aplicarFiltros();
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'success',
-                title: 'Entrega registrada',
-                text: 'La entrega quedó marcada en esta vista.',
-                confirmButtonColor: '#053170'
+        const formData = new FormData();
+        formData.append('idTarea', idTarea);
+
+        // Archivos
+        listaAdjuntos?.querySelectorAll('.adjunto-item').forEach(item => {
+            if (item.dataset.tipo === 'Archivo') {
+                const archivo = item.querySelector('.adjunto-file-input')?.files?.[0];
+                if (archivo) formData.append('archivos[]', archivo);
+            } else {
+                const nombre = item.querySelector('.entrega-enlace-nombre')?.value.trim() || 'Enlace adjunto';
+                const url    = item.querySelector('.entrega-enlace-url')?.value.trim();
+                if (url) {
+                    formData.append('enlace', url);
+                    formData.append('nombreEnlace', nombre);
+                }
+            }
+        });
+
+        try {
+            const resp = await fetch('/OpusCore/estudiante-subir-entregable.php', {
+                method: 'POST',
+                body: formData
             });
+            const data = await resp.json();
+
+            if (data.success) {
+                // Actualizar UI
+                if (tareaActiva) {
+                    tareaActiva.dataset.status = 'entregada';
+                    const estado = tareaActiva.querySelector('.tarea-estado');
+                    const boton  = tareaActiva.querySelector('.btn-entregar-tarea');
+                    if (estado) { estado.textContent = 'Entregada'; estado.className = 'tarea-estado entregada'; }
+                    if (boton)  { boton.textContent = 'Entregada'; boton.classList.add('is-done'); }
+                }
+                cerrarModalEntrega();
+                aplicarFiltros();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Entrega registrada',
+                    text: 'Tu tarea fue entregada exitosamente.',
+                    confirmButtonColor: '#053170'
+                }).then(() => location.reload());
+            } else {
+                mostrarToastPremium(data.message || 'Error al entregar la tarea.');
+            }
+        } catch (err) {
+            mostrarToastPremium('Error de conexión: ' + err.message);
         }
     });
 
