@@ -16,8 +16,10 @@ $cursoSeleccionado = $cursoSeleccionado !== '' ? $cursoSeleccionado : 'Curso sel
 
 require_once 'includes/conexion.php';
 
-$cursoValido = null;
-$estudiantes = [];
+$cursoValido   = null;
+$estudiantes   = [];
+$tareas        = [];
+$totalEntregas = 0;
 
 if ($cursoId > 0) {
     $stmt = $conexion->prepare("
@@ -37,6 +39,7 @@ if ($cursoId > 0) {
     if ($cursoValido) {
         $cursoSeleccionado = $cursoValido['nombre'];
 
+        // Estudiantes activos del curso
         $stmt = $conexion->prepare("
             SELECT i.id, u.nombre, u.apellido, u.correo, i.estado_academico
             FROM inscripciones i
@@ -49,27 +52,48 @@ if ($cursoId > 0) {
         $stmt->execute();
         $estudiantes = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         $stmt->close();
+
+        // Tareas reales del curso con archivos adjuntos
+        $stmtTareas = $conexion->prepare("
+            SELECT
+                t.id,
+                t.titulo,
+                t.descripcion,
+                t.puntajeMaximo,
+                t.fechaLimite,
+                t.estado,
+                GROUP_CONCAT(
+                    CASE WHEN ta.tipo = 'Archivo' THEN ta.nombreArchivo END
+                    ORDER BY ta.id SEPARATOR ', '
+                ) AS archivos,
+                GROUP_CONCAT(
+                    CASE WHEN ta.tipo = 'Archivo' THEN ta.id END
+                    ORDER BY ta.id SEPARATOR ','
+                ) AS idsArchivos
+            FROM tareas t
+            LEFT JOIN tareasArchivos ta ON ta.idTarea = t.id
+            WHERE t.idCurso = ?
+            GROUP BY t.id
+            ORDER BY t.fechaLimite ASC
+        ");
+        $stmtTareas->bind_param('i', $cursoId);
+        $stmtTareas->execute();
+        $tareas = $stmtTareas->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmtTareas->close();
+
+        // Total de entregas realizadas para las métricas
+        $stmtEnt = $conexion->prepare("
+            SELECT COUNT(*) AS total
+            FROM entregablesTarea et
+            INNER JOIN tareas t ON et.idTarea = t.id
+            WHERE t.idCurso = ? AND et.estado = 'Entregado'
+        ");
+        $stmtEnt->bind_param('i', $cursoId);
+        $stmtEnt->execute();
+        $totalEntregas = $stmtEnt->get_result()->fetch_assoc()['total'] ?? 0;
+        $stmtEnt->close();
     }
 }
-
-$tareasDemo = [
-    [
-        'titulo' => 'Guía práctica de fundamentos',
-        'descripcion' => 'Resolver los ejercicios indicados para reforzar los contenidos vistos en clase.',
-        'fecha' => '2026-05-29',
-        'puntaje' => 20,
-        'archivo' => 'Guia-practica.pdf',
-        'estado' => 'Activa'
-    ],
-    [
-        'titulo' => 'Actividad de investigación',
-        'descripcion' => 'Preparar una síntesis breve sobre el tema asignado.',
-        'fecha' => '2026-06-03',
-        'puntaje' => 15,
-        'archivo' => '',
-        'estado' => 'Borrador'
-    ]
-];
 ?>
 
 <!DOCTYPE html>
@@ -176,15 +200,20 @@ $tareasDemo = [
                     </div>
                 </section>
             <?php else: ?>
+
                 <section class="banner organizacion-banner tareas-banner">
                     <div class="banner-left">
                         <h2>Tareas y entregas</h2>
-                        <p>Interfaz frontend para crear tareas, revisar entregas y asignar calificaciones del curso.</p>
+                        <p>Crea tareas, revisa entregas y asigna calificaciones para este curso.</p>
                     </div>
                     <div class="organizacion-metricas">
                         <div>
                             <span>Tareas</span>
-                            <strong id="tareasTotal"><?= count($tareasDemo) ?></strong>
+                            <strong id="tareasTotal"><?= count($tareas) ?></strong>
+                        </div>
+                        <div>
+                            <span>Entregas</span>
+                            <strong><?= $totalEntregas ?></strong>
                         </div>
                         <div>
                             <span>Estudiantes</span>
@@ -197,11 +226,12 @@ $tareasDemo = [
                     </div>
                 </section>
 
+                <!-- TABLA DE TAREAS -->
                 <section class="contenido-card">
                     <div class="contenido-card-header">
                         <div>
                             <h2>Tareas registradas</h2>
-                            <p>Vista local para crear, editar y visualizar tareas sin escribir en la base de datos.</p>
+                            <p>Tareas registradas para este curso. Puedes crear, editar y gestionar entregas.</p>
                         </div>
                     </div>
 
@@ -218,54 +248,72 @@ $tareasDemo = [
                                 </tr>
                             </thead>
                             <tbody id="tablaTareasBody">
-                                <?php foreach ($tareasDemo as $tarea): ?>
-                                    <tr
-                                        data-titulo="<?= htmlspecialchars($tarea['titulo']) ?>"
-                                        data-descripcion="<?= htmlspecialchars($tarea['descripcion']) ?>"
-                                        data-fecha="<?= htmlspecialchars($tarea['fecha']) ?>"
-                                        data-puntaje="<?= (int)$tarea['puntaje'] ?>"
-                                        data-archivo="<?= htmlspecialchars($tarea['archivo']) ?>"
-                                        data-estado="<?= htmlspecialchars($tarea['estado']) ?>"
-                                    >
-                                        <td data-label="Título">
-                                            <strong><?= htmlspecialchars($tarea['titulo']) ?></strong>
-                                            <span class="contenido-desc"><?= htmlspecialchars($tarea['descripcion']) ?></span>
-                                        </td>
-                                        <td data-label="Fecha límite"><?= date('d/m/Y', strtotime($tarea['fecha'])) ?></td>
-                                        <td data-label="Puntaje"><?= (int)$tarea['puntaje'] ?> pts</td>
-                                        <td data-label="Apoyo">
-                                            <?php if (!empty($tarea['archivo'])): ?>
-                                                <span class="contenido-archivo">
-                                                    <i class="fas fa-paperclip"></i><?= htmlspecialchars($tarea['archivo']) ?>
-                                                </span>
-                                            <?php else: ?>
-                                                <span class="contenido-muted">Opcional</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td data-label="Estado">
-                                            <span class="contenido-badge estado-<?= strtolower($tarea['estado']) ?>">
-                                                <?= htmlspecialchars($tarea['estado']) ?>
-                                            </span>
-                                        </td>
-                                        <td data-label="Acciones">
-                                            <div class="contenido-acciones">
-                                                <button type="button" class="contenido-icon-btn editar-tarea" title="Editar tarea">
-                                                    <i class="fas fa-pen"></i>
-                                                </button>
-                                            </div>
-                                        </td>
+                                <?php if (empty($tareas)): ?>
+                                    <tr class="contenido-empty">
+                                        <td colspan="6">Este curso aún no tiene tareas registradas.</td>
                                     </tr>
-                                <?php endforeach; ?>
+                                <?php else: ?>
+                                    <?php foreach ($tareas as $tarea):
+                                        $estadoTexto = $tarea['estado'] == 1 ? 'Activa' : 'Vencida';
+                                        $claseBadge  = $tarea['estado'] == 1 ? 'activa' : 'vencida';
+                                        $vencida     = $tarea['estado'] == 0;
+                                    ?>
+                                        <tr
+                                            data-id="<?= (int)$tarea['id'] ?>"
+                                            data-titulo="<?= htmlspecialchars($tarea['titulo']) ?>"
+                                            data-descripcion="<?= htmlspecialchars($tarea['descripcion']) ?>"
+                                            data-fecha="<?= htmlspecialchars(substr($tarea['fechaLimite'], 0, 16)) ?>"
+                                            data-puntaje="<?= (int)$tarea['puntajeMaximo'] ?>"
+                                            data-archivo="<?= htmlspecialchars($tarea['archivos'] ?? '') ?>"
+                                            data-ids-archivos="<?= htmlspecialchars($tarea['idsArchivos'] ?? '') ?>"
+                                            data-estado="<?= $estadoTexto ?>"
+                                        >
+                                            <td data-label="Título">
+                                                <strong><?= htmlspecialchars($tarea['titulo']) ?></strong>
+                                                <span class="contenido-desc"><?= htmlspecialchars($tarea['descripcion']) ?></span>
+                                            </td>
+                                            <td data-label="Fecha límite">
+                                                <?= date('d/m/Y H:i', strtotime($tarea['fechaLimite'])) ?>
+                                            </td>
+                                            <td data-label="Puntaje"><?= (int)$tarea['puntajeMaximo'] ?> pts</td>
+                                            <td data-label="Apoyo">
+                                                <?php if (!empty($tarea['archivos'])): ?>
+                                                    <span class="contenido-archivo">
+                                                        <i class="fas fa-paperclip"></i><?= htmlspecialchars($tarea['archivos']) ?>
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="contenido-muted">Sin archivo</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td data-label="Estado">
+                                                <span class="contenido-badge estado-<?= $claseBadge ?>">
+                                                    <?= $estadoTexto ?>
+                                                </span>
+                                            </td>
+                                            <td data-label="Acciones">
+                                                <div class="contenido-acciones">
+                                                    <button type="button"
+                                                        class="contenido-icon-btn editar-tarea <?= $vencida ? 'is-disabled' : '' ?>"
+                                                        title="<?= $vencida ? 'No se puede editar, fecha vencida' : 'Editar tarea' ?>"
+                                                        <?= $vencida ? 'disabled' : '' ?>>
+                                                        <i class="fas fa-pen"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
                 </section>
 
+                <!-- TABLA DE ENTREGAS -->
                 <section class="contenido-card">
                     <div class="contenido-card-header">
                         <div>
                             <h2>Entregas realizadas</h2>
-                            <p>Listado visual con estudiantes inscritos actualmente en el curso.</p>
+                            <p>Entregas de los estudiantes inscritos en el curso por cada tarea.</p>
                         </div>
                     </div>
 
@@ -281,48 +329,98 @@ $tareasDemo = [
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if (empty($estudiantes)): ?>
+                                <?php if (empty($tareas)): ?>
+                                    <tr class="contenido-empty">
+                                        <td colspan="5">Crea tareas primero para ver las entregas de los estudiantes.</td>
+                                    </tr>
+                                <?php elseif (empty($estudiantes)): ?>
                                     <tr class="contenido-empty">
                                         <td colspan="5">Este curso aún no tiene estudiantes activos inscritos.</td>
                                     </tr>
                                 <?php else: ?>
-                                    <?php foreach ($estudiantes as $i => $estudiante): ?>
-                                        <?php $estadoEntrega = $i % 3 === 0 ? 'Pendiente' : 'Entregada'; ?>
-                                        <tr>
+                                    <?php foreach ($tareas as $tarea):
+                                        $stmtEntregas = $conexion->prepare("
+                                            SELECT
+                                                e.id AS idEstudiante,
+                                                u.nombre,
+                                                u.apellido,
+                                                u.correo,
+                                                et.id AS idEntrega,
+                                                et.estado AS estadoEntrega,
+                                                et.nota,
+                                                GROUP_CONCAT(
+                                                    CASE WHEN ea.tipo = 'Archivo' THEN ea.nombreArchivo END
+                                                    SEPARATOR ', '
+                                                ) AS archivosEntrega
+                                            FROM inscripciones i
+                                            INNER JOIN estudiantes e ON i.idEstudiante = e.id
+                                            INNER JOIN usuarios u ON e.usuario_id = u.id
+                                            LEFT JOIN entregablesTarea et ON et.idTarea = ? AND et.idEstudiante = e.id
+                                            LEFT JOIN entregaArchivos ea ON ea.idEntrega = et.id
+                                            WHERE i.idCurso = ? AND i.estado_academico = 'Activo'
+                                            GROUP BY e.id
+                                            ORDER BY u.apellido, u.nombre
+                                        ");
+                                        $stmtEntregas->bind_param('ii', $tarea['id'], $cursoId);
+                                        $stmtEntregas->execute();
+                                        $entregasTarea = $stmtEntregas->get_result()->fetch_all(MYSQLI_ASSOC);
+                                        $stmtEntregas->close();
+
+                                        foreach ($entregasTarea as $entrega):
+                                            $estadoEnt  = $entrega['estadoEntrega'] ?? 'Pendiente';
+                                            $claseEnt   = strtolower($estadoEnt);
+                                            $puedeCalif = in_array($estadoEnt, ['Entregado', 'Revisado']);
+                                    ?>
+                                        <tr data-id-entrega="<?= (int)($entrega['idEntrega'] ?? 0) ?>">
                                             <td data-label="Estudiante">
-                                                <strong><?= htmlspecialchars(trim($estudiante['nombre'] . ' ' . $estudiante['apellido'])) ?></strong>
-                                                <span class="contenido-desc"><?= htmlspecialchars($estudiante['correo']) ?></span>
+                                                <strong><?= htmlspecialchars(trim($entrega['nombre'] . ' ' . $entrega['apellido'])) ?></strong>
+                                                <span class="contenido-desc"><?= htmlspecialchars($entrega['correo']) ?></span>
                                             </td>
-                                            <td data-label="Tarea">Guía práctica de fundamentos</td>
+                                            <td data-label="Tarea">
+                                                <?= htmlspecialchars($tarea['titulo']) ?>
+                                            </td>
                                             <td data-label="Entrega">
-                                                <?php if ($estadoEntrega === 'Entregada'): ?>
+                                                <?php if (!empty($entrega['archivosEntrega'])): ?>
                                                     <span class="contenido-archivo">
-                                                        <i class="fas fa-file-arrow-up"></i> entrega-estudiante.pdf
+                                                        <i class="fas fa-file-arrow-up"></i>
+                                                        <?= htmlspecialchars($entrega['archivosEntrega']) ?>
                                                     </span>
                                                 <?php else: ?>
                                                     <span class="contenido-muted">Sin archivo</span>
                                                 <?php endif; ?>
                                             </td>
                                             <td data-label="Estado">
-                                                <span class="contenido-badge estado-<?= strtolower($estadoEntrega) ?>">
-                                                    <?= $estadoEntrega ?>
+                                                <span class="contenido-badge estado-<?= $claseEnt ?>">
+                                                    <?= htmlspecialchars($estadoEnt) ?>
                                                 </span>
                                             </td>
                                             <td data-label="Calificación">
-                                                <div class="tarea-calificacion">
-                                                    <input type="number" min="0" max="20" step="1" placeholder="0">
-                                                    <button type="button" class="contenido-btn contenido-btn-light btn-calificar-tarea">
-                                                        Calificar
-                                                    </button>
-                                                </div>
+                                                <?php if ($entrega['nota'] !== null): ?>
+                                                    <strong><?= number_format($entrega['nota'], 2) ?> pts</strong>
+                                                <?php elseif ($puedeCalif): ?>
+                                                    <div class="tarea-calificacion">
+                                                        <input type="number"
+                                                            min="0"
+                                                            max="<?= (int)$tarea['puntajeMaximo'] ?>"
+                                                            step="0.01"
+                                                            placeholder="0">
+                                                        <button type="button" class="contenido-btn contenido-btn-light btn-calificar-tarea">
+                                                            Calificar
+                                                        </button>
+                                                    </div>
+                                                <?php else: ?>
+                                                    <span class="contenido-muted">—</span>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
+                                    <?php endforeach; ?>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
                 </section>
+
             <?php endif; ?>
 
         </div>
@@ -330,6 +428,7 @@ $tareasDemo = [
 
     <label for="sidebar-toggle" class="overlay"></label>
 
+    <!-- MODAL TAREA -->
     <div class="contenido-modal" id="modalTarea" aria-hidden="true">
         <div class="contenido-modal-box" role="dialog" aria-modal="true" aria-labelledby="tareaModalTitulo">
             <div class="contenido-modal-header">
@@ -343,6 +442,9 @@ $tareasDemo = [
             </div>
 
             <form id="formTareaDocente" novalidate>
+                <input type="hidden" id="tareaId" value="">
+                <input type="hidden" id="tareaCursoId" value="<?= (int)$cursoId ?>">
+
                 <div class="contenido-form-grid">
                     <div class="contenido-field contenido-field-wide">
                         <label for="tareaTitulo">Título</label>
@@ -356,19 +458,19 @@ $tareasDemo = [
 
                     <div class="contenido-field">
                         <label for="tareaFecha">Fecha límite</label>
-                        <input type="date" id="tareaFecha" required>
+                        <input type="datetime-local" id="tareaFecha" required>
                     </div>
 
                     <div class="contenido-field">
-                        <label for="tareaPuntaje">Puntaje</label>
+                        <label for="tareaPuntaje">Puntaje máximo</label>
                         <input type="number" id="tareaPuntaje" min="1" max="100" step="1" placeholder="Ej: 20" required>
                     </div>
 
                     <div class="contenido-field">
                         <label for="tareaEstado">Estado</label>
                         <select id="tareaEstado" required>
-                            <option value="Activa">Activa</option>
-                            <option value="Borrador">Borrador</option>
+                            <option value="1">Activa</option>
+                            <option value="0">Borrador</option>
                         </select>
                     </div>
 
@@ -394,7 +496,9 @@ $tareasDemo = [
 
                 <div class="contenido-modal-actions">
                     <button type="button" class="contenido-btn contenido-btn-light" id="cancelarTarea">Cancelar</button>
-                    <button type="submit" class="contenido-btn contenido-btn-primary">Guardar tarea</button>
+                    <button type="submit" class="contenido-btn contenido-btn-primary">
+                        <i class="fas fa-save"></i> Guardar tarea
+                    </button>
                 </div>
             </form>
         </div>
