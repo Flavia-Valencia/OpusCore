@@ -107,7 +107,7 @@ if ($cursoId > 0) {
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <title>ADF | Gestión de tareas</title>
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
-    <link rel="stylesheet" href="./css/styles-docentes.css">
+    <link rel="stylesheet" href="./css/styles-docentes.css?v=entregas-ui">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -186,10 +186,17 @@ if ($cursoId > 0) {
                     <h1><?= htmlspecialchars($cursoSeleccionado) ?></h1>
                 </div>
                 <?php if ($cursoValido): ?>
-                    <button type="button" class="contenido-btn contenido-btn-primary" id="btnNuevaTarea">
-                        <i class="fas fa-plus"></i>
-                        Nueva tarea
-                    </button>
+                    <div class="tareas-topbar-actions">
+                        <a class="contenido-btn contenido-btn-primary"
+                           href="docente-entregas-tareas.php?curso_id=<?= urlencode($cursoId) ?>&curso=<?= urlencode($cursoSeleccionado) ?>">
+                            <i class="fas fa-file-arrow-up"></i>
+                            Tareas entregadas
+                        </a>
+                        <button type="button" class="contenido-btn contenido-btn-primary" id="btnNuevaTarea">
+                            <i class="fas fa-plus"></i>
+                            Nueva tarea
+                        </button>
+                    </div>
                 <?php endif; ?>
             </div>
 
@@ -301,119 +308,6 @@ if ($cursoId > 0) {
                                                 </div>
                                             </td>
                                         </tr>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- TABLA DE ENTREGAS -->
-                <section class="contenido-card">
-                    <div class="contenido-card-header">
-                        <div>
-                            <h2>Entregas realizadas</h2>
-                            <p>Entregas de los estudiantes inscritos en el curso por cada tarea.</p>
-                        </div>
-                    </div>
-
-                    <div class="contenido-tabla-wrap">
-                        <table class="contenido-tabla tareas-tabla">
-                            <thead>
-                                <tr>
-                                    <th>Estudiante</th>
-                                    <th>Tarea</th>
-                                    <th>Entrega</th>
-                                    <th>Estado</th>
-                                    <th>Calificación</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (empty($tareas)): ?>
-                                    <tr class="contenido-empty">
-                                        <td colspan="5">Crea tareas primero para ver las entregas de los estudiantes.</td>
-                                    </tr>
-                                <?php elseif (empty($estudiantes)): ?>
-                                    <tr class="contenido-empty">
-                                        <td colspan="5">Este curso aún no tiene estudiantes activos inscritos.</td>
-                                    </tr>
-                                <?php else: ?>
-                                    <?php foreach ($tareas as $tarea):
-                                        $stmtEntregas = $conexion->prepare("
-                                            SELECT
-                                                e.id AS idEstudiante,
-                                                u.nombre,
-                                                u.apellido,
-                                                u.correo,
-                                                et.id AS idEntrega,
-                                                et.estado AS estadoEntrega,
-                                                et.nota,
-                                                GROUP_CONCAT(
-                                                    CASE WHEN ea.tipo = 'Archivo' THEN ea.nombreArchivo END
-                                                    SEPARATOR ', '
-                                                ) AS archivosEntrega
-                                            FROM inscripciones i
-                                            INNER JOIN estudiantes e ON i.idEstudiante = e.id
-                                            INNER JOIN usuarios u ON e.usuario_id = u.id
-                                            LEFT JOIN entregablesTarea et ON et.idTarea = ? AND et.idEstudiante = e.id
-                                            LEFT JOIN entregaArchivos ea ON ea.idEntrega = et.id
-                                            WHERE i.idCurso = ? AND i.estado_academico = 'Activo'
-                                            GROUP BY e.id
-                                            ORDER BY u.apellido, u.nombre
-                                        ");
-                                        $stmtEntregas->bind_param('ii', $tarea['id'], $cursoId);
-                                        $stmtEntregas->execute();
-                                        $entregasTarea = $stmtEntregas->get_result()->fetch_all(MYSQLI_ASSOC);
-                                        $stmtEntregas->close();
-
-                                        foreach ($entregasTarea as $entrega):
-                                            $estadoEnt  = $entrega['estadoEntrega'] ?? 'Pendiente';
-                                            $claseEnt   = strtolower($estadoEnt);
-                                            $puedeCalif = in_array($estadoEnt, ['Entregado', 'Revisado']);
-                                    ?>
-                                        <tr data-id-entrega="<?= (int)($entrega['idEntrega'] ?? 0) ?>">
-                                            <td data-label="Estudiante">
-                                                <strong><?= htmlspecialchars(trim($entrega['nombre'] . ' ' . $entrega['apellido'])) ?></strong>
-                                                <span class="contenido-desc"><?= htmlspecialchars($entrega['correo']) ?></span>
-                                            </td>
-                                            <td data-label="Tarea">
-                                                <?= htmlspecialchars($tarea['titulo']) ?>
-                                            </td>
-                                            <td data-label="Entrega">
-                                                <?php if (!empty($entrega['archivosEntrega'])): ?>
-                                                    <span class="contenido-archivo">
-                                                        <i class="fas fa-file-arrow-up"></i>
-                                                        <?= htmlspecialchars($entrega['archivosEntrega']) ?>
-                                                    </span>
-                                                <?php else: ?>
-                                                    <span class="contenido-muted">Sin archivo</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td data-label="Estado">
-                                                <span class="contenido-badge estado-<?= $claseEnt ?>">
-                                                    <?= htmlspecialchars($estadoEnt) ?>
-                                                </span>
-                                            </td>
-                                            <td data-label="Calificación">
-                                                <?php if ($entrega['nota'] !== null): ?>
-                                                    <strong><?= number_format($entrega['nota'], 2) ?> pts</strong>
-                                                <?php elseif ($puedeCalif): ?>
-                                                    <div class="tarea-calificacion">
-                                                        <input type="number"
-                                                            min="0"
-                                                            max="<?= (int)$tarea['puntajeMaximo'] ?>"
-                                                            step="0.01"
-                                                            placeholder="0">
-                                                        <button type="button" class="contenido-btn contenido-btn-light btn-calificar-tarea">
-                                                            Calificar
-                                                        </button>
-                                                    </div>
-                                                <?php else: ?>
-                                                    <span class="contenido-muted">—</span>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </tbody>

@@ -1176,6 +1176,40 @@ body {
     padding: 6px 10px;
 }
 
+.tarea-estudiante-meta .tarea-intentos {
+    background: #eef6ff;
+    color: #0d3672;
+}
+
+.tarea-estudiante-meta .tarea-intentos.agotado {
+    background: #fee2e2;
+    color: #b42335;
+}
+
+.tarea-estudiante-meta .tarea-fecha-entrega {
+    background: #eefbf3;
+    color: #17693a;
+}
+
+.tarea-fecha-entrega.is-hidden {
+    display: none;
+}
+
+.tarea-estudiante-meta .tarea-nota.baja {
+    background: #fee2e2;
+    color: #b42335;
+}
+
+.tarea-estudiante-meta .tarea-nota.media {
+    background: #fff7df;
+    color: #9a5a00;
+}
+
+.tarea-estudiante-meta .tarea-nota.alta {
+    background: #eefbf3;
+    color: #17693a;
+}
+
 .tarea-estado {
     border-radius: 999px;
     font-size: 11px;
@@ -1201,7 +1235,9 @@ body {
 .tarea-estudiante-actions {
     align-items: center;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
+    justify-content: flex-end;
 }
 
 .btn-entregar-tarea {
@@ -1220,6 +1256,19 @@ body {
 .btn-entregar-tarea.is-done {
     background: #d9f8e8;
     color: #087a58;
+}
+
+.btn-entregar-tarea.is-replace {
+    background: #eef6ff;
+    border: 1px solid #b8d7f6;
+    color: #0d3672;
+}
+
+.btn-entregar-tarea.is-disabled,
+.btn-entregar-tarea:disabled {
+    background: #eef1f5;
+    color: #7b8794;
+    cursor: not-allowed;
 }
 
 .tarea-entrega-modal.activo {
@@ -1249,6 +1298,13 @@ body {
     color: #607086;
     font-size: 12px;
     font-weight: 700;
+}
+
+.entrega-tarea-resumen small {
+    color: #52627a;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 .entrega-tarea-form {
@@ -1863,6 +1919,7 @@ body {
         grid-column: 2;
         justify-content: flex-start;
         flex-wrap: wrap;
+        width: 100%;
     }
 
     .entrega-modal-actions {
