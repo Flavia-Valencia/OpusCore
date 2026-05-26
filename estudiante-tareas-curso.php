@@ -141,6 +141,11 @@ if ($tieneHorarios) {
 $tareas = [];
 if (tablaExiste($conexion, 'tareas')) {
     $tieneArchivos = tablaExiste($conexion, 'tareasArchivos');
+    $tieneIntentosEntrega = tablaExiste($conexion, 'entregablesTarea')
+        && columnaExiste($conexion, 'entregablesTarea', 'intentosEntrega');
+    $selectIntentosEntrega = $tieneIntentosEntrega
+        ? "COALESCE(et.intentosEntrega, CASE WHEN et.id IS NULL THEN 0 ELSE 1 END)"
+        : "CASE WHEN et.id IS NULL THEN 0 ELSE 1 END";
     $selectArchivo = $tieneArchivos
         ? ", (
               SELECT ta.nombreArchivo
@@ -167,7 +172,10 @@ if (tablaExiste($conexion, 'tareas')) {
 
     $stmt = $conexion->prepare("
         SELECT t.id, t.titulo, t.descripcion, t.puntajeMaximo, t.fechaLimite,
-            COALESCE(et.estado, 'Pendiente') AS estadoEntrega
+            COALESCE(et.estado, 'Pendiente') AS estadoEntrega,
+            et.fechaEntrega,
+            et.nota,
+            $selectIntentosEntrega AS intentosEntrega
             $selectArchivo
         FROM tareas t
         LEFT JOIN entregablesTarea et 
@@ -363,10 +371,12 @@ if (tablaExiste($conexion, 'tareas')) {
                                     $fechaLimite = new DateTime($tarea['fechaLimite']);
                                     $estadoEntrega = strtolower($tarea['estadoEntrega'] ?? 'pendiente');
 
+                                    $plazoVencido = $fechaLimite < $hoy;
+
                                     if ($estadoEntrega === 'entregado' || $estadoEntrega === 'revisado') {
                                         $estado = 'entregada';
                                         $estadoTexto = ucfirst($estadoEntrega);
-                                    } elseif ($fechaLimite < $hoy) {
+                                    } elseif ($plazoVencido) {
                                         $estado = 'vencida';
                                         $estadoTexto = 'Vencida';
                                     } else {
@@ -374,6 +384,29 @@ if (tablaExiste($conexion, 'tareas')) {
                                         $estadoTexto = 'Pendiente';
                                     }
                                     $ruta = trim((string) ($tarea['ruta_archivo'] ?? ''));
+                                    $entregaRealizada = $estadoEntrega === 'entregado' || $estadoEntrega === 'revisado';
+                                    $intentosUsados = min(3, max(0, (int) ($tarea['intentosEntrega'] ?? 0)));
+                                    $intentosMaximos = 3;
+                                    $intentosAgotados = $intentosUsados >= $intentosMaximos;
+                                    $puedeAccionar = !$plazoVencido && !$intentosAgotados;
+                                    $accionEntrega = $entregaRealizada ? 'reemplazar' : 'entregar';
+                                    $fechaEntregaTexto = !empty($tarea['fechaEntrega'])
+                                        ? date('d/m/Y H:i', strtotime($tarea['fechaEntrega']))
+                                        : '';
+                                    $notaClase = '';
+                                    if ($tarea['nota'] !== null) {
+                                        $notaValor = (float) $tarea['nota'];
+                                        if ($notaValor <= 4) {
+                                            $notaClase = ' baja';
+                                        } elseif ($notaValor <= 7) {
+                                            $notaClase = ' media';
+                                        } else {
+                                            $notaClase = ' alta';
+                                        }
+                                    }
+                                    $textoBoton = $puedeAccionar
+                                        ? ($entregaRealizada ? 'Reemplazar' : 'Entregar')
+                                        : ($intentosAgotados ? 'Intentos agotados' : ($entregaRealizada ? 'Entregada' : 'Vencida'));
                                 ?>
                                 <article
                                     class="tarea-estudiante-item"
@@ -392,10 +425,24 @@ if (tablaExiste($conexion, 'tareas')) {
                                         <p><?= e($tarea['descripcion']) ?></p>
                                         <div class="tarea-estudiante-meta">
                                             <span><i class="fas fa-calendar-day"></i> Entrega: <?= fechaCorta($tarea['fechaLimite']) ?></span>
-                                            <span><i class="fas fa-star"></i> <?= (int) $tarea['puntajeMaximo'] ?> pts</span>
+                                            <?php if ($tarea['nota'] !== null): ?>
+                                                <span class="tarea-nota<?= e($notaClase) ?>">
+                                                    <i class="fas fa-star"></i>
+                                                    Nota: <?= e(number_format((float) $tarea['nota'], 2)) ?> / <?= e(number_format((float) $tarea['puntajeMaximo'], 0)) ?>
+                                                </span>
+                                            <?php else: ?>
+                                                <span><i class="fas fa-star"></i> Puntaje: <?= (int) $tarea['puntajeMaximo'] ?> pts</span>
+                                            <?php endif; ?>
                                             <?php if (!empty($tarea['nombre_archivo'])): ?>
                                                 <span><i class="fas fa-paperclip"></i> <?= e($tarea['nombre_archivo']) ?></span>
                                             <?php endif; ?>
+                                            <span class="tarea-intentos <?= $intentosAgotados ? 'agotado' : '' ?>">
+                                                <i class="fas fa-rotate-right"></i> Intentos <?= $intentosUsados ?>/<?= $intentosMaximos ?>
+                                            </span>
+                                            <span class="tarea-fecha-entrega<?= $fechaEntregaTexto === '' ? ' is-hidden' : '' ?>">
+                                                <i class="fas fa-clock"></i>
+                                                <?= $fechaEntregaTexto !== '' ? 'Entregada: ' . e($fechaEntregaTexto) : '' ?>
+                                            </span>
                                         </div>
                                     </div>
                                     <div class="tarea-estudiante-actions">
@@ -412,14 +459,17 @@ if (tablaExiste($conexion, 'tareas')) {
                                         <?php endif; ?>
                                         <button
                                             type="button"
-                                            class="btn-entregar-tarea<?= ($estado === 'entregada') ? ' is-done' : '' ?>"
-                                            <?= ($estado === 'entregada') ? 'disabled' : '' ?>
+                                            class="btn-entregar-tarea<?= $entregaRealizada ? ' is-replace' : '' ?><?= !$puedeAccionar ? ' is-disabled' : '' ?>"
+                                            <?= !$puedeAccionar ? 'disabled' : '' ?>
                                             data-tarea-id="<?= (int) $tarea['id'] ?>"
                                             data-titulo="<?= e($tarea['titulo']) ?>"
                                             data-fecha="<?= fechaCorta($tarea['fechaLimite']) ?>"
                                             data-puntaje="<?= (int) $tarea['puntajeMaximo'] ?>"
+                                            data-accion="<?= e($accionEntrega) ?>"
+                                            data-intentos="<?= $intentosUsados ?>"
+                                            data-intentos-max="<?= $intentosMaximos ?>"
                                         >
-                                            <?= ($estado === 'entregada') ? 'Entregada' : 'Entregar' ?>
+                                            <?= e($textoBoton) ?>
                                         </button>
                                     </div>
                                 </article>
@@ -441,6 +491,7 @@ if (tablaExiste($conexion, 'tareas')) {
             <div class="entrega-tarea-resumen">
                 <strong id="entregaTareaNombre">Tarea seleccionada</strong>
                 <span id="entregaTareaMeta">Fecha de entrega</span>
+                <small id="entregaTareaModo">Agrega el archivo o enlace que enviarás para esta tarea.</small>
             </div>
             <form id="formEntregaTarea" class="entrega-tarea-form">
                 <input type="hidden" id="entregaTareaId">
@@ -458,13 +509,12 @@ if (tablaExiste($conexion, 'tareas')) {
                 </div>
                 <div class="entrega-modal-actions">
                     <button type="button" class="entrega-modal-btn entrega-modal-btn-light js-cerrar-entrega-tarea">Cancelar</button>
-                    <button type="submit" class="entrega-modal-btn entrega-modal-btn-primary">Marcar como entregada</button>
+                    <button type="submit" class="entrega-modal-btn entrega-modal-btn-primary" id="entregaTareaSubmit">Marcar como entregada</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>
 </body>
 </html>

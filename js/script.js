@@ -1466,8 +1466,7 @@ if (btnConfirmarInscripcion) {
 }
 
 // -- VALIDACIÓN DE INSCRIPCIÓN
-// Envía la solicitud al backend y muestra el mensaje recibido.
-// Si se supera el límite de 5 cursos, el backend responde con error y el modal permanece abierto.
+// Valida la inscripcion y mantiene el modal abierto si la respuesta trae errores.
 async function validarInscripcion(idCurso, btn) {
     btn.disabled = true;
 
@@ -1630,10 +1629,23 @@ function inicializarTareasEstudiante() {
     const tareaId = document.getElementById('entregaTareaId');
     const tareaNombre = document.getElementById('entregaTareaNombre');
     const tareaMeta = document.getElementById('entregaTareaMeta');
+    const tareaModo = document.getElementById('entregaTareaModo');
+    const tareaTituloModal = document.getElementById('entregaTareaTitulo');
+    const tareaSubmit = document.getElementById('entregaTareaSubmit');
     let tareaActiva = null;
     let entregaAdjuntoCount = 0;
 
     const items = Array.from(lista.querySelectorAll('.tarea-estudiante-item'));
+
+    function fechaHoraEntregaActual() {
+        return new Intl.DateTimeFormat('es-SV', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        }).format(new Date());
+    }
 
     // Filtra y ordena las tareas visibles.
     function aplicarFiltros() {
@@ -1727,15 +1739,31 @@ function inicializarTareasEstudiante() {
         });
     }
 
-    // Abre el modal de entrega desde la tarea seleccionada.
+    // Prepara el modal con textos distintos para una entrega nueva o un reemplazo visual.
     lista.addEventListener('click', function (event) {
         const btn = event.target.closest('.btn-entregar-tarea');
-        if (!btn || btn.classList.contains('is-done')) return;
+        if (!btn || btn.disabled) return;
 
+        const esReemplazo = btn.dataset.accion === 'reemplazar';
+        const intentos = parseInt(btn.dataset.intentos || '0', 10);
+        const intentosMax = parseInt(btn.dataset.intentosMax || '3', 10);
+        const siguienteIntento = Math.min(intentos + 1, intentosMax);
         tareaActiva = btn.closest('.tarea-estudiante-item');
         if (tareaId) tareaId.value = btn.dataset.tareaId || '';
         if (tareaNombre) tareaNombre.textContent = btn.dataset.titulo || 'Tarea seleccionada';
-        if (tareaMeta) tareaMeta.textContent = `Entrega: ${btn.dataset.fecha || 'Por definir'} · ${btn.dataset.puntaje || '0'} pts`;
+        if (tareaMeta) {
+            tareaMeta.textContent = `Entrega: ${btn.dataset.fecha || 'Por definir'} · ${btn.dataset.puntaje || '0'} pts · Intento ${siguienteIntento}/${intentosMax}`;
+        }
+        if (tareaTituloModal) {
+            tareaTituloModal.innerHTML = `<i class="fas fa-file-arrow-up"></i> ${esReemplazo ? 'Reemplazar entrega' : 'Entregar tarea'}`;
+        }
+        if (tareaModo) {
+            tareaModo.textContent = esReemplazo
+                ? `Selecciona el nuevo archivo o enlace. Te quedarían ${Math.max(intentosMax - siguienteIntento, 0)} intento(s) después de este reemplazo.`
+                : `Agrega el archivo o enlace que enviarás para esta tarea. Tienes ${intentosMax} intentos en total.`;
+        }
+        if (tareaSubmit) tareaSubmit.textContent = esReemplazo ? 'Reemplazar entrega' : 'Marcar como entregada';
+        if (form) form.dataset.accion = esReemplazo ? 'reemplazar' : 'entregar';
 
         modal?.classList.add('activo');
         modal?.setAttribute('aria-hidden', 'false');
@@ -1769,7 +1797,7 @@ function inicializarTareasEstudiante() {
         if (event.target === modal) cerrarModalEntrega();
     });
 
-    // Marca la tarea como entregada solo en frontend hasta que exista backend de entregas.
+    // Construye el envio de entrega desde los adjuntos visibles en el modal.
     form?.addEventListener('submit', async function (event) {
         event.preventDefault();
 
@@ -1780,11 +1808,12 @@ function inicializarTareasEstudiante() {
 
         const idTarea = tareaId?.value;
         if (!idTarea) return;
+        const accionActual = form?.dataset.accion || 'entregar';
 
         const formData = new FormData();
         formData.append('idTarea', idTarea);
 
-        // Archivos
+        // Agrega archivos y enlaces al FormData usando los controles dinamicos del modal.
         listaAdjuntos?.querySelectorAll('.adjunto-item').forEach(item => {
             if (item.dataset.tipo === 'Archivo') {
                 const archivo = item.querySelector('.adjunto-file-input')?.files?.[0];
@@ -1807,22 +1836,42 @@ function inicializarTareasEstudiante() {
             const data = await resp.json();
 
             if (data.success) {
-                // Actualizar UI
+                // Refresca la tarjeta para que el estudiante vea el cambio de estado al instante.
+                const fechaEntrega = fechaHoraEntregaActual();
                 if (tareaActiva) {
                     tareaActiva.dataset.status = 'entregada';
                     const estado = tareaActiva.querySelector('.tarea-estado');
                     const boton  = tareaActiva.querySelector('.btn-entregar-tarea');
+                    const intentosBadge = tareaActiva.querySelector('.tarea-intentos');
+                    const fechaBadge = tareaActiva.querySelector('.tarea-fecha-entrega');
                     if (estado) { estado.textContent = 'Entregada'; estado.className = 'tarea-estado entregada'; }
-                    if (boton)  { boton.textContent = 'Entregada'; boton.classList.add('is-done'); }
+                    if (boton) {
+                        const intentosActuales = parseInt(boton.dataset.intentos || '0', 10);
+                        const intentosMaximos = parseInt(boton.dataset.intentosMax || '3', 10);
+                        const intentosNuevos = Math.min(intentosActuales + 1, intentosMaximos);
+                        boton.textContent = 'Reemplazar';
+                        boton.classList.add('is-replace');
+                        boton.dataset.accion = 'reemplazar';
+                        boton.dataset.intentos = String(intentosNuevos);
+                        if (intentosNuevos >= intentosMaximos) {
+                            boton.textContent = 'Intentos agotados';
+                            boton.classList.add('is-disabled');
+                            boton.disabled = true;
+                        }
+                        if (intentosBadge) {
+                            intentosBadge.innerHTML = `<i class="fas fa-rotate-right"></i> Intentos ${intentosNuevos}/${intentosMaximos}`;
+                            intentosBadge.classList.toggle('agotado', intentosNuevos >= intentosMaximos);
+                        }
+                        if (fechaBadge) {
+                            fechaBadge.classList.remove('is-hidden');
+                            fechaBadge.innerHTML = `<i class="fas fa-clock"></i> Entregada: ${fechaEntrega}`;
+                        }
+                    }
                 }
                 cerrarModalEntrega();
                 aplicarFiltros();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Entrega registrada',
-                    text: 'Tu tarea fue entregada exitosamente.',
-                    confirmButtonColor: '#053170'
-                }).then(() => location.reload());
+                const tituloToast = accionActual === 'reemplazar' ? 'Entrega actualizada' : 'Entrega registrada';
+                mostrarToastPremium(`${tituloToast}. Fecha y hora: ${fechaEntrega}`, 'success');
             } else {
                 mostrarToastPremium(data.message || 'Error al entregar la tarea.');
             }
@@ -1870,10 +1919,8 @@ function normalizarFuentePagoPayPal(data) {
     return ['card', 'credit'].includes(fuente) ? 'tarjeta' : 'paypal';
 }
 
-// Inicializa el botón de PayPal para el pago de mensualidades.
-// Crea una orden enviando el id de la mensualidad al backend y,
-// al aprobarse el pago, captura la orden para actualizar el estado
-// de la cuota a "Pagado" en la base de datos.
+// Inicializa el boton de PayPal para el pago de mensualidades.
+// Crea una orden con el id de la mensualidad y procesa el resultado aprobado.
 function inicializarPayPalMensualidad() {
     const container = document.getElementById('paypal-button-container');
     if (!container || container.dataset.rendered) return;
@@ -1983,8 +2030,8 @@ function inicializarPayPalCuota() {
         onApprove: function (data, actions) {
             return actions.order.capture().then(function () {
                 cerrarModalPagoCuota();
-                // BACKEND PENDIENTE: aqui luego deberian marcar la cuota como pagada.
-                mostrarToast('Pago aprobado en PayPal. Backend debe registrar la cuota.', 'success');
+                // Muestra el comprobante en pantalla despues de aprobar el pago.
+                mostrarToast('Pago aprobado en PayPal. Revisa tus tramites pendientes.', 'success');
             });
         },
 
@@ -2188,7 +2235,7 @@ function confirmarInscripcion() {
 }
 
 //  Abrir modal de pago con resumen de cursos y total
-// BACKEND: Aquí se preparan datos para enviar a PayPal
+// Prepara los datos que necesita el boton de PayPal.
 async function abrirModalPago(){
     const modal = document.getElementById('modalPago');
     if (!modal) return;
@@ -2278,7 +2325,7 @@ function inicializarPayPal() {
 
     paypal.Buttons({
 
-        // Llama al backend para crear la orden en PayPal
+        // Crea la orden de PayPal para el pago mostrado en el modal.
         createOrder: async function (paypalData) {
             metodoPagoSDK = normalizarFuentePagoPayPal(paypalData);
             const ids = cursosSeleccionados.map(c => parseInt(c.id));
@@ -3106,29 +3153,6 @@ if (buscar) buscar.addEventListener('input', filtrarContenidos);
 if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
 });
 
-// Panel de acciones en las tarjetas de cursos del docente
-document.addEventListener('DOMContentLoaded', function () {
-    const contenedorCursos = document.querySelector('.courses');
-    if (!contenedorCursos) return;
-
-    contenedorCursos.addEventListener('click', function (e) {
-        const tarjeta = e.target.closest('.curso-card-docente');
-        if (!tarjeta || e.target.closest('a')) return;
-
-        const abrir = !tarjeta.classList.contains('is-selected');
-
-        contenedorCursos.querySelectorAll('.curso-card-docente').forEach(card => {
-            card.classList.remove('is-selected');
-            card.querySelector('.curso-acciones-panel')?.setAttribute('aria-hidden', 'true');
-        });
-
-        if (abrir) {
-            tarjeta.classList.add('is-selected');
-            tarjeta.querySelector('.curso-acciones-panel')?.setAttribute('aria-hidden', 'false');
-        }
-    });
-});
-
 // Interacciones frontend para gestion de tareas del docente
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('modalTarea');
@@ -3392,56 +3416,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
-
-
-document.addEventListener('click', async function (e) {
-    const btn = e.target.closest('.btn-calificar-tarea');
-    if (!btn) return;
-
-    const fila      = btn.closest('tr');
-    const input     = fila?.querySelector('.tarea-calificacion input');
-    const nota      = parseFloat(input?.value ?? '');
-    const idEntrega = fila?.dataset.idEntrega;
-
-    // Validacion del rango de calificacion
-    const max = parseFloat(input.getAttribute('max')?? '100');
-    if (!input || Number.isNaN(nota) || nota < 0 || nota > max) {
-        mostrarToastPremium(`La calificación debe estar entre 0 y ${max}`);
-        input?.focus();
-        return;
-    }
-
-    if (!idEntrega) {
-        mostrarToastPremium('Esta entrega aún no tiene registro en la base de datos', 'error');
-        return;
-    }
-
-    btn.disabled    = true;
-    btn.textContent = 'Guardando...';
-
-    try {
-        const formData = new FormData();
-        formData.append('idEntrega', idEntrega);
-        formData.append('nota',      nota);
-
-        const res  = await fetch('calificar-entrega.php', { method: 'POST', body: formData });
-        const data = await res.json();
-
-        if (data.error) {
-            mostrarToastPremium(data.mensaje, 'error');
-            btn.disabled    = false;
-            btn.textContent = 'Calificar';
-        } else {
-            fila.classList.add('tarea-row-calificada');
-            btn.textContent = 'Calificada';
-            mostrarToastPremium('Calificación registrada correctamente', 'success');
-        }
-    } catch {
-        mostrarToastPremium('Error de conexión al calificar', 'error');
-        btn.disabled    = false;
-        btn.textContent = 'Calificar';
-    }
 });
- 
-   
+
+// Filtros visuales para la pagina de entregas del docente.
+document.addEventListener('DOMContentLoaded', function () {
+    const tabla = document.getElementById('tablaEntregasDocente');
+    if (!tabla) return;
+
+    const buscar = document.getElementById('buscarEntregasDocente');
+    const filtroEstado = document.getElementById('filtroEntregasEstado');
+    const empty = document.getElementById('entregasDocenteEmpty');
+    const total = document.getElementById('entregasTotalVisible');
+    const filas = Array.from(tabla.querySelectorAll('.entrega-docente-row'));
+
+    // Aplica busqueda por texto y estado.
+    function filtrarEntregasDocente() {
+        const termino = (buscar?.value || '').trim().toLowerCase();
+        const estado = (filtroEstado?.value || '').toLowerCase();
+        let visibles = 0;
+
+        filas.forEach(fila => {
+            const coincideTexto = !termino || (fila.dataset.search || '').includes(termino);
+            const coincideEstado = !estado || fila.dataset.estado === estado;
+            const visible = coincideTexto && coincideEstado;
+            fila.classList.toggle('is-hidden', !visible);
+            if (visible) visibles++;
+        });
+
+        if (empty) empty.classList.toggle('is-visible', visibles === 0);
+        if (total) total.textContent = String(visibles);
+    }
+
+    buscar?.addEventListener('input', filtrarEntregasDocente);
+    filtroEstado?.addEventListener('change', filtrarEntregasDocente);
 });

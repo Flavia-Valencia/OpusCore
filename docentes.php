@@ -162,8 +162,8 @@ if(!isset($_SESSION["usuario"])){
                                     <span class="meta-value price">$<?php echo number_format($curso['costoMensual'], 2); ?></span>
                                 </div>
                             </div>
-                            <!-- Panel de acciones del curso seleccionado -->
-                            <div class="curso-acciones-panel" aria-hidden="true">
+                            <!-- Acciones visibles del curso -->
+                            <div class="curso-acciones-panel">
                                 <p>¿Qué quieres gestionar?</p>
                                 <div class="curso-acciones-grid">
                                     <a
