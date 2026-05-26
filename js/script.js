@@ -3118,37 +3118,46 @@ document.addEventListener('DOMContentLoaded', function () {
     let filaEditando = null;
 
     const campos = {
-        titulo: document.getElementById('tareaTitulo'),
-        descripcion: document.getElementById('tareaDescripcion'),
-        fecha: document.getElementById('tareaFecha'),
-        puntaje: document.getElementById('tareaPuntaje'),
-        estado: document.getElementById('tareaEstado'),
-        archivo: document.getElementById('tareaArchivo'),
-        modalTitulo: document.getElementById('tareaModalTitulo')
-    };
+    id: document.getElementById('tareaId'),
+    cursoId: document.getElementById('tareaCursoId'),
+    titulo: document.getElementById('tareaTitulo'),
+    descripcion: document.getElementById('tareaDescripcion'),
+    fecha: document.getElementById('tareaFecha'),
+    puntaje: document.getElementById('tareaPuntaje'),
+    estado: document.getElementById('tareaEstado'),
+    archivo: document.getElementById('tareaArchivo'),
+    modalTitulo: document.getElementById('tareaModalTitulo')
+};
 
-    function abrirModalTarea(fila = null) {
-        form.reset();
-        limpiarValidacionTarea();
-        filaEditando = fila;
-        campos.modalTitulo.textContent = fila ? 'Editar tarea' : 'Nueva tarea';
-        if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
+   
 
-        if (fila) {
-            campos.titulo.value = fila.dataset.titulo || '';
-            campos.descripcion.value = fila.dataset.descripcion || '';
-            campos.fecha.value = fila.dataset.fecha || '';
-            campos.puntaje.value = fila.dataset.puntaje || '';
-            campos.estado.value = fila.dataset.estado || 'Activa';
-            if (tareaArchivoTexto && fila.dataset.archivo) {
-                tareaArchivoTexto.textContent = fila.dataset.archivo;
-            }
+   function abrirModalTarea(fila = null) {
+    form.reset();
+    limpiarValidacionTarea();
+    filaEditando = fila;
+    campos.modalTitulo.textContent = fila ? 'Editar tarea' : 'Nueva tarea';
+    if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
+    if (campos.id) campos.id.value = '';
+
+    if (fila) {
+       
+        if (campos.id) campos.id.value = fila.dataset.id || '';
+
+        campos.titulo.value      = fila.dataset.titulo      || '';
+        campos.descripcion.value = fila.dataset.descripcion || '';
+        campos.puntaje.value     = fila.dataset.puntaje     || '';
+        campos.estado.value = fila.dataset.estado === 'Activa' ? '1' : '0';
+        campos.fecha.value = fila.dataset.fecha || '';
+
+        if (tareaArchivoTexto && fila.dataset.archivo) {
+            tareaArchivoTexto.textContent = fila.dataset.archivo;
         }
-
-        modal.classList.add('activo');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
     }
+
+    modal.classList.add('activo');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
 
     function cerrarModalTarea() {
         modal.classList.remove('activo');
@@ -3162,21 +3171,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function validarTarea() {
-        limpiarValidacionTarea();
-        const requeridos = [campos.titulo, campos.descripcion, campos.fecha, campos.puntaje, campos.estado];
-        let valido = true;
+    limpiarValidacionTarea();
+    let valido = true;
 
-        requeridos.forEach(campo => {
-            const numeroInvalido = campo === campos.puntaje && parseInt(campo.value, 10) < 1;
-            if (!campo.value.trim() || numeroInvalido) {
-                campo.closest('.contenido-field')?.classList.add('is-invalid');
-                valido = false;
-            }
-        });
+    const requeridos = [
+        campos.titulo,
+        campos.descripcion,
+        campos.fecha,
+        campos.puntaje,
+        campos.estado
+    ];
 
-        if (!valido) mostrarToastPremium('Complete los campos obligatorios de la tarea');
-        return valido;
-    }
+    requeridos.forEach(campo => {
+        if (!campo) return;
+        const vacio          = !campo.value.trim();
+        const numeroInvalido = campo === campos.puntaje && parseInt(campo.value, 10) < 1;
+
+        if (vacio || numeroInvalido) {
+            campo.closest('.contenido-field')?.classList.add('is-invalid');
+            valido = false;
+        }
+    });
+
+    if (!valido) mostrarToastPremium('Complete los campos obligatorios de la tarea');
+    return valido;
+} 
 
     function escapeTarea(valor) {
         return String(valor || '').replace(/[&<>"']/g, caracter => ({
@@ -3223,25 +3242,28 @@ document.addEventListener('DOMContentLoaded', function () {
             </td>`;
     }
 
-    function guardarFilaTarea() {
-        const fila = filaEditando || document.createElement('tr');
-        const archivoNuevo = campos.archivo.files?.[0]?.name || '';
+    function guardarFilaTarea(idReal = null) {
+    const fila        = filaEditando || document.createElement('tr');
+    const archivoNuevo = campos.archivo.files?.[0]?.name || '';
 
-        fila.dataset.titulo = campos.titulo.value.trim();
-        fila.dataset.descripcion = campos.descripcion.value.trim();
-        fila.dataset.fecha = campos.fecha.value;
-        fila.dataset.puntaje = campos.puntaje.value;
-        fila.dataset.estado = campos.estado.value;
-        fila.dataset.archivo = archivoNuevo || fila.dataset.archivo || '';
-
-        renderFilaTarea(fila);
-
-        if (!filaEditando) {
-            tbody.prepend(fila);
-            if (total) total.textContent = String(tbody.querySelectorAll('tr').length);
-        }
+    if (idReal && !filaEditando) {
+        fila.dataset.id = idReal; 
     }
 
+    fila.dataset.titulo      = campos.titulo.value.trim();
+    fila.dataset.descripcion = campos.descripcion.value.trim();
+    fila.dataset.fecha       = campos.fecha.value;
+    fila.dataset.puntaje     = campos.puntaje.value;
+    fila.dataset.estado      = campos.estado.value;
+    fila.dataset.archivo     = archivoNuevo || fila.dataset.archivo || '';
+
+    renderFilaTarea(fila);
+
+    if (!filaEditando) {
+        tbody.prepend(fila);
+        if (total) total.textContent = String(tbody.querySelectorAll('tr').length);
+    }
+}
     btnNueva?.addEventListener('click', () => abrirModalTarea());
     btnCerrar?.addEventListener('click', cerrarModalTarea);
     btnCancelar?.addEventListener('click', cerrarModalTarea);
@@ -3252,10 +3274,36 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    limpiarArchivoTarea?.addEventListener('click', function () {
-        if (campos.archivo) campos.archivo.value = '';
-        if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
-    });
+    limpiarArchivoTarea?.addEventListener('click', async function () {
+    if (campos.archivo) campos.archivo.value = '';
+    if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
+
+
+    const idsArchivos = filaEditando?.dataset.idsArchivos || '';
+    if (!filaEditando || !idsArchivos) return;
+
+    const idArchivo = idsArchivos.split(',')[0]; 
+    if (!idArchivo) return;
+
+    try {
+        const formData = new FormData();
+        formData.append('id', idArchivo);
+
+        const res  = await fetch('eliminar-archivo-tarea.php', { method: 'POST', body: formData });
+        const data = await res.json();
+
+        if (data.ok) {
+          
+            filaEditando.dataset.archivo     = '';
+            filaEditando.dataset.idsArchivos = '';
+            mostrarToastPremium('Archivo eliminado correctamente', 'success');
+        } else {
+            mostrarToastPremium(data.mensaje || 'Error al eliminar el archivo', 'error');
+        }
+    } catch {
+        mostrarToastPremium('Error de conexión al eliminar el archivo', 'error');
+    }
+});
 
     modal.addEventListener('click', function (e) {
         if (e.target === modal) cerrarModalTarea();
@@ -3267,29 +3315,105 @@ document.addEventListener('DOMContentLoaded', function () {
         abrirModalTarea(btnEditar.closest('tr'));
     });
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        if (!validarTarea()) return;
-        guardarFilaTarea();
-        cerrarModalTarea();
-        mostrarToastPremium('Tarea actualizada en la vista.', 'success');
-    });
+    form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if (!validarTarea()) return;
 
-    document.querySelectorAll('.btn-calificar-tarea').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const fila = this.closest('tr');
-            const input = fila?.querySelector('.tarea-calificacion input');
-            const nota = parseFloat(input?.value || '');
+    const btnSubmit = form.querySelector('button[type="submit"]');
+    const textoOriginal = btnSubmit?.textContent || 'Guardar tarea';
+    if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Guardando...';
+    }
 
-            if (!input || Number.isNaN(nota) || nota < 0) {
-                mostrarToastPremium('Ingresa una calificación válida');
-                input?.focus();
-                return;
-            }
+    const formData = new FormData(form);
 
+    // Agregar campos que no están en inputs del form directamente
+    formData.set('idCurso', document.getElementById('tareaCursoId')?.value || '');
+    formData.set('id',      document.getElementById('tareaId')?.value     || '0');
+    formData.set('titulo',      campos.titulo.value.trim());
+    formData.set('descripcion', campos.descripcion.value.trim());
+    formData.set('fechaLimite', campos.fecha.value);
+    formData.set('puntajeMaximo', campos.puntaje.value);
+    formData.set('estado',      campos.estado.value === 'Activa' ? '1' : '0');
+
+    // Adjuntar archivo si fue seleccionado
+    const archivoInput = document.getElementById('tareaArchivo');
+    if (archivoInput?.files?.length > 0) {
+        formData.set('archivo', archivoInput.files[0]);
+    }
+
+    try {
+        const res  = await fetch('guardar-tarea.php', { method: 'POST', body: formData });
+        const data = await res.json();
+
+        if (data.error) {
+            mostrarToastPremium(data.mensaje, 'error');
+        } else {
+            guardarFilaTarea(data.id);
+            cerrarModalTarea();
+            mostrarToastPremium(data.mensaje, 'success');
+            setTimeout(() => window.location.reload(), 1500);
+        }
+    } catch {
+        mostrarToastPremium('Error de conexión al guardar la tarea', 'error');
+    } finally {
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = textoOriginal;
+        }
+    }
+});
+
+
+document.addEventListener('click', async function (e) {
+    const btn = e.target.closest('.btn-calificar-tarea');
+    if (!btn) return;
+
+    const fila      = btn.closest('tr');
+    const input     = fila?.querySelector('.tarea-calificacion input');
+    const nota      = parseFloat(input?.value ?? '');
+    const idEntrega = fila?.dataset.idEntrega;
+
+    // Validacion del rango de calificacion
+    const max = parseFloat(input.getAttribute('max')?? '100');
+    if (!input || Number.isNaN(nota) || nota < 0 || nota > max) {
+        mostrarToastPremium(`La calificación debe estar entre 0 y ${max}`);
+        input?.focus();
+        return;
+    }
+
+    if (!idEntrega) {
+        mostrarToastPremium('Esta entrega aún no tiene registro en la base de datos', 'error');
+        return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Guardando...';
+
+    try {
+        const formData = new FormData();
+        formData.append('idEntrega', idEntrega);
+        formData.append('nota',      nota);
+
+        const res  = await fetch('calificar-entrega.php', { method: 'POST', body: formData });
+        const data = await res.json();
+
+        if (data.error) {
+            mostrarToastPremium(data.mensaje, 'error');
+            btn.disabled    = false;
+            btn.textContent = 'Calificar';
+        } else {
             fila.classList.add('tarea-row-calificada');
-            this.textContent = 'Calificada';
-            mostrarToastPremium('Calificación asignada en la vista.', 'success');
-        });
-    });
+            btn.textContent = 'Calificada';
+            mostrarToastPremium('Calificación registrada correctamente', 'success');
+        }
+    } catch {
+        mostrarToastPremium('Error de conexión al calificar', 'error');
+        btn.disabled    = false;
+        btn.textContent = 'Calificar';
+    }
+});
+ 
+   
 });
