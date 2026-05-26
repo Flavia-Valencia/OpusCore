@@ -166,73 +166,36 @@ if (tablaExiste($conexion, 'tareas')) {
         : ", NULL AS nombre_archivo, NULL AS ruta_archivo, NULL AS tipo_archivo";
 
     $stmt = $conexion->prepare("
-        SELECT t.id, t.titulo, t.descripcion, t.puntajeMaximo, t.fechaLimite $selectArchivo
+        SELECT t.id, t.titulo, t.descripcion, t.puntajeMaximo, t.fechaLimite,
+            COALESCE(et.estado, 'Pendiente') AS estadoEntrega
+            $selectArchivo
         FROM tareas t
+        LEFT JOIN entregablesTarea et 
+            ON et.idTarea = t.id AND et.idEstudiante = ?
         WHERE t.idCurso = ?
         ORDER BY t.fechaLimite ASC, t.id ASC
     ");
-    $stmt->bind_param("i", $cursoId);
+    $stmt->bind_param("ii", $idEstudiante, $cursoId);
     $stmt->execute();
     $tareas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
 
-// DATOS QUEMADOS TEMPORALES: borrar todo este bloque cuando tareas docentes guarde datos reales en BD.
-if (empty($tareas)) {
-    $tareas = [
-        [
-            'id' => -1,
-            'titulo' => 'Ejercicio: Estructura HTML',
-            'descripcion' => 'Crea la estructura base de una página web usando etiquetas semánticas y buenas prácticas.',
-            'puntajeMaximo' => 20,
-            'fechaLimite' => '2026-06-04 23:59:59',
-            'nombre_archivo' => 'guia-estructura-html.pdf',
-            'ruta_archivo' => '',
-            'tipo_archivo' => 'Archivo',
-        ],
-        [
-            'id' => -2,
-            'titulo' => 'Estilos con CSS',
-            'descripcion' => 'Aplica estilos a la página creada en el ejercicio anterior usando selectores, colores y espaciado.',
-            'puntajeMaximo' => 25,
-            'fechaLimite' => '2026-06-11 23:59:59',
-            'nombre_archivo' => '',
-            'ruta_archivo' => '',
-            'tipo_archivo' => '',
-        ],
-        [
-            'id' => -3,
-            'titulo' => 'Proyecto: Landing Page',
-            'descripcion' => 'Desarrolla una landing page completa, responsiva y lista para presentar.',
-            'puntajeMaximo' => 40,
-            'fechaLimite' => '2026-06-18 23:59:59',
-            'nombre_archivo' => 'brief-landing-page.pdf',
-            'ruta_archivo' => '',
-            'tipo_archivo' => 'Archivo',
-        ],
-        [
-            'id' => -4,
-            'titulo' => 'Recursos complementarios',
-            'descripcion' => 'Revisa los recursos compartidos y prepara preguntas para la siguiente clase.',
-            'puntajeMaximo' => 10,
-            'fechaLimite' => '2026-05-20 23:59:59',
-            'nombre_archivo' => 'referencias-web',
-            'ruta_archivo' => 'https://developer.mozilla.org/es/',
-            'tipo_archivo' => 'Enlace',
-        ],
-    ];
-}
+    $pendientes = 0;
+    $vencidas = 0;
+    $hoy = new DateTime('today');
 
-$pendientes = 0;
-$vencidas = 0;
-$hoy = new DateTime('today');
-foreach ($tareas as $tarea) {
-    $fechaLimite = new DateTime($tarea['fechaLimite']);
-    if ($fechaLimite < $hoy) {
-        $vencidas++;
-    } else {
-        $pendientes++;
+    if (!empty($tareas)) {
+        foreach ($tareas as $tarea) {
+            $fechaLimite = new DateTime($tarea['fechaLimite']);
+            if ($fechaLimite < $hoy) {
+                $vencidas++;
+            } else {
+                $pendientes++;
+            }
+        }
     }
+
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -398,8 +361,18 @@ foreach ($tareas as $tarea) {
                             <?php foreach ($tareas as $index => $tarea): ?>
                                 <?php
                                     $fechaLimite = new DateTime($tarea['fechaLimite']);
-                                    $estado = $fechaLimite < $hoy ? 'vencida' : 'pendiente';
-                                    $estadoTexto = $estado === 'vencida' ? 'Vencida' : 'Pendiente';
+                                    $estadoEntrega = strtolower($tarea['estadoEntrega'] ?? 'pendiente');
+
+                                    if ($estadoEntrega === 'entregado' || $estadoEntrega === 'revisado') {
+                                        $estado = 'entregada';
+                                        $estadoTexto = ucfirst($estadoEntrega);
+                                    } elseif ($fechaLimite < $hoy) {
+                                        $estado = 'vencida';
+                                        $estadoTexto = 'Vencida';
+                                    } else {
+                                        $estado = 'pendiente';
+                                        $estadoTexto = 'Pendiente';
+                                    }
                                     $ruta = trim((string) ($tarea['ruta_archivo'] ?? ''));
                                 ?>
                                 <article
@@ -439,13 +412,14 @@ foreach ($tareas as $tarea) {
                                         <?php endif; ?>
                                         <button
                                             type="button"
-                                            class="btn-entregar-tarea"
+                                            class="btn-entregar-tarea<?= ($estado === 'entregada') ? ' is-done' : '' ?>"
+                                            <?= ($estado === 'entregada') ? 'disabled' : '' ?>
                                             data-tarea-id="<?= (int) $tarea['id'] ?>"
                                             data-titulo="<?= e($tarea['titulo']) ?>"
                                             data-fecha="<?= fechaCorta($tarea['fechaLimite']) ?>"
                                             data-puntaje="<?= (int) $tarea['puntajeMaximo'] ?>"
                                         >
-                                            Entregar
+                                            <?= ($estado === 'entregada') ? 'Entregada' : 'Entregar' ?>
                                         </button>
                                     </div>
                                 </article>
