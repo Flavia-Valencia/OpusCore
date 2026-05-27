@@ -142,9 +142,9 @@ $tareas = [];
 if (tablaExiste($conexion, 'tareas')) {
     $tieneArchivos = tablaExiste($conexion, 'tareasArchivos');
     $tieneIntentosEntrega = tablaExiste($conexion, 'entregablesTarea')
-        && columnaExiste($conexion, 'entregablesTarea', 'intentosEntrega');
+    && columnaExiste($conexion, 'entregablesTarea', 'intentos');
     $selectIntentosEntrega = $tieneIntentosEntrega
-        ? "COALESCE(et.intentosEntrega, CASE WHEN et.id IS NULL THEN 0 ELSE 1 END)"
+        ? "COALESCE(et.intentos, CASE WHEN et.id IS NULL THEN 0 ELSE 1 END)"
         : "CASE WHEN et.id IS NULL THEN 0 ELSE 1 END";
     $selectArchivo = $tieneArchivos
         ? ", (

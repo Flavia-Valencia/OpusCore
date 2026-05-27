@@ -1829,7 +1829,11 @@ function inicializarTareasEstudiante() {
         });
 
         try {
-            const resp = await fetch('/OpusCore/estudiante-subir-entregable.php', {
+            const endpoint = accionActual === 'reemplazar'
+                ? '/OpusCore/estudiante-reemplazar-entregable.php'
+                : '/OpusCore/estudiante-subir-entregable.php';
+
+            const resp = await fetch(endpoint, {
                 method: 'POST',
                 body: formData
             });
