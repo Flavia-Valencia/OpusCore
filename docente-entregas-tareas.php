@@ -267,7 +267,9 @@ foreach ($entregas as $entrega) {
                                         ?>
                                         <tr class="entrega-docente-row"
                                             data-search="<?= e($textoBusqueda) ?>"
-                                            data-estado="<?= e($claseEstado) ?>">
+                                            data-estado="<?= e($claseEstado) ?>"
+                                            data-id-entrega="<?= (int) ($entrega['idEntrega'] ?? 0) ?>">
+
                                             <td data-label="Estudiante">
                                                 <strong><?= e($estudianteNombre) ?></strong>
                                                 <span class="contenido-desc"><?= e($entrega['correo']) ?></span>
@@ -303,7 +305,33 @@ foreach ($entregas as $entrega) {
                                                 <?php endif; ?>
                                             </td>
                                             <td data-label="Nota">
-                                                <?= $entrega['nota'] !== null ? e(number_format((float) $entrega['nota'], 2) . ' pts') : '<span class="contenido-muted">Sin nota</span>' ?>
+                                                <?php if ($entrega['nota'] !== null): ?>
+                                                    <div class="tarea-calificacion">
+                                                        <span class="nota-valor"><?= e(number_format((float) $entrega['nota'], 2)) ?> pts</span>
+                                                        <button type="button" class="btn-editar-nota" title="Editar nota">
+                                                            <i class="fas fa-pen"></i>
+                                                        </button>
+                                                    </div>
+                                                <?php elseif ($entrega['idEntrega'] && $entrega['estadoEntrega'] === 'Entregado'): ?>
+                                                    <div class="tarea-calificacion">
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            max="<?= e($entrega['puntajeMaximo']) ?>"
+                                                            step="0.01"
+                                                            placeholder="0 - <?= e($entrega['puntajeMaximo']) ?>"
+                                                        >
+                                                        <button
+                                                            type="button"
+                                                            class="btn-calificar-tarea"
+                                                            data-id-entrega="<?= (int) $entrega['idEntrega'] ?>"
+                                                        >
+                                                            Calificar
+                                                        </button>
+                                                    </div>
+                                                <?php else: ?>
+                                                    <span class="contenido-muted">Sin nota</span>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

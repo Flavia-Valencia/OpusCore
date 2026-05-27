@@ -51,6 +51,15 @@ if ($entrega['estado'] !== 'Entregado' && $entrega['estado'] !== 'Revisado') {
     exit();
 }
 
+// Validar que la fecha límite de la tarea ya haya vencido
+if (strtotime($entrega['fechaLimite']) > time()) {
+    echo json_encode([
+        'error'   => true,
+        'mensaje' => 'No puedes calificar esta entrega hasta que el plazo de la tarea haya vencido (' . date('d/m/Y H:i', strtotime($entrega['fechaLimite'])) . ')'
+    ]);
+    exit();
+}
+
 // Validar rango de nota
 if ($nota < 0 || $nota > $entrega['puntajeMaximo']) {
     echo json_encode([
@@ -81,4 +90,5 @@ echo json_encode([
     'nota'    => $nota,
     'estado'  => 'Revisado'
 ]);
+ 
 ?>
