@@ -3550,7 +3550,7 @@ document.addEventListener('click', function (e) {
         </div>`;
 });
 
-// Registro de notas para docentes
+// REGISTRO DE NOTAS DOCENTE
 document.addEventListener('DOMContentLoaded', function () {
     // Evita errores si no existe el curso
     if (typeof cursoId === 'undefined') return;
@@ -3844,16 +3844,69 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     // Botones de guardado manual 
-    const botonesGuardar =
-        document.querySelectorAll('.btn-guardar-nota');
+   // Botones de guardado manual
+const botonesGuardar = document.querySelectorAll('.btn-guardar-nota');
 
-    botonesGuardar.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // simula el guardado de notas
-            mostrarToastPremium(
-                'Notas registradas correctamente',
-                'success'
-            );
+botonesGuardar.forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        // Criterio 6: bloquear si no hay plazo activo
+        if (!plazoActivo) {
+            mostrarToastPremium('El plazo de notas está cerrado. No se pueden guardar cambios.', 'error');
+            return;
+        }
+
+        const row = this.closest('tr');
+        const inputsFila = row.querySelectorAll('.nota-input');
+        // El rango ya fue validado por guardarNota() al hacer blur/Enter
+        // Solo verificamos que ambos campos tengan valor antes de enviar
+        const nota1 = inputsFila[0].value.trim();
+        const nota2 = inputsFila[1].value.trim();
+
+        if (nota1 === '' || nota2 === '') {
+            mostrarToastPremium('Debes ingresar ambas notas antes de guardar.', 'error');
+            return;
+        }
+
+        const estudianteId = inputsFila[0].dataset.estudianteId;
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Guardando...';
+
+        fetch('guardar-nota.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                curso_id:      cursoId,
+                estudiante_id: parseInt(estudianteId),
+                actividades:   parseFloat(nota1),
+                examen_final:  parseFloat(nota2),
+                plazo_id:      plazoActivo.id
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                mostrarToastPremium(data.message, 'success');
+                // Actualizar el badge con la nota_final real que calculó el trigger
+                const inscId = inputsFila[0].dataset.inscId;
+                const badge = document.getElementById(`promedio-${inscId}`);
+                if (badge && data.nota_final !== undefined) {
+                    const nf = parseFloat(data.nota_final).toFixed(2);
+                    badge.textContent = nf;
+                    badge.className = 'promedio-badge';
+                    badge.classList.add(data.nota_final >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
+                }
+                recalcularKPIs();
+            } else {
+                mostrarToastPremium(data.message, 'error');
+            }
+        })
+        .catch(() => mostrarToastPremium('Error de conexión al guardar', 'error'))
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
         });
     });
+});
 });

@@ -57,6 +57,22 @@ if ($cursoId > 0) {
     // Si no hay curso_id, obtener todos los cursos del docente
     $cursos = getCursosDocente($conexion, $_SESSION["usuario"]);
 }
+
+// Obtener plazo activo para este curso
+$plazoActivo = null;
+$stmt = $conexion->prepare("
+    SELECT pn.id, pn.nombre, pn.plazoFin
+    FROM PlazoNotas pn
+    INNER JOIN cursos c ON pn.idPeriodo = c.idPeriodo
+    WHERE c.id = ? AND pn.estado = 1
+      AND CURDATE() BETWEEN pn.plazoInicio AND pn.plazoFin
+    LIMIT 1
+");
+$stmt->bind_param('i', $cursoId);
+$stmt->execute();
+$plazoActivo = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -264,7 +280,8 @@ if ($cursoId > 0) {
                                                     <div class="grade-input-container">
                                                         <input type="number" 
                                                                class="nota-input" 
-                                                               data-insc-id="<?php echo $estudiante['inscripcion_id']; ?>" 
+                                                               data-insc-id="<?php echo $estudiante['inscripcion_id']; ?>"
+                                                               data-estudiante-id="<?php echo $estudiante['estudiante_id']; ?>"
                                                                data-nota-num="1" 
                                                                min="0" 
                                                                max="10" 
@@ -278,6 +295,7 @@ if ($cursoId > 0) {
                                                         <input type="number" 
                                                                class="nota-input" 
                                                                data-insc-id="<?php echo $estudiante['inscripcion_id']; ?>" 
+                                                               data-estudiante-id="<?php echo $estudiante['estudiante_id']; ?>" 
                                                                data-nota-num="2" 
                                                                min="0" 
                                                                max="10" 
@@ -314,6 +332,7 @@ if ($cursoId > 0) {
         <script>
             const cursoId = <?php echo $cursoId; ?>;
             const totalEstudiantes = <?php echo count($estudiantes); ?>;
+            const plazoActivo = <?php echo $plazoActivo ? json_encode($plazoActivo) : 'null'; ?>;
         </script>
 
         <script src="./js/script.js"></script>
