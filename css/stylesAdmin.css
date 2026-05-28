@@ -1197,24 +1197,28 @@ body {
     z-index: 998;
 }
 
-.periodo-info {
+.periodo-info,
+.plazo-info {
   display: flex;
   align-items: center;
   gap: 2rem;
 }
 
-.periodo-fechas {
+.periodo-fechas,
+.plazo-fechas {
   display: flex;
   gap: 2rem;
 }
 
-.periodo-fechas p {
+.periodo-fechas,
+.plazo-fechas p {
   font-size: 15px;
   font-weight: 600;
   margin: 0;
 }
 
-.estado-periodo {
+.estado-periodo,
+.estado-plazo {
   color: white;
   padding: 6px 18px;
   border-radius: 20px;
@@ -1223,12 +1227,14 @@ body {
   width: max-content;
 }
 
-.estado-periodo.activo {
+.estado-periodo.activo,
+.estado-plazo.activo {
   background: rgba(255,255,255,0.2);
   border: 1.5px solid rgba(255,255,255,0.4);
 }
 
-.estado-periodo.sin-periodo {
+.estado-periodo.sin-periodo,
+.estado-plazo.sin-plazo {
   background: rgba(231, 76, 60, 0.35);
   border: 1.5px solid rgba(231, 76, 60, 0.8);
 }

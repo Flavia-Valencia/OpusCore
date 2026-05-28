@@ -3910,3 +3910,67 @@ botonesGuardar.forEach(btn => {
     });
 });
 });
+
+// MODAL PLAZO DE NOTAS
+document.addEventListener('DOMContentLoaded', function () {
+    const modalPlazo = document.getElementById('modalPlazo');
+    const btnNuevoPlazo = document.querySelector('.btn-nuevo');
+    const modalTitulo = document.getElementById('modal-plazo-titulo');
+    const inputId = document.getElementById('plazo-id');
+    const inputNombre = document.getElementById('plazo-nombre');
+    const inputInicio = document.getElementById('plazo-fecha-inicio');
+    const inputFin = document.getElementById('plazo-fecha-fin');
+    const formPlazo = modalPlazo ? modalPlazo.querySelector('form') : null;
+
+    if (!modalPlazo) return;
+
+    // Funciones globales para abrir/cerrar el modal
+    window.abrirModalPlazo = function() {
+        modalPlazo.classList.add('activo'); 
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.cerrarModalPlazo = function() {
+        modalPlazo.classList.remove('activo');
+        document.body.style.overflow = '';
+        if (formPlazo) formPlazo.reset();
+        if (inputId) inputId.value = '';
+    };
+
+    // Cerrar si hacen clic en el fondo oscuro del modal
+    modalPlazo.addEventListener('click', function (e) {
+        if (e.target === this) cerrarModalPlazo();
+    });
+
+    //  APARTADO: AGREGAR 
+    if (btnNuevoPlazo) {
+        btnNuevoPlazo.addEventListener('click', function() {
+            if (modalTitulo) modalTitulo.innerHTML = '<i class="fas fa-calendar-alt"></i> Nuevo Plazo';
+            if (inputId) inputId.value = ''; // Vacío para indicar inserción
+            abrirModalPlazo();
+        });
+    }
+
+    // APARTADO: EDITAR PLAZO 
+    document.addEventListener('click', function(e) {
+        const btnEditar = e.target.closest('.abrir-modal-plazo');
+        
+        if (btnEditar) {
+            e.preventDefault(); 
+            
+            if (modalTitulo) modalTitulo.innerHTML = '<i class="fas fa-edit"></i> Editar Plazo';
+            const id = btnEditar.dataset.id;
+            const nombre = btnEditar.dataset.nombre;
+            const inicio = btnEditar.dataset.plazoInicio; 
+            const fin = btnEditar.dataset.plazoFin;
+
+            if (inputId) inputId.value = id || '';
+            if (inputNombre) inputNombre.value = nombre || '';
+            if (inputInicio) inputInicio.value = inicio || '';
+            if (inputFin) inputFin.value = fin || '';
+
+            abrirModalPlazo();
+        }
+    });
+});
+
