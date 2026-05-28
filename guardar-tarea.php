@@ -24,6 +24,9 @@ $puntaje = isset($_POST['puntajeMaximo']) && $_POST['puntajeMaximo'] !== ''
     ? floatval($_POST['puntajeMaximo'])
     : false;
 
+$intentos = filter_input(INPUT_POST, 'intentos', FILTER_VALIDATE_INT) ?: 1;
+if ($intentos < 1) $intentos = 1;
+if ($intentos > 10) $intentos = 10;
 
 if (!$idCurso || !$titulo || !$descripcion || !$fechaLimite || $puntaje === false || $puntaje <= 0) {
     echo json_encode([
@@ -128,29 +131,18 @@ if ($id > 0) {
         exit();
     }
 
-    if ($rutaArchivo) {
-       
-        $stmt = $conexion->prepare("
-            UPDATE tareas SET titulo=?, descripcion=?, idSesion=?, puntajeMaximo=?, fechaLimite=?
-            WHERE id=? AND idCurso=?
-        ");
-        $stmt->bind_param('ssiisii', $titulo, $descripcion, $idSesion, $puntaje, $fechaLimiteFmt, $id, $idCurso);
-    } else {
-        $stmt = $conexion->prepare("
-            UPDATE tareas SET titulo=?, descripcion=?, idSesion=?, puntajeMaximo=?, fechaLimite=?
-            WHERE id=? AND idCurso=?
-        ");
-        $stmt->bind_param('ssiisii', $titulo, $descripcion, $idSesion, $puntaje, $fechaLimiteFmt, $id, $idCurso);
-    }
+    $stmt = $conexion->prepare("
+        UPDATE tareas SET titulo=?, descripcion=?, idSesion=?, puntajeMaximo=?, fechaLimite=?, intentos=?
+        WHERE id=? AND idCurso=?
+    ");
+    $stmt->bind_param('ssiisiii', $titulo, $descripcion, $idSesion, $puntaje, $fechaLimiteFmt, $intentos, $id, $idCurso);
 
     if (!$stmt->execute()) {
-        
         echo json_encode(['error' => true, 'mensaje' => 'Error al actualizar: ' . $conexion->error]);
         exit();
     }
     $stmt->close();
 
-  
     if ($rutaArchivo && $nombreArchivo) {
         $stmtArch = $conexion->prepare("
             INSERT INTO tareasArchivos (idTarea, nombreArchivo, tipo, rutaArchivo)
@@ -166,10 +158,10 @@ if ($id > 0) {
 } else {
     // CREAR
     $stmt = $conexion->prepare("
-        INSERT INTO tareas (idCurso, idSesion, titulo, descripcion, puntajeMaximo, fechaLimite, estado)
-        VALUES (?, ?, ?, ?, ?, ?, 1)
+        INSERT INTO tareas (idCurso, idSesion, titulo, descripcion, puntajeMaximo, intentos, fechaLimite, estado)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 1)
     ");
-    $stmt->bind_param('iissis', $idCurso, $idSesion, $titulo, $descripcion, $puntaje, $fechaLimiteFmt);
+    $stmt->bind_param('iissisi', $idCurso, $idSesion, $titulo, $descripcion, $puntaje, $intentos, $fechaLimiteFmt);
 
     if (!$stmt->execute()) {
         echo json_encode(['error' => true, 'mensaje' => 'Error al crear la tarea: ' . $conexion->error]);

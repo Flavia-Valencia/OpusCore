@@ -1,10 +1,11 @@
 <?php
 //Este archivo gestiona el reemplazo de entregas de tareas por parte de estudiantes.
-//Valida la sesión activa, verifica que la tarea exista y siga disponible dentro del plazo,
-//comprueba la inscripción del estudiante en el curso y controla que exista una entrega previa.
-//También limita el máximo de 3 intentos de reemplazo permitidos por tarea.
-//Elimina archivos anteriores, registra los nuevos archivos o enlaces enviados,
-//actualiza la entrega utilizando transacciones y responde en formato JSON con el resultado.
+//Valida la sesión activa, verifica que la tarea exista y el plazo no haya vencido.
+//Comprueba la inscripción del estudiante en el curso y que exista una entrega previa.
+//Valida que el conteoIntentos no haya alcanzado el límite definido por el docente en la tarea.
+//Elimina archivos físicos anteriores y limpia registros de entregaArchivos.
+//Registra los nuevos archivos o enlaces e incrementa conteoIntentos en la entrega.
+//Utiliza transacciones para actualizar la entrega de forma segura y responde en formato JSON.
 session_start();
 include("includes/conexion.php");
 
@@ -47,7 +48,7 @@ if (mysqli_num_rows($resEstudiante) == 0) {
 }
 $idEstudiante = mysqli_fetch_assoc($resEstudiante)["id"];
 
-$sqlTarea = "SELECT id, idCurso, fechaLimite, estado 
+$sqlTarea = "SELECT id, idCurso, fechaLimite, estado, intentos 
              FROM tareas 
              WHERE id = $idTarea";
 $resTarea = mysqli_query($conexion, $sqlTarea);
@@ -75,7 +76,7 @@ if (mysqli_num_rows($resInscripcion) == 0) {
     exit();
 }
 
-$sqlEntrega = "SELECT id, intentos FROM entregablesTarea 
+$sqlEntrega = "SELECT id, conteoIntentos  FROM entregablesTarea 
                WHERE idTarea = $idTarea AND idEstudiante = $idEstudiante";
 $resEntrega = mysqli_query($conexion, $sqlEntrega);
 
@@ -85,10 +86,11 @@ if (mysqli_num_rows($resEntrega) == 0) {
 }
 $entrega = mysqli_fetch_assoc($resEntrega);
 $idEntrega = intval($entrega["id"]);
+$conteoActual = intval($entrega["conteoIntentos"]);
 $intentosActuales = intval($entrega["intentos"]);
 
-if ($intentosActuales >= 3) {
-    echo json_encode(["success" => false, "message" => "Has alcanzado el límite de 3 entregas permitidas para esta tarea."]);
+if ($conteoActual >= $intentosPermitidos) {
+    echo json_encode(["success" => false, "message" => "Has alcanzado el límite de $intentosPermitidos entrega(s) permitidas para esta tarea."]);
     exit();
 }
 
@@ -118,9 +120,9 @@ try {
         throw new Exception("Error al limpiar archivos anteriores: " . mysqli_error($conexion));
     }
 
-    $nuevoIntentos = $intentosActuales + 1;
+    $nuevoConteo = $conteoActual + 1;
     $sqlUpdateEntrega = "UPDATE entregablesTarea 
-                         SET estado = 'Entregado', intentos = $nuevoIntentos
+                         SET estado = 'Entregado', conteoIntentos = $nuevoConteo
                          WHERE id = $idEntrega";
     if (!mysqli_query($conexion, $sqlUpdateEntrega)) {
         throw new Exception("Error al actualizar la entrega: " . mysqli_error($conexion));
@@ -188,7 +190,7 @@ try {
     echo json_encode([
         "success"           => true,
         "message"           => "Entrega reemplazada exitosamente.",
-        "intentos"          => $nuevoIntentos,
+        "intentos"          => $nuevoConteo,
         "intentosRestantes" => $intentosRestantes
     ]);
 

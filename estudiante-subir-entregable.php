@@ -1,10 +1,12 @@
 <?php
 //Este archivo gestiona la entrega de tareas por parte de los estudiantes.
 //Valida la sesión activa y verifica que el usuario tenga rol de estudiante.
-//Comprueba que la tarea exista, siga disponible y que el estudiante esté inscrito en el curso.
-//Evita entregas duplicadas y valida que se envíe al menos un archivo o enlace.
-//Procesa la subida de archivos, genera nombres únicos y registra los adjuntos en la base de datos.
-//Utiliza transacciones para guardar la entrega de forma segura y responde en formato JSON con el resultado.
+//Comprueba que la tarea exista, esté activa y el plazo no haya vencido.
+//Verifica que el estudiante esté inscrito en el curso y no haya entregado ya.
+//Valida que se adjunte al menos un archivo o enlace antes de procesar.
+//Procesa la subida de archivos con nombre único, respetando el límite de 20MB.
+//Inicializa conteoIntentos en 1 al registrar la primera entrega.
+//Utiliza transacciones para guardar la entrega de forma segura y responde en formato JSON.
 session_start();
 include("includes/conexion.php");
 
@@ -64,7 +66,7 @@ try {
     $idEstudiante = intval($estudiante["id"]);
 
     $sqlTarea = "
-        SELECT id, idCurso, fechaLimite, estado
+        SELECT id, idCurso, fechaLimite, estado, intentos
         FROM tareas
         WHERE id = $idTarea
         LIMIT 1
@@ -120,9 +122,9 @@ try {
 
     $sqlEntrega = "
         INSERT INTO entregablesTarea
-        (idTarea, idEstudiante, estado)
+        (idTarea, idEstudiante, estado, conteoIntentos)
         VALUES
-        ($idTarea, $idEstudiante, 'Entregado')
+        ($idTarea, $idEstudiante, 'Entregado', 1)
     ";
 
     mysqli_query($conexion, $sqlEntrega);
@@ -221,9 +223,11 @@ try {
     mysqli_commit($conexion);
 
     echo json_encode([
-        "success" => true,
-        "message" => "Tarea entregada exitosamente.",
-        "idEntrega" => $idEntrega
+        "success"            => true,
+        "message"            => "Tarea entregada exitosamente.",
+        "idEntrega"          => $idEntrega,
+        "conteoIntentos"     => 1,
+        "intentosPermitidos" => intval($tarea["intentos"])
     ]);
 
 } catch (Exception $e) {

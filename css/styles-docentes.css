@@ -1308,6 +1308,87 @@ body {
   display: block;
 }
 
+/* ── Calificación de entregas ─────────────────────────────── */
+.tarea-calificacion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tarea-calificacion input[type="number"] {
+    width: 90px;
+    padding: 7px 10px;
+    border: 1px solid #d3e6fb;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0d3672;
+    background: #eef6ff;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.tarea-calificacion input[type="number"]:focus {
+    border-color: #069DBF;
+    box-shadow: 0 0 0 3px rgba(6, 157, 191, 0.12);
+    background: #fff;
+}
+
+.btn-calificar-tarea {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    background: linear-gradient(135deg, #053170, #069DBF);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+
+.btn-calificar-tarea:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(6, 157, 191, 0.25);
+}
+
+.btn-calificar-tarea:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.nota-valor {
+    font-size: 13px;
+    font-weight: 800;
+    color: #15803d;
+}
+
+.btn-editar-nota {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: #e8f5f9;
+    border: none;
+    border-radius: 7px;
+    color: #057f9a;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.btn-editar-nota:hover {
+    background: #d0eef6;
+    transform: translateY(-1px);
+}
+
 @media (max-width: 900px) {
   .organizacion-topbar,
   .organizacion-banner {

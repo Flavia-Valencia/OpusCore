@@ -3180,6 +3180,7 @@ document.addEventListener('DOMContentLoaded', function () {
     descripcion: document.getElementById('tareaDescripcion'),
     fecha: document.getElementById('tareaFecha'),
     puntaje: document.getElementById('tareaPuntaje'),
+    intentos: document.getElementById('tareaIntentos'),
     estado: document.getElementById('tareaEstado'),
     archivo: document.getElementById('tareaArchivo'),
     modalTitulo: document.getElementById('tareaModalTitulo')
@@ -3204,6 +3205,7 @@ document.addEventListener('DOMContentLoaded', function () {
         campos.titulo.value      = fila.dataset.titulo      || '';
         campos.descripcion.value = fila.dataset.descripcion || '';
         campos.puntaje.value     = fila.dataset.puntaje     || '';
+        campos.intentos.value = fila.dataset.intentos || '1';
         campos.estado.value = fila.dataset.estado === 'Activa' ? '1' : '0';
         campos.fecha.value = fila.dataset.fecha || '';
 
@@ -3317,6 +3319,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fila.dataset.descripcion = campos.descripcion.value.trim();
     fila.dataset.fecha       = campos.fecha.value;
     fila.dataset.puntaje     = campos.puntaje.value;
+    fila.dataset.intentos = campos.intentos.value;
     fila.dataset.estado      = campos.estado.value;
     fila.dataset.archivo     = archivoNuevo || fila.dataset.archivo || '';
     fila.dataset.sesionId = document.getElementById('tareaSesion')?.value || '';
@@ -3399,6 +3402,7 @@ document.addEventListener('DOMContentLoaded', function () {
     formData.set('descripcion', campos.descripcion.value.trim());
     formData.set('fechaLimite', campos.fecha.value);
     formData.set('puntajeMaximo', campos.puntaje.value);
+    formData.set('intentos', campos.intentos.value);
     formData.set('estado',      campos.estado.value === 'Activa' ? '1' : '0');
     formData.set('idSesion', document.getElementById('tareaSesion')?.value || '0');
 
