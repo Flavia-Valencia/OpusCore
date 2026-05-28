@@ -102,3 +102,11 @@ INSERT INTO `entregaArchivos` (`idEntrega`, `nombreArchivo`, `tipo`, `rutaArchiv
 (2, 'EstructurasControl-Yamileth.pdf', 'Archivo', 'editarurl'),
 (3, 'Logotipo-Yamileth.pdf', 'Archivo', 'editarurl'),
 (4, 'Prototipo-Yamileth.pdf', 'Archivo', 'editarurl');
+
+-- Insertar datos en la tabla de plazos para el registro de notas del docente
+INSERT INTO `plazoNotas`(`idPeriodo`, `nombre`, `plazoInicio`, `plazoFin`, `estado`) VALUES 
+(1,'Plazo Notas I-2026','2026-05-28','2026-06-08',1),
+(2,'Plazo Notas II-2026','2026-06-28','2026-07-08',0);
+-- NADA MÁS DE PRUEBA. insertar datos en la tabla de registro de notas para validar el disparador y diseño.
+INSERT INTO `registroNotas`(`idPlazo`, `idCurso`, `idEstudiante`, `actividades`, `examenFinal`) VALUES 
+(1,2,1,7,10),(1,2,2,3,5),(1,1,1,9,9),(1,1,2,8,7);
