@@ -29,6 +29,14 @@ $sql_activo = "SELECT idPeriodo, nombre, PlazoInicio, PlazoFin, estado $selectPl
 
 $result_activo = mysqli_query($conexion, $sql_activo);
 $plazo_activo = mysqli_fetch_assoc($result_activo);
+
+$periodos = [];
+$resPeriodos = mysqli_query($conexion, "SELECT id, nombre FROM PeriodoInscripcion ORDER BY id DESC");
+if ($resPeriodos) {
+    while ($rowP = mysqli_fetch_assoc($resPeriodos)) {
+        $periodos[] = $rowP;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -72,13 +80,13 @@ $plazo_activo = mysqli_fetch_assoc($result_activo);
             </div>
 
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
-            <a href="./admin-periodos.php" class="btn-nav active">Periodos</a>
+            <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
             <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
             <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
             <a href="./admin-pagos.php" class="btn-nav">Pagos</a>
             <a href="./admin-facturacion.php" class="btn-nav">Facturación</a>
-            <a href="./admin-plazo.php" class="btn-nav">Plazo Notas</a>
+            <a href="./admin-plazo.php" class="btn-nav active">Plazo Notas</a>
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
             <a href="includes/logout.php" style="text-decoration:none;">
                 <div class="user-profile">
@@ -105,9 +113,9 @@ $plazo_activo = mysqli_fetch_assoc($result_activo);
                 <h1><?php echo $plazo_activo ? htmlspecialchars($plazo_activo['nombre']) : 'Sin plazo activo'; ?></h1>
                 <p>
                     <?php if ($plazo_activo): ?>
-                        Plazo vigente disponible para inscripciones de notas.
+                        Plazo vigente disponible para inscripción de notas.
                     <?php else: ?>
-                        Activa o crea un nuevo plazo para que los estudiantes puedan inscribirse.
+                        Activa o crea un nuevo plazo para que los docentes puedan subir calificaciones.
                     <?php endif; ?>
                 </p>
             </div>
@@ -170,6 +178,18 @@ $plazo_activo = mysqli_fetch_assoc($result_activo);
                         <label>Nombre del plazo</label>
                         <input type="text" name="nombre" id="plazo-nombre"
                             placeholder="Ej: Plazo 1 — 2026" required>
+                    </div>
+
+                    <div class="modal-campo full-width">
+                        <label>Periodo</label>
+                        <select name="idPeriodo" id="plazo-periodo" required>
+                            <option value="">Seleccione un periodo</option>
+                            <?php foreach($periodos as $periodo): ?>
+                                <option value="<?php echo $periodo['id']; ?>">
+                                    <?php echo htmlspecialchars($periodo['nombre']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div class="modal-campo">
