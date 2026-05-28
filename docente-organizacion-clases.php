@@ -103,14 +103,8 @@ if ($cursoId > 0) {
                     <li class="active" onclick="window.location.href='docentes.php'">
                         <i class="fas fa-book"></i> Mis Cursos
                     </li>
-                    <li>
+                    <li onclick="window.location.href='docente-registro-notas.php'">
                         <i class="fas fa-chart-line"></i> Calificaciones
-                    </li>
-                    <li>
-                        <i class="fas fa-envelope"></i> Mensajes
-                    </li>
-                    <li>
-                        <i class="fas fa-cog"></i> Configuración
                     </li>
                 </ul>
             </nav>
