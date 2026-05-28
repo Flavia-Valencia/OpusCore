@@ -12,23 +12,23 @@ if(!isset($_SESSION["usuario"])){
 
 include('includes/conexion.php');
 
-$columnasPeriodo = [];
-$resColumnas = mysqli_query($conexion, "SHOW COLUMNS FROM PeriodoInscripcion");
+$columnasPlazo = [];
+$resColumnas = mysqli_query($conexion, "SHOW COLUMNS FROM PlazoNotas");
 if ($resColumnas) {
     while ($columna = mysqli_fetch_assoc($resColumnas)) {
-        $columnasPeriodo[] = $columna['Field'];
+        $columnasPlazo[] = $columna['Field'];
     }
 }
-$tieneFechasCiclo = in_array('fechaInicioCiclo', $columnasPeriodo, true) && in_array('fechaFinCiclo', $columnasPeriodo, true);
-$selectFechasCiclo = $tieneFechasCiclo ? ', fechaInicioCiclo, fechaFinCiclo' : ", NULL AS fechaInicioCiclo, NULL AS fechaFinCiclo";
+$tienePlazo = in_array('PlazoInicio', $columnasPlazo, true) && in_array('PlazoFin', $columnasPlazo, true);
+$selectPlazo = $tienePlazo ? ', PlazoInicio, PlazoFin' : ", NULL AS PlazoInicio, NULL AS PlazoFin";
 
-$sql_activo = "SELECT nombre, fechaInicio, fechaFin, estado $selectFechasCiclo
-               FROM PeriodoInscripcion 
+$sql_activo = "SELECT idPeriodo, nombre, PlazoInicio, PlazoFin, estado $selectPlazo
+               FROM PlazoNotas 
                WHERE estado = 1 
                LIMIT 1";
 
 $result_activo = mysqli_query($conexion, $sql_activo);
-$periodo_activo = mysqli_fetch_assoc($result_activo);
+$plazo_activo = mysqli_fetch_assoc($result_activo);
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +39,7 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <title>ADF | Periodos</title>
+    <title>ADF | Plazo Notas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/stylesAdmin.css">
     <link rel="icon" type="image/svg+xml" href="img/logo.svg">
@@ -79,9 +79,7 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
             <a href="./admin-pagos.php" class="btn-nav">Pagos</a>
             <a href="./admin-facturacion.php" class="btn-nav">Facturación</a>
             <a href="./admin-plazo.php" class="btn-nav">Plazo Notas</a>
-
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
-
             <a href="includes/logout.php" style="text-decoration:none;">
                 <div class="user-profile">
                     <div class="user-info">
@@ -97,121 +95,98 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
     <main class="main">
 
         <div class="page-header">
-            <h1 class="titulo">ADMINISTRAR PERIODO</h1>
-            <button class="btn-nuevo">+ Nuevo Período</button>
+            <h1 class="titulo">ADMINISTRAR PLAZO NOTAS</h1>
+            <button class="btn-nuevo">+ Nuevo Plazo</button>
         </div>
 
-        <!-- Banner período activo — reutiliza .banner del CSS -->
+        <!-- Banner plazo activo — reutiliza .banner del CSS -->
         <div class="banner">
             <div class="banner-texto">
-                <h1><?php echo $periodo_activo ? htmlspecialchars($periodo_activo['nombre']) : 'Sin período activo'; ?></h1>
+                <h1><?php echo $plazo_activo ? htmlspecialchars($plazo_activo['nombre']) : 'Sin plazo activo'; ?></h1>
                 <p>
-                    <?php if ($periodo_activo): ?>
-                        Período vigente disponible para inscripciones.
+                    <?php if ($plazo_activo): ?>
+                        Plazo vigente disponible para inscripciones de notas.
                     <?php else: ?>
-                        Activa o crea un nuevo período para que los estudiantes puedan inscribirse.
+                        Activa o crea un nuevo plazo para que los estudiantes puedan inscribirse.
                     <?php endif; ?>
                 </p>
             </div>
-            <div class="periodo-info">
-                <div class="periodo-fechas">
+            <div class="plazo-info">
+                <div class="plazo-fechas">
                     <div>
-                        <p><strong>Inicio inscripción</strong><br>
-                            <?php echo $periodo_activo ? htmlspecialchars($periodo_activo['fechaInicio']) : '—'; ?>
+                        <p><strong>Inicio Plazo </strong><br>
+                            <?php echo $plazo_activo ? htmlspecialchars($plazo_activo['PlazoInicio']) : '—'; ?>
                         </p>
                     </div>
 
                     <div>
-                        <p><strong>Fin inscripción</strong><br>
-                            <?php echo $periodo_activo ? htmlspecialchars($periodo_activo['fechaFin']) : '—'; ?>
-                        </p>
-                    </div>
-
-                    <div>
-                        <p><strong>Inicio ciclo</strong><br>
-                            <?php echo $periodo_activo && $periodo_activo['fechaInicioCiclo'] ? htmlspecialchars($periodo_activo['fechaInicioCiclo']) : '—'; ?>
-                        </p>
-                    </div>
-
-                    <div>
-                        <p><strong>Fin ciclo</strong><br>
-                            <?php echo $periodo_activo && $periodo_activo['fechaFinCiclo'] ? htmlspecialchars($periodo_activo['fechaFinCiclo']) : '—'; ?>
+                        <p><strong>Fin Plazo </strong><br>
+                            <?php echo $plazo_activo ? htmlspecialchars($plazo_activo['PlazoFin']) : '—'; ?>
                         </p>
                     </div>
                 </div>
 
                 <?php
-                    $estadoTexto = $periodo_activo ? 'Activo' : 'Sin período';
-                    $estadoClase = $periodo_activo ? 'activo' : 'sin-periodo';
+                    $estadoTexto = $plazo_activo ? 'Activo' : 'Sin plazo';
+                    $estadoClase = $plazo_activo ? 'activo' : 'sin-plazo';
                 ?>
 
-                <span class="estado-periodo <?php echo $estadoClase; ?>">
+                <span class="estado-plazo <?php echo $estadoClase; ?>">
                     <?php echo $estadoTexto; ?>
                 </span>
             </div>
         </div>
 
-        <!-- Tabla de períodos -->
+        <!-- Tabla de plazos -->
         <div class="card">
             <div class="toolbar">
-                <input type="text" id="buscador-periodo" placeholder="🔎 Buscar un período" class="input-buscar">
+                <input type="text" id="buscador-plazo" placeholder="🔎 Buscar un plazo" class="input-buscar">
             </div>
             <div class="tabla-placeholder">
-                <?php include('mostrar-tabla-periodos.php'); ?>
+                <?php include('mostrar-tabla-plazos.php'); ?>
             </div>
         </div>
 
     </main>
 
-    <!-- MODAL CREAR / EDITAR PERÍODO -->
-    <div id="modalPeriodo" class="modal-overlay">
+    <!-- MODAL CREAR / EDITAR PLAZOS -->
+    <div id="modalPlazo" class="modal-overlay">
         <div class="modal-contenido">
-            <button class="modal-cerrar" onclick="cerrarModalPeriodo()">
+            <button class="modal-cerrar" onclick="cerrarModalPlazo()">
                 <i class="fas fa-times"></i>
             </button>
 
-            <h2 class="modal-titulo" id="modal-periodo-titulo">
-                <i class="fas fa-calendar-alt"></i> Nuevo Período
+            <h2 class="modal-titulo" id="modal-plazo-titulo">
+                <i class="fas fa-calendar-alt"></i> Nuevo Plazo
             </h2>
 
             <form onsubmit="return false;">
-                <input type="hidden" name="id" id="periodo-id">
+                <input type="hidden" name="id" id="plazo-id">
 
-                <h3 class="modal-subtitulo">Detalles del período</h3>
+                <h3 class="modal-subtitulo">Detalles del plazo</h3>
                 <div class="modal-grid">
 
                     <div class="modal-campo full-width">
-                        <label>Nombre del período</label>
-                        <input type="text" name="nombre" id="periodo-nombre"
-                            placeholder="Ej: Periodo 1 — 2026" required>
+                        <label>Nombre del plazo</label>
+                        <input type="text" name="nombre" id="plazo-nombre"
+                            placeholder="Ej: Plazo 1 — 2026" required>
                     </div>
 
                     <div class="modal-campo">
-                        <label>Inicio de inscripción</label>
-                        <input type="date" name="fecha_inicio" id="periodo-fecha-inicio" required>
+                        <label>Inicio del plazo</label>
+                        <input type="date" name="plazo_inicio" id="plazo-fecha-inicio" required>
                     </div>
 
                     <div class="modal-campo">
-                        <label>Fin de inscripción</label>
-                        <input type="date" name="fecha_fin" id="periodo-fecha-fin" required>
+                        <label>Fin del plazo</label>
+                        <input type="date" name="plazo_fin" id="plazo-fecha-fin" required>
                     </div>
-
-                    <div class="modal-campo">
-                        <label>Inicio del ciclo</label>
-                        <input type="date" name="fecha_inicio_ciclo" id="periodo-fecha-inicio-ciclo" required>
-                    </div>
-
-                    <div class="modal-campo">
-                        <label>Fin del ciclo</label>
-                        <input type="date" name="fecha_fin_ciclo" id="periodo-fecha-fin-ciclo" required>
-                    </div>
-
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn-cancelar" onclick="cerrarModalPeriodo()">Cancelar</button>
+                    <button type="button" class="btn-cancelar" onclick="cerrarModalPlazo()">Cancelar</button>
                     <button type="submit" class="btn-guardar">
-                        <i class="fas fa-save"></i> Guardar período
+                        <i class="fas fa-save"></i> Guardar plazo
                     </button>
                 </div>
             </form>
