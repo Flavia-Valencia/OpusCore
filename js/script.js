@@ -3549,3 +3549,311 @@ document.addEventListener('click', function (e) {
             </button>
         </div>`;
 });
+
+// Registro de notas para docentes
+document.addEventListener('DOMContentLoaded', function () {
+    // Evita errores si no existe el curso
+    if (typeof cursoId === 'undefined') return;
+
+    const storageKey = `opus_grades_curso_${cursoId}`;
+    // Aquí se almacenan temporalmente las notas
+    let gradesData = {};
+    // Cargar notas guardadas en localStorage
+    try {
+        const saved = localStorage.getItem(storageKey);
+
+        if (saved) {
+            gradesData = JSON.parse(saved);
+        }
+    } catch (e) {
+        console.error('Error al cargar las notas', e);
+    }
+    const inputs = document.querySelectorAll('.nota-input');
+    const rows = document.querySelectorAll('.estudiante-row');
+
+    // Restaurar notas guardadas y agregar eventos
+    inputs.forEach(input => {
+        const inscId = input.dataset.inscId;
+        const notaNum = input.dataset.notaNum;
+
+        if (
+            gradesData[inscId] &&
+            gradesData[inscId][`nota${notaNum}`] !== undefined
+        ) {
+            input.value = gradesData[inscId][`nota${notaNum}`];
+        }
+        // Guardar automáticamente al salir del input
+        input.addEventListener('blur', function () {
+            guardarNota(this);
+        });
+        // También guardar con Enter
+        input.addEventListener('keydown', function (e) {
+
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.blur();
+            }
+        });
+    });
+    // Calcular promedios iniciales
+    recalcularTodosLosPromedios();
+    // Buscador de estudiantes
+    const buscador = document.getElementById('buscarEstudiantes');
+
+    if (buscador) {
+        buscador.addEventListener('input', function () {
+            const term = this.value.trim().toLowerCase();
+
+            rows.forEach(row => {
+
+                const searchVal = row.dataset.search;
+
+                row.style.display =
+                    searchVal.includes(term) ? '' : 'none';
+            });
+        });
+    }
+    // Guardar nota del estudiante
+    function guardarNota(input) {
+
+        const inscId = input.dataset.inscId;
+        const notaNum = input.dataset.notaNum;
+
+        const container =
+            input.closest('.grade-input-container');
+
+        const indicator =
+            container.querySelector('.save-indicator');
+
+        let valor = input.value.trim();
+
+        input.classList.remove('input-error');
+        // Si el campo queda vacío
+        if (valor === '') {
+            actualizarStorage(inscId, notaNum, undefined);
+
+            mostrarIndicadorGuardado(
+                indicator,
+                'saved',
+                '<i class="fas fa-check"></i>'
+            );
+            recalcularPromedioFila(inscId);
+            recalcularKPIs();
+
+            return;
+        }
+
+        const num = parseFloat(valor);
+        // Validar rango permitido
+        if (isNaN(num) || num < 0 || num > 10) {
+            input.classList.add('input-error');
+
+            if (typeof mostrarToastPremium === 'function') {
+                mostrarToastPremium(
+                    'La nota debe estar entre 1 y 10',
+                    'error'
+                );
+            } else {
+                alert('La nota debe estar entre 1 y 10');
+            }
+
+            mostrarIndicadorGuardado(
+                indicator,
+                'error',
+                '<i class="fas fa-times"></i>'
+            );
+            // Restaurar valor anterior
+            if (
+                gradesData[inscId] &&
+                gradesData[inscId][`nota${notaNum}`] !== undefined
+            ) {
+                input.value =
+                    gradesData[inscId][`nota${notaNum}`];
+            } else {
+                input.value = '';
+            }
+            return;
+        }
+
+        // Mostrar animación de guardado
+        mostrarIndicadorGuardado(
+            indicator,
+            'saving',
+            '<i class="fas fa-circle-notch fa-spin"></i>'
+        );
+
+        setTimeout(() => {
+            const finalVal = parseFloat(num.toFixed(2));
+            input.value = finalVal.toFixed(2);
+
+            actualizarStorage(inscId, notaNum, finalVal);
+
+            mostrarIndicadorGuardado(
+                indicator,
+                'saved',
+                '<i class="fas fa-check"></i>'
+            );
+            recalcularPromedioFila(inscId);
+            recalcularKPIs();
+        }, 500);
+    }
+
+    // Actualizar notas en localStorage provisional hasta implementar guardado definitivo
+    function actualizarStorage(inscId, notaNum, valor) {
+
+        if (!gradesData[inscId]) {
+            gradesData[inscId] = {};
+        }
+
+        if (valor === undefined) {
+            delete gradesData[inscId][`nota${notaNum}`];
+
+            if (Object.keys(gradesData[inscId]).length === 0) {
+                delete gradesData[inscId];
+            }
+        } else {
+            gradesData[inscId][`nota${notaNum}`] = valor;
+        }
+        localStorage.setItem(
+            storageKey,
+            JSON.stringify(gradesData)
+        );
+    }
+
+    // Mostrar estado visual del guardado
+    function mostrarIndicadorGuardado(
+        indicator,
+        estado,
+        iconHTML
+    ) {
+        indicator.className = `save-indicator ${estado}`;
+        indicator.innerHTML = iconHTML;
+
+        if (estado === 'saved' || estado === 'error') {
+            setTimeout(() => {
+                if (indicator.classList.contains(estado)) {
+                    indicator.className = 'save-indicator';
+                }
+            }, 2000);
+        }
+    }
+    // Calcular promedio individual
+    function recalcularPromedioFila(inscId) {
+        const badge =
+            document.getElementById(`promedio-${inscId}`);
+
+        if (!badge) return;
+
+        const row = badge.closest('tr');
+
+        const inputsFila =
+            row.querySelectorAll('.nota-input');
+
+        let suma = 0;
+        let count = 0;
+
+        inputsFila.forEach(inp => {
+            const val = inp.value.trim();
+
+            if (val !== '') {
+                suma += parseFloat(val);
+                count++;
+            }
+        });
+
+        badge.className = 'promedio-badge';
+
+        // Si ambas notas están completas
+        if (count === 2) {
+            const prom =
+                parseFloat((suma / 2).toFixed(2));
+
+            badge.textContent = prom.toFixed(2);
+
+            if (prom >= 7.0) {
+                badge.classList.add('promedio-aprobado');
+            } else if (prom >= 6.0) {
+                badge.classList.add('promedio-alerta');
+            } else {
+                badge.classList.add('promedio-reprobado');
+            }
+        } else {
+            badge.textContent = '—';
+            badge.classList.add('promedio-vacio');
+        }
+    }
+    // Recalcular todos los promedios
+    function recalcularTodosLosPromedios() {
+        inputs.forEach(inp => {
+            const inscId = inp.dataset.inscId;
+            recalcularPromedioFila(inscId);
+        });
+        recalcularKPIs();
+    }
+    // Actualizar métricas generales del curso
+    function recalcularKPIs() {
+        const badges =
+            document.querySelectorAll('[id^="promedio-"]');
+
+        let sumaPromedios = 0;
+        let aprobados = 0;
+        let promediosValidosCount = 0;
+
+        badges.forEach(b => {
+            const text = b.textContent;
+
+            if (text !== '—') {
+                const val = parseFloat(text);
+
+                sumaPromedios += val;
+                promediosValidosCount++;
+
+                if (val >= 7.00) {
+                    aprobados++;
+                }
+            }
+        });
+
+        const kpiPromedio =
+            document.getElementById('kpi-promedio-grupal');
+
+        const kpiAprobacion =
+            document.getElementById('kpi-porcentaje-aprobacion');
+
+        if (promediosValidosCount > 0) {
+
+            const promedioGrupal =
+                (
+                    sumaPromedios /
+                    promediosValidosCount
+                ).toFixed(2);
+
+            kpiPromedio.textContent = promedioGrupal;
+
+            const tasaAprobacion =
+                Math.round(
+                    (aprobados / promediosValidosCount) * 100
+                );
+
+            kpiAprobacion.textContent =
+                `${tasaAprobacion}%`;
+
+        } else {
+            kpiPromedio.textContent = '0.00';
+            kpiAprobacion.textContent = '0%';
+        }
+    }
+    // Botones de guardado manual 
+    const botonesGuardar =
+        document.querySelectorAll('.btn-guardar-nota');
+
+    botonesGuardar.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // simula el guardado de notas
+            mostrarToastPremium(
+                'Notas registradas correctamente',
+                'success'
+            );
+        });
+    });
+});
