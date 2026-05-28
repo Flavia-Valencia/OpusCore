@@ -383,8 +383,13 @@ $stmtSes->close();
                     </div>
 
                     <div class="contenido-field">
-                        <label for="tareaPuntaje">Puntaje máximo</label>
+                        <label for="tareaPuntaje">Calificación máxima</label>
                         <input type="number" id="tareaPuntaje" min="1" max="100" step="1" placeholder="Ej: 20" required>
+                    </div>
+
+                    <div class="contenido-field">
+                        <label for="tareaIntentos">Intentos permitidos</label>
+                        <input type="number" id="tareaIntentos" min="1" max="10" step="1" value="1" required>
                     </div>
 
                     <div class="contenido-field">

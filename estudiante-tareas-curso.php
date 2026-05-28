@@ -172,16 +172,16 @@ if (tablaExiste($conexion, 'tareas')) {
 
     $stmt = $conexion->prepare("
         SELECT t.id, t.titulo, t.descripcion, t.puntajeMaximo, t.fechaLimite,
+            t.intentos,
             COALESCE(et.estado, 'Pendiente') AS estadoEntrega,
             et.fechaEntrega,
             et.nota,
-            $selectIntentosEntrega AS intentosEntrega,
-            sc.titulo AS sesion_titulo
+            COALESCE(et.conteoIntentos, 0) AS conteoIntentos,
+            (SELECT sc.titulo FROM sesionContenido sc WHERE sc.id = t.idSesion LIMIT 1) AS sesion_titulo
             $selectArchivo
         FROM tareas t
         LEFT JOIN entregablesTarea et 
             ON et.idTarea = t.id AND et.idEstudiante = ?
-        LEFT JOIN sesionContenido sc ON sc.id = t.idSesion
         WHERE t.idCurso = ?
         ORDER BY t.fechaLimite ASC, t.id ASC
     ");
@@ -387,8 +387,8 @@ if (tablaExiste($conexion, 'tareas')) {
                                     }
                                     $ruta = trim((string) ($tarea['ruta_archivo'] ?? ''));
                                     $entregaRealizada = $estadoEntrega === 'entregado' || $estadoEntrega === 'revisado';
-                                    $intentosUsados = min(3, max(0, (int) ($tarea['intentosEntrega'] ?? 0)));
-                                    $intentosMaximos = 3;
+                                    $intentosMaximos = max(1, (int) ($tarea['intentos'] ?? 1));
+                                    $intentosUsados  = min($intentosMaximos, max(0, (int) ($tarea['conteoIntentos'] ?? 0)));
                                     $intentosAgotados = $intentosUsados >= $intentosMaximos;
                                     $puedeAccionar = !$plazoVencido && !$intentosAgotados;
                                     $accionEntrega = $entregaRealizada ? 'reemplazar' : 'entregar';
