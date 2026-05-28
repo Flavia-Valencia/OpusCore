@@ -62,6 +62,8 @@ if ($cursoId > 0) {
                 t.puntajeMaximo,
                 t.fechaLimite,
                 t.estado,
+                t.idSesion,
+                sc.titulo AS sesion_titulo,
                 GROUP_CONCAT(
                     CASE WHEN ta.tipo = 'Archivo' THEN ta.nombreArchivo END
                     ORDER BY ta.id SEPARATOR ', '
@@ -71,6 +73,7 @@ if ($cursoId > 0) {
                     ORDER BY ta.id SEPARATOR ','
                 ) AS idsArchivos
             FROM tareas t
+            LEFT JOIN sesionContenido sc ON sc.id = t.idSesion
             LEFT JOIN tareasArchivos ta ON ta.idTarea = t.id
             WHERE t.idCurso = ?
             GROUP BY t.id
@@ -93,6 +96,19 @@ if ($cursoId > 0) {
         $totalEntregas = $stmtEnt->get_result()->fetch_assoc()['total'] ?? 0;
         $stmtEnt->close();
     }
+    // Sesiones del curso para el select del modal
+$sesiones = [];
+$stmtSes = $conexion->prepare("
+    SELECT id, titulo
+    FROM sesionContenido
+    WHERE idCurso = ? AND estado = 1
+    ORDER BY id ASC
+");
+$stmtSes->bind_param('i', $cursoId);
+$stmtSes->execute();
+$sesiones = $stmtSes->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmtSes->close();
+
 }
 ?>
 
@@ -274,6 +290,7 @@ if ($cursoId > 0) {
                                             data-archivo="<?= htmlspecialchars($tarea['archivos'] ?? '') ?>"
                                             data-ids-archivos="<?= htmlspecialchars($tarea['idsArchivos'] ?? '') ?>"
                                             data-estado="<?= $estadoTexto ?>"
+                                            data-sesion-id="<?=(int)($tarea['idSesion'] ?? 0) ?>"
                                         >
                                             <td data-label="Título">
                                                 <strong><?= htmlspecialchars($tarea['titulo']) ?></strong>
@@ -349,7 +366,17 @@ if ($cursoId > 0) {
                         <label for="tareaDescripcion">Descripción</label>
                         <textarea id="tareaDescripcion" rows="4" placeholder="Indicaciones para realizar la tarea" required></textarea>
                     </div>
-
+                    <div class="contenido-field contenido-field-wide">
+                        <label for="tareaSesion">Clase relacionada <span class="contenido-muted">(opcional)</span></label>
+                        <select id="tareaSesion">
+                            <option value="">Ninguna</option>
+                            <?php foreach ($sesiones as $sesion): ?>
+                                <option value="<?= (int)$sesion['id'] ?>">
+                                    <?= htmlspecialchars($sesion['titulo']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                     <div class="contenido-field">
                         <label for="tareaFecha">Fecha límite</label>
                         <input type="datetime-local" id="tareaFecha" required>

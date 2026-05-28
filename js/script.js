@@ -3193,6 +3193,8 @@ document.addEventListener('DOMContentLoaded', function () {
     filaEditando = fila;
     campos.modalTitulo.textContent = fila ? 'Editar tarea' : 'Nueva tarea';
     if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
+     const selectSesion = document.getElementById('tareaSesion');
+     if(selectSesion) selectSesion.value = '';
     if (campos.id) campos.id.value = '';
 
     if (fila) {
@@ -3204,6 +3206,11 @@ document.addEventListener('DOMContentLoaded', function () {
         campos.puntaje.value     = fila.dataset.puntaje     || '';
         campos.estado.value = fila.dataset.estado === 'Activa' ? '1' : '0';
         campos.fecha.value = fila.dataset.fecha || '';
+
+        const selectSesion = document.getElementById('tareaSesion');
+        if(selectSesion){
+            selectSesion.value = fila.dataset.sesionId || '';
+        }
 
         if (tareaArchivoTexto && fila.dataset.archivo) {
             tareaArchivoTexto.textContent = fila.dataset.archivo;
@@ -3312,6 +3319,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fila.dataset.puntaje     = campos.puntaje.value;
     fila.dataset.estado      = campos.estado.value;
     fila.dataset.archivo     = archivoNuevo || fila.dataset.archivo || '';
+    fila.dataset.sesionId = document.getElementById('tareaSesion')?.value || '';
 
     renderFilaTarea(fila);
 
@@ -3392,6 +3400,8 @@ document.addEventListener('DOMContentLoaded', function () {
     formData.set('fechaLimite', campos.fecha.value);
     formData.set('puntajeMaximo', campos.puntaje.value);
     formData.set('estado',      campos.estado.value === 'Activa' ? '1' : '0');
+    formData.set('idSesion', document.getElementById('tareaSesion')?.value || '0');
+
 
     // Adjuntar archivo si fue seleccionado
     const archivoInput = document.getElementById('tareaArchivo');
