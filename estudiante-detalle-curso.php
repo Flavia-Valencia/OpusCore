@@ -163,10 +163,12 @@ $tareas = [];
 if (tablaExiste($conexion, 'tareas')) {
     $stmt = $conexion->prepare("
         SELECT t.id, t.titulo, t.descripcion, t.puntajeMaximo, t.fechaLimite,
-            COALESCE(et.estado, 'Pendiente') AS estadoEntrega
+            COALESCE(et.estado, 'Pendiente') AS estadoEntrega,
+            sc.titulo AS sesion_titulo
         FROM tareas t
         LEFT JOIN entregablesTarea et 
             ON et.idTarea = t.id AND et.idEstudiante = ?
+            LEFT JOIN sesionContenido sc ON sc.id = t.idSesion
         WHERE t.idCurso = ? AND t.estado = 1
         ORDER BY t.fechaLimite ASC, t.id ASC
         LIMIT 5
@@ -387,7 +389,10 @@ if (tablaExiste($conexion, 'tareas')) {
                                         <div class="detalle-lista-item tarea">
                                             <span class="detalle-item-icon icon-<?= ($index % 4) + 1 ?>"><i class="fas fa-pen"></i></span>
                                             <div>
-                                                <strong><?= e($tarea['titulo']) ?></strong>
+                                                <!-- Tarjeta de contenido en tareas -->                                                <strong><?= e($tarea['titulo']) ?></strong>
+                                                <?php if (!empty($tarea['sesion_titulo'])): ?>
+                                                     <span class="tarea-sesion-tag"><i class="fas fa-chalkboard"></i> <?= e($tarea['sesion_titulo']) ?></span>
+                                                <?php endif; ?>
                                                 <p><?= e($tarea['descripcion']) ?></p>
                                             </div>
                                             <time>Entrega<br><?= fechaCorta($tarea['fechaLimite']) ?></time>

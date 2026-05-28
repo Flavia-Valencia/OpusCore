@@ -175,11 +175,13 @@ if (tablaExiste($conexion, 'tareas')) {
             COALESCE(et.estado, 'Pendiente') AS estadoEntrega,
             et.fechaEntrega,
             et.nota,
-            $selectIntentosEntrega AS intentosEntrega
+            $selectIntentosEntrega AS intentosEntrega,
+            sc.titulo AS sesion_titulo
             $selectArchivo
         FROM tareas t
         LEFT JOIN entregablesTarea et 
             ON et.idTarea = t.id AND et.idEstudiante = ?
+        LEFT JOIN sesionContenido sc ON sc.id = t.idSesion
         WHERE t.idCurso = ?
         ORDER BY t.fechaLimite ASC, t.id ASC
     ");
@@ -423,7 +425,11 @@ if (tablaExiste($conexion, 'tareas')) {
                                             <span class="tarea-estado <?= e($estado) ?>"><?= e($estadoTexto) ?></span>
                                         </div>
                                         <p><?= e($tarea['descripcion']) ?></p>
+                                        <!-- Tarjeta de contenido en tareas --> 
                                         <div class="tarea-estudiante-meta">
+                                            <?php if (!empty($tarea['sesion_titulo'])): ?>
+                                                <span><i class="fas fa-chalkboard"></i> <?= e($tarea['sesion_titulo']) ?></span>
+                                            <?php endif; ?>
                                             <span><i class="fas fa-calendar-day"></i> Entrega: <?= fechaCorta($tarea['fechaLimite']) ?></span>
                                             <?php if ($tarea['nota'] !== null): ?>
                                                 <span class="tarea-nota<?= e($notaClase) ?>">
