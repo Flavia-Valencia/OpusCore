@@ -3580,7 +3580,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === this) cerrarModalPlazo();
     });
 
-    // 1. APARTADO: AGREGAR (NUEVO PLAZO)
+    //  APARTADO: AGREGAR 
     if (btnNuevoPlazo) {
         btnNuevoPlazo.addEventListener('click', function() {
             if (modalTitulo) modalTitulo.innerHTML = '<i class="fas fa-calendar-alt"></i> Nuevo Plazo';

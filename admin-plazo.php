@@ -13,17 +13,17 @@ if(!isset($_SESSION["usuario"])){
 include('includes/conexion.php');
 
 $columnasPlazo = [];
-$resColumnas = mysqli_query($conexion, "SHOW COLUMNS FROM PlazoNotas");
+$resColumnas = mysqli_query($conexion, "SHOW COLUMNS FROM plazoNotas");
 if ($resColumnas) {
     while ($columna = mysqli_fetch_assoc($resColumnas)) {
         $columnasPlazo[] = $columna['Field'];
     }
 }
-$tienePlazo = in_array('PlazoInicio', $columnasPlazo, true) && in_array('PlazoFin', $columnasPlazo, true);
-$selectPlazo = $tienePlazo ? ', PlazoInicio, PlazoFin' : ", NULL AS PlazoInicio, NULL AS PlazoFin";
+$tienePlazo = in_array('plazoInicio', $columnasPlazo, true) && in_array('plazoFin', $columnasPlazo, true);
+$selectPlazo = $tienePlazo ? ', plazoInicio, plazoFin' : ", NULL AS plazoInicio, NULL AS plazoFin";
 
-$sql_activo = "SELECT idPeriodo, nombre, PlazoInicio, PlazoFin, estado $selectPlazo
-               FROM PlazoNotas 
+$sql_activo = "SELECT idPeriodo, nombre, plazoInicio, plazoFin, estado $selectPlazo
+               FROM plazoNotas 
                WHERE estado = 1 
                LIMIT 1";
 
@@ -123,13 +123,13 @@ if ($resPeriodos) {
                 <div class="plazo-fechas">
                     <div>
                         <p><strong>Inicio Plazo </strong><br>
-                            <?php echo $plazo_activo ? htmlspecialchars($plazo_activo['PlazoInicio']) : '—'; ?>
+                            <?php echo $plazo_activo ? htmlspecialchars($plazo_activo['plazoInicio']) : '—'; ?>
                         </p>
                     </div>
 
                     <div>
                         <p><strong>Fin Plazo </strong><br>
-                            <?php echo $plazo_activo ? htmlspecialchars($plazo_activo['PlazoFin']) : '—'; ?>
+                            <?php echo $plazo_activo ? htmlspecialchars($plazo_activo['plazoFin']) : '—'; ?>
                         </p>
                     </div>
                 </div>
