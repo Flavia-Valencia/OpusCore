@@ -606,6 +606,7 @@ document.body.insertAdjacentHTML('beforeend', customModalHTML);
 // - Cambia visualmente la fila (gris si está inactivo)
 // - Bloquea botones de editar y horarios cuando está inactivo
 // - Al desactivar un curso, limpia visualmente la celda de docente
+// - No pueden haber dos plazos activos al mismo tiempo
 // - Reordena la fila dinámicamente:
 //     * Inactivos se envían al final
 //     * Cursos activos se reinsertan en orden alfabético por nombre
@@ -631,6 +632,8 @@ document.addEventListener('click', function (e) {
     if (document.getElementById('buscador-docente')) tipo = 'docente';
     else if (document.getElementById('buscador-estudiante')) tipo = 'estudiante';
     else if (document.getElementById('buscador-periodo')) tipo = 'periodo'
+    else if (document.getElementById('buscador-plazo')) tipo = 'plazo';
+
 
     mTitle.innerText = isActivo
         ? `¿Desactivar ${tipo}?`
@@ -658,6 +661,8 @@ document.addEventListener('click', function (e) {
         else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
         else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
         else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
+        else if (document.getElementById('buscador-plazo')) archivo = 'toggle-estado-plazo.php';
+
 
         const res = await fetch(archivo, {
             method: 'POST',
@@ -704,7 +709,7 @@ document.addEventListener('click', function (e) {
             if (celdaDocente) celdaDocente.textContent = '—';
         }
 
-        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
+        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-plazo');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (isActivo) {
@@ -792,7 +797,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const esInactivo = btnEstado.classList.contains('estado-inactivo');
 
-        const btnEditar = fila.querySelector('abrir-modal-periodo, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso');
+        const btnEditar = fila.querySelector('abrir-modal-periodo, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso, abrir-modal-plazo');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (esInactivo) {
@@ -851,7 +856,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (estado.textContent.trim() === 'Inactivo') {
 
-            const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-curso');
+            const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-curso, .abrir-modal-plazo');
             const btnHorarios = fila.querySelector('.horarios');
 
             fila.querySelectorAll('td').forEach(td => {
@@ -3966,66 +3971,205 @@ document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
 });
 });
 
-// MODAL PLAZO DE NOTAS
+// --- PLAZOS DE NOTAS ---
+
+// - Controla la apertura y cierre del modal para crear y editar desde un solo formulario
+// - Al abrir para editar, precarga los datos del plazo en los campos del formulario
+// - Autocompleta las fechas al seleccionar un período (15 días antes del cierre)
+// - Restringe el inicio del plazo al mes de cierre del ciclo del período
+// - Valida que las fechas no excedan el fin del ciclo del período
+// - Valida campos obligatorios y que el fin no sea menor al inicio
+// - Envía el formulario al endpoint correspondiente según si es creación o edición
+// - Muestra toast de éxito o error según la respuesta del servidor
+// - Recarga la página tras guardar correctamente
+// - Incluye buscador en tiempo real que filtra las filas de la tabla por cualquier campo
+
 document.addEventListener('DOMContentLoaded', function () {
+
     const modalPlazo = document.getElementById('modalPlazo');
     const btnNuevoPlazo = document.querySelector('.btn-nuevo');
-    const modalTitulo = document.getElementById('modal-plazo-titulo');
+    const formPlazo = modalPlazo ? modalPlazo.querySelector('form') : null;
+
     const inputId = document.getElementById('plazo-id');
     const inputNombre = document.getElementById('plazo-nombre');
+    const inputPeriodo = document.getElementById('plazo-periodo');
     const inputInicio = document.getElementById('plazo-fecha-inicio');
     const inputFin = document.getElementById('plazo-fecha-fin');
-    const formPlazo = modalPlazo ? modalPlazo.querySelector('form') : null;
+    const modalTitulo = document.getElementById('modal-plazo-titulo');
 
     if (!modalPlazo) return;
 
-    // Funciones globales para abrir/cerrar el modal
-    window.abrirModalPlazo = function() {
-        modalPlazo.classList.add('activo'); 
+    function abrirModal() {
+        modalPlazo.classList.add('activo');
         document.body.style.overflow = 'hidden';
-    };
+    }
 
-    window.cerrarModalPlazo = function() {
+    function cerrarModal() {
         modalPlazo.classList.remove('activo');
         document.body.style.overflow = '';
+
         if (formPlazo) formPlazo.reset();
         if (inputId) inputId.value = '';
-    };
+    }
 
-    // Cerrar si hacen clic en el fondo oscuro del modal
+    window.cerrarModalPlazo = cerrarModal;
+
     modalPlazo.addEventListener('click', function (e) {
-        if (e.target === this) cerrarModalPlazo();
+        if (e.target === this) cerrarModal();
     });
 
-    //  APARTADO: AGREGAR 
     if (btnNuevoPlazo) {
-        btnNuevoPlazo.addEventListener('click', function() {
-            if (modalTitulo) modalTitulo.innerHTML = '<i class="fas fa-calendar-alt"></i> Nuevo Plazo';
-            if (inputId) inputId.value = ''; // Vacío para indicar inserción
-            abrirModalPlazo();
+        btnNuevoPlazo.addEventListener('click', function () {
+
+            if (modalTitulo) {
+                modalTitulo.innerHTML = '<i class="fas fa-calendar-alt"></i> Nuevo Plazo';
+            }
+
+            if (inputId) inputId.value = '';
+            if (formPlazo) formPlazo.reset();
+
+            abrirModal();
         });
     }
 
-    // APARTADO: EDITAR PLAZO 
-    document.addEventListener('click', function(e) {
-        const btnEditar = e.target.closest('.abrir-modal-plazo');
-        
-        if (btnEditar) {
-            e.preventDefault(); 
-            
-            if (modalTitulo) modalTitulo.innerHTML = '<i class="fas fa-edit"></i> Editar Plazo';
-            const id = btnEditar.dataset.id;
-            const nombre = btnEditar.dataset.nombre;
-            const inicio = btnEditar.dataset.plazoInicio; 
-            const fin = btnEditar.dataset.plazoFin;
+    document.addEventListener('click', function (e) {
 
-            if (inputId) inputId.value = id || '';
-            if (inputNombre) inputNombre.value = nombre || '';
-            if (inputInicio) inputInicio.value = inicio || '';
-            if (inputFin) inputFin.value = fin || '';
+        const btn = e.target.closest('.abrir-modal-plazo');
 
-            abrirModalPlazo();
+        if (!btn) return;
+
+        e.preventDefault();
+
+        if (modalTitulo) {
+            modalTitulo.innerHTML = '<i class="fas fa-edit"></i> Editar Plazo';
         }
-    });
-});
 
+        if (inputId) inputId.value = btn.dataset.id || '';
+        if (inputNombre) inputNombre.value = btn.dataset.nombre || '';
+        if (inputPeriodo) inputPeriodo.value = btn.dataset.idperiodo || '';
+        if (inputInicio) inputInicio.value = btn.dataset.plazoInicio || '';
+        if (inputFin) inputFin.value = btn.dataset.plazoFin || '';
+
+        abrirModal();
+    });
+
+    if (inputPeriodo) {
+
+        inputPeriodo.addEventListener('change', async function () {
+
+            const idPeriodo = this.value;
+            if (!idPeriodo) return;
+
+            try {
+                const res = await fetch('obtener-fechas-periodo.php?id=' + idPeriodo);
+                const data = await res.json();
+
+                if (!data.success) {
+                    mostrarToastPremium(data.message || 'Error al cargar periodo');
+                    return;
+                }
+
+                inputInicio.value = data.inicio;
+                inputFin.value = data.fin;
+
+                inputInicio.max = data.fin;
+                inputFin.max = data.fin;
+
+            } catch (err) {
+                console.error(err);
+                mostrarToastPremium('Error al cargar periodo');
+            }
+        });
+    }
+
+    if (formPlazo) {
+
+        formPlazo.addEventListener('submit', async function (e) {
+
+            e.preventDefault();
+
+            const id = inputId.value.trim();
+            const nombre = inputNombre.value.trim();
+            const idPeriodo = inputPeriodo.value.trim();
+            const inicio = inputInicio.value.trim();
+            const fin = inputFin.value.trim();
+
+            if (!nombre || !idPeriodo || !inicio || !fin) {
+                mostrarToastPremium('Complete todos los campos');
+                return;
+            }
+
+            if (fin < inicio) {
+                mostrarToastPremium('La fecha final no puede ser menor a la inicial');
+                return;
+            }
+
+            const mesFin    = fin.substring(0, 7);  
+            const mesInicio = inicio.substring(0, 7); 
+
+            if (mesInicio !== mesFin) {
+                mostrarToastPremium('El inicio del plazo debe ser dentro del mes de cierre del período');
+                return;
+            }
+
+            const body = new URLSearchParams({
+                id,
+                nombre,
+                idPeriodo,
+                plazoInicio: inicio,
+                plazoFin: fin
+            });
+
+            const endpoint = id
+                ? '/OpusCore/admin-editar-plazo.php'
+                : '/OpusCore/admin-guardar-plazo.php';
+
+            try {
+
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body
+                });
+
+                const text = await res.text();
+                console.log("RESPUESTA PHP:", text);
+
+                const data = JSON.parse(text);
+
+                if (data.success) {
+                    cerrarModal();
+                    mostrarToastPremium(data.message, 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    mostrarToastPremium(data.message);
+                }
+
+            } catch (err) {
+                console.error("ERROR REAL:", err);
+                mostrarToastPremium('Error en JS o JSON inválido');
+            }
+        });
+    }
+
+    const buscador = document.getElementById('buscador-plazo');
+
+    if (buscador) {
+
+        buscador.addEventListener('keyup', function () {
+
+            const filtro = this.value.toLowerCase();
+            const filas = document.querySelectorAll('.data-table tbody tr');
+
+            filas.forEach(fila => {
+                fila.style.display =
+                    fila.textContent.toLowerCase().includes(filtro)
+                        ? ''
+                        : 'none';
+            });
+        });
+    }
+
+});

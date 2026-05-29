@@ -599,6 +599,7 @@ body {
 .link-accion.abrir-modal-estudiante,
 .link-accion.abrir-modal-docente,
 .link-accion.abrir-modal-periodo,
+.link-accion.abrir-modal-plazo,
 .link-accion.abrir-modal-curso {
     color: var(--accent-teal);
     background: var(--accent-teal-light);
@@ -607,6 +608,7 @@ body {
 .link-accion.abrir-modal-estudiante:hover,
 .link-accion.abrir-modal-docente:hover,
 .link-accion.abrir-modal-periodo:hover,
+.link-accion.abrir-modal-plazo:hover,
 .link-accion.abrir-modal-curso:hover {
     background: var(--accent-teal);
     color: white;
