@@ -3243,6 +3243,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function validarTarea() {
     limpiarValidacionTarea();
     let valido = true;
+    let mensajeError = '';
 
     const requeridos = [
         campos.titulo,
@@ -3260,12 +3261,38 @@ document.addEventListener('DOMContentLoaded', function () {
         if (vacio || numeroInvalido) {
             campo.closest('.contenido-field')?.classList.add('is-invalid');
             valido = false;
+            if (!mensajeError) mensajeError = 'Complete los campos obligatorios de la tarea';
         }
     });
 
-    if (!valido) mostrarToastPremium('Complete los campos obligatorios de la tarea');
+    // Validar fecha
+    if (campos.fecha.value) {
+        const fechaSel  = new Date(campos.fecha.value);
+        const ahora     = new Date();
+        const esEdicion = campos.id && campos.id.value && campos.id.value !== '0';
+
+        if (esEdicion) {
+            // En edición: solo bloquear si la fecha es de un día anterior a hoy
+            const hoyInicio = new Date();
+            hoyInicio.setHours(0, 0, 0, 0);
+            if (fechaSel < hoyInicio) {
+                campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
+                mensajeError = 'La fecha límite no puede ser de un día anterior a hoy';
+                valido = false;
+            }
+        } else {
+            // En creación: debe ser estrictamente futura
+            if (fechaSel <= ahora) {
+                campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
+                mensajeError = 'La fecha límite debe ser posterior a la fecha y hora actual';
+                valido = false;
+            }
+        }
+    }
+
+    if (!valido) mostrarToastPremium(mensajeError);
     return valido;
-} 
+}
 
     function escapeTarea(valor) {
         return String(valor || '').replace(/[&<>"']/g, caracter => ({
