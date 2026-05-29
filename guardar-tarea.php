@@ -35,8 +35,10 @@ if (!$idCurso || !$titulo || !$descripcion || !$fechaLimite || $puntaje === fals
     ]);
     exit();
 }
-$ahora       = new DateTime();
-$fechaObj    = DateTime::createFromFormat('Y-m-d\TH:i', $fechaLimite);
+
+//VALIDAR FECHA
+$ahora    = new DateTime();
+$fechaObj = DateTime::createFromFormat('Y-m-d\TH:i', $fechaLimite);
 
 if (!$fechaObj) {
     $fechaObj = DateTime::createFromFormat('Y-m-d', $fechaLimite);
@@ -50,8 +52,9 @@ if (!$fechaObj) {
     exit();
 }
 
-if ($fechaObj <= $ahora) {
-    echo json_encode(['error' => true, 'mensaje' => 'La fecha límite debe ser posterior a la fecha y hora actual']);
+$hoyInicio = new DateTime('today');
+if ($fechaObj < $hoyInicio) {
+    echo json_encode(['error' => true, 'mensaje' => 'La fecha límite no puede ser anterior a la fecha actual']);
     exit();
 }
 
