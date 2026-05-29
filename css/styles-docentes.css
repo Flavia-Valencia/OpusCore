@@ -1426,6 +1426,45 @@ body {
     opacity:.95;
 }
 
+/*Botón editar notas*/
+.btn-nota-editar {
+   background: linear-gradient(135deg, #053170, #069DBF);
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:.2s ease;
+}
+.btn-nota-editar:hover{
+    transform:translateY(-2px);
+    opacity:.95;
+}
+
+.acciones-nota-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.nota-bloqueada-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    padding: 8px 12px;
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
 
 @media (max-width: 900px) {
   .organizacion-topbar,

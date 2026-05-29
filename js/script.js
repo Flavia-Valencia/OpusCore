@@ -3765,23 +3765,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Si ambas notas están completas
         if (count === 2) {
-            const prom =
-                parseFloat((suma / 2).toFixed(2));
-
+             const nota1 = parseFloat(inputsFila[0].value.trim());
+            const nota2 = parseFloat(inputsFila[1].value.trim());
+            const prom  = parseFloat(((nota1 * 0.30) + (nota2 * 0.70)).toFixed(2));
             badge.textContent = prom.toFixed(2);
 
             if (prom >= 7.0) {
-                badge.classList.add('promedio-aprobado');
-            } else if (prom >= 6.0) {
-                badge.classList.add('promedio-alerta');
-            } else {
-                badge.classList.add('promedio-reprobado');
-            }
+            badge.classList.add('promedio-aprobado');
+        } else if (prom >= 6.0) {
+            badge.classList.add('promedio-alerta');
+        } else {
+            badge.classList.add('promedio-reprobado');
+        }
         } else {
             badge.textContent = '—';
             badge.classList.add('promedio-vacio');
         }
     }
+
+    // Cargar promedio grupal real desde BD si existe
+if (typeof promedioGrupalInicial !== 'undefined' && promedioGrupalInicial !== null) {
+    const kpiPromedio = document.getElementById('kpi-promedio-grupal');
+    if (kpiPromedio) kpiPromedio.textContent = parseFloat(promedioGrupalInicial).toFixed(2);
+}
     // Recalcular todos los promedios
     function recalcularTodosLosPromedios() {
         inputs.forEach(inp => {
@@ -3791,66 +3797,61 @@ document.addEventListener('DOMContentLoaded', function () {
         recalcularKPIs();
     }
     // Actualizar métricas generales del curso
-    function recalcularKPIs() {
-        const badges =
-            document.querySelectorAll('[id^="promedio-"]');
+   // Actualizar métricas generales del curso
+function recalcularKPIs() {
+    const badges = document.querySelectorAll('[id^="promedio-"]');
 
-        let sumaPromedios = 0;
-        let aprobados = 0;
-        let promediosValidosCount = 0;
+    let sumaPromedios = 0;
+    let aprobados = 0;
+    let promediosValidosCount = 0;
 
-        badges.forEach(b => {
-            const text = b.textContent;
+    badges.forEach(b => {
+        const text = b.textContent.trim();
 
-            if (text !== '—') {
-                const val = parseFloat(text);
+        if (text !== '—') {
+            const val = parseFloat(text);
+            sumaPromedios += val;
+            promediosValidosCount++;
 
-                sumaPromedios += val;
-                promediosValidosCount++;
-
-                if (val >= 7.00) {
-                    aprobados++;
-                }
-            }
-        });
-
-        const kpiPromedio =
-            document.getElementById('kpi-promedio-grupal');
-
-        const kpiAprobacion =
-            document.getElementById('kpi-porcentaje-aprobacion');
-
-        if (promediosValidosCount > 0) {
-
-            const promedioGrupal =
-                (
-                    sumaPromedios /
-                    promediosValidosCount
-                ).toFixed(2);
-
-            kpiPromedio.textContent = promedioGrupal;
-
-            const tasaAprobacion =
-                Math.round(
-                    (aprobados / promediosValidosCount) * 100
-                );
-
-            kpiAprobacion.textContent =
-                `${tasaAprobacion}%`;
-
-        } else {
-            kpiPromedio.textContent = '0.00';
-            kpiAprobacion.textContent = '0%';
+            if (val >= 7.00) aprobados++;
         }
+    });
+
+    const kpiPromedio  = document.getElementById('kpi-promedio-grupal');
+    const kpiAprobacion = document.getElementById('kpi-porcentaje-aprobacion');
+
+    if (promediosValidosCount > 0) {
+        const promedioGrupal = (sumaPromedios / promediosValidosCount).toFixed(2);
+        const tasaAprobacion = Math.round((aprobados / promediosValidosCount) * 100);
+
+        if (kpiPromedio)   kpiPromedio.textContent   = promedioGrupal;
+        if (kpiAprobacion) kpiAprobacion.textContent = `${tasaAprobacion}%`;
+    } else {
+        if (kpiPromedio)   kpiPromedio.textContent   = '0.00';
+        if (kpiAprobacion) kpiAprobacion.textContent = '0%';
     }
-    // Botones de guardado manual 
+}
+    
    // Botones de guardado manual
-const botonesGuardar = document.querySelectorAll('.btn-guardar-nota');
-
-botonesGuardar.forEach(btn => {
+   // Botón Editar
+document.querySelectorAll('.btn-nota-editar').forEach(btn => {
     btn.addEventListener('click', function () {
+        if (!plazoActivo) {
+            mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
+            return;
+        }
+        const row = this.closest('tr');
+        row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
+        row.querySelectorAll('.nota-input')[0].focus();
+        
+        row.querySelector('.btn-guardar-nota').disabled = false;
+        this.style.display = 'none';
+    });
+});
 
-        // Criterio 6: bloquear si no hay plazo activo
+// Botón Guardar
+document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
+    btn.addEventListener('click', function () {
         if (!plazoActivo) {
             mostrarToastPremium('El plazo de notas está cerrado. No se pueden guardar cambios.', 'error');
             return;
@@ -3858,8 +3859,6 @@ botonesGuardar.forEach(btn => {
 
         const row = this.closest('tr');
         const inputsFila = row.querySelectorAll('.nota-input');
-        // El rango ya fue validado por guardarNota() al hacer blur/Enter
-        // Solo verificamos que ambos campos tengan valor antes de enviar
         const nota1 = inputsFila[0].value.trim();
         const nota2 = inputsFila[1].value.trim();
 
@@ -3869,9 +3868,10 @@ botonesGuardar.forEach(btn => {
         }
 
         const estudianteId = inputsFila[0].dataset.estudianteId;
+        const inscId       = inputsFila[0].dataset.inscId;
 
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Guardando...';
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Guardando...';
 
         fetch('guardar-nota.php', {
             method: 'POST',
@@ -3888,24 +3888,52 @@ botonesGuardar.forEach(btn => {
         .then(data => {
             if (data.success) {
                 mostrarToastPremium(data.message, 'success');
-                // Actualizar el badge con la nota_final real que calculó el trigger
-                const inscId = inputsFila[0].dataset.inscId;
+                inputsFila.forEach(inp => inp.setAttribute('readonly', true));
+
                 const badge = document.getElementById(`promedio-${inscId}`);
                 if (badge && data.nota_final !== undefined) {
                     const nf = parseFloat(data.nota_final).toFixed(2);
                     badge.textContent = nf;
                     badge.className = 'promedio-badge';
-                    badge.classList.add(data.nota_final >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
+                    badge.classList.add(parseFloat(data.nota_final) >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
                 }
+
+               
+                let btnEditar = row.querySelector('.btn-nota-editar');
+                if (!btnEditar) {
+                    btnEditar = document.createElement('button');
+                    btnEditar.className = 'btn-nota-editar';
+                    btnEditar.dataset.accion = 'editar';
+                    btnEditar.innerHTML = '<i class="fas fa-pen"></i> Editar';
+                    btnEditar.addEventListener('click', function () {
+                        if (!plazoActivo) {
+                            mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
+                            return;
+                        }
+                        row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
+                        row.querySelectorAll('.nota-input')[0].focus();
+                        row.querySelector('.btn-guardar-nota').disabled = false;
+                        this.style.display = 'none';
+                    });
+                    row.querySelector('.acciones-nota-group').prepend(btnEditar);
+                } else {
+                    btnEditar.style.display = '';
+                }
+
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+
                 recalcularKPIs();
             } else {
                 mostrarToastPremium(data.message, 'error');
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-save"></i> Guardar';
             }
         })
-        .catch(() => mostrarToastPremium('Error de conexión al guardar', 'error'))
-        .finally(() => {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+        .catch(() => {
+            mostrarToastPremium('Error de conexión al guardar', 'error');
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-save"></i> Guardar';
         });
     });
 });

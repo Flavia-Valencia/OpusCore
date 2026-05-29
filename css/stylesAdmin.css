@@ -382,6 +382,8 @@ body {
 .nav .btn-nav:nth-of-type(5)::before { content: "\f51c"; }
 .nav .btn-nav:nth-of-type(6)::before { content: "\f09d"; }
 .nav .btn-nav:nth-of-type(7)::before { content: "\f571"; }
+.nav .btn-nav:nth-of-type(8)::before { content: "\f5da"; }
+
 
 .btn-nav:hover {
     background: rgba(255, 255, 255, 0.12);
