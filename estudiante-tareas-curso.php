@@ -142,11 +142,7 @@ if ($tieneHorarios) {
 $tareas = [];
 if (tablaExiste($conexion, 'tareas')) {
     $tieneArchivos = tablaExiste($conexion, 'tareasArchivos');
-    $tieneIntentosEntrega = tablaExiste($conexion, 'entregablesTarea')
-    && columnaExiste($conexion, 'entregablesTarea', 'intentos');
-    $selectIntentosEntrega = $tieneIntentosEntrega
-        ? "COALESCE(et.intentos, CASE WHEN et.id IS NULL THEN 0 ELSE 1 END)"
-        : "CASE WHEN et.id IS NULL THEN 0 ELSE 1 END";
+    
     $selectArchivo = $tieneArchivos
         ? ", (
               SELECT ta.nombreArchivo
