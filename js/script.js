@@ -3239,7 +3239,8 @@ document.addEventListener('DOMContentLoaded', function () {
         form.querySelectorAll('.contenido-field').forEach(field => field.classList.remove('is-invalid'));
     }
 
-    function validarTarea() {
+// VALIDAR FECHA
+   function validarTarea() {
     limpiarValidacionTarea();
     let valido = true;
     let mensajeError = '';
@@ -3264,28 +3265,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Validar fecha
     if (campos.fecha.value) {
-        const fechaSel  = new Date(campos.fecha.value);
-        const ahora     = new Date();
+        const partes           = campos.fecha.value.split('T');
+        const [anio, mes, dia] = partes[0].split('-').map(Number);
+        const [hora, minuto]   = partes[1] ? partes[1].split(':').map(Number) : [0, 0];
+
+        const fechaSel  = new Date(anio, mes - 1, dia, hora, minuto, 0);
         const esEdicion = campos.id && campos.id.value && campos.id.value !== '0';
 
-        if (esEdicion) {
-            // En edición: solo bloquear si la fecha es de un día anterior a hoy
-            const hoyInicio = new Date();
-            hoyInicio.setHours(0, 0, 0, 0);
-            if (fechaSel < hoyInicio) {
-                campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
-                mensajeError = 'La fecha límite no puede ser de un día anterior a hoy';
-                valido = false;
-            }
-        } else {
-            // En creación: debe ser estrictamente futura
-            if (fechaSel <= ahora) {
-                campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
-                mensajeError = 'La fecha límite debe ser posterior a la fecha y hora actual';
-                valido = false;
-            }
+        const hoyInicio = new Date();
+        hoyInicio.setHours(0, 0, 0, 0);
+
+        console.log('fechaSel:', fechaSel);
+        console.log('hoyInicio:', hoyInicio);
+        console.log('fechaSel < hoyInicio:', fechaSel < hoyInicio);
+        console.log('esEdicion:', esEdicion);
+        console.log('valor raw:', campos.fecha.value);
+
+        if (fechaSel < hoyInicio) {
+            campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
+            mensajeError = esEdicion
+                ? 'La fecha límite no puede ser de un día anterior a hoy'
+                : 'La fecha límite no puede ser anterior a la fecha actual';
+            valido = false;
         }
     }
 

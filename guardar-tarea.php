@@ -1,8 +1,6 @@
 <?php
-//Maneja la creación y edición de tareas por parte del docente, 
-// incluyendo validaciones y manejo de archivos adjuntos
-
 session_start();
+date_default_timezone_set('America/El_Salvador');
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['usuario'])) {
@@ -29,15 +27,11 @@ if ($intentos < 1) $intentos = 1;
 if ($intentos > 10) $intentos = 10;
 
 if (!$idCurso || !$titulo || !$descripcion || !$fechaLimite || $puntaje === false || $puntaje <= 0) {
-    echo json_encode([
-        'error'   => true,
-        'mensaje' => 'Complete todos los campos requeridos',
-    ]);
+    echo json_encode(['error' => true, 'mensaje' => 'Complete todos los campos requeridos']);
     exit();
 }
 
-//VALIDAR FECHA
-$ahora    = new DateTime();
+// VALIDAR FECHA
 $fechaObj = DateTime::createFromFormat('Y-m-d\TH:i', $fechaLimite);
 
 if (!$fechaObj) {
@@ -52,8 +46,11 @@ if (!$fechaObj) {
     exit();
 }
 
-$hoyInicio = new DateTime('today');
-if ($fechaObj < $hoyInicio) {
+// Comparar solo la parte de la fecha (sin hora) para permitir hoy a cualquier hora
+$soloFechaSel = new DateTime($fechaObj->format('Y-m-d'));
+$soloHoy      = new DateTime('today');
+
+if ($soloFechaSel < $soloHoy) {
     echo json_encode(['error' => true, 'mensaje' => 'La fecha límite no puede ser anterior a la fecha actual']);
     exit();
 }
@@ -75,7 +72,7 @@ if (!$stmtVerif->get_result()->fetch_assoc()) {
 }
 $stmtVerif->close();
 
-
+// MANEJO DE ARCHIVO ADJUNTO 
 $rutaArchivo   = null;
 $nombreArchivo = null;
 
@@ -89,7 +86,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK) 
         exit();
     }
 
-    if ($_FILES['archivo']['size'] > 10 * 1024 * 1024) { 
+    if ($_FILES['archivo']['size'] > 10 * 1024 * 1024) {
         echo json_encode(['error' => true, 'mensaje' => 'El archivo supera el tamaño máximo de 10 MB']);
         exit();
     }
@@ -111,7 +108,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK) 
     $nombreArchivo = $nombreOriginal;
 }
 
-//Crear o Editar
+// CREAR O EDITAR 
 if ($id > 0) {
 
     $stmtCheck = $conexion->prepare("
@@ -129,7 +126,11 @@ if ($id > 0) {
         exit();
     }
 
-    if ($tareaExistente['estado'] == 0) {
+    // Bloquear edición si la fecha límite original ya venció
+    $fechaLimiteExistente = new DateTime($tareaExistente['fechaLimite']);
+    $ahora                = new DateTime();
+
+    if ($fechaLimiteExistente < $ahora) {
         echo json_encode(['error' => true, 'mensaje' => 'No se puede editar una tarea cuya fecha límite ya venció']);
         exit();
     }
@@ -159,7 +160,7 @@ if ($id > 0) {
     echo json_encode(['error' => false, 'mensaje' => 'Tarea actualizada correctamente', 'id' => $id]);
 
 } else {
-    // CREAR
+
     $stmt = $conexion->prepare("
         INSERT INTO tareas (idCurso, idSesion, titulo, descripcion, puntajeMaximo, intentos, fechaLimite, estado)
         VALUES (?, ?, ?, ?, ?, ?, ?, 1)
@@ -174,7 +175,6 @@ if ($id > 0) {
     $nuevaId = $stmt->insert_id;
     $stmt->close();
 
-    
     if ($rutaArchivo && $nombreArchivo) {
         $stmtArch = $conexion->prepare("
             INSERT INTO tareasArchivos (idTarea, nombreArchivo, tipo, rutaArchivo)
