@@ -98,6 +98,7 @@ $stmt = $conexion->prepare("
     WHERE i.idEstudiante = ?
       AND i.idCurso = ?
       AND i.estado_academico = 'Activo'
+      AND c.estado = 1
     LIMIT 1
 ");
 $stmt->bind_param("ii", $idEstudiante, $cursoId);
@@ -277,10 +278,6 @@ if (tablaExiste($conexion, 'sesionContenido')) {
                         <p class="detalle-breadcrumb">Mis cursos / Detalle del curso / Contenidos publicados</p>
                         <h1>Contenidos publicados</h1>
                         <p>Materiales y publicaciones del curso <?= e($curso['nombre']) ?>.</p>
-                    </div>
-                    <div class="detalle-hero-side">
-                        <strong><?= date('d/m/Y') ?></strong>
-                        <span><?= e($curso['estado_academico']) ?></span>
                     </div>
                 </section>
 

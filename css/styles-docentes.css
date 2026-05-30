@@ -736,14 +736,35 @@ body {
   max-width: 320px;
   color: #7d8a9d;
   line-height: 1.5;
+  text-align: left;
 }
 
 .contenido-archivo {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 6px;
   color: #315273;
   font-weight: 600;
+  text-align: left;
+}
+
+.organizacion-contenidos-tabla th:nth-child(3),
+.organizacion-contenidos-tabla th:nth-child(5),
+.tareas-tabla th:nth-child(1),
+.tareas-tabla th:nth-child(4) {
+  text-align: left;
+}
+
+.contenido-tabla td[data-label="Título"],
+.contenido-tabla td[data-label="Archivo"],
+.contenido-tabla td[data-label="Apoyo"] {
+  text-align: left;
+}
+
+.contenido-tabla td[data-label="Archivo"] .contenido-archivo,
+.contenido-tabla td[data-label="Apoyo"] .contenido-archivo {
+  width: fit-content;
+  margin: 2px 0 5px;
 }
 
 .contenido-muted {
@@ -1559,12 +1580,16 @@ body {
   }
 
   .contenido-tabla td[data-label="Título"],
+  .contenido-tabla td[data-label="Archivo"],
+  .contenido-tabla td[data-label="Apoyo"],
   .contenido-tabla td[data-label="Acciones"] {
     display: block;
     text-align: left;
   }
 
   .contenido-tabla td[data-label="Título"]::before,
+  .contenido-tabla td[data-label="Archivo"]::before,
+  .contenido-tabla td[data-label="Apoyo"]::before,
   .contenido-tabla td[data-label="Acciones"]::before {
     display: block;
     margin-bottom: 8px;
