@@ -315,6 +315,7 @@ if ($plazoActivo && $cursoValido) {
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($estudiantes as $estudiante): ?>
+                                            
                                             <?php
                                                 $tieneNota     = $estudiante['actividades'] !== null;
                                                 $clasePromedio = 'promedio-vacio';
@@ -397,7 +398,7 @@ if ($plazoActivo && $cursoValido) {
                                                                 </button>
                                                             <?php endif; ?>
                                                             <button class="btn-guardar-nota"
-                                                                    <?php if ($tieneNota): ?>disabled<?php endif; ?>>
+                                                                    <?php if ($tieneNota): ?>disabled style="display:none;"<?php endif; ?>>
                                                                 <i class="fas fa-save"></i> Guardar
                                                             </button>
                                                         <?php endif; ?>

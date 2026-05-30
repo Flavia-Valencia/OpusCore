@@ -186,20 +186,28 @@ if (tablaExiste($conexion, 'tareas')) {
     $stmt->execute();
     $tareas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-    $pendientes = 0;
-    $vencidas = 0;
-    $hoy = new DateTime('today');
+   $pendientes = 0;
+$vencidas = 0;
+$hoy = new DateTime('today');
 
-    if (!empty($tareas)) {
-        foreach ($tareas as $tarea) {
-            $fechaLimite = new DateTime($tarea['fechaLimite']);
-            if ($fechaLimite < $hoy) {
-                $vencidas++;
-            } else {
-                $pendientes++;
-            }
+if (!empty($tareas)) {
+    foreach ($tareas as $tarea) {
+
+        $estadoEntrega = strtolower($tarea['estadoEntrega'] ?? 'pendiente');
+
+        if ($estadoEntrega === 'entregado' || $estadoEntrega === 'revisado') {
+            continue;
+        }
+
+        $fechaLimite = new DateTime($tarea['fechaLimite']);
+
+        if ($fechaLimite < $hoy) {
+            $vencidas++;
+        } else {
+            $pendientes++;
         }
     }
+}
 
 }
 
