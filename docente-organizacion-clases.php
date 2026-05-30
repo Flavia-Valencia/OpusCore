@@ -195,7 +195,7 @@ if ($cursoId > 0) {
                 </div>
 
                 <div class="contenido-tabla-wrap">
-                    <table class="contenido-tabla">
+                    <table class="contenido-tabla organizacion-contenidos-tabla">
                         <thead>
                             <tr>
                                 <th>ID</th>

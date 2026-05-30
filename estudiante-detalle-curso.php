@@ -99,6 +99,7 @@ $sqlCurso = "
     WHERE i.idEstudiante = ?
       AND i.idCurso = ?
       AND i.estado_academico = 'Activo'
+      AND c.estado = 1
     LIMIT 1
 ";
 
