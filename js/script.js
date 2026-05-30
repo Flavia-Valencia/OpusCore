@@ -1855,9 +1855,8 @@ function inicializarTareasEstudiante() {
                     const fechaBadge = tareaActiva.querySelector('.tarea-fecha-entrega');
                     if (estado) { estado.textContent = 'Entregada'; estado.className = 'tarea-estado entregada'; }
                     if (boton) {
-                        const intentosActuales = parseInt(boton.dataset.intentos || '0', 10);
+                        const intentosNuevos = parseInt(data.intentos || '1', 10);
                         const intentosMaximos = parseInt(boton.dataset.intentosMax || '3', 10);
-                        const intentosNuevos = Math.min(intentosActuales + 1, intentosMaximos);
                         boton.textContent = 'Reemplazar';
                         boton.classList.add('is-replace');
                         boton.dataset.accion = 'reemplazar';
