@@ -87,7 +87,7 @@ if (mysqli_num_rows($resEntrega) == 0) {
 $entrega = mysqli_fetch_assoc($resEntrega);
 $idEntrega = intval($entrega["id"]);
 $conteoActual = intval($entrega["conteoIntentos"]);
-$intentosActuales = intval($entrega["intentos"]);
+$intentosPermitidos = intval($tarea["intentos"]); 
 
 if ($conteoActual >= $intentosPermitidos) {
     echo json_encode(["success" => false, "message" => "Has alcanzado el límite de $intentosPermitidos entrega(s) permitidas para esta tarea."]);
@@ -186,7 +186,7 @@ try {
 
     mysqli_commit($conexion);
 
-    $intentosRestantes = 3 - $nuevoIntentos;
+    $intentosRestantes = $intentosPermitidos - $nuevoConteo;
     echo json_encode([
         "success"           => true,
         "message"           => "Entrega reemplazada exitosamente.",
