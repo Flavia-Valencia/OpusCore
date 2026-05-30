@@ -15,7 +15,6 @@ $idCurso     = filter_input(INPUT_POST, 'idCurso', FILTER_VALIDATE_INT);
 $idSesion    = filter_input(INPUT_POST, 'idSesion', FILTER_VALIDATE_INT) ?: null;
 $titulo      = trim($_POST['titulo']      ?? '');
 $descripcion = trim($_POST['descripcion'] ?? '');
-$fechaLimite = trim($_POST['fechaLimite'] ?? '');
 $estado      = isset($_POST['estado']) && $_POST['estado'] === '1' ? 1 : 0;
 
 $puntaje = isset($_POST['puntajeMaximo']) && $_POST['puntajeMaximo'] !== ''
@@ -26,27 +25,27 @@ $intentos = filter_input(INPUT_POST, 'intentos', FILTER_VALIDATE_INT) ?: 1;
 if ($intentos < 1) $intentos = 1;
 if ($intentos > 10) $intentos = 10;
 
-if (!$idCurso || !$titulo || !$descripcion || !$fechaLimite || $puntaje === false || $puntaje <= 0) {
+// VALIDAR FECHA
+$fechaRaw = trim($_POST['fechaLimite'] ?? '');
+
+if (!$idCurso || !$titulo || !$descripcion || empty($fechaRaw) || $puntaje === false || $puntaje <= 0) {
     echo json_encode(['error' => true, 'mensaje' => 'Complete todos los campos requeridos']);
     exit();
 }
 
-// VALIDAR FECHA
-$fechaObj = DateTime::createFromFormat('Y-m-d\TH:i', $fechaLimite);
-
-if (!$fechaObj) {
-    $fechaObj = DateTime::createFromFormat('Y-m-d', $fechaLimite);
-    if ($fechaObj) {
-        $fechaObj->setTime(23, 59, 59);
-    }
+// datetime-local envía "2026-05-30T23:59" — reemplazar T por espacio
+$fechaNorm = str_replace('T', ' ', $fechaRaw);
+if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $fechaNorm)) {
+    $fechaNorm .= ':00';
 }
 
+$fechaObj = DateTime::createFromFormat('Y-m-d H:i:s', $fechaNorm);
+
 if (!$fechaObj) {
-    echo json_encode(['error' => true, 'mensaje' => 'Formato de fecha no válido']);
+    echo json_encode(['error' => true, 'mensaje' => 'Fecha inválida recibida: ' . $fechaRaw]);
     exit();
 }
 
-// Comparar solo la parte de la fecha (sin hora) para permitir hoy a cualquier hora
 $soloFechaSel = new DateTime($fechaObj->format('Y-m-d'));
 $soloHoy      = new DateTime('today');
 
@@ -72,7 +71,6 @@ if (!$stmtVerif->get_result()->fetch_assoc()) {
 }
 $stmtVerif->close();
 
-// MANEJO DE ARCHIVO ADJUNTO 
 $rutaArchivo   = null;
 $nombreArchivo = null;
 
@@ -108,7 +106,6 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK) 
     $nombreArchivo = $nombreOriginal;
 }
 
-// CREAR O EDITAR 
 if ($id > 0) {
 
     $stmtCheck = $conexion->prepare("
@@ -126,7 +123,6 @@ if ($id > 0) {
         exit();
     }
 
-    // Bloquear edición si la fecha límite original ya venció
     $fechaLimiteExistente = new DateTime($tareaExistente['fechaLimite']);
     $ahora                = new DateTime();
 
@@ -135,11 +131,12 @@ if ($id > 0) {
         exit();
     }
 
+    // 'ss id is ii' → titulo(s), descripcion(s), idSesion(i), puntaje(d), fechaLimiteFmt(s), intentos(i), id(i), idCurso(i)
     $stmt = $conexion->prepare("
         UPDATE tareas SET titulo=?, descripcion=?, idSesion=?, puntajeMaximo=?, fechaLimite=?, intentos=?
         WHERE id=? AND idCurso=?
     ");
-    $stmt->bind_param('ssiisiii', $titulo, $descripcion, $idSesion, $puntaje, $fechaLimiteFmt, $intentos, $id, $idCurso);
+    $stmt->bind_param('ssidisii', $titulo, $descripcion, $idSesion, $puntaje, $fechaLimiteFmt, $intentos, $id, $idCurso);
 
     if (!$stmt->execute()) {
         echo json_encode(['error' => true, 'mensaje' => 'Error al actualizar: ' . $conexion->error]);
@@ -161,11 +158,12 @@ if ($id > 0) {
 
 } else {
 
+    // 'ii ss d is' → idCurso(i), idSesion(i), titulo(s), descripcion(s), puntaje(d), intentos(i), fechaLimiteFmt(s)
     $stmt = $conexion->prepare("
         INSERT INTO tareas (idCurso, idSesion, titulo, descripcion, puntajeMaximo, intentos, fechaLimite, estado)
         VALUES (?, ?, ?, ?, ?, ?, ?, 1)
     ");
-    $stmt->bind_param('iissisi', $idCurso, $idSesion, $titulo, $descripcion, $puntaje, $intentos, $fechaLimiteFmt);
+    $stmt->bind_param('iissdis', $idCurso, $idSesion, $titulo, $descripcion, $puntaje, $intentos, $fechaLimiteFmt);
 
     if (!$stmt->execute()) {
         echo json_encode(['error' => true, 'mensaje' => 'Error al crear la tarea: ' . $conexion->error]);

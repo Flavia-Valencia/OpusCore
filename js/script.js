@@ -3211,7 +3211,7 @@ document.addEventListener('DOMContentLoaded', function () {
         campos.puntaje.value     = fila.dataset.puntaje     || '';
         campos.intentos.value = fila.dataset.intentos || '1';
         campos.estado.value = fila.dataset.estado === 'Activa' ? '1' : '0';
-        campos.fecha.value = fila.dataset.fecha || '';
+        campos.fecha.value = (fila.dataset.fecha || '').replace(' ', 'T').substring(0, 16);
 
         const selectSesion = document.getElementById('tareaSesion');
         if(selectSesion){
@@ -3306,11 +3306,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function formatearFechaTarea(valor) {
-        if (!valor) return '';
-        const partes = valor.split('-');
-        if (partes.length !== 3) return valor;
-        return `${partes[2]}/${partes[1]}/${partes[0]}`;
-    }
+    if (!valor) return '';
+    // Normaliza datetime-local que viene como "2026-05-30T23:59"
+    const soloFecha = valor.split('T')[0];
+    const partes = soloFecha.split('-');
+    if (partes.length !== 3) return valor;
+    const hora = valor.includes('T') ? ' ' + valor.split('T')[1] : '';
+    return `${partes[2]}/${partes[1]}/${partes[0]}${hora}`;
+}
 
     function renderArchivoTarea(nombre) {
         if (!nombre) return '<span class="contenido-muted">Opcional</span>';
@@ -3415,7 +3418,7 @@ document.addEventListener('DOMContentLoaded', function () {
         abrirModalTarea(btnEditar.closest('tr'));
     });
 
-    form.addEventListener('submit', async function (e) {
+   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     if (!validarTarea()) return;
 
@@ -3426,24 +3429,20 @@ document.addEventListener('DOMContentLoaded', function () {
         btnSubmit.textContent = 'Guardando...';
     }
 
-    const formData = new FormData(form);
+    const formData = new FormData();
+    formData.append('id',            document.getElementById('tareaId')?.value || '0');
+    formData.append('idCurso',       document.getElementById('tareaCursoId')?.value || '');
+    formData.append('titulo',        document.getElementById('tareaTitulo')?.value?.trim() || '');
+    formData.append('descripcion',   document.getElementById('tareaDescripcion')?.value?.trim() || '');
+    formData.append('fechaLimite',   document.getElementById('tareaFecha')?.value || '');
+    formData.append('puntajeMaximo', document.getElementById('tareaPuntaje')?.value || '');
+    formData.append('intentos',      document.getElementById('tareaIntentos')?.value || '1');
+    formData.append('estado',        document.getElementById('tareaEstado')?.value || '0');
+    formData.append('idSesion',      document.getElementById('tareaSesion')?.value || '0');
 
-    // Agregar campos que no están en inputs del form directamente
-    formData.set('idCurso', document.getElementById('tareaCursoId')?.value || '');
-    formData.set('id',      document.getElementById('tareaId')?.value     || '0');
-    formData.set('titulo',      campos.titulo.value.trim());
-    formData.set('descripcion', campos.descripcion.value.trim());
-    formData.set('fechaLimite', campos.fecha.value);
-    formData.set('puntajeMaximo', campos.puntaje.value);
-    formData.set('intentos', campos.intentos.value);
-    formData.set('estado',      campos.estado.value === 'Activa' ? '1' : '0');
-    formData.set('idSesion', document.getElementById('tareaSesion')?.value || '0');
-
-
-    // Adjuntar archivo si fue seleccionado
     const archivoInput = document.getElementById('tareaArchivo');
     if (archivoInput?.files?.length > 0) {
-        formData.set('archivo', archivoInput.files[0]);
+        formData.append('archivo', archivoInput.files[0]);
     }
 
     try {
