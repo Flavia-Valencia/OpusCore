@@ -1,7 +1,3 @@
--- En este script se encuentran todos los datos que se insertarán por defecto en las tablas de la base de datos.
--- Se debe ejecutar este script después de haber ejecutado el script de academiadigital y el de cursos para 
--- insertar los datos en las tablas correspondientes.
--- Insertar datos en las tablas de usuarios, administradores, estudiantes y docentes.
 USE db_academiadigital;
 
 -- En este script se encuentran todos los datos que se insertarán por defecto en las tablas de la base de datos.
@@ -56,12 +52,6 @@ INSERT INTO `CursoHorario` (`idCurso`, `dia`, `idHorario`, `idAula`) VALUES
 (5,'Jueves',5,4),
 (1,'Viernes',1,5);
 
--- Inserta datos en la tabla 'PeriodoInscripcion'  y 'inscripciones'
-INSERT INTO `inscripciones` (`idEstudiante`, `idCurso`, `idPeriodo`) VALUES 
-(1, 1, 1),
-(2, 1, 1), 
-(1, 2, 1);
-
 -- Insetar valores en las tablas de sesiones y archivos de sesiones.
 INSERT INTO `sesionContenido` (`idCurso`, `titulo`, `descripcion`, `fecha`, `estado`) VALUES
 (1, 'Clase I: Introducción a la Programación', 'Sesión introductoria para conocer los conceptos básicos de programación.', '2026-05-19', 1),
@@ -86,26 +76,3 @@ INSERT INTO `tareasArchivos` (`idTarea`, `nombreArchivo`, `tipo`, `rutaArchivo`)
 (2, 'Ejemplo de Estructuras de Control.pdf', 'Archivo', 'editarurl'),
 (3, 'Ejemplo de Logotipo.pdf', 'Archivo', 'editarurl'),
 (4, 'Ejemplo de Prototipo Web.pdf', 'Archivo', 'editarurl');
-
--- insertar datos en entrgas del estudiante
-INSERT INTO `entregablesTarea` (`idTarea`, `idEstudiante`, `estado`, `nota`, `fechaRevision`) VALUES
-(1, 1, 'Revisado', 9.00, '2026-05-25 10:00:00'),
-(2, 1, 'Entregado', NULL, NULL),
-(3, 1, 'Revisado', 8.50, '2026-05-25 11:00:00'),
-(4, 1, 'Entregado', NULL, NULL),
-(1, 2, 'Pendiente', NULL, NULL),
-(2, 2, 'Pendiente', NULL, NULL);
-
-INSERT INTO `entregaArchivos` (`idEntrega`, `nombreArchivo`, `tipo`, `rutaArchivo`) VALUES
-(1, 'Algoritmos-Yamileth.pdf', 'Archivo', 'editarurl'),
-(2, 'EstructurasControl-Yamileth.pdf', 'Archivo', 'editarurl'),
-(3, 'Logotipo-Yamileth.pdf', 'Archivo', 'editarurl'),
-(4, 'Prototipo-Yamileth.pdf', 'Archivo', 'editarurl');
-
--- Insertar datos en la tabla de plazos para el registro de notas del docente
-INSERT INTO `plazoNotas`(`idPeriodo`, `nombre`, `plazoInicio`, `plazoFin`, `estado`) VALUES 
-(1,'Plazo Notas I-2026','2026-05-28','2026-06-08',1),
-(2,'Plazo Notas II-2026','2026-06-28','2026-07-08',0);
--- NADA MÁS DE PRUEBA. insertar datos en la tabla de registro de notas para validar el disparador y diseño.
-INSERT INTO `registroNotas`(`idPlazo`, `idCurso`, `idEstudiante`, `actividades`, `examenFinal`) VALUES 
-(1,2,1,7,10),(1,2,2,3,5),(1,1,1,9,9),(1,1,2,8,7);
