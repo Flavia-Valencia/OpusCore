@@ -136,7 +136,7 @@ if ($id > 0) {
         UPDATE tareas SET titulo=?, descripcion=?, idSesion=?, puntajeMaximo=?, fechaLimite=?, intentos=?
         WHERE id=? AND idCurso=?
     ");
-    $stmt->bind_param('ssidisii', $titulo, $descripcion, $idSesion, $puntaje, $fechaLimiteFmt, $intentos, $id, $idCurso);
+    $stmt->bind_param('ssidsiii', $titulo, $descripcion, $idSesion, $puntaje, $fechaLimiteFmt, $intentos, $id, $idCurso);
 
     if (!$stmt->execute()) {
         echo json_encode(['error' => true, 'mensaje' => 'Error al actualizar: ' . $conexion->error]);

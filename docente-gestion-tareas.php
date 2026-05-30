@@ -60,6 +60,7 @@ if ($cursoId > 0) {
                 t.titulo,
                 t.descripcion,
                 t.puntajeMaximo,
+                t.intentos,
                 t.fechaLimite,
                 t.estado,
                 t.idSesion,
@@ -279,8 +280,9 @@ $stmtSes->close();
                                             data-id="<?= (int)$tarea['id'] ?>"
                                             data-titulo="<?= htmlspecialchars($tarea['titulo']) ?>"
                                             data-descripcion="<?= htmlspecialchars($tarea['descripcion']) ?>"
-                                            data-fecha="<?= htmlspecialchars(substr($tarea['fechaLimite'], 0, 16)) ?>"
+                                            data-fecha="<?= htmlspecialchars(date('Y-m-d\TH:i', strtotime($tarea['fechaLimite']))) ?>"
                                             data-puntaje="<?= (int)$tarea['puntajeMaximo'] ?>"
+                                            data-intentos="<?= (int)($tarea['intentos'] ?? 1) ?>"
                                             data-archivo="<?= htmlspecialchars($tarea['archivos'] ?? '') ?>"
                                             data-ids-archivos="<?= htmlspecialchars($tarea['idsArchivos'] ?? '') ?>"
                                             data-estado="<?= $estadoTexto ?>"

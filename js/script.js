@@ -3306,14 +3306,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function formatearFechaTarea(valor) {
-    if (!valor) return '';
-    // Normaliza datetime-local que viene como "2026-05-30T23:59"
-    const soloFecha = valor.split('T')[0];
-    const partes = soloFecha.split('-');
-    if (partes.length !== 3) return valor;
-    const hora = valor.includes('T') ? ' ' + valor.split('T')[1] : '';
-    return `${partes[2]}/${partes[1]}/${partes[0]}${hora}`;
-}
+        if (!valor) return '';
+        const normalizada = valor.replace(' ', 'T');
+        const [fecha, hora = '00:00'] = normalizada.split('T');
+        const partes = fecha.split('-');
+        if (partes.length !== 3) return valor;
+        return `${partes[2]}/${partes[1]}/${partes[0]} ${hora.substring(0, 5)}`;
+    }
 
     function renderArchivoTarea(nombre) {
         if (!nombre) return '<span class="contenido-muted">Opcional</span>';
@@ -3356,7 +3355,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fila.dataset.fecha       = campos.fecha.value;
     fila.dataset.puntaje     = campos.puntaje.value;
     fila.dataset.intentos = campos.intentos.value;
-    fila.dataset.estado      = campos.estado.value;
+    fila.dataset.estado      = campos.estado.value === '1' ? 'Activa' : 'Borrador';
     fila.dataset.archivo     = archivoNuevo || fila.dataset.archivo || '';
     fila.dataset.sesionId = document.getElementById('tareaSesion')?.value || '';
 
