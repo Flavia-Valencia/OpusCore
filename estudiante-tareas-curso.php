@@ -98,6 +98,7 @@ $stmt = $conexion->prepare("
     WHERE i.idEstudiante = ?
       AND i.idCurso = ?
       AND i.estado_academico = 'Activo'
+      AND c.estado = 1
     LIMIT 1
 ");
 $stmt->bind_param("ii", $idEstudiante, $cursoId);
@@ -185,20 +186,28 @@ if (tablaExiste($conexion, 'tareas')) {
     $stmt->execute();
     $tareas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
-    $pendientes = 0;
-    $vencidas = 0;
-    $hoy = new DateTime('today');
+   $pendientes = 0;
+$vencidas = 0;
+$hoy = new DateTime('today');
 
-    if (!empty($tareas)) {
-        foreach ($tareas as $tarea) {
-            $fechaLimite = new DateTime($tarea['fechaLimite']);
-            if ($fechaLimite < $hoy) {
-                $vencidas++;
-            } else {
-                $pendientes++;
-            }
+if (!empty($tareas)) {
+    foreach ($tareas as $tarea) {
+
+        $estadoEntrega = strtolower($tarea['estadoEntrega'] ?? 'pendiente');
+
+        if ($estadoEntrega === 'entregado' || $estadoEntrega === 'revisado') {
+            continue;
+        }
+
+        $fechaLimite = new DateTime($tarea['fechaLimite']);
+
+        if ($fechaLimite < $hoy) {
+            $vencidas++;
+        } else {
+            $pendientes++;
         }
     }
+}
 
 }
 
@@ -304,10 +313,6 @@ if (tablaExiste($conexion, 'tareas')) {
                         <p class="detalle-breadcrumb">Mis cursos / Detalle del curso / Tareas asignadas</p>
                         <h1>Tareas asignadas</h1>
                         <p>Consulta indicaciones, archivos de apoyo y prepara tus entregas.</p>
-                    </div>
-                    <div class="detalle-hero-side">
-                        <strong><?= date('d/m/Y') ?></strong>
-                        <span><?= e($curso['estado_academico']) ?></span>
                     </div>
                 </section>
 

@@ -773,22 +773,32 @@ body {
     border-radius: 16px;
     box-shadow: 0 12px 30px rgba(5, 49, 112, 0.08);
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(6, minmax(150px, 1fr));
+    gap: 12px;
     margin-bottom: 16px;
-    padding: 22px 24px;
+    padding: 14px;
 }
 
 .detalle-info-item {
-    align-items: center;
+    align-items: flex-start;
+    background: #f8fbff;
+    border: 1px solid #edf3fb;
+    border-radius: 12px;
     display: flex;
-    gap: 12px;
+    gap: 10px;
     min-width: 0;
+    padding: 13px 14px;
+}
+
+.detalle-info-item:nth-child(2) {
+    grid-column: span 2;
 }
 
 .detalle-info-item i {
     color: #5879d7;
     font-size: 20px;
+    flex: 0 0 auto;
+    margin-top: 3px;
     width: 22px;
 }
 
@@ -807,6 +817,7 @@ body {
     font-size: 13px;
     line-height: 1.35;
     margin-top: 3px;
+    overflow-wrap: anywhere;
 }
 
 .detalle-grid {
@@ -1752,6 +1763,16 @@ body {
 }
 
 /* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 1180px) {
+    .detalle-resumen {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .detalle-info-item:nth-child(2) {
+        grid-column: 1 / -1;
+    }
+}
+
 @media (max-width: 768px) {
 
     /* ocultar sidebar por defecto en móvil */

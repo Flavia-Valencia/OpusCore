@@ -3875,7 +3875,9 @@ document.querySelectorAll('.btn-nota-editar').forEach(btn => {
         row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
         row.querySelectorAll('.nota-input')[0].focus();
         
-        row.querySelector('.btn-guardar-nota').disabled = false;
+        const btnGuardar = row.querySelector('.btn-guardar-nota');
+        btnGuardar.disabled = false;
+        btnGuardar.style.display = '';
         this.style.display = 'none';
     });
 });
@@ -3950,7 +3952,7 @@ document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
                 } else {
                     btnEditar.style.display = '';
                 }
-
+                this.style.display = 'none';
                 this.disabled = true;
                 this.innerHTML = '<i class="fas fa-save"></i> Guardar';
 
