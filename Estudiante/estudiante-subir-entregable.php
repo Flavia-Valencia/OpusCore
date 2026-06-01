@@ -8,7 +8,7 @@
 //Inicializa conteoIntentos en 1 al registrar la primera entrega.
 //Utiliza transacciones para guardar la entrega de forma segura y responde en formato JSON.
 session_start();
-include("includes/conexion.php");
+include("../includes/conexion.php");
 
 header('Content-Type: application/json');
 

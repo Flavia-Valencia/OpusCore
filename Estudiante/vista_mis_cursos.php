@@ -1,5 +1,5 @@
 <?php
-require_once 'mis_cursos.php';
+require_once __DIR__ . '/mis_cursos.php';
 ?>
 
 <!DOCTYPE html>

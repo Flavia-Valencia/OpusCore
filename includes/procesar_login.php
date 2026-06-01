@@ -6,7 +6,7 @@
      - Redirige según su rol (admin, estudiante o docente) -->
 <?php
 session_start();
-include("conexion.php");
+include(__DIR__ . "/conexion.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $correo = $_POST["correo"];

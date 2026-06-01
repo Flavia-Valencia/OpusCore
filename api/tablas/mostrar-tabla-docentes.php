@@ -1,5 +1,5 @@
 <?php
-include('../includes/conexion.php');   
+include("../../includes/conexion.php"); 
 
 // consulta que une la tabla docentes con usuarios para obtener todos los datos del docente
 $sql = "SELECT

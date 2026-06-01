@@ -3,7 +3,7 @@
 // Recibe el ID del período por GET, consulta su fecha de inicio y fin de ciclo en PeriodoInscripcion.
 // Calcula la fecha de inicio sugerida como 15 días antes del fin del ciclo.
 // Responde en formato JSON con las fechas de inicio sugerido y fin del ciclo.
-include("includes/conexion.php");
+include("../../includes/conexion.php");
 header('Content-Type: application/json');
 
 $id = intval($_GET['id'] ?? 0);

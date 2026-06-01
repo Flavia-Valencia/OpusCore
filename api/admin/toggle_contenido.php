@@ -11,7 +11,7 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-require_once __DIR__ . '../includes/conexion.php';
+require_once __DIR__ . '/../../includes/conexion.php';
 
 $id     = (int)($_POST['id'] ?? 0);
 $estado = (int)($_POST['estado'] ?? 1);

@@ -6,7 +6,7 @@
 session_start();
 header('Content-Type: application/json');
 
-include("includes/conexion.php");
+include("../../includes/conexion.php");
 
 $id = intval($_POST['id'] ?? 0);
 

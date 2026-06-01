@@ -16,7 +16,7 @@ if (!isset($_SESSION["usuario"])) {
     exit();
 }
 
-require_once '../includes/conexion.php';
+include("../../includes/conexion.php");
 
 $correo = $_SESSION["usuario"];
 $stmt = $conexion->prepare("

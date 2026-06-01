@@ -1,5 +1,5 @@
 <?php
-include("includes/conexion.php");
+include("../../includes/conexion.php");
 
 $sql = "SELECT id, nombre FROM PeriodoInscripcion WHERE estado = 1 ORDER BY id DESC";
 $resultado = mysqli_query($conexion, $sql);

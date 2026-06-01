@@ -11,8 +11,8 @@ if (!isset($_SESSION['usuario'])) {
     exit;
 }
 
-require_once '../includes/conexion.php';
-require_once '../includes/paypal-config.php';
+require_once '../../includes/conexion.php';
+require_once '../../includes/paypal-config.php';
 
 
 $body = json_decode(file_get_contents('php://input'), true);

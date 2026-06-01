@@ -1,5 +1,5 @@
 <?php
-include('../includes/conexion.php');
+include("../../includes/conexion.php");
 
 $columnasPlazo = [];
 $resColumnas = mysqli_query($conexion, "SHOW COLUMNS FROM PlazoNotas");

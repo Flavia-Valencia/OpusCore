@@ -307,7 +307,7 @@ try {
     }
 
     ob_start();
-    include __DIR__ . '../comprobantes/vista-facturacion-electronica.php';
+    include __DIR__ . '/../../comprobantes/vista-facturacion-electronica.php';
     $htmlFactura = ob_get_clean();
 
     $optPdf = new Options();

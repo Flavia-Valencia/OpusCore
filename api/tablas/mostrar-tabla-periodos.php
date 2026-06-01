@@ -1,5 +1,5 @@
 <?php
-include('../includes/conexion.php');
+include("../../includes/conexion.php");
 
 $columnasPeriodo = [];
 $resColumnas = mysqli_query($conexion, "SHOW COLUMNS FROM PeriodoInscripcion");

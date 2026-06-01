@@ -1,5 +1,5 @@
 <?php
-include('../includes/conexion.php');   
+include("../../includes/conexion.php");
 
 $sql = "SELECT c.id,
                c.nombre, 

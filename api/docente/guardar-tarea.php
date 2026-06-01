@@ -8,7 +8,7 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-require_once '../includes/conexion.php';
+include("../../includes/conexion.php");
 
 $id          = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT) ?: 0;
 $idCurso     = filter_input(INPUT_POST, 'idCurso', FILTER_VALIDATE_INT);

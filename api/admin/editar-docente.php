@@ -1,5 +1,5 @@
 <?php
-include('../includes/conexion.php');  
+include("../../includes/conexion.php"); 
 
 $usuario_id = $_POST['usuario_id'];
 $docente_id = $_POST['docente_id'];

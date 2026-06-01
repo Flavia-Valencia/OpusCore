@@ -1,5 +1,5 @@
 <?php
-include('../includes/conexion.php');   
+include("../../includes/conexion.php");  
 
 // Consulta que une la tabla estudiantes con usuarios para obtener todos sus datos
 $sql = "SELECT

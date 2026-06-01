@@ -12,8 +12,8 @@ if (!isset($_SESSION['usuario'])) {
     exit;
 }
 
-require_once '../includes/conexion.php';
-require_once 'includes/paypal-config.php';
+include("../../includes/conexion.php");
+require_once '../../includes/paypal-config.php';
 
 // validar los IDs de cursos
 $body     = json_decode(file_get_contents('php://input'), true);

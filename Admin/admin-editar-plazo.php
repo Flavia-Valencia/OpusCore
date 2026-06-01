@@ -12,7 +12,7 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-include('includes/conexion.php');
+include('../includes/conexion.php');
 
 $id        = intval($_POST['id'] ?? 0);
 $idPeriodo = intval($_POST['idPeriodo'] ?? 0);

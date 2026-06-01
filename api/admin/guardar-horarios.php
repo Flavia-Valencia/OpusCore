@@ -1,5 +1,5 @@
 <?php
-include("../includes/conexion.php");
+include("../../includes/conexion.php");
 
 $data = json_decode(file_get_contents('php://input'), true); // recibe el JSON que manda JS
 $idCurso = intval($data['idCurso'] ?? 0);

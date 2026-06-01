@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_SESSION['usuario'])) {
     exit();
 }
 
-require_once '../includes/conexion.php';
+include("../../includes/conexion.php");
 
 $body        = json_decode(file_get_contents('php://input'), true);
 $cursoId      = isset($body['curso_id'])      ? (int)$body['curso_id']      : 0;

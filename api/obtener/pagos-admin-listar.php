@@ -11,7 +11,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] !== 'admin') {
     exit;
 }
 
-require_once '../includes/conexion.php';
+include("../../includes/conexion.php");
 
 // Consultar pagos con datos del estudiante
 $sql = "

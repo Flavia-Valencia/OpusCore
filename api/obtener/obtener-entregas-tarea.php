@@ -8,7 +8,7 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-require_once 'includes/conexion.php';
+include("../../includes/conexion.php");
 
 $idTarea = filter_input(INPUT_GET, 'idTarea', FILTER_VALIDATE_INT);
 

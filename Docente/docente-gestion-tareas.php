@@ -162,7 +162,7 @@ $stmtSes->close();
                 <i class="fas fa-times"></i>
             </label>
 
-            <a href="..includes/logout.php" class="sidebar-logout">
+            <a href="../includes/logout.php" class="sidebar-logout">
                 <i class="fas fa-arrow-right-from-bracket"></i> Cerrar sesión
             </a>
         </aside>
@@ -174,7 +174,7 @@ $stmtSes->close();
                     <i class="fas fa-bars"></i>
                 </label>
 
-                <a href="..includes/logout.php" class="user-profile">
+                <a href="../includes/logout.php" class="user-profile">
                     <div class="user-info">
                         <span class="user-role">
                             <?php echo isset($_SESSION["rol"]) ? htmlspecialchars($_SESSION["rol"]) : "Docente"; ?>

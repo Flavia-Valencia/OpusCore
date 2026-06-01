@@ -15,7 +15,7 @@ if (!isset($_SESSION["usuario"])) {
     exit();
 }
 
-require_once '../includes/conexion.php';
+include("../../includes/conexion.php");
 
 $correo = $_SESSION["usuario"];
 $idCurso = isset($_POST['curso_id']) ? intval($_POST['curso_id']) : 0;

@@ -11,7 +11,7 @@ if (!isset($_SESSION["usuario"])) {
     exit();
 }
 
-require_once 'includes/conexion.php';
+require_once '../includes/conexion.php';
 
 function e($valor) {
     return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
@@ -189,8 +189,8 @@ if (tablaExiste($conexion, 'tareas')) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>ADF | Detalle del curso</title>
-    <link rel="icon" type="image/svg+xml" href="img/logo.svg">
-    <link rel="stylesheet" href="./css/styles-estudiantes.css">
+    <link rel="icon" type="image/svg+xml" href="../img/logo.svg">
+    <link rel="stylesheet" href="../css/styles-estudiantes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -201,7 +201,7 @@ if (tablaExiste($conexion, 'tareas')) {
     <div class="layout">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
-                <img src="img/logo.svg" alt="Logo" class="logo-img">
+                <img src="../img/logo.svg" alt="Logo" class="logo-img">
                 <span class="sidebar-brand logo-text-sidebar"><span>Academia</span><strong>Futuro Digital</strong></span>
                 <div class="menu-user">
                     <div class="menu-user-role">Estudiante</div>
@@ -250,7 +250,7 @@ if (tablaExiste($conexion, 'tareas')) {
                 </a>
             </nav>
 
-            <a href="includes/logout.php" class="sidebar-logout">
+            <a href="../includes/logout.php" class="sidebar-logout">
                 <i class="fas fa-arrow-right-from-bracket"></i>
                 <span>Cerrar sesion</span>
             </a>
@@ -411,6 +411,6 @@ if (tablaExiste($conexion, 'tareas')) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="./js/script.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 </html>

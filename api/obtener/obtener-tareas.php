@@ -11,7 +11,7 @@ if (!isset($_SESSION['usuario'])) {
     exit();
 }
 
-require_once 'includes/conexion.php';
+include("../../includes/conexion.php");
 
 $idCurso = filter_input(INPUT_GET, 'idCurso', FILTER_VALIDATE_INT);
 

@@ -23,8 +23,8 @@ if(!isset($_SESSION["usuario"])){
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     
     <title>ADF | Panel Estudiante</title>
-    <link rel="icon" type="image/svg+xml" href="img/logo.svg">
-    <link rel="stylesheet" href="./css/styles-estudiantes.css">
+    <link rel="icon" type="image/svg+xml" href="../img/logo.svg">
+    <link rel="stylesheet" href="../css/styles-estudiantes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -32,7 +32,7 @@ if(!isset($_SESSION["usuario"])){
 
     <header class="header">
         <div class="logo">
-            <img src="img/logo.svg" alt="Logo" class="logo-img">
+            <img src="../img/logo.svg" alt="Logo" class="logo-img">
             <div class="logo-text">
                 <span>¡Bienvenido/a!</span>
                 <!--Para que se coloque el nombre del usuario de la credencial-->
@@ -40,7 +40,7 @@ if(!isset($_SESSION["usuario"])){
             </div>
         </div>
 
-        <a href="includes/logout.php" style="text-decoration:none;">
+        <a href="../includes/logout.php" style="text-decoration:none;">
             <div class="user-profile">
                 <div class="user-info">
                     <span class="user-role">Estudiante</span>
@@ -59,7 +59,7 @@ if(!isset($_SESSION["usuario"])){
                 <span>Ver mis cursos</span>
             </a>
 
-            <a href="estudiante-inscripciones.php" class="card-opcion">  <!-- NUEVA -->
+            <a href="estudiante-inscripciones.php" class="card-opcion">  
                 <i class="fas fa-pen-to-square icono"></i>
                 <span>Inscribirme a cursos</span>
             </a>

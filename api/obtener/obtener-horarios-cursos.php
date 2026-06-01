@@ -1,5 +1,5 @@
 <?php
-include("includes/conexion.php");
+include("../../includes/conexion.php");
 
 $idCurso = intval($_GET['idCurso'] ?? 0);
 

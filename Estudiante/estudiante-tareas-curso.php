@@ -11,7 +11,7 @@ if (!isset($_SESSION["usuario"])) {
     exit();
 }
 
-require_once 'includes/conexion.php';
+include("../includes/conexion.php");
 
 function e($valor) {
     return htmlspecialchars((string) $valor, ENT_QUOTES, 'UTF-8');
@@ -222,8 +222,8 @@ if (!empty($tareas)) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>ADF | Tareas asignadas</title>
-    <link rel="icon" type="image/svg+xml" href="img/logo.svg">
-    <link rel="stylesheet" href="./css/styles-estudiantes.css">
+    <link rel="icon" type="image/svg+xml" href="../img/logo.svg">
+    <link rel="stylesheet" href="../css/styles-estudiantes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -234,7 +234,7 @@ if (!empty($tareas)) {
     <div class="layout">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
-                <img src="img/logo.svg" alt="Logo" class="logo-img">
+                <img src="../img/logo.svg" alt="Logo" class="logo-img">
                 <span class="sidebar-brand logo-text-sidebar"><span>Academia</span><strong>Futuro Digital</strong></span>
                 <div class="menu-user">
                     <div class="menu-user-role">Estudiante</div>
@@ -283,7 +283,7 @@ if (!empty($tareas)) {
                 </a>
             </nav>
 
-            <a href="includes/logout.php" class="sidebar-logout">
+            <a href="../includes/logout.php" class="sidebar-logout">
                 <i class="fas fa-arrow-right-from-bracket"></i>
                 <span>Cerrar sesion</span>
             </a>
@@ -294,7 +294,7 @@ if (!empty($tareas)) {
                 <button class="hamburger js-sidebar-toggle" id="hamburgerBtn">
                     <i class="fas fa-bars"></i>
                 </button>
-                <a href="includes/logout.php" class="user-profile-panel">
+                <a href="../includes/logout.php" class="user-profile-panel">
                     <div class="user-info">
                         <span class="user-role">Estudiante</span>
                         <span class="user-email"><?php echo e($_SESSION["usuario"]); ?></span>
@@ -522,6 +522,6 @@ if (!empty($tareas)) {
         </div>
     </div>
 
-    <script src="./js/script.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 </html>

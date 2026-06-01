@@ -1,5 +1,5 @@
 <?php
-include("includes/conexion.php");
+include("../../includes/conexion.php");
 header('Content-Type: application/json');
 
 $idCategoria = intval($_GET['idCategoria']);

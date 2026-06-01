@@ -1,5 +1,5 @@
 <?php
-include("includes/conexion.php");
+include("../../includes/conexion.php");
 // evita que el navegaador interprete como HTML la respuesta
 header('Content-Type: application/json');
 

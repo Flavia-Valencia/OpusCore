@@ -17,8 +17,8 @@ if (!isset($_SESSION['paypal_mensualidad'])) {
     exit;
 }
 
-require_once '../includes/conexion.php';
-require_once '../includes/paypal-config.php';
+require_once '../../includes/conexion.php';
+require_once '../../includes/paypal-config.php';
 
 $body = json_decode(file_get_contents('php://input'), true);
 $orderId = trim($body['orderID'] ?? '');
@@ -220,7 +220,7 @@ $stmtMens->close();
           // FACTURA ELECTRONICA END
 
 // Enviar comprobante por correo
-require_once '../includes/enviar-comprobante.php';
+require_once '../../includes/enviar-comprobante.php';
 
 $datosCorreo = [
     'total'          => $monto,

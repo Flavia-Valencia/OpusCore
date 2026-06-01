@@ -7,7 +7,7 @@
 //Registra los nuevos archivos o enlaces e incrementa conteoIntentos en la entrega.
 //Utiliza transacciones para actualizar la entrega de forma segura y responde en formato JSON.
 session_start();
-include("includes/conexion.php");
+include("../includes/conexion.php");
 
 header('Content-Type: application/json');
 

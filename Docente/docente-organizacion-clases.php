@@ -113,7 +113,7 @@ if ($cursoId > 0) {
                 <i class="fas fa-times"></i>
             </label>
 
-            <a href="..includes/logout.php" class="sidebar-logout">
+            <a href="../includes/logout.php" class="sidebar-logout">
                 <i class="fas fa-arrow-right-from-bracket"></i> Cerrar sesión
             </a>
 
