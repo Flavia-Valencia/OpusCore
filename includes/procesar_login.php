@@ -6,7 +6,7 @@
      - Redirige según su rol (admin, estudiante o docente) -->
 <?php
 session_start();
-include("conexion.php");
+include(__DIR__ . "/conexion.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $correo = $_POST["correo"];
@@ -28,12 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["nombre"] = $usuario["nombre"];
  
             if ($usuario["rol_id"] == 1) {
-                header("Location: ../admin-inicio.php");
+                header("Location: /OpusCore/Admin/admin-inicio.php");
             } elseif ($usuario["rol_id"] == 2) {
                 // Yahir: el estudiante entra primero a Mis cursos para ver su estado académico.
-                header("Location: ../vista_mis_cursos.php");
+                header("Location: /OpusCore/Estudiante/vista_mis_cursos.php");
             } elseif ($usuario["rol_id"] == 3) {
-                header("Location: ../docentes.php"); 
+                header("Location: /OpusCore/Docente/docentes.php"); 
             }
             exit(); 
         

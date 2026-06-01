@@ -207,7 +207,7 @@ if (formEditarEstudiante) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('editar-estudiante.php', { method: 'POST', body: formData });
+            const res  = await fetch('../api/admin/editar-estudiante.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -274,7 +274,7 @@ if (formNuevoEstudiante) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('crear-estudiante.php', { method: 'POST', body: formData });
+            const res  = await fetch('../api/admin/crear-estudiante.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -342,7 +342,7 @@ if (formEditarDocente) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('editar-docente.php', { method: 'POST', body: formData });
+            const res  = await fetch('../api/admin/editar-docente.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -410,7 +410,7 @@ if (formNuevoDocente) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('crear-docente.php', { method: 'POST', body: formData });
+            const res  = await fetch('../api/admin/crear-docente.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -450,7 +450,7 @@ async function cargarPeriodos(selectId, idSeleccionado = null) {
     const select = document.getElementById(selectId);
     if (!select) return;
 
-    const res = await fetch('obtener-periodos.php');
+    const res = await fetch('../api/obtener/obtener-periodos.php');
     const periodos = await res.json();
 
     select.innerHTML = '<option value="">Seleccione un periodo</option>';
@@ -528,7 +528,7 @@ if (selectCategoriaNuevo && selectPreNuevo) {
             return;
         }
 
-        const res    = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}`);
+        const res    = await fetch(`../api/obtener/obtener-cursos-por-categoria.php?idCategoria=${idCategoria}`);
         const cursos = await res.json();
 
         selectPreNuevo.innerHTML = '<option value="">Ninguno</option>';
@@ -557,7 +557,7 @@ if (selectCategoriaEditar && selectPreEditar) {
             return;
         }
 
-        const res    = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}&idCursoActual=${idCursoActual}`);
+        const res    = await fetch(`../api/obtener/obtener-cursos-por-categoria.php?idCategoria=${idCategoria}&idCursoActual=${idCursoActual}`);
         const cursos = await res.json();
 
         selectPreEditar.innerHTML = '<option value="">Ninguno</option>';
@@ -657,11 +657,13 @@ document.addEventListener('click', function (e) {
         const id = fila.dataset.id;
 
         let archivo = '';
+
         if (document.getElementById('buscador-docente')) archivo = 'toggle-estado-docente.php';
         else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
         else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
         else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
         else if (document.getElementById('buscador-plazo')) archivo = 'toggle-estado-plazo.php';
+
 
 
         const res = await fetch(archivo, {
@@ -970,7 +972,7 @@ if (formPeriodo) {
         }
 
         const id = document.getElementById('periodo-id').value;
-        const archivo = id ? 'editar-periodo.php' : 'crear-periodo.php';
+        const archivo = id ? '../api/admin/editar-periodo.php' : '../api/admin/crear-periodo.php';
 
         const body = new URLSearchParams({
             id: id,
@@ -1286,7 +1288,7 @@ async function abrirModalHorarios(idCurso) {
     container.innerHTML = '';
     //cargar los horarios ya guardados
     try {
-        const res = await fetch(`obtener-horarios-cursos.php?idCurso=${idCurso}`);
+        const res = await fetch(`../api/obtener/obtener-horarios-cursos.php?idCurso=${idCurso}`);
         const bloques = await res.json();
 
         if (bloques.length > 0) {
@@ -1395,7 +1397,7 @@ if (btnGuardarHorarios) {
         console.log('Datos consolidados para Backend:', data);
 
         try {
-            const res = await fetch('guardar-horarios.php', {
+            const res = await fetch('../api/guardar-horarios.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -1835,8 +1837,8 @@ function inicializarTareasEstudiante() {
 
         try {
             const endpoint = accionActual === 'reemplazar'
-                ? '/OpusCore/estudiante-reemplazar-entregable.php'
-                : '/OpusCore/estudiante-subir-entregable.php';
+                ? '../Estudiante/estudiante-reemplazar-entregable.php'
+                : '../Estudiante/estudiante-subir-entregable.php';
 
             const resp = await fetch(endpoint, {
                 method: 'POST',
