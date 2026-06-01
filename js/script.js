@@ -1,3 +1,5 @@
+// Login ---------------------------------------------
+
 // Valida que el formulario de login no tenga campos vacíos antes de enviar
 const formulario = document.getElementById("formulario-inicio");
 const btnEntrar = document.querySelector(".btn-entrar");
@@ -17,7 +19,7 @@ if (formulario) {
     });
 }
 
-// --- MODAL EDITAR DOCENTE ---
+// Docentes ------------------------------------------
 
 // Abre el modal de edición de docentes y carga los datos del docente seleccionado en el formulario
 document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
@@ -90,7 +92,7 @@ if (modalNuevoDocente) {
 
 
 
-// --- MODAL EDITAR ESTUDIANTE ---
+// Estudiantes ---------------------------------------
 
 // Abre el modal de edición de estudiantes y carga datos
 document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
@@ -426,7 +428,7 @@ if (formNuevoDocente) {
 }
 
 
-// MODAL NUEVO CURSO
+// Cursos --------------------------------------------
 
 function cerrarModalNuevoCurso() {
     const modal = document.getElementById('modalNuevoCurso');
@@ -577,7 +579,7 @@ if (selectCategoriaEditar && selectPreEditar) {
 }
 
 
-// --- NUEVO UI MODAL (Inyectado en body) esto sirve para generar modal de advertencia dinámicamente y reutilizar el mismo modal en diferentes acciones sin duplicar código en el HTML
+// Modales -------------------------------------------
 
 const customModalHTML = `
 <div class="custom-modal-overlay" id="customConfirmModal">
@@ -898,7 +900,7 @@ if (modalEditarCurso) {
 }
 
 
-// --- MODAL PERÍODO DE INSCRIPCIÓN ---
+// Periodos ------------------------------------------
 
 // Abre modal en modo NUEVO (lo dispara .btn-nuevo en admin-inscripciones.php
 // gracias al listener genérico de btn-nuevo que ya existe arriba en este archivo)
@@ -1073,7 +1075,7 @@ if (btnNuevo) {
 }
 
 
-// --- PÁGINA DE INICIO ---
+// Utilidades ----------------------------------------
 
 // Muestra la fecha actual en formato largo en español en la página de inicio
 const fechaHoy = document.getElementById('fecha-hoy');
@@ -1226,7 +1228,7 @@ function mostrarToastPremium(mensaje, tipo = 'error') {
     }, 3000);
 }
 
-// -- CATÁLOGOS HORARIOS ---
+// Cursos --------------------------------------------
 let catalogoHorarios = [];
 let catalogoAulas = [];
 
@@ -1417,7 +1419,7 @@ if (btnGuardarHorarios) {
 }
 
 
-// -- MODAL INSCRIPCIÓN
+// Inscripciones -------------------------------------
 // Lee todos los datos desde data-* del botón (el PHP los inyecta en render time).
 // No requiere fetch adicional: evita una petición extra por cada clic.
 let cursoInscripcionId  = null;
@@ -1560,7 +1562,7 @@ function togglePagosOnline() {
     if (toggle) toggle.setAttribute('aria-expanded', estaAbierto ? 'true' : 'false');
 }
 
-// MODULO DE ENTREABLES - ESTUDIANTES
+// Contenidos estudiante -----------------------------
 
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.js-sidebar-toggle').forEach(btn => {
@@ -1895,6 +1897,8 @@ function inicializarTareasEstudiante() {
     ordenFiltro?.addEventListener('change', aplicarFiltros);
 }
 
+// Pagos ---------------------------------------------
+
 // Abre el modal de pago para cancelar una mensualidad pendiente del estudiante.
 // Obtiene el id, nombre del curso y monto desde el botón seleccionado,
 // muestra el resumen en pantalla y prepara el botón de PayPal para procesar la cuota.
@@ -2066,6 +2070,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+// Inscripciones -------------------------------------
 
 //  Buscador de cursos por nombre o descripción (filtro en tiempo real)
 document.addEventListener('DOMContentLoaded', function () {
@@ -2393,7 +2399,7 @@ function inicializarPayPal() {
     container.dataset.rendered = 'true'; // evita renderizar el botón dos veces
 }
 
-// MODULO FACTURACION
+// Facturación ---------------------------------------
 document.addEventListener('DOMContentLoaded', function () {
     const modalFactura = document.getElementById('modalNuevaFactura');
     const btnNuevaFactura = document.getElementById('btnNuevaFactura');
@@ -2709,7 +2715,7 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
     };
 })();
 
-// MODULO ORGANIZACION DE CLASES DOCENTE
+// Contenidos docente --------------------------------
 // Abre y cierra el modal para crear o editar contenidos
 // Valida los campos obligatorios del formulario
 // Gestiona archivos y enlaces adjuntos dinámicamente
@@ -3163,6 +3169,8 @@ if (buscar) buscar.addEventListener('input', filtrarContenidos);
 if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
 });
 
+// Tareas --------------------------------------------
+
 // Interacciones frontend para gestion de tareas del docente
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('modalTarea');
@@ -3469,6 +3477,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 });
 
+// Entregas ------------------------------------------
+
 // Filtros visuales para la pagina de entregas del docente.
 document.addEventListener('DOMContentLoaded', function () {
     const tabla = document.getElementById('tablaEntregasDocente');
@@ -3583,7 +3593,7 @@ document.addEventListener('click', function (e) {
         </div>`;
 });
 
-// REGISTRO DE NOTAS DOCENTE
+// Registro de notas ---------------------------------
 document.addEventListener('DOMContentLoaded', function () {
     // Evita errores si no existe el curso
     if (typeof cursoId === 'undefined') return;
@@ -3974,7 +3984,7 @@ document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
 });
 });
 
-// --- PLAZOS DE NOTAS ---
+// Plazos --------------------------------------------
 
 // - Controla la apertura y cierre del modal para crear y editar desde un solo formulario
 // - Al abrir para editar, precarga los datos del plazo en los campos del formulario
