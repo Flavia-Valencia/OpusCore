@@ -736,14 +736,35 @@ body {
   max-width: 320px;
   color: #7d8a9d;
   line-height: 1.5;
+  text-align: left;
 }
 
 .contenido-archivo {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 6px;
   color: #315273;
   font-weight: 600;
+  text-align: left;
+}
+
+.organizacion-contenidos-tabla th:nth-child(3),
+.organizacion-contenidos-tabla th:nth-child(5),
+.tareas-tabla th:nth-child(1),
+.tareas-tabla th:nth-child(4) {
+  text-align: left;
+}
+
+.contenido-tabla td[data-label="Título"],
+.contenido-tabla td[data-label="Archivo"],
+.contenido-tabla td[data-label="Apoyo"] {
+  text-align: left;
+}
+
+.contenido-tabla td[data-label="Archivo"] .contenido-archivo,
+.contenido-tabla td[data-label="Apoyo"] .contenido-archivo {
+  width: fit-content;
+  margin: 2px 0 5px;
 }
 
 .contenido-muted {
@@ -1426,6 +1447,45 @@ body {
     opacity:.95;
 }
 
+/*Botón editar notas*/
+.btn-nota-editar {
+   background: linear-gradient(135deg, #053170, #069DBF);
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:.2s ease;
+}
+.btn-nota-editar:hover{
+    transform:translateY(-2px);
+    opacity:.95;
+}
+
+.acciones-nota-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.nota-bloqueada-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    padding: 8px 12px;
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
 
 @media (max-width: 900px) {
   .organizacion-topbar,
@@ -1520,12 +1580,16 @@ body {
   }
 
   .contenido-tabla td[data-label="Título"],
+  .contenido-tabla td[data-label="Archivo"],
+  .contenido-tabla td[data-label="Apoyo"],
   .contenido-tabla td[data-label="Acciones"] {
     display: block;
     text-align: left;
   }
 
   .contenido-tabla td[data-label="Título"]::before,
+  .contenido-tabla td[data-label="Archivo"]::before,
+  .contenido-tabla td[data-label="Apoyo"]::before,
   .contenido-tabla td[data-label="Acciones"]::before {
     display: block;
     margin-bottom: 8px;

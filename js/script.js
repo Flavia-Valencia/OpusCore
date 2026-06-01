@@ -606,6 +606,7 @@ document.body.insertAdjacentHTML('beforeend', customModalHTML);
 // - Cambia visualmente la fila (gris si está inactivo)
 // - Bloquea botones de editar y horarios cuando está inactivo
 // - Al desactivar un curso, limpia visualmente la celda de docente
+// - No pueden haber dos plazos activos al mismo tiempo
 // - Reordena la fila dinámicamente:
 //     * Inactivos se envían al final
 //     * Cursos activos se reinsertan en orden alfabético por nombre
@@ -631,6 +632,8 @@ document.addEventListener('click', function (e) {
     if (document.getElementById('buscador-docente')) tipo = 'docente';
     else if (document.getElementById('buscador-estudiante')) tipo = 'estudiante';
     else if (document.getElementById('buscador-periodo')) tipo = 'periodo'
+    else if (document.getElementById('buscador-plazo')) tipo = 'plazo';
+
 
     mTitle.innerText = isActivo
         ? `¿Desactivar ${tipo}?`
@@ -654,10 +657,14 @@ document.addEventListener('click', function (e) {
         const id = fila.dataset.id;
 
         let archivo = '';
-        if (document.getElementById('buscador-docente')) archivo = '../api/admin/toggle-estado-docente.php';
-        else if (document.getElementById('buscador-estudiante')) archivo = '../api/admin/toggle-estado-estudiante.php';
-        else if (document.getElementById('buscador-curso')) archivo = '../api/admin/toggle-estado-curso.php';
-        else if (document.getElementById('buscador-periodo')) archivo = '/OpusCore/api/admin/toggle-estado-periodo.php';
+
+        if (document.getElementById('buscador-docente')) archivo = 'toggle-estado-docente.php';
+        else if (document.getElementById('buscador-estudiante')) archivo = 'toggle-estado-estudiante.php';
+        else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
+        else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
+        else if (document.getElementById('buscador-plazo')) archivo = 'toggle-estado-plazo.php';
+
+
 
         const res = await fetch(archivo, {
             method: 'POST',
@@ -704,7 +711,7 @@ document.addEventListener('click', function (e) {
             if (celdaDocente) celdaDocente.textContent = '—';
         }
 
-        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante');
+        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-plazo');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (isActivo) {
@@ -792,7 +799,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const esInactivo = btnEstado.classList.contains('estado-inactivo');
 
-        const btnEditar = fila.querySelector('abrir-modal-periodo, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso');
+        const btnEditar = fila.querySelector('abrir-modal-periodo, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso, abrir-modal-plazo');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (esInactivo) {
@@ -851,7 +858,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (estado.textContent.trim() === 'Inactivo') {
 
-            const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-curso');
+            const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-curso, .abrir-modal-plazo');
             const btnHorarios = fila.querySelector('.horarios');
 
             fila.querySelectorAll('td').forEach(td => {
@@ -1850,9 +1857,8 @@ function inicializarTareasEstudiante() {
                     const fechaBadge = tareaActiva.querySelector('.tarea-fecha-entrega');
                     if (estado) { estado.textContent = 'Entregada'; estado.className = 'tarea-estado entregada'; }
                     if (boton) {
-                        const intentosActuales = parseInt(boton.dataset.intentos || '0', 10);
+                        const intentosNuevos = parseInt(data.intentos || '1', 10);
                         const intentosMaximos = parseInt(boton.dataset.intentosMax || '3', 10);
-                        const intentosNuevos = Math.min(intentosActuales + 1, intentosMaximos);
                         boton.textContent = 'Reemplazar';
                         boton.classList.add('is-replace');
                         boton.dataset.accion = 'reemplazar';
@@ -3207,7 +3213,7 @@ document.addEventListener('DOMContentLoaded', function () {
         campos.puntaje.value     = fila.dataset.puntaje     || '';
         campos.intentos.value = fila.dataset.intentos || '1';
         campos.estado.value = fila.dataset.estado === 'Activa' ? '1' : '0';
-        campos.fecha.value = fila.dataset.fecha || '';
+        campos.fecha.value = (fila.dataset.fecha || '').replace(' ', 'T').substring(0, 16);
 
         const selectSesion = document.getElementById('tareaSesion');
         if(selectSesion){
@@ -3235,9 +3241,11 @@ document.addEventListener('DOMContentLoaded', function () {
         form.querySelectorAll('.contenido-field').forEach(field => field.classList.remove('is-invalid'));
     }
 
-    function validarTarea() {
+// VALIDAR FECHA
+   function validarTarea() {
     limpiarValidacionTarea();
     let valido = true;
+    let mensajeError = '';
 
     const requeridos = [
         campos.titulo,
@@ -3255,12 +3263,39 @@ document.addEventListener('DOMContentLoaded', function () {
         if (vacio || numeroInvalido) {
             campo.closest('.contenido-field')?.classList.add('is-invalid');
             valido = false;
+            if (!mensajeError) mensajeError = 'Complete los campos obligatorios de la tarea';
         }
     });
 
-    if (!valido) mostrarToastPremium('Complete los campos obligatorios de la tarea');
+    if (campos.fecha.value) {
+        const partes           = campos.fecha.value.split('T');
+        const [anio, mes, dia] = partes[0].split('-').map(Number);
+        const [hora, minuto]   = partes[1] ? partes[1].split(':').map(Number) : [0, 0];
+
+        const fechaSel  = new Date(anio, mes - 1, dia, hora, minuto, 0);
+        const esEdicion = campos.id && campos.id.value && campos.id.value !== '0';
+
+        const hoyInicio = new Date();
+        hoyInicio.setHours(0, 0, 0, 0);
+
+        console.log('fechaSel:', fechaSel);
+        console.log('hoyInicio:', hoyInicio);
+        console.log('fechaSel < hoyInicio:', fechaSel < hoyInicio);
+        console.log('esEdicion:', esEdicion);
+        console.log('valor raw:', campos.fecha.value);
+
+        if (fechaSel < hoyInicio) {
+            campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
+            mensajeError = esEdicion
+                ? 'La fecha límite no puede ser de un día anterior a hoy'
+                : 'La fecha límite no puede ser anterior a la fecha actual';
+            valido = false;
+        }
+    }
+
+    if (!valido) mostrarToastPremium(mensajeError);
     return valido;
-} 
+}
 
     function escapeTarea(valor) {
         return String(valor || '').replace(/[&<>"']/g, caracter => ({
@@ -3274,9 +3309,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function formatearFechaTarea(valor) {
         if (!valor) return '';
-        const partes = valor.split('-');
+        const normalizada = valor.replace(' ', 'T');
+        const [fecha, hora = '00:00'] = normalizada.split('T');
+        const partes = fecha.split('-');
         if (partes.length !== 3) return valor;
-        return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        return `${partes[2]}/${partes[1]}/${partes[0]} ${hora.substring(0, 5)}`;
     }
 
     function renderArchivoTarea(nombre) {
@@ -3320,7 +3357,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fila.dataset.fecha       = campos.fecha.value;
     fila.dataset.puntaje     = campos.puntaje.value;
     fila.dataset.intentos = campos.intentos.value;
-    fila.dataset.estado      = campos.estado.value;
+    fila.dataset.estado      = campos.estado.value === '1' ? 'Activa' : 'Borrador';
     fila.dataset.archivo     = archivoNuevo || fila.dataset.archivo || '';
     fila.dataset.sesionId = document.getElementById('tareaSesion')?.value || '';
 
@@ -3382,7 +3419,7 @@ document.addEventListener('DOMContentLoaded', function () {
         abrirModalTarea(btnEditar.closest('tr'));
     });
 
-    form.addEventListener('submit', async function (e) {
+   form.addEventListener('submit', async function (e) {
     e.preventDefault();
     if (!validarTarea()) return;
 
@@ -3393,24 +3430,20 @@ document.addEventListener('DOMContentLoaded', function () {
         btnSubmit.textContent = 'Guardando...';
     }
 
-    const formData = new FormData(form);
+    const formData = new FormData();
+    formData.append('id',            document.getElementById('tareaId')?.value || '0');
+    formData.append('idCurso',       document.getElementById('tareaCursoId')?.value || '');
+    formData.append('titulo',        document.getElementById('tareaTitulo')?.value?.trim() || '');
+    formData.append('descripcion',   document.getElementById('tareaDescripcion')?.value?.trim() || '');
+    formData.append('fechaLimite',   document.getElementById('tareaFecha')?.value || '');
+    formData.append('puntajeMaximo', document.getElementById('tareaPuntaje')?.value || '');
+    formData.append('intentos',      document.getElementById('tareaIntentos')?.value || '1');
+    formData.append('estado',        document.getElementById('tareaEstado')?.value || '0');
+    formData.append('idSesion',      document.getElementById('tareaSesion')?.value || '0');
 
-    // Agregar campos que no están en inputs del form directamente
-    formData.set('idCurso', document.getElementById('tareaCursoId')?.value || '');
-    formData.set('id',      document.getElementById('tareaId')?.value     || '0');
-    formData.set('titulo',      campos.titulo.value.trim());
-    formData.set('descripcion', campos.descripcion.value.trim());
-    formData.set('fechaLimite', campos.fecha.value);
-    formData.set('puntajeMaximo', campos.puntaje.value);
-    formData.set('intentos', campos.intentos.value);
-    formData.set('estado',      campos.estado.value === 'Activa' ? '1' : '0');
-    formData.set('idSesion', document.getElementById('tareaSesion')?.value || '0');
-
-
-    // Adjuntar archivo si fue seleccionado
     const archivoInput = document.getElementById('tareaArchivo');
     if (archivoInput?.files?.length > 0) {
-        formData.set('archivo', archivoInput.files[0]);
+        formData.append('archivo', archivoInput.files[0]);
     }
 
     try {
@@ -3765,23 +3798,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Si ambas notas están completas
         if (count === 2) {
-            const prom =
-                parseFloat((suma / 2).toFixed(2));
-
+             const nota1 = parseFloat(inputsFila[0].value.trim());
+            const nota2 = parseFloat(inputsFila[1].value.trim());
+            const prom  = parseFloat(((nota1 * 0.30) + (nota2 * 0.70)).toFixed(2));
             badge.textContent = prom.toFixed(2);
 
             if (prom >= 7.0) {
-                badge.classList.add('promedio-aprobado');
-            } else if (prom >= 6.0) {
-                badge.classList.add('promedio-alerta');
-            } else {
-                badge.classList.add('promedio-reprobado');
-            }
+            badge.classList.add('promedio-aprobado');
+        } else if (prom >= 6.0) {
+            badge.classList.add('promedio-alerta');
+        } else {
+            badge.classList.add('promedio-reprobado');
+        }
         } else {
             badge.textContent = '—';
             badge.classList.add('promedio-vacio');
         }
     }
+
+    // Cargar promedio grupal real desde BD si existe
+if (typeof promedioGrupalInicial !== 'undefined' && promedioGrupalInicial !== null) {
+    const kpiPromedio = document.getElementById('kpi-promedio-grupal');
+    if (kpiPromedio) kpiPromedio.textContent = parseFloat(promedioGrupalInicial).toFixed(2);
+}
     // Recalcular todos los promedios
     function recalcularTodosLosPromedios() {
         inputs.forEach(inp => {
@@ -3791,66 +3830,63 @@ document.addEventListener('DOMContentLoaded', function () {
         recalcularKPIs();
     }
     // Actualizar métricas generales del curso
-    function recalcularKPIs() {
-        const badges =
-            document.querySelectorAll('[id^="promedio-"]');
+   // Actualizar métricas generales del curso
+function recalcularKPIs() {
+    const badges = document.querySelectorAll('[id^="promedio-"]');
 
-        let sumaPromedios = 0;
-        let aprobados = 0;
-        let promediosValidosCount = 0;
+    let sumaPromedios = 0;
+    let aprobados = 0;
+    let promediosValidosCount = 0;
 
-        badges.forEach(b => {
-            const text = b.textContent;
+    badges.forEach(b => {
+        const text = b.textContent.trim();
 
-            if (text !== '—') {
-                const val = parseFloat(text);
+        if (text !== '—') {
+            const val = parseFloat(text);
+            sumaPromedios += val;
+            promediosValidosCount++;
 
-                sumaPromedios += val;
-                promediosValidosCount++;
-
-                if (val >= 7.00) {
-                    aprobados++;
-                }
-            }
-        });
-
-        const kpiPromedio =
-            document.getElementById('kpi-promedio-grupal');
-
-        const kpiAprobacion =
-            document.getElementById('kpi-porcentaje-aprobacion');
-
-        if (promediosValidosCount > 0) {
-
-            const promedioGrupal =
-                (
-                    sumaPromedios /
-                    promediosValidosCount
-                ).toFixed(2);
-
-            kpiPromedio.textContent = promedioGrupal;
-
-            const tasaAprobacion =
-                Math.round(
-                    (aprobados / promediosValidosCount) * 100
-                );
-
-            kpiAprobacion.textContent =
-                `${tasaAprobacion}%`;
-
-        } else {
-            kpiPromedio.textContent = '0.00';
-            kpiAprobacion.textContent = '0%';
+            if (val >= 7.00) aprobados++;
         }
+    });
+
+    const kpiPromedio  = document.getElementById('kpi-promedio-grupal');
+    const kpiAprobacion = document.getElementById('kpi-porcentaje-aprobacion');
+
+    if (promediosValidosCount > 0) {
+        const promedioGrupal = (sumaPromedios / promediosValidosCount).toFixed(2);
+        const tasaAprobacion = Math.round((aprobados / promediosValidosCount) * 100);
+
+        if (kpiPromedio)   kpiPromedio.textContent   = promedioGrupal;
+        if (kpiAprobacion) kpiAprobacion.textContent = `${tasaAprobacion}%`;
+    } else {
+        if (kpiPromedio)   kpiPromedio.textContent   = '0.00';
+        if (kpiAprobacion) kpiAprobacion.textContent = '0%';
     }
-    // Botones de guardado manual 
+}
+    
    // Botones de guardado manual
-const botonesGuardar = document.querySelectorAll('.btn-guardar-nota');
-
-botonesGuardar.forEach(btn => {
+   // Botón Editar
+document.querySelectorAll('.btn-nota-editar').forEach(btn => {
     btn.addEventListener('click', function () {
+        if (!plazoActivo) {
+            mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
+            return;
+        }
+        const row = this.closest('tr');
+        row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
+        row.querySelectorAll('.nota-input')[0].focus();
+        
+        const btnGuardar = row.querySelector('.btn-guardar-nota');
+        btnGuardar.disabled = false;
+        btnGuardar.style.display = '';
+        this.style.display = 'none';
+    });
+});
 
-        // Criterio 6: bloquear si no hay plazo activo
+// Botón Guardar
+document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
+    btn.addEventListener('click', function () {
         if (!plazoActivo) {
             mostrarToastPremium('El plazo de notas está cerrado. No se pueden guardar cambios.', 'error');
             return;
@@ -3858,8 +3894,6 @@ botonesGuardar.forEach(btn => {
 
         const row = this.closest('tr');
         const inputsFila = row.querySelectorAll('.nota-input');
-        // El rango ya fue validado por guardarNota() al hacer blur/Enter
-        // Solo verificamos que ambos campos tengan valor antes de enviar
         const nota1 = inputsFila[0].value.trim();
         const nota2 = inputsFila[1].value.trim();
 
@@ -3869,9 +3903,10 @@ botonesGuardar.forEach(btn => {
         }
 
         const estudianteId = inputsFila[0].dataset.estudianteId;
+        const inscId       = inputsFila[0].dataset.inscId;
 
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Guardando...';
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Guardando...';
 
         fetch('guardar-nota.php', {
             method: 'POST',
@@ -3888,89 +3923,256 @@ botonesGuardar.forEach(btn => {
         .then(data => {
             if (data.success) {
                 mostrarToastPremium(data.message, 'success');
-                // Actualizar el badge con la nota_final real que calculó el trigger
-                const inscId = inputsFila[0].dataset.inscId;
+                inputsFila.forEach(inp => inp.setAttribute('readonly', true));
+
                 const badge = document.getElementById(`promedio-${inscId}`);
                 if (badge && data.nota_final !== undefined) {
                     const nf = parseFloat(data.nota_final).toFixed(2);
                     badge.textContent = nf;
                     badge.className = 'promedio-badge';
-                    badge.classList.add(data.nota_final >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
+                    badge.classList.add(parseFloat(data.nota_final) >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
                 }
+
+               
+                let btnEditar = row.querySelector('.btn-nota-editar');
+                if (!btnEditar) {
+                    btnEditar = document.createElement('button');
+                    btnEditar.className = 'btn-nota-editar';
+                    btnEditar.dataset.accion = 'editar';
+                    btnEditar.innerHTML = '<i class="fas fa-pen"></i> Editar';
+                    btnEditar.addEventListener('click', function () {
+                        if (!plazoActivo) {
+                            mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
+                            return;
+                        }
+                        row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
+                        row.querySelectorAll('.nota-input')[0].focus();
+                        row.querySelector('.btn-guardar-nota').disabled = false;
+                        this.style.display = 'none';
+                    });
+                    row.querySelector('.acciones-nota-group').prepend(btnEditar);
+                } else {
+                    btnEditar.style.display = '';
+                }
+                this.style.display = 'none';
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+
                 recalcularKPIs();
             } else {
                 mostrarToastPremium(data.message, 'error');
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-save"></i> Guardar';
             }
         })
-        .catch(() => mostrarToastPremium('Error de conexión al guardar', 'error'))
-        .finally(() => {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-save"></i> Guardar';
+        .catch(() => {
+            mostrarToastPremium('Error de conexión al guardar', 'error');
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-save"></i> Guardar';
         });
     });
 });
 });
 
-// MODAL PLAZO DE NOTAS
+// --- PLAZOS DE NOTAS ---
+
+// - Controla la apertura y cierre del modal para crear y editar desde un solo formulario
+// - Al abrir para editar, precarga los datos del plazo en los campos del formulario
+// - Autocompleta las fechas al seleccionar un período (15 días antes del cierre)
+// - Restringe el inicio del plazo al mes de cierre del ciclo del período
+// - Valida que las fechas no excedan el fin del ciclo del período
+// - Valida campos obligatorios y que el fin no sea menor al inicio
+// - Envía el formulario al endpoint correspondiente según si es creación o edición
+// - Muestra toast de éxito o error según la respuesta del servidor
+// - Recarga la página tras guardar correctamente
+// - Incluye buscador en tiempo real que filtra las filas de la tabla por cualquier campo
+
 document.addEventListener('DOMContentLoaded', function () {
+
     const modalPlazo = document.getElementById('modalPlazo');
     const btnNuevoPlazo = document.querySelector('.btn-nuevo');
-    const modalTitulo = document.getElementById('modal-plazo-titulo');
+    const formPlazo = modalPlazo ? modalPlazo.querySelector('form') : null;
+
     const inputId = document.getElementById('plazo-id');
     const inputNombre = document.getElementById('plazo-nombre');
+    const inputPeriodo = document.getElementById('plazo-periodo');
     const inputInicio = document.getElementById('plazo-fecha-inicio');
     const inputFin = document.getElementById('plazo-fecha-fin');
-    const formPlazo = modalPlazo ? modalPlazo.querySelector('form') : null;
+    const modalTitulo = document.getElementById('modal-plazo-titulo');
 
     if (!modalPlazo) return;
 
-    // Funciones globales para abrir/cerrar el modal
-    window.abrirModalPlazo = function() {
-        modalPlazo.classList.add('activo'); 
+    function abrirModal() {
+        modalPlazo.classList.add('activo');
         document.body.style.overflow = 'hidden';
-    };
+    }
 
-    window.cerrarModalPlazo = function() {
+    function cerrarModal() {
         modalPlazo.classList.remove('activo');
         document.body.style.overflow = '';
+
         if (formPlazo) formPlazo.reset();
         if (inputId) inputId.value = '';
-    };
+    }
 
-    // Cerrar si hacen clic en el fondo oscuro del modal
+    window.cerrarModalPlazo = cerrarModal;
+
     modalPlazo.addEventListener('click', function (e) {
-        if (e.target === this) cerrarModalPlazo();
+        if (e.target === this) cerrarModal();
     });
 
-    //  APARTADO: AGREGAR 
     if (btnNuevoPlazo) {
-        btnNuevoPlazo.addEventListener('click', function() {
-            if (modalTitulo) modalTitulo.innerHTML = '<i class="fas fa-calendar-alt"></i> Nuevo Plazo';
-            if (inputId) inputId.value = ''; // Vacío para indicar inserción
-            abrirModalPlazo();
+        btnNuevoPlazo.addEventListener('click', function () {
+
+            if (modalTitulo) {
+                modalTitulo.innerHTML = '<i class="fas fa-calendar-alt"></i> Nuevo Plazo';
+            }
+
+            if (inputId) inputId.value = '';
+            if (formPlazo) formPlazo.reset();
+
+            abrirModal();
         });
     }
 
-    // APARTADO: EDITAR PLAZO 
-    document.addEventListener('click', function(e) {
-        const btnEditar = e.target.closest('.abrir-modal-plazo');
-        
-        if (btnEditar) {
-            e.preventDefault(); 
-            
-            if (modalTitulo) modalTitulo.innerHTML = '<i class="fas fa-edit"></i> Editar Plazo';
-            const id = btnEditar.dataset.id;
-            const nombre = btnEditar.dataset.nombre;
-            const inicio = btnEditar.dataset.plazoInicio; 
-            const fin = btnEditar.dataset.plazoFin;
+    document.addEventListener('click', function (e) {
 
-            if (inputId) inputId.value = id || '';
-            if (inputNombre) inputNombre.value = nombre || '';
-            if (inputInicio) inputInicio.value = inicio || '';
-            if (inputFin) inputFin.value = fin || '';
+        const btn = e.target.closest('.abrir-modal-plazo');
 
-            abrirModalPlazo();
+        if (!btn) return;
+
+        e.preventDefault();
+
+        if (modalTitulo) {
+            modalTitulo.innerHTML = '<i class="fas fa-edit"></i> Editar Plazo';
         }
-    });
-});
 
+        if (inputId) inputId.value = btn.dataset.id || '';
+        if (inputNombre) inputNombre.value = btn.dataset.nombre || '';
+        if (inputPeriodo) inputPeriodo.value = btn.dataset.idperiodo || '';
+        if (inputInicio) inputInicio.value = btn.dataset.plazoInicio || '';
+        if (inputFin) inputFin.value = btn.dataset.plazoFin || '';
+
+        abrirModal();
+    });
+
+    if (inputPeriodo) {
+
+        inputPeriodo.addEventListener('change', async function () {
+
+            const idPeriodo = this.value;
+            if (!idPeriodo) return;
+
+            try {
+                const res = await fetch('obtener-fechas-periodo.php?id=' + idPeriodo);
+                const data = await res.json();
+
+                if (!data.success) {
+                    mostrarToastPremium(data.message || 'Error al cargar periodo');
+                    return;
+                }
+
+                inputInicio.value = data.inicio;
+                inputFin.value = data.fin;
+
+                inputInicio.max = data.fin;
+                inputFin.max = data.fin;
+
+            } catch (err) {
+                console.error(err);
+                mostrarToastPremium('Error al cargar periodo');
+            }
+        });
+    }
+
+    if (formPlazo) {
+
+        formPlazo.addEventListener('submit', async function (e) {
+
+            e.preventDefault();
+
+            const id = inputId.value.trim();
+            const nombre = inputNombre.value.trim();
+            const idPeriodo = inputPeriodo.value.trim();
+            const inicio = inputInicio.value.trim();
+            const fin = inputFin.value.trim();
+
+            if (!nombre || !idPeriodo || !inicio || !fin) {
+                mostrarToastPremium('Complete todos los campos');
+                return;
+            }
+
+            if (fin < inicio) {
+                mostrarToastPremium('La fecha final no puede ser menor a la inicial');
+                return;
+            }
+
+            const mesFin    = fin.substring(0, 7);  
+            const mesInicio = inicio.substring(0, 7); 
+
+            if (mesInicio !== mesFin) {
+                mostrarToastPremium('El inicio del plazo debe ser dentro del mes de cierre del período');
+                return;
+            }
+
+            const body = new URLSearchParams({
+                id,
+                nombre,
+                idPeriodo,
+                plazoInicio: inicio,
+                plazoFin: fin
+            });
+
+            const endpoint = id
+                ? '/OpusCore/admin-editar-plazo.php'
+                : '/OpusCore/admin-guardar-plazo.php';
+
+            try {
+
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body
+                });
+
+                const text = await res.text();
+                console.log("RESPUESTA PHP:", text);
+
+                const data = JSON.parse(text);
+
+                if (data.success) {
+                    cerrarModal();
+                    mostrarToastPremium(data.message, 'success');
+                    setTimeout(() => location.reload(), 1200);
+                } else {
+                    mostrarToastPremium(data.message);
+                }
+
+            } catch (err) {
+                console.error("ERROR REAL:", err);
+                mostrarToastPremium('Error en JS o JSON inválido');
+            }
+        });
+    }
+
+    const buscador = document.getElementById('buscador-plazo');
+
+    if (buscador) {
+
+        buscador.addEventListener('keyup', function () {
+
+            const filtro = this.value.toLowerCase();
+            const filas = document.querySelectorAll('.data-table tbody tr');
+
+            filas.forEach(fila => {
+                fila.style.display =
+                    fila.textContent.toLowerCase().includes(filtro)
+                        ? ''
+                        : 'none';
+            });
+        });
+    }
+
+});

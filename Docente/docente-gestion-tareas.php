@@ -60,6 +60,7 @@ if ($cursoId > 0) {
                 t.titulo,
                 t.descripcion,
                 t.puntajeMaximo,
+                t.intentos,
                 t.fechaLimite,
                 t.estado,
                 t.idSesion,
@@ -279,8 +280,9 @@ $stmtSes->close();
                                             data-id="<?= (int)$tarea['id'] ?>"
                                             data-titulo="<?= htmlspecialchars($tarea['titulo']) ?>"
                                             data-descripcion="<?= htmlspecialchars($tarea['descripcion']) ?>"
-                                            data-fecha="<?= htmlspecialchars(substr($tarea['fechaLimite'], 0, 16)) ?>"
+                                            data-fecha="<?= htmlspecialchars(date('Y-m-d\TH:i', strtotime($tarea['fechaLimite']))) ?>"
                                             data-puntaje="<?= (int)$tarea['puntajeMaximo'] ?>"
+                                            data-intentos="<?= (int)($tarea['intentos'] ?? 1) ?>"
                                             data-archivo="<?= htmlspecialchars($tarea['archivos'] ?? '') ?>"
                                             data-ids-archivos="<?= htmlspecialchars($tarea['idsArchivos'] ?? '') ?>"
                                             data-estado="<?= $estadoTexto ?>"
@@ -347,22 +349,22 @@ $stmtSes->close();
             </div>
 
             <form id="formTareaDocente" novalidate>
-                <input type="hidden" id="tareaId" value="">
-                <input type="hidden" id="tareaCursoId" value="<?= (int)$cursoId ?>">
+                <input type="hidden" id="tareaId" name="id" value="">
+                <input type="hidden" id="tareaCursoId" name="idCurso" value="<?= (int)$cursoId ?>">
 
                 <div class="contenido-form-grid">
                     <div class="contenido-field contenido-field-wide">
                         <label for="tareaTitulo">Título</label>
-                        <input type="text" id="tareaTitulo" maxlength="120" placeholder="Ej: Guía práctica de HTML" required>
+                        <input type="text" id="tareaTitulo" name="titulo" maxlength="120" placeholder="Ej: Guía práctica de HTML" required>
                     </div>
 
                     <div class="contenido-field contenido-field-wide">
                         <label for="tareaDescripcion">Descripción</label>
-                        <textarea id="tareaDescripcion" rows="4" placeholder="Indicaciones para realizar la tarea" required></textarea>
+                        <textarea id="tareaDescripcion" rows="4" name="descripcion" placeholder="Indicaciones para realizar la tarea" required></textarea>
                     </div>
                     <div class="contenido-field contenido-field-wide">
                         <label for="tareaSesion">Clase relacionada <span class="contenido-muted">(opcional)</span></label>
-                        <select id="tareaSesion">
+                        <select id="tareaSesion" name="idSesion">
                             <option value="">Ninguna</option>
                             <?php foreach ($sesiones as $sesion): ?>
                                 <option value="<?= (int)$sesion['id'] ?>">
@@ -373,22 +375,22 @@ $stmtSes->close();
                     </div>
                     <div class="contenido-field">
                         <label for="tareaFecha">Fecha límite</label>
-                        <input type="datetime-local" id="tareaFecha" required>
+                        <input type="datetime-local" id="tareaFecha" name="fechaLimite" required>
                     </div>
 
                     <div class="contenido-field">
                         <label for="tareaPuntaje">Calificación máxima</label>
-                        <input type="number" id="tareaPuntaje" min="1" max="100" step="1" placeholder="Ej: 20" required>
+                        <input type="number" id="tareaPuntaje" name="puntajeMaximo"  min="1" max="100" step="1" placeholder="Ej: 20" required>
                     </div>
 
                     <div class="contenido-field">
                         <label for="tareaIntentos">Intentos permitidos</label>
-                        <input type="number" id="tareaIntentos" min="1" max="10" step="1" value="1" required>
+                        <input type="number" id="tareaIntentos" name="intentos" min="1" max="10" step="1" value="1" required>
                     </div>
 
                     <div class="contenido-field">
                         <label for="tareaEstado">Estado</label>
-                        <select id="tareaEstado" required>
+                        <select id="tareaEstado" name="estado" required>
                             <option value="1">Activa</option>
                             <option value="0">Borrador</option>
                         </select>
@@ -403,7 +405,7 @@ $stmtSes->close();
                             <label class="adjunto-file-label">
                                 <i class="fas fa-folder-open"></i>
                                 <span class="adjunto-file-texto" id="tareaArchivoTexto">Seleccionar archivo</span>
-                                <input type="file" id="tareaArchivo"
+                                <input type="file" id="tareaArchivo" name="archivo"
                                     accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,.png,.jpg,.jpeg"
                                     class="adjunto-file-input">
                             </label>

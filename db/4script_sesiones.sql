@@ -61,10 +61,10 @@ CREATE TABLE `tareasArchivos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 -- Insertar datos para las sesiones ya creadas y sus archivos de apoyo en la tarea
 INSERT INTO `tareas` (`idCurso`, `idSesion`, `titulo`, `descripcion`, `puntajeMaximo`, `fechaLimite`) VALUES
-(1, 1, 'Tarea 1: Algoritmos Básicos', 'Desarrolla algoritmos para resolver problemas simples utilizando pseudocódigo.', 10, '2026-05-30 23:59:59'),
-(1, 2, 'Tarea 2: Estructuras de Control', 'Crea programas que utilicen condicionales y bucles para resolver problemas específicos.', 10, '2026-05-30 23:59:59'),
-(2, 3, 'Tarea 1: Diseño de Logotipo', 'Diseña un logotipo para una empresa ficticia utilizando los principios de diseño gráfico.', 10, '2026-05-30 23:59:59'),
-(2, 4, 'Tarea 2: Prototipo de Página Web', 'Crea un prototipo de página web utilizando herramientas de diseño como Figma o Adobe XD.', 10, '2026-05-30 23:59:59');
+(1, 1, 'Tarea 1: Algoritmos Básicos', 'Desarrolla algoritmos para resolver problemas simples utilizando pseudocódigo.', 10, '2026-05-31 23:59:59'),
+(1, 2, 'Tarea 2: Estructuras de Control', 'Crea programas que utilicen condicionales y bucles para resolver problemas específicos.', 10, '2026-05-31 23:59:59'),
+(2, 3, 'Tarea 1: Diseño de Logotipo', 'Diseña un logotipo para una empresa ficticia utilizando los principios de diseño gráfico.', 10, '2026-05-31 23:59:59'),
+(2, 4, 'Tarea 2: Prototipo de Página Web', 'Crea un prototipo de página web utilizando herramientas de diseño como Figma o Adobe XD.', 10, '2026-05-31 23:59:59');
 
 INSERT INTO `tareasArchivos` (`idTarea`, `nombreArchivo`, `tipo`, `rutaArchivo`) VALUES
 (1, 'Ejemplo de Algoritmo.pdf', 'Archivo', 'editarurl'),
@@ -99,22 +99,6 @@ CREATE TABLE `entregaArchivos` (
         REFERENCES `entregablesTarea` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- insertar datos en entrgas del estudiante
-INSERT INTO `entregablesTarea` (`idTarea`, `idEstudiante`, `estado`, `nota`, `fechaRevision`) VALUES
-(1, 1, 'Revisado', 9.00, '2026-05-25 10:00:00'),
-(2, 1, 'Entregado', NULL, NULL),
-(3, 1, 'Revisado', 8.50, '2026-05-25 11:00:00'),
-(4, 1, 'Entregado', NULL, NULL),
-(1, 2, 'Pendiente', NULL, NULL),
-(2, 2, 'Pendiente', NULL, NULL);
-
-INSERT INTO `entregaArchivos` (`idEntrega`, `nombreArchivo`, `tipo`, `rutaArchivo`) VALUES
-(1, 'Algoritmos-Yamileth.pdf', 'Archivo', 'editarurl'),
-(2, 'EstructurasControl-Yamileth.pdf', 'Archivo', 'editarurl'),
-(3, 'Logotipo-Yamileth.pdf', 'Archivo', 'editarurl'),
-(4, 'Prototipo-Yamileth.pdf', 'Archivo', 'editarurl');
-
-
 -- Tabla para definir los plazos de notas para el registro de notas del docente
 CREATE TABLE `PlazoNotas` (
     `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
@@ -142,14 +126,6 @@ CREATE TABLE `RegistroNotas` (
     CONSTRAINT `fk_notas_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`),
     CONSTRAINT `fk_notas_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Insertar datos en la tabla de plazos para el registro de notas del docente
-INSERT INTO `plazoNotas`(`idPeriodo`, `nombre`, `plazoInicio`, `plazoFin`, `estado`) VALUES 
-(1,'Plazo Notas I-2026','2026-05-28','2026-06-08',1),
-(2,'Plazo Notas II-2026','2026-06-28','2026-07-08',0);
--- NADA MÁS DE PRUEBA. insertar datos en la tabla de registro de notas para validar el disparador y diseño.
-INSERT INTO `registroNotas`(`idPlazo`, `idCurso`, `idEstudiante`, `actividades`, `examenFinal`) VALUES 
-(1,2,1,7,10),(1,2,2,3,5),(1,1,1,9,9),(1,1,2,8,7);
 DELIMITER //
 -- Desactiva tareas cuando ya llegó a la fecha limite
 CREATE EVENT `ev_desactivar_tareas_vencidas`

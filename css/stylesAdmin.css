@@ -382,6 +382,8 @@ body {
 .nav .btn-nav:nth-of-type(5)::before { content: "\f51c"; }
 .nav .btn-nav:nth-of-type(6)::before { content: "\f09d"; }
 .nav .btn-nav:nth-of-type(7)::before { content: "\f571"; }
+.nav .btn-nav:nth-of-type(8)::before { content: "\f5da"; }
+
 
 .btn-nav:hover {
     background: rgba(255, 255, 255, 0.12);
@@ -597,6 +599,7 @@ body {
 .link-accion.abrir-modal-estudiante,
 .link-accion.abrir-modal-docente,
 .link-accion.abrir-modal-periodo,
+.link-accion.abrir-modal-plazo,
 .link-accion.abrir-modal-curso {
     color: var(--accent-teal);
     background: var(--accent-teal-light);
@@ -605,6 +608,7 @@ body {
 .link-accion.abrir-modal-estudiante:hover,
 .link-accion.abrir-modal-docente:hover,
 .link-accion.abrir-modal-periodo:hover,
+.link-accion.abrir-modal-plazo:hover,
 .link-accion.abrir-modal-curso:hover {
     background: var(--accent-teal);
     color: white;

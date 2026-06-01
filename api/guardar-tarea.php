@@ -1,8 +1,6 @@
 <?php
-//Maneja la creación y edición de tareas por parte del docente, 
-// incluyendo validaciones y manejo de archivos adjuntos
-
 session_start();
+date_default_timezone_set('America/El_Salvador');
 header('Content-Type: application/json');
 
 if (!isset($_SESSION['usuario'])) {
@@ -17,7 +15,6 @@ $idCurso     = filter_input(INPUT_POST, 'idCurso', FILTER_VALIDATE_INT);
 $idSesion    = filter_input(INPUT_POST, 'idSesion', FILTER_VALIDATE_INT) ?: null;
 $titulo      = trim($_POST['titulo']      ?? '');
 $descripcion = trim($_POST['descripcion'] ?? '');
-$fechaLimite = trim($_POST['fechaLimite'] ?? '');
 $estado      = isset($_POST['estado']) && $_POST['estado'] === '1' ? 1 : 0;
 
 $puntaje = isset($_POST['puntajeMaximo']) && $_POST['puntajeMaximo'] !== ''
@@ -28,30 +25,32 @@ $intentos = filter_input(INPUT_POST, 'intentos', FILTER_VALIDATE_INT) ?: 1;
 if ($intentos < 1) $intentos = 1;
 if ($intentos > 10) $intentos = 10;
 
-if (!$idCurso || !$titulo || !$descripcion || !$fechaLimite || $puntaje === false || $puntaje <= 0) {
-    echo json_encode([
-        'error'   => true,
-        'mensaje' => 'Complete todos los campos requeridos',
-    ]);
-    exit();
-}
-$ahora       = new DateTime();
-$fechaObj    = DateTime::createFromFormat('Y-m-d\TH:i', $fechaLimite);
+// VALIDAR FECHA
+$fechaRaw = trim($_POST['fechaLimite'] ?? '');
 
-if (!$fechaObj) {
-    $fechaObj = DateTime::createFromFormat('Y-m-d', $fechaLimite);
-    if ($fechaObj) {
-        $fechaObj->setTime(23, 59, 59);
-    }
-}
-
-if (!$fechaObj) {
-    echo json_encode(['error' => true, 'mensaje' => 'Formato de fecha no válido']);
+if (!$idCurso || !$titulo || !$descripcion || empty($fechaRaw) || $puntaje === false || $puntaje <= 0) {
+    echo json_encode(['error' => true, 'mensaje' => 'Complete todos los campos requeridos']);
     exit();
 }
 
-if ($fechaObj <= $ahora) {
-    echo json_encode(['error' => true, 'mensaje' => 'La fecha límite debe ser posterior a la fecha y hora actual']);
+// datetime-local envía "2026-05-30T23:59" — reemplazar T por espacio
+$fechaNorm = str_replace('T', ' ', $fechaRaw);
+if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $fechaNorm)) {
+    $fechaNorm .= ':00';
+}
+
+$fechaObj = DateTime::createFromFormat('Y-m-d H:i:s', $fechaNorm);
+
+if (!$fechaObj) {
+    echo json_encode(['error' => true, 'mensaje' => 'Fecha inválida recibida: ' . $fechaRaw]);
+    exit();
+}
+
+$soloFechaSel = new DateTime($fechaObj->format('Y-m-d'));
+$soloHoy      = new DateTime('today');
+
+if ($soloFechaSel < $soloHoy) {
+    echo json_encode(['error' => true, 'mensaje' => 'La fecha límite no puede ser anterior a la fecha actual']);
     exit();
 }
 
@@ -72,7 +71,6 @@ if (!$stmtVerif->get_result()->fetch_assoc()) {
 }
 $stmtVerif->close();
 
-
 $rutaArchivo   = null;
 $nombreArchivo = null;
 
@@ -86,7 +84,7 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK) 
         exit();
     }
 
-    if ($_FILES['archivo']['size'] > 10 * 1024 * 1024) { 
+    if ($_FILES['archivo']['size'] > 10 * 1024 * 1024) {
         echo json_encode(['error' => true, 'mensaje' => 'El archivo supera el tamaño máximo de 10 MB']);
         exit();
     }
@@ -108,7 +106,6 @@ if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK) 
     $nombreArchivo = $nombreOriginal;
 }
 
-//Crear o Editar
 if ($id > 0) {
 
     $stmtCheck = $conexion->prepare("
@@ -126,16 +123,20 @@ if ($id > 0) {
         exit();
     }
 
-    if ($tareaExistente['estado'] == 0) {
+    $fechaLimiteExistente = new DateTime($tareaExistente['fechaLimite']);
+    $ahora                = new DateTime();
+
+    if ($fechaLimiteExistente < $ahora) {
         echo json_encode(['error' => true, 'mensaje' => 'No se puede editar una tarea cuya fecha límite ya venció']);
         exit();
     }
 
+    // 'ss id is ii' → titulo(s), descripcion(s), idSesion(i), puntaje(d), fechaLimiteFmt(s), intentos(i), id(i), idCurso(i)
     $stmt = $conexion->prepare("
         UPDATE tareas SET titulo=?, descripcion=?, idSesion=?, puntajeMaximo=?, fechaLimite=?, intentos=?
         WHERE id=? AND idCurso=?
     ");
-    $stmt->bind_param('ssiisiii', $titulo, $descripcion, $idSesion, $puntaje, $fechaLimiteFmt, $intentos, $id, $idCurso);
+    $stmt->bind_param('ssidsiii', $titulo, $descripcion, $idSesion, $puntaje, $fechaLimiteFmt, $intentos, $id, $idCurso);
 
     if (!$stmt->execute()) {
         echo json_encode(['error' => true, 'mensaje' => 'Error al actualizar: ' . $conexion->error]);
@@ -156,12 +157,13 @@ if ($id > 0) {
     echo json_encode(['error' => false, 'mensaje' => 'Tarea actualizada correctamente', 'id' => $id]);
 
 } else {
-    // CREAR
+
+    // 'ii ss d is' → idCurso(i), idSesion(i), titulo(s), descripcion(s), puntaje(d), intentos(i), fechaLimiteFmt(s)
     $stmt = $conexion->prepare("
         INSERT INTO tareas (idCurso, idSesion, titulo, descripcion, puntajeMaximo, intentos, fechaLimite, estado)
         VALUES (?, ?, ?, ?, ?, ?, ?, 1)
     ");
-    $stmt->bind_param('iissisi', $idCurso, $idSesion, $titulo, $descripcion, $puntaje, $intentos, $fechaLimiteFmt);
+    $stmt->bind_param('iissdis', $idCurso, $idSesion, $titulo, $descripcion, $puntaje, $intentos, $fechaLimiteFmt);
 
     if (!$stmt->execute()) {
         echo json_encode(['error' => true, 'mensaje' => 'Error al crear la tarea: ' . $conexion->error]);
@@ -171,7 +173,6 @@ if ($id > 0) {
     $nuevaId = $stmt->insert_id;
     $stmt->close();
 
-    
     if ($rutaArchivo && $nombreArchivo) {
         $stmtArch = $conexion->prepare("
             INSERT INTO tareasArchivos (idTarea, nombreArchivo, tipo, rutaArchivo)
