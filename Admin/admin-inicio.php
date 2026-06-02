@@ -142,6 +142,7 @@ $total_cursos = $res_cursos->fetch_assoc()["total"];
     </main>
 
     <script src="../js/utilidades/fecha.js"></script>
+    <script src="../js/utilidades/toast.js"></script>
     <script src ="../js/script.js"></script>
 
 </body>

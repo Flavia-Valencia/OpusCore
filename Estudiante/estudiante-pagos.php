@@ -233,6 +233,7 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/utilidades/toast.js"></script>
     <script src="../js/script.js"></script>
 </body>
 </html>

@@ -1192,33 +1192,6 @@ if (buscadorPago) {
     });
 }
 
-// --- TOAST PREMIUM ---
-function mostrarToastPremium(mensaje, tipo = 'error') {
-    // Eliminar toast anterior si existe
-    const anterior = document.getElementById('toastPremium');
-    if (anterior) anterior.remove();
-
-    const icono = tipo === 'success'
-        ? '<i class="fa-solid fa-circle-check"></i>'
-        : '<i class="fa-solid fa-circle-exclamation"></i>';
-
-    const toast = document.createElement('div');
-    toast.id = 'toastPremium';
-    toast.className = `toast-premium toast-${tipo}`;
-    toast.innerHTML = `${icono} ${mensaje}`;
-
-    document.body.appendChild(toast);
-
-    // Forzar reflow para que la transición funcione
-    toast.getBoundingClientRect();
-    toast.classList.add('visible');
-
-    setTimeout(() => {
-        toast.classList.remove('visible');
-        setTimeout(() => toast.remove(), 400);
-    }, 3000);
-}
-
 // Cursos --------------------------------------------
 let catalogoHorarios = [];
 let catalogoAulas = [];
@@ -1226,7 +1199,7 @@ let catalogoAulas = [];
 async function cargarCatalogos() {
     if (catalogoHorarios.length > 0) return;
     try {
-        const res = await fetch('obtener-horarios-aulas.php');
+        const res = await fetch('../api/obtener/obtener-horarios-aulas.php');
         const data = await res.json();
         catalogoHorarios = data.horarios;
         catalogoAulas = data.aulas;
@@ -1390,7 +1363,7 @@ if (btnGuardarHorarios) {
         console.log('Datos consolidados para Backend:', data);
 
         try {
-            const res = await fetch('../api/guardar-horarios.php', {
+            const res = await fetch('../api/admin/guardar-horarios.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)

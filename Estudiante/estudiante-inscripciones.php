@@ -380,6 +380,7 @@ require_once '../api/obtener/obtener-cursos-disponibles.php';
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../js/utilidades/fecha.js"></script>
+    <script src="../js/utilidades/toast.js"></script>
     <script src="../js/script.js"></script>
 </body>
 </html>

@@ -1,6 +1,5 @@
 <?php
-include("../../includes/conexion.php");
-
+require_once __DIR__ . "/../../includes/conexion.php";
 $columnasPeriodo = [];
 $resColumnas = mysqli_query($conexion, "SHOW COLUMNS FROM PeriodoInscripcion");
 if ($resColumnas) {
