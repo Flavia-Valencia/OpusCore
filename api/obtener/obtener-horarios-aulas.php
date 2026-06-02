@@ -1,5 +1,5 @@
 <?php
-include("../../includes/conexion.php");
+require_once __DIR__ . "/../../includes/conexion.php";
 $horarios = [];
 $aulas = [];
 
