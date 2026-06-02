@@ -132,7 +132,7 @@ if(!isset($_SESSION["usuario"])){
                         <div class="input-password">
                             <input type="password" name="password_hash" id="edit-password_hash"required>
                             <span class="ver-contrasena-estudiante" onclick="toggleContrasena('edit-password_hash', 'icono-ojo-estudiante')">
-                                <img id="icono-ojo-estudiante" src="img/ojo-cerrado.svg" width="20" height="20">
+                                <img id="icono-ojo-estudiante" src="../img/ojo-cerrado.svg" width="20" height="20">
                             </span>
                         </div>
                     </div>

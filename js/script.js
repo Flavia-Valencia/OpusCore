@@ -372,7 +372,8 @@ function toggleContrasena(inputId, iconoId) {
     if (input && icono) {
         const viendo = input.type === "text";
         input.type = viendo ? "password" : "text";
-        icono.src = `img/ojo-${viendo ? "cerrado" : "abierto"}.svg`;
+        const rutaBase = icono.getAttribute('src').replace(/ojo-(abierto|cerrado)\.svg$/, '');
+        icono.src = `${rutaBase}ojo-${viendo ? "cerrado" : "abierto"}.svg`;
     }
 }
 

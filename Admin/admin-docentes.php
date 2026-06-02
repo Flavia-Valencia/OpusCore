@@ -138,7 +138,7 @@ if(!isset($_SESSION["usuario"])){
                             <input type="password" name="password_hash" id="editd-password_hash" required >
                             <!-- Ícono de ojo para mostrar u ocultar la contraseña -->
                             <span class="ver-contrasena-docente" onclick="toggleContrasena('editd-password_hash', 'icono-ojo-docente')">
-                                <img id="icono-ojo-docente" src="img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20">
+                                <img id="icono-ojo-docente" src="../img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20">
                             </span>
                         </div>
                     </div>

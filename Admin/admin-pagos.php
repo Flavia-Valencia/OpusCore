@@ -149,7 +149,7 @@ $pagos = $result->fetch_all(MYSQLI_ASSOC);
                                     <div class="acciones-texto">
                                         <a
                                             class="link-accion horarios"
-                                             href="comprobantes/descargar-comprobante-pago.php?pago_id=<?php echo $pago['id']; ?>"
+                                             href="/OpusCore/comprobantes/descargar-comprobante-pago.php?pago_id=<?php echo $pago['id']; ?>"
                                         >
                                             <i class="fas fa-file-pdf"></i> PDF
                                         </a>
