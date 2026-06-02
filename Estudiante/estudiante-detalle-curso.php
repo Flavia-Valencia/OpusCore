@@ -411,7 +411,9 @@ if (tablaExiste($conexion, 'tareas')) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../js/utilidades/toast.js"></script>
     <script src="../js/script.js"></script>
+    <script src="../js/utilidades/toast.js"></script>
+    <script src="../js/estudiante/sidebar.js"></script>
+
 </body>
 </html>

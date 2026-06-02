@@ -23,3 +23,25 @@ function mostrarToastPremium(mensaje, tipo = 'error') {
         setTimeout(() => toast.remove(), 400);
     }, 3000);
 }
+
+//  Mostrar notificación toast (mensaje temporal en la esquina)
+function mostrarToast(mensaje, tipo) {
+    const toast = document.createElement('div');
+    toast.className = `toast-premium toast-${tipo}`;
+    toast.innerHTML = `
+        <i class="fas ${tipo === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+        <span>${mensaje}</span>
+    `;
+    document.body.appendChild(toast);
+
+    // Animar entrada
+    setTimeout(() => {
+        toast.classList.add('visible');
+    }, 100);
+
+    // Animar salida y eliminar
+    setTimeout(() => {
+        toast.classList.remove('visible');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}

@@ -522,7 +522,9 @@ if (!empty($tareas)) {
         </div>
     </div>
 
-    <script src="../js/utilidades/toast.js"></script>
     <script src="../js/script.js"></script>
+    <script src="../js/utilidades/toast.js"></script>
+    <script src="../js/estudiante/sidebar.js"></script>
+    <script src="../js/estudiante/contenidos.js"></script>
 </body>
 </html>

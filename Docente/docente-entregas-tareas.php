@@ -346,7 +346,8 @@ foreach ($entregas as $entrega) {
     </div>
 
     <label for="sidebar-toggle" class="overlay"></label>
-    <script src="../js/utilidades/toast.js"></script>
     <script src="../js/script.js"></script>
+    <script src="../js/utilidades/toast.js"></script>
+    <script src="../js/docente/entregas.js"></script>
 </body>
 </html>

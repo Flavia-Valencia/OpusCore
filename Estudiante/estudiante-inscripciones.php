@@ -379,8 +379,11 @@ require_once '../api/obtener/obtener-cursos-disponibles.php';
 </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/script.js"></script>
     <script src="../js/utilidades/fecha.js"></script>
     <script src="../js/utilidades/toast.js"></script>
-    <script src="../js/script.js"></script>
+    <script src="../js/estudiante/sidebar.js"></script>
+    <script src="../js/estudiante/modal-inscripcion.js"></script>
+    <script src="../js/estudiante/inscripciones.js"></script>
 </body>
 </html>

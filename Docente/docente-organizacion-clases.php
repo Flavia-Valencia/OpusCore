@@ -358,7 +358,9 @@ if ($cursoId > 0) {
         </div>
     </div>
 
-    <script src="../js/utilidades/toast.js"></script>
     <script src="../js/script.js"></script>
+    <script src="../js/utilidades/toast.js"></script>
+    <script src="../js/docente/contenidos.js"></script>
+    
 </body>
 </html>

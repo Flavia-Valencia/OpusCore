@@ -81,5 +81,6 @@ if(!isset($_SESSION["usuario"])){
         </section>
     </main>
 
+    <script src="../js/estudiante/sidebar.js"></script>
 </body>
 </html>

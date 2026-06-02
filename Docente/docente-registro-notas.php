@@ -427,8 +427,9 @@ if ($plazoActivo && $cursoValido) {
             const promedioGrupalInicial = <?php echo $promedioGrupal !== null ? $promedioGrupal : 'null'; ?>;
         </script>
 
-        <script src="../js/utilidades/toast.js"></script>
         <script src="../js/script.js"></script>
+        <script src="../js/utilidades/toast.js"></script>
+        <script src="../js/docente/notas.js"></script>
 
     <?php endif; ?>
 

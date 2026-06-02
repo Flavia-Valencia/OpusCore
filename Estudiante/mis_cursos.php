@@ -48,6 +48,6 @@ $stmt = $conexion->prepare("
 $stmt->bind_param("i", $idEstudiante);
 $stmt->execute();
 $resultado = $stmt->get_result();
-$cursos = $resultado->fetch_all(MYSQLI_ASSOC);
-
+$cursos = $resultado->fetch_all(MYSQLI_ASSOC);  
 ?>
+<script src="../js/estudiante/sidebar.js"></script>
