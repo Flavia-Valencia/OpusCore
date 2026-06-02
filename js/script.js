@@ -1077,15 +1077,6 @@ if (btnNuevo) {
 
 // Utilidades ----------------------------------------
 
-// Muestra la fecha actual en formato largo en español en la página de inicio
-const fechaHoy = document.getElementById('fecha-hoy');
-if (fechaHoy) {
-    const fecha = new Date();
-    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    fechaHoy.textContent = fecha.toLocaleDateString('es-ES', opciones);
-}
-
-
 // --- SEGURIDAD DE SESIÓN ---
 
 // Evita que el navegador muestre páginas del admin desde caché al retroceder sin sesión
@@ -1515,16 +1506,6 @@ async function validarInscripcion(idCurso, btn) {
 let cursosSeleccionados = []; // Array de objetos {id, nombre, costo}
 let totalCursos = 0;           // Contador de cursos seleccionados
 let totalCosto = 0;            // Suma total del costo de cursos
-
-//  Mostrar fecha actual en el banner (formato: "martes, 6 de mayo de 2026")
-document.addEventListener('DOMContentLoaded', function () {
-    const fechaEl = document.getElementById('fecha-hoy');
-    if (fechaEl) {
-        fechaEl.textContent = new Date().toLocaleDateString('es-ES', {
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
-    }
-});
 
 //  Toggle del sidebar en móvil (abrir/cerrar menú lateral)
 function toggleSidebar() {
