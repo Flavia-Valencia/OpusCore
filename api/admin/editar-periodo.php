@@ -1,5 +1,6 @@
 <?php
-include("../../includes/conexion.php");
+require_once __DIR__ . "/../../includes/conexion.php";
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 // evita que el navegaador interprete como HTML la respuesta
 header('Content-Type: application/json');
 

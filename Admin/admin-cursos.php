@@ -142,7 +142,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
             <i class="fas fa-book"></i> Nuevo Curso
         </h2>
 
-        <form method="POST" action="crear-curso.php">
+        <form method="POST" action="../api/admin/crear-curso.php">
 
             <h3 class="modal-subtitulo">Detalles del curso</h3>
             <div class="modal-grid">
@@ -252,7 +252,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
             <i class="fas fa-edit"></i> Editar Curso
         </h2>
 
-        <form method="POST" action="editar-curso.php">
+        <form method="POST" action="../api/admin/editar-curso.php">
 
             <!-- ID oculto -->
             <input type="hidden" name="id" id="edit-id-curso">
@@ -438,6 +438,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script src="../js/utilidades/toast.js"></script>
+    <script src="../js/admin/cursos.js"></script>
     <script src="../js/script.js"></script>
 
 </body>

@@ -2,7 +2,7 @@
 # Recibe el ID de un estudiante y cambia su estado entre activo e inactivo.
 # Verifica que no tenga inscripciones activas antes de deshabilitarlo.
 # Devuelve el nuevo estado en formato JSON para actualizar la interfaz.
-include("../../includes/conexion.php");
+require_once __DIR__ . "/../../includes/conexion.php";
 
 $id = $_POST['id'];
 

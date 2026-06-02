@@ -1,5 +1,5 @@
 <?php
-include("../../includes/conexion.php");
+require_once __DIR__ . "/../../includes/conexion.php";
 
 $id           = intval($_POST['id']);
 $nombre       = $_POST['nombre'];
@@ -16,7 +16,7 @@ $estado       = $_POST['estado'] == 'Activo' ? 1 : 0;
 
 // Validación fechas incorrectas
     if ($fechaFin <= $fechaInicio) {
-    header("Location: ../Admin/admin-cursos.php?error=fechas");
+    header("Location: ../../Admin/admin-cursos.php?error=fechas");
     exit();
 }
 
@@ -25,7 +25,7 @@ $sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre') A
 $resultado_verificar = mysqli_query($conexion, $sql_verificar);
 
 if (mysqli_num_rows($resultado_verificar) > 0) {
-    header("Location: ../Admin/admin-cursos.php?error=existe");
+    header("Location: ../../Admin/admin-cursos.php?error=existe");
     exit();
 }
 
@@ -40,7 +40,7 @@ if ($row_docente_actual['idDocente'] != $idDocente) {
     $res_limite = mysqli_query($conexion, $sql_limite);
     $row_limite = mysqli_fetch_assoc($res_limite);
     if ($row_limite['total'] >= 4) {
-        header("Location: ../Admin/admin-cursos.php?error=limite_docente");
+        header("Location: ../../Admin/admin-cursos.php?error=limite_docente");
         exit();
     }
 }
@@ -69,6 +69,6 @@ if ($idPrerrequisito > 0 && $idPrerrequisito != $id) {
     mysqli_query($conexion, $sql_pre);
 }
 
-header("Location: ../Admin/admin-cursos.php");
+header("Location: ../../Admin/admin-cursos.php");
 exit();
 ?>

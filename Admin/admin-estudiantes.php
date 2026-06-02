@@ -201,6 +201,7 @@ if(!isset($_SESSION["usuario"])){
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script src="../js/utilidades/toast.js"></script>
+    <script src="../js/admin/estudiantes.js"></script>
     <script src="../js/script.js"></script>
 </body>
 </html>

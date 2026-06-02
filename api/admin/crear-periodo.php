@@ -1,11 +1,11 @@
 <?php
-include("../../includes/conexion.php");
+require_once __DIR__ . "/../../includes/conexion.php";
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 // evita que el navegaador interprete como HTML la respuesta
 header('Content-Type: application/json');
 
 try {
 
-    $id = intval($_POST['id']);
     $nombre = $_POST['nombre'];
     $fechaInicio  = $_POST['fechaInicio'];
     $fechaFin     = $_POST['fechaFin'];
@@ -29,8 +29,8 @@ try {
     }
 
   
-    $sql_periodo = "INSERT INTO PeriodoInscripcion (id, nombre, fechaInicio, fechaFin, fechaInicioCiclo, fechaFinCiclo, estado)
-                    VALUES ('$id', '$nombre', '$fechaInicio', '$fechaFin', '$fechaInicioCiclo', '$fechaFinCiclo', '$estado')";
+    $sql_periodo = "INSERT INTO PeriodoInscripcion (nombre, fechaInicio, fechaFin, fechaInicioCiclo, fechaFinCiclo, estado)
+                    VALUES ('$nombre', '$fechaInicio', '$fechaFin', '$fechaInicioCiclo', '$fechaFinCiclo', '$estado')";
 
     mysqli_query($conexion, $sql_periodo);
 

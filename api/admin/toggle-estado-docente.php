@@ -3,7 +3,7 @@
 # Verifica que no tenga cursos activos asignados antes de deshabilitarlo.
 # Devuelve el nuevo estado en formato JSON para actualizar la interfaz.
 
-include("../../includes/conexion.php");
+require_once __DIR__ . "/../../includes/conexion.php";
 
 $id = $_POST['id'];
 

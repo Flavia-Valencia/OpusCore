@@ -174,7 +174,7 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
                 <i class="fas fa-calendar-alt"></i> Nuevo Período
             </h2>
 
-            <form onsubmit="return false;">
+            <form>
                 <input type="hidden" name="id" id="periodo-id">
 
                 <h3 class="modal-subtitulo">Detalles del período</h3>
@@ -220,6 +220,7 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../js/utilidades/toast.js"></script>
+    <script src="../js/admin/periodos.js"></script>
     <script src="../js/script.js"></script>
 
 </body>
