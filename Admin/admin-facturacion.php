@@ -273,7 +273,7 @@ $docentes = $resDocentes ? $resDocentes->fetch_all(MYSQLI_ASSOC) : [];
                                 </td>
                                 <td data-label="Acciones" class="acciones-cell">
                                     <div class="facturacion-acciones">
-                                        <a href="comprobantes/descargar-factura.php?factura_id=<?php echo $factura['id']; ?>"
+                                        <a href="/OpusCore/comprobantes/descargar-factura.php?factura_id=<?php echo $factura['id']; ?>"
                                             class="link-accion facturacion-accion facturacion-accion-pdf">
                                              <i class="fas fa-file-pdf"></i> PDF
                                         </a>         
@@ -396,6 +396,7 @@ $docentes = $resDocentes ? $resDocentes->fetch_all(MYSQLI_ASSOC) : [];
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../js/utilidades/toast.js"></script>
+    <script src="../js/admin/facturacion.js"></script>
     <script src="../js/script.js"></script>
 </body>
 </html>
