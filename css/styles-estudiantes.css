@@ -2619,3 +2619,427 @@ body.inscripcion-barra-visible .content {
         text-transform: uppercase;
     }
 }
+
+/* ── VISUALIZACIÓN DE CALIFICACIONES ───────────────────── */
+.calificaciones-page {
+    padding: 24px;
+}
+
+.calificaciones-banner {
+    margin: 0 0 18px;
+}
+
+.calificaciones-banner .banner-fecha span {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.calificaciones-resumen {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-bottom: 16px;
+}
+
+.calificacion-stat {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 14px;
+    box-shadow: 0 10px 26px rgba(5, 49, 112, 0.08);
+    display: flex;
+    gap: 16px;
+    min-width: 0;
+    padding: 18px;
+}
+
+.stat-icon {
+    align-items: center;
+    border-radius: 50%;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: 20px;
+    height: 54px;
+    justify-content: center;
+    width: 54px;
+}
+
+.stat-cursos { background: #eaf2ff; color: #1d64d8; }
+.stat-promedio { background: #e4f8f2; color: #03996f; }
+.stat-aprobadas { background: #e8f7ed; color: #15803d; }
+.stat-reprobadas { background: #ffedf0; color: #df2f45; }
+
+.calificacion-stat span:not(.stat-icon) {
+    color: #637083;
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.calificacion-stat strong {
+    color: #053170;
+    display: block;
+    font-size: 26px;
+    line-height: 1;
+    margin: 6px 0;
+}
+
+.calificacion-stat small {
+    color: #7b8ba3;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.calificaciones-toolbar {
+    align-items: end;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 14px;
+    box-shadow: 0 10px 26px rgba(5, 49, 112, 0.08);
+    display: grid;
+    gap: 16px;
+    grid-template-columns: minmax(240px, 1fr) 260px;
+    margin-bottom: 16px;
+    padding: 16px;
+}
+
+.calificaciones-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+}
+
+.calificaciones-field span {
+    color: #334155;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.calificaciones-field i {
+    bottom: 14px;
+    color: #7b8ba3;
+    left: 14px;
+    position: absolute;
+}
+
+.calificaciones-field input,
+.calificaciones-field select {
+    appearance: none;
+    background: #f8fbff;
+    border: 1px solid #dfe8f5;
+    border-radius: 10px;
+    color: #1d3355;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 44px;
+    outline: none;
+    padding: 0 14px;
+}
+
+.calificaciones-field input {
+    padding-left: 40px;
+}
+
+.calificaciones-field input:focus,
+.calificaciones-field select:focus {
+    border-color: #069dbf;
+    box-shadow: 0 0 0 4px rgba(6, 157, 191, 0.12);
+}
+
+.calificaciones-grid {
+    align-items: start;
+    display: block;
+}
+
+.calificaciones-panel {
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 14px;
+    box-shadow: 0 10px 26px rgba(5, 49, 112, 0.08);
+}
+
+.calificaciones-tabla-wrap {
+    overflow-x: auto;
+}
+
+.calificaciones-tabla {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.calificaciones-tabla th {
+    background: #f8fbff;
+    color: #314467;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 14px 16px;
+    text-align: center;
+}
+
+.calificaciones-tabla th:first-child {
+    text-align: left;
+}
+
+.calificaciones-tabla th small {
+    color: #70819b;
+    font-size: 11px;
+}
+
+.calificaciones-tabla td {
+    border-top: 1px solid #eef2f7;
+    color: #1d3355;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 13px 16px;
+    text-align: center;
+}
+
+.calificaciones-tabla tbody tr {
+    transition: background 0.18s ease;
+}
+
+.calificaciones-tabla tbody tr:hover,
+.calificaciones-tabla tbody tr.is-selected {
+    background: #f2f7ff;
+}
+
+.calificacion-row.is-hidden {
+    display: none;
+}
+
+.calificacion-curso-cell {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    text-align: left;
+}
+
+.calificacion-curso-cell strong {
+    color: #0f2d5c;
+    display: block;
+    font-size: 13px;
+    margin-bottom: 3px;
+}
+
+.calificacion-curso-cell small {
+    color: #6b7a97;
+    font-size: 12px;
+}
+
+.calificacion-course-icon {
+    align-items: center;
+    border-radius: 10px;
+    color: white;
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 38px;
+    justify-content: center;
+    width: 38px;
+}
+
+.calificacion-course-icon.icon-1 { background: #1d64d8; }
+.calificacion-course-icon.icon-2 { background: #7c3aed; }
+.calificacion-course-icon.icon-3 { background: #f59e0b; }
+.calificacion-course-icon.icon-4 { background: #0891b2; }
+
+.calificacion-final {
+    color: #0d6efd !important;
+    font-weight: 800 !important;
+}
+
+.calificacion-badge {
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 800;
+    justify-content: center;
+    min-width: 86px;
+    padding: 7px 10px;
+}
+
+.calificacion-badge.aprobado {
+    background: #dcf8e6;
+    color: #16803f;
+}
+
+.calificacion-badge.intermedio {
+    background: #fff3d8;
+    color: #a56200;
+}
+
+.calificacion-badge.reprobado {
+    background: #ffe8ec;
+    color: #d6293f;
+}
+
+.calificacion-badge.pendiente {
+    background: #fff3d8;
+    color: #a56200;
+}
+
+.calificacion-detalle-btn {
+    background: transparent;
+    border: 0;
+    color: #0d6efd;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.calificacion-detalle-head {
+    align-items: center;
+    border-bottom: 1px solid #edf1f7;
+    display: flex;
+    gap: 12px;
+    padding-bottom: 16px;
+}
+
+.calificacion-detalle-head strong {
+    color: #0f2d5c;
+    display: block;
+    font-size: 15px;
+}
+
+.calificacion-detalle-head small {
+    color: #6b7a97;
+    display: block;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.calificacion-detalle-list {
+    border-bottom: 1px solid #edf1f7;
+    display: grid;
+    gap: 12px;
+    padding: 16px 0;
+}
+
+.calificacion-detalle-list div,
+.calificacion-detalle-estado {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.calificacion-detalle-list span,
+.calificacion-detalle-estado span {
+    color: #637083;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.calificacion-detalle-list strong {
+    color: #1d3355;
+    font-size: 13px;
+    text-align: right;
+}
+
+.calificacion-context-list div {
+    align-items: flex-start;
+}
+
+.calificacion-context-list strong {
+    line-height: 1.35;
+    max-width: 210px;
+    overflow-wrap: anywhere;
+}
+
+.calificacion-detalle-estado {
+    border-bottom: 1px solid #edf1f7;
+    padding: 16px 0;
+}
+
+.calificaciones-empty-filter {
+    display: none;
+}
+
+.calificacion-modal {
+    background: rgba(5, 20, 48, 0.42);
+    padding: 18px;
+    z-index: 3000;
+}
+
+.calificacion-modal-box {
+    max-width: 480px;
+    padding: 24px;
+    width: min(480px, 100%);
+}
+
+.calificacion-modal .modal-cerrar {
+    top: 14px;
+    right: 14px;
+}
+
+.calificacion-modal .calificacion-detalle-head {
+    padding-right: 36px;
+}
+
+@media (max-width: 1180px) {
+    .calificaciones-resumen {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .calificaciones-page {
+        padding: 16px;
+    }
+
+    .calificaciones-resumen,
+    .calificaciones-toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .calificacion-stat {
+        padding: 16px;
+    }
+
+    .calificaciones-tabla,
+    .calificaciones-tabla tbody,
+    .calificaciones-tabla tr {
+        display: block;
+    }
+
+    .calificaciones-tabla thead {
+        display: none;
+    }
+
+    .calificaciones-tabla tr {
+        border-top: 1px solid #eef2f7;
+        padding: 14px 16px;
+    }
+
+    .calificaciones-tabla td {
+        align-items: center;
+        border-top: 0;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 9px 0;
+        text-align: right;
+    }
+
+    .calificaciones-tabla td::before {
+        color: #6b7a97;
+        content: attr(data-label);
+        font-size: 12px;
+        font-weight: 800;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .calificaciones-tabla td:first-child {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .calificaciones-tabla td:first-child::before {
+        display: none;
+    }
+}

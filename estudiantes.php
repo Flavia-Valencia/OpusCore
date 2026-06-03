@@ -64,7 +64,7 @@ if(!isset($_SESSION["usuario"])){
                 <span>Inscribirme a cursos</span>
             </a>
 
-            <a href="#" class="card-opcion">
+            <a href="estudiante-calificaciones.php" class="card-opcion">
                 <i class="fas fa-graduation-cap icono"></i>
                 <span>Ver calificaciones</span>
             </a>
