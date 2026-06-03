@@ -49,6 +49,165 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
     });
 });
 
+// Modulo de constancias administrativas (admin-constancias.php)
+document.addEventListener('DOMContentLoaded', () => {
+    const solicitudesWrap = document.getElementById('constanciasSolicitudes');
+    if (!solicitudesWrap) return;
+
+    const solicitudesEmpty = document.getElementById('constanciasSolicitudesEmpty');
+    const historialBody = document.getElementById('constanciasHistorialBody');
+    const sinHistorial = document.getElementById('constanciasSinHistorial');
+    const alerta = document.getElementById('constanciaAlerta');
+    const alertaTexto = document.getElementById('constanciaAlertaTexto');
+    const pendientesKpi = document.getElementById('constanciasPendientes');
+    const generadasKpi = document.getElementById('constanciasGeneradas');
+    const historialKpi = document.getElementById('constanciasHistorialTotal');
+    const buscador = document.getElementById('constanciaBuscador');
+    const tipoFiltro = document.getElementById('constanciaTipoFiltro');
+    const fechaFiltro = document.getElementById('constanciaFechaFiltro');
+    const historial = [];
+
+    const fechaHoy = () => new Date().toISOString().slice(0, 10);
+    const horaActual = () => new Date().toLocaleTimeString('es-SV', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    // Mantiene sincronizados los contadores y el estado vacio de solicitudes.
+    const actualizarKpis = () => {
+        const pendientes = solicitudesWrap.querySelectorAll('.constancia-solicitud').length;
+        pendientesKpi.textContent = pendientes;
+        generadasKpi.textContent = historial.length;
+        historialKpi.textContent = historial.length;
+        solicitudesEmpty.hidden = pendientes > 0;
+    };
+
+    // Muestra avisos temporales solo despues de una accion del admin.
+    const mostrarAlerta = (registro) => {
+        alerta.classList.remove('is-success', 'is-info');
+        alerta.classList.add(registro.alertaTipo || 'is-success', 'is-visible');
+        alertaTexto.textContent = registro.mensaje || `${registro.tipo} de ${registro.curso} fue enviada al historial.`;
+        clearTimeout(mostrarAlerta.timeoutId);
+        mostrarAlerta.timeoutId = setTimeout(() => {
+            alerta.classList.remove('is-visible');
+        }, 4500);
+    };
+
+    // Filtra el historial generado sin alterar las solicitudes pendientes.
+    const filtrarHistorial = () => {
+        const texto = (buscador.value || '').trim().toLowerCase();
+        const tipo = tipoFiltro.value;
+        const fecha = fechaFiltro.value;
+        let visibles = 0;
+
+        historialBody.querySelectorAll('tr[data-historial]').forEach(row => {
+            const visible = row.dataset.busqueda.includes(texto)
+                && (!tipo || row.dataset.tipo === tipo)
+                && (!fecha || row.dataset.fecha === fecha);
+            row.hidden = !visible;
+            if (visible) visibles++;
+        });
+
+        sinHistorial.hidden = historial.length > 0 && visibles > 0;
+        if (historial.length > 0 && visibles === 0) {
+            sinHistorial.querySelector('td').textContent = 'No se encontraron constancias con esos filtros.';
+        } else {
+            sinHistorial.querySelector('td').textContent = 'Todavía no hay constancias generadas.';
+        }
+    };
+
+    // Reconstruye la tabla cada vez que una solicitud pasa a historial.
+    const renderHistorial = () => {
+        historialBody.querySelectorAll('tr[data-historial]').forEach(row => row.remove());
+
+        historial.forEach(registro => {
+            const row = document.createElement('tr');
+            row.dataset.historial = 'true';
+            row.dataset.busqueda = `${registro.codigo} ${registro.solicitante} ${registro.curso} ${registro.codigoCurso}`.toLowerCase();
+            row.dataset.tipo = registro.tipo;
+            row.dataset.fecha = registro.fechaGeneracion;
+
+            const params = new URLSearchParams({
+                codigo: registro.codigo,
+                tipo: registro.tipo,
+                solicitante: registro.solicitante,
+                correo: registro.correo,
+                destino: registro.rol,
+                curso: registro.curso,
+                codigoCurso: registro.codigoCurso,
+                periodo: registro.periodo,
+                notaFinal: registro.notaFinal,
+                resultado: registro.resultado,
+                fechaActividad: registro.fechaActividad,
+                motivo: registro.motivo,
+                fechaSolicitud: registro.fechaSolicitud,
+                horaSolicitud: registro.horaSolicitud,
+                fechaEmision: registro.fechaGeneracion,
+                horaEmision: registro.horaGeneracion
+            });
+
+            row.innerHTML = `
+                <td data-label="Código">${registro.codigo}</td>
+                <td data-label="Tipo">${registro.tipo}</td>
+                <td data-label="Solicitante">${registro.solicitante}</td>
+                <td data-label="Curso">${registro.curso}<br><small>${registro.codigoCurso} · ${registro.periodo}</small></td>
+                <td data-label="Fecha solicitud">${registro.fechaSolicitud}</td>
+                <td data-label="Fecha generación">${registro.fechaGeneracion}</td>
+                <td data-label="Estado"><span class="constancia-badge generada">${registro.estado}</span></td>
+                <td data-label="Acciones">
+                    <a class="link-accion constancia-pdf-btn" href="comprobantes/vista-constancia-administrativa.php?${params.toString()}" target="_blank" rel="noopener">Ver constancia</a>
+                </td>
+            `;
+
+            historialBody.insertBefore(row, sinHistorial);
+        });
+
+        sinHistorial.hidden = historial.length > 0;
+        filtrarHistorial();
+        actualizarKpis();
+    };
+
+    // Simula la generacion frontend: remueve la solicitud y crea su registro historico.
+    solicitudesWrap.addEventListener('click', (event) => {
+        const boton = event.target.closest('.constancia-generar-btn');
+        if (!boton) return;
+
+        const card = boton.closest('.constancia-solicitud');
+        const registro = {
+            codigo: `CONST-${String(historial.length + 1).padStart(4, '0')}`,
+            solicitud: card.dataset.id,
+            solicitante: card.dataset.solicitante,
+            correo: card.dataset.correo,
+            rol: card.dataset.rol,
+            tipo: card.dataset.tipo,
+            curso: card.dataset.curso,
+            codigoCurso: card.dataset.codigoCurso,
+            periodo: card.dataset.periodo,
+            notaFinal: card.dataset.notaFinal,
+            resultado: card.dataset.resultado,
+            fechaActividad: card.dataset.fechaActividad,
+            motivo: card.dataset.motivo,
+            fechaSolicitud: card.dataset.fecha,
+            horaSolicitud: horaActual(),
+            fechaGeneracion: fechaHoy(),
+            horaGeneracion: horaActual(),
+            estado: 'Generada'
+        };
+
+        historial.unshift(registro);
+        card.remove();
+        renderHistorial();
+        mostrarAlerta(registro);
+    });
+
+    [buscador, tipoFiltro, fechaFiltro].forEach(control => {
+        control.addEventListener('input', filtrarHistorial);
+        control.addEventListener('change', filtrarHistorial);
+    });
+
+    actualizarKpis();
+});
+
 // Cierra el modal de edición de docente y restaura el scroll
 function cerrarModalDocente() {
     const modal = document.getElementById('modalEditarDocente');

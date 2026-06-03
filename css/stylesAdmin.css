@@ -383,6 +383,7 @@ body {
 .nav .btn-nav:nth-of-type(6)::before { content: "\f09d"; }
 .nav .btn-nav:nth-of-type(7)::before { content: "\f571"; }
 .nav .btn-nav:nth-of-type(8)::before { content: "\f5da"; }
+.nav .btn-nav:nth-of-type(9)::before { content: "\f1c1"; }
 
 
 .btn-nav:hover {
@@ -1243,6 +1244,297 @@ body {
   border: 1.5px solid rgba(231, 76, 60, 0.8);
 }
 
+/* ── MÓDULO CONSTANCIAS ADMINISTRATIVAS ─────────────────── */
+.constancias-page {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.constancias-banner {
+    background: var(--header-gradient);
+    border-radius: 20px;
+    color: white;
+    display: flex;
+    gap: 28px;
+    justify-content: space-between;
+    padding: 32px 38px;
+    box-shadow: var(--card-shadow);
+}
+
+.constancias-banner-texto h2 {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.constancias-banner-texto p {
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 520px;
+    opacity: 0.86;
+}
+
+.constancias-metricas {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(110px, 1fr));
+    gap: 12px;
+    min-width: min(430px, 100%);
+}
+
+.constancias-metricas article {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.constancias-metricas span {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    opacity: 0.86;
+}
+
+.constancias-metricas strong {
+    display: block;
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.constancias-alerta {
+    align-items: center;
+    background: #e9f9ef;
+    border: 1px solid #bdebd0;
+    border-radius: 14px;
+    color: #176b3a;
+    display: none;
+    gap: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 10px 26px rgba(39, 174, 96, 0.12);
+}
+
+.constancias-alerta.is-visible {
+    display: flex;
+}
+
+.constancias-alerta.is-info {
+    background: #eaf4ff;
+    border-color: #bfdcff;
+    color: #0d4f8b;
+    box-shadow: 0 10px 26px rgba(13, 79, 139, 0.12);
+}
+
+.constancias-alerta.is-success {
+    background: #e9f9ef;
+    border-color: #bdebd0;
+    color: #176b3a;
+}
+
+.constancias-alerta i {
+    font-size: 22px;
+}
+
+.constancias-alerta strong,
+.constancias-alerta span {
+    display: block;
+}
+
+.constancias-alerta span {
+    color: #315b42;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.constancias-card {
+    overflow: hidden;
+}
+
+.constancias-section-header {
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 20px;
+}
+
+.constancias-section-header h2 {
+    color: var(--primary-blue);
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.constancias-section-header p {
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.constancias-solicitudes {
+    display: grid;
+    gap: 14px;
+    padding: 20px;
+}
+
+.constancia-solicitud {
+    align-items: center;
+    background: #f8fbff;
+    border: 1px solid #e5edf8;
+    border-radius: 14px;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) 112px 118px;
+    gap: 14px;
+    padding: 16px;
+}
+
+.constancia-solicitud-icon {
+    align-items: center;
+    background: var(--accent-teal-light);
+    border-radius: 14px;
+    color: var(--accent-teal);
+    display: flex;
+    font-size: 20px;
+    height: 48px;
+    justify-content: center;
+    width: 48px;
+}
+
+.constancia-solicitud-top {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.constancia-solicitud-top strong {
+    color: var(--primary-blue);
+    font-size: 15px;
+}
+
+.constancia-solicitud-body p {
+    color: #34445e;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.constancia-solicitud-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.constancia-solicitud-meta span {
+    align-items: center;
+    color: var(--text-muted);
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 700;
+    gap: 6px;
+}
+
+.constancia-badge {
+    align-items: center;
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: 800;
+    justify-content: center;
+    min-width: 88px;
+    padding: 7px 12px;
+}
+
+.constancia-badge.pendiente {
+    background: #fff3d6;
+    color: #9a5b00;
+}
+
+.constancia-badge.generada {
+    background: #dff7e8;
+    color: #176b3a;
+}
+
+.constancia-solicitud > .constancia-badge {
+    justify-self: end;
+}
+
+.constancia-generar-btn {
+    justify-self: end;
+    min-width: 118px;
+}
+
+.constancias-empty {
+    align-items: center;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 36px 20px;
+    text-align: center;
+}
+
+.constancias-empty[hidden] {
+    display: none;
+}
+
+.constancias-empty i {
+    color: #9aa8bd;
+    font-size: 32px;
+}
+
+.constancias-filtros {
+    align-items: center;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: minmax(240px, 1fr) 220px 180px;
+}
+
+.constancias-filtros .input-buscar {
+    max-width: none;
+}
+
+.constancia-filtro-control {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    color: #333;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    padding: 12px 14px;
+    width: 100%;
+}
+
+.constancias-sin-historial td {
+    color: var(--text-muted);
+    padding: 26px !important;
+    text-align: center !important;
+}
+
+.constancia-pdf-btn {
+    background: #eef2ff;
+    color: var(--primary-blue);
+}
+
+.constancia-pdf-btn:hover {
+    background: var(--primary-blue);
+    color: white;
+}
+
+@media (max-width: 1100px) {
+    .constancias-banner {
+        flex-direction: column;
+    }
+
+    .constancias-metricas,
+    .constancias-filtros {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 /* ── responsivo para desktop (min-width: 769px) ────────────────── */
 @media (min-width: 769px) {
@@ -1436,6 +1728,21 @@ body {
 
     .toolbar {
         padding: 15px;
+    }
+
+    .constancia-solicitud {
+        grid-template-columns: 44px minmax(0, 1fr);
+    }
+
+    .constancia-solicitud > .constancia-badge {
+        grid-column: 1 / -1;
+        justify-self: start;
+    }
+
+    .constancia-generar-btn {
+        grid-column: 1 / -1;
+        justify-self: stretch;
+        width: 100%;
     }
 
     .input-buscar {

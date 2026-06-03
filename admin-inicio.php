@@ -86,6 +86,7 @@ $total_cursos = $res_cursos->fetch_assoc()["total"];
             <a href="./admin-pagos.php" class="btn-nav">Pagos</a>
             <a href="./admin-facturacion.php" class="btn-nav">Facturación</a>
             <a href="./admin-plazo.php" class="btn-nav">Plazo Notas</a>
+            <a href="./admin-constancias.php" class="btn-nav">Constancias</a>
         
             <!--Boton para cerrar sesión en celu-->
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>

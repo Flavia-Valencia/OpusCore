@@ -301,3 +301,103 @@ table.totales td {
 .print-btn {
     display: none;
 }
+
+/* ── Constancias administrativas ────────────────────────── */
+.constancia-doc .header {
+    border-bottom-color: #053170;
+}
+
+.constancia-hero {
+    padding: 30px 28px 24px;
+    border-bottom: 1px solid #d1d5db;
+    text-align: center;
+}
+
+.constancia-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 3px 9px;
+    border: 1px solid #d1d5db;
+    background: #f3f4f6;
+    color: #374151;
+    font-size: 7.5px;
+    font-weight: bold;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+}
+
+.constancia-hero h1 {
+    margin: 0;
+    color: #053170;
+    font-size: 22px;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+}
+
+.constancia-hero p {
+    margin: 8px 0 0;
+    color: #4b5563;
+    font-size: 9.5px;
+}
+
+.constancia-partes {
+    border-bottom: 1px solid #d1d5db;
+}
+
+.constancia-partes .parte {
+    width: 33.333%;
+    min-height: 132px;
+}
+
+.constancia-cuerpo {
+    padding: 30px 34px 20px;
+}
+
+.constancia-cuerpo p {
+    margin: 0 0 14px;
+    color: #1f2937;
+    font-size: 12px;
+    line-height: 1.75;
+    text-align: justify;
+}
+
+.constancia-validacion {
+    margin: 6px 28px 0;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+}
+
+.constancia-validacion table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.constancia-validacion td {
+    width: 33.33%;
+    padding: 10px 12px;
+    border-left: 1px solid #d1d5db;
+    vertical-align: top;
+}
+
+.constancia-validacion td:first-child {
+    border-left: 0;
+}
+
+.constancia-validacion span,
+.constancia-validacion strong {
+    display: block;
+}
+
+.constancia-validacion span {
+    color: #6b7280;
+    font-size: 7.5px;
+    font-weight: bold;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+.constancia-validacion strong {
+    margin-top: 4px;
+    color: #1f2937;
+    font-size: 9px;
+}
