@@ -1,9 +1,11 @@
 USE db_academiadigital;
-
 -- Si en caso de haber insertado datos en las tablas y se desea eliminar los datos para volver a insertar nuevos
 -- datos.
 -- Este script eliminará todos los datos de las tablas que llevaban y los que se han agregado. Reiniciará el contador
 -- de AUTO_INCREMENT para cada tabla, permitiendo que los nuevos datos se inserten con IDs comenzando desde 1.
+DELETE FROM constancias;
+DELETE FROM solicitudConstanciaEstudiante;  
+DELETE FROM solicitudConstanciaDocente;
 DELETE FROM facturas;
 DELETE FROM detalle_facturas;
 DELETE FROM mensualidades;
@@ -21,6 +23,9 @@ DELETE FROM estudiantes;
 DELETE FROM administradores;
 DELETE FROM usuarios;
 
+ALTER TABLE constancias AUTO_INCREMENT = 1;
+ALTER TABLE solicitudConstanciaEstudiante AUTO_INCREMENT = 1;
+ALTER TABLE solicitudConstanciaDocente AUTO_INCREMENT = 1;
 ALTER TABLE facturas AUTO_INCREMENT = 1;
 ALTER TABLE detalle_facturas AUTO_INCREMENT = 1;
 ALTER TABLE mensualidades AUTO_INCREMENT = 1;
