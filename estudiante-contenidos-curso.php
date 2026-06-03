@@ -223,7 +223,7 @@ if (tablaExiste($conexion, 'sesionContenido')) {
                     <i class="fas fa-clipboard-list"></i>
                     <span>Inscripción</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="estudiante-calificaciones.php" class="nav-item">
                     <i class="fas fa-chart-line"></i>
                     <span>Calificaciones</span>
                 </a>
