@@ -145,7 +145,7 @@ if (is_readable($cssPdfPath)) {
             <div class="parte-fila"><span class="lbl">Periodo:</span><span class="val"><?= htmlspecialchars($periodo) ?></span></div>
             <div class="parte-fila"><span class="lbl">Resultado:</span><span class="val"><?= htmlspecialchars($resultado) ?></span></div>
             <div class="parte-fila"><span class="lbl">Nota final:</span><span class="val"><?= htmlspecialchars($notaFinal) ?></span></div>
-            <div class="parte-fila"><span class="lbl">Actividad:</span><span class="val"><?= htmlspecialchars($fechaActividad) ?></span></div>
+            <div class="parte-fila"><span class="lbl">Referencia:</span><span class="val"><?= htmlspecialchars($fechaActividad) ?></span></div>
         </div>
         <div class="parte">
             <div class="parte-titulo">Datos de emisión</div>

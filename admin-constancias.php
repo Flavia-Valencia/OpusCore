@@ -205,7 +205,7 @@ $solicitudes = [
                         </div>
                         <span class="constancia-badge pendiente"><?php echo htmlspecialchars($solicitud['estado']); ?></span>
                         <button type="button" class="btn-guardar constancia-generar-btn">
-                            <i class="fas fa-file-circle-plus"></i> Generar PDF
+                            <i class="fas fa-file-circle-plus"></i> Generar constancia
                         </button>
                     </article>
                 <?php endforeach; ?>

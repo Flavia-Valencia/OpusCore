@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td data-label="Fecha generación">${registro.fechaGeneracion}</td>
                 <td data-label="Estado"><span class="constancia-badge generada">${registro.estado}</span></td>
                 <td data-label="Acciones">
-                    <a class="link-accion constancia-pdf-btn" href="comprobantes/vista-constancia-administrativa.php?${params.toString()}" target="_blank" rel="noopener">Ver PDF</a>
+                    <a class="link-accion constancia-pdf-btn" href="comprobantes/vista-constancia-administrativa.php?${params.toString()}" target="_blank" rel="noopener">Ver constancia</a>
                 </td>
             `;
 
