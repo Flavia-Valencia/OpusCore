@@ -31,16 +31,15 @@ INSERT INTO `PeriodoInscripcion` (`nombre`, `fechaInicio`, `fechaFin`,`fechaInic
 -- Insertar datos en las tablas de cursos, horarios, aulas, prerrequisitos y cursoHorario.
 INSERT INTO `cursos`(`nombre`, `descripcion`, `costoMensual`, `cupos`, `fechaInicio`, `fechaFin`, `estado`, `idDocente`, `idCategoria`, `idPeriodo`) VALUES 
 ('Desarrollo lógica de programación','Curso introductorio enfocado en el desarrollo del pensamiento lógico y resolución de problemas mediante algoritmos.',20.00,100,'2026-01-15','2026-05-31', 1, 1,2,1),
-('Diseño de Páginas Web','Curso orientado a la creación de sitios web utilizando HTML, CSS y principios básicos de diseño web.',20.00,100,'2026-01-15','2026-05-31', 1, 3,1,1),
-('Programación Estructurada','Curso que enseña los fundamentos de la programación utilizando estructuras de control como secuencias, decisiones y ciclos.',20.00,100,'2026-01-15','2026-05-31', 1, 1,2,2),
-('Administración de Sistemas Operativos','Curso enfocado en la gestión, configuración y mantenimiento de sistemas operativos en entornos informáticos.',20.00,100,'2026-01-15','2026-05-31', 1, 2,5,1),
-('Programación Orientada a Objetos','Curso que introduce los conceptos de clases, objetos, herencia y encapsulamiento para desarrollar software modular.',20.00,100,'2026-01-15','2026-05-31', 1, 1,2,2),
-('English for Developers','Curso enfocado en el uso del inglés en entornos tecnológicos, lectura de documentación, escritura técnica y comunicación.',20.00,100,'2026-01-01','2026-05-31',1,2,3,1),
-('Machine Learning I','Curso que enseña los conceptos básicos del aprendizaje automático, modelos supervisados y análisis de datos.',20.00,100,'2026-01-15','2026-05-31', 1, 2, 4,1),
-('Diseño UI/UX Fundamentos','Curso introductorio sobre principios de diseño de interfaces y experiencia de usuario aplicados a productos digitales.',20.00,100,'2026-01-15','2026-05-31', 1, 3, 1, 1),
-('Figma para Diseñadores','Curso práctico de diseño de prototipos e interfaces utilizando Figma como herramienta principal.',20.00,100,'2026-01-15','2026-05-31', 1, 3, 1, 1),
-('English for Beginners','Curso de inglés básico orientado a quienes inician desde cero, con énfasis en vocabulario y conversación cotidiana.',20.00,100,'2026-01-15','2026-05-31', 1, 2, 3, 1);
-
+('Diseño de Páginas Web','Curso orientado a la creación de sitios web utilizando HTML, CSS y principios básicos de diseño web.',20.00,100,'2026-01-15','2026-05-31', 1, 1,1,1),
+('Programación Estructurada','Curso que enseña los fundamentos de la programación utilizando estructuras de control como secuencias, decisiones y ciclos.',20.00,100,'2026-07-15','2026-12-15', 1, 1,2,2),
+('Administración de Sistemas Operativos','Curso enfocado en la gestión, configuración y mantenimiento de sistemas operativos en entornos informáticos.',20.00,100,'2026-01-15','2026-06-15', 1, 1,5,1),
+('Programación Orientada a Objetos','Curso que introduce los conceptos de clases, objetos, herencia y encapsulamiento para desarrollar software modular.',20.00,100,'2026-07-15','2026-12-15', 1, 3,2,2),
+('English for Developers','Curso enfocado en el uso del inglés en entornos tecnológicos, lectura de documentación, escritura técnica y comunicación.',20.00,100,'2026-01-01','2026-06-15',1,2,3,1),
+('Machine Learning I','Curso que enseña los conceptos básicos del aprendizaje automático, modelos supervisados y análisis de datos.',20.00,100,'2026-01-15','2026-06-15', 1, 2, 4,1),
+('Diseño UI/UX Fundamentos','Curso introductorio sobre principios de diseño de interfaces y experiencia de usuario aplicados a productos digitales.',20.00,100,'2026-01-15','2026-06-15', 1, 3, 1, 1),
+('Figma para Diseñadores','Curso práctico de diseño de prototipos e interfaces utilizando Figma como herramienta principal.',20.00,100,'2026-01-15','2026-06-15', 1, 3, 1, 1),
+('English for Beginners','Curso de inglés básico orientado a quienes inician desde cero, con énfasis en vocabulario y conversación cotidiana.',20.00,100,'2026-01-15','2026-06-15', 1, 2, 3, 1);
 
 INSERT INTO `prerrequisitos`(`idCursoActual`, `idCursoPrevio`) VALUES (3,1),(5,3);
 
@@ -64,15 +63,3 @@ INSERT INTO `sesionArchivos` (`idSesion`, `nombreArchivo`, `rutaArchivo`, `tipo`
 (1, 'Video de Introducción', 'https://youtu.be/rDynuZstCwU?si=SjoR8Y7QBGY32RIj', 'Enlace'),
 (2, 'Fundamentos de Diseño Gráfico.pdf', 'editarurl', 'Archivo'),
 (2, 'Video de Fundamentos de Diseño', 'https://youtu.be/7N2v0bpNFKA?si=I6VwB2sOqINrPdkM', 'Enlace');
-
--- Insertar datos para las sesiones ya creadas y sus archivos de apoyo en la tarea
-INSERT INTO `tareas` (`idCurso`, `idSesion`, `titulo`, `descripcion`, `puntajeMaximo`,`intentos`, `fechaLimite`) VALUES
-(1, 1, 'Tarea 1: Algoritmos Básicos', 'Desarrolla algoritmos para resolver problemas simples utilizando pseudocódigo.', 10, 3, '2026-05-30 23:59:59'),
-(1, 2, 'Tarea 2: Estructuras de Control', 'Crea programas que utilicen condicionales y bucles para resolver problemas específicos.', 10, 3, '2026-05-30 23:59:59'),
-(2, 3, 'Tarea 1: Diseño de Logotipo', 'Diseña un logotipo para una empresa ficticia utilizando los principios de diseño gráfico.', 10, 3, '2026-05-30 23:59:59'),
-(2, 4, 'Tarea 2: Prototipo de Página Web', 'Crea un prototipo de página web utilizando herramientas de diseño como Figma o Adobe XD.', 10, 3, '2026-05-30 23:59:59');
-INSERT INTO `tareasArchivos` (`idTarea`, `nombreArchivo`, `tipo`, `rutaArchivo`) VALUES
-(1, 'Ejemplo de Algoritmo.pdf', 'Archivo', 'editarurl'),
-(2, 'Ejemplo de Estructuras de Control.pdf', 'Archivo', 'editarurl'),
-(3, 'Ejemplo de Logotipo.pdf', 'Archivo', 'editarurl'),
-(4, 'Ejemplo de Prototipo Web.pdf', 'Archivo', 'editarurl');

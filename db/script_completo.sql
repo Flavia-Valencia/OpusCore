@@ -340,6 +340,42 @@ CREATE TABLE `RegistroNotas` (
     CONSTRAINT `fk_notas_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`),
     CONSTRAINT `fk_notas_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- se guardará el historial de constancias generadas para estudiantes y docentes, con un código único para cada constancia, 
+-- el tipo de constancia, el usuario solicitante, el usuario que generó la constancia, la ruta del PDF generado y la fecha de generación.
+CREATE TABLE `constancias` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `codigoConstancia` VARCHAR(50) NOT NULL UNIQUE,
+    `tipo` ENUM('Estudiante', 'Docente') NOT NULL,
+    `idUsuarioSolicitante` INT NOT NULL,
+    `idGeneradoPor` INT NOT NULL,
+    `rutaPDF` VARCHAR(255) NOT NULL,
+    `fechaGeneracion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_constancias_solicitante` FOREIGN KEY (`idUsuarioSolicitante`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `fk_constancias_generador` FOREIGN KEY (`idGeneradoPor`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Tabla para registrar las solicitudes de constancias por parte de los estudiantes.
+CREATE TABLE `solicitudConstanciaEstudiante` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `idEstudiante` INT NOT NULL,
+    `idCurso` INT NOT NULL,
+    `motivo` VARCHAR(255) DEFAULT 'Trámite personal', -- es el motivo, ya que no hay seleccion se dejará default, pero en un futuro podría cambiar
+    `estado` ENUM('Pendiente', 'Aprobada', 'Rechazada') DEFAULT 'Pendiente',
+    `fechaSolicitud` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_sol_est_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `fk_sol_est_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+-- Tabla para registrar las solicitudes de constancias por parte de los docentes, el motivo se deja default pero se puede cambiar en un futuro.
+CREATE TABLE `solicitudConstanciaDocente` (
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
+    `idDocente` INT NOT NULL,
+    `idCurso` INT NOT NULL,
+    `motivo` VARCHAR(255) DEFAULT 'Trámite personal',
+    `estado` ENUM('Pendiente', 'Aprobada', 'Rechazada') DEFAULT 'Pendiente',
+    `fechaSolicitud` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_sol_doc_docente` FOREIGN KEY (`idDocente`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `fk_sol_doc_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 DELIMITER //
 
@@ -607,7 +643,47 @@ BEGIN
         SET NEW.estadoEstudiante = 'Reprobado';
     END IF;
 END //
+-- trigger para validar que no se puedan generar constancias si el estado de la solicitud no es aprobada
+CREATE TRIGGER `tr_validar_constancia_estudiante_insert`
+BEFORE INSERT ON `solicitudConstanciaEstudiante`
+FOR EACH ROW
+BEGIN
+    DECLARE v_estado_curso VARCHAR(50);
 
+    SELECT estado INTO v_estado_curso
+    FROM `RegistroNotas`
+    WHERE `idEstudiante` = NEW.idEstudiante AND `idCurso` = NEW.idCurso
+    LIMIT 1;
+
+    IF v_estado_curso IS NULL OR v_estado_curso <> 'Aprobado' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: El estudiante no tiene este curso aprobado en su Registro de Notas.';
+    END IF;
+END //
+
+-- trigger para validar que el docente no pueda generar constancias si no tiene el curso asignado o no tiene el curso aprobado
+CREATE TRIGGER `tr_validar_constancia_docente_insert`
+BEFORE INSERT ON `solicitudConstanciaDocente`
+FOR EACH ROW
+BEGIN
+    DECLARE v_id_docente_curso INT;
+    DECLARE v_fecha_fin_curso DATE;
+
+    SELECT idDocente, fechaFin INTO v_id_docente_curso, v_fecha_fin_curso
+    FROM `cursos`
+    WHERE `id` = NEW.idCurso
+    LIMIT 1;
+
+    IF v_id_docente_curso IS NULL OR v_id_docente_curso <> NEW.idDocente THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: No puedes solicitar una constancia para un curso que no tienes asignado.';
+    END IF;
+
+    IF v_fecha_fin_curso > CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: No puedes solicitar la constancia hasta que el curso haya finalizado completamente.';
+    END IF;
+END //
 DELIMITER ;
 --
 -- Insertar datos en las tablas de usuarios, administradores, estudiantes y docentes.
@@ -658,15 +734,15 @@ INSERT INTO `PeriodoInscripcion` (`nombre`, `fechaInicio`, `fechaFin`,`fechaInic
 -- Nota: Asegurarse de que idDocente coincida con los ids existentes en la tabla docentes (1 o 2 en una base limpia)
 INSERT INTO `cursos`(`nombre`, `descripcion`, `costoMensual`, `cupos`, `fechaInicio`, `fechaFin`, `estado`, `idDocente`, `idCategoria`, `idPeriodo`) VALUES 
 ('Desarrollo lógica de programación','Curso introductorio enfocado en el desarrollo del pensamiento lógico y resolución de problemas mediante algoritmos.',20.00,100,'2026-01-15','2026-05-31', 1, 1,2,1),
-('Diseño de Páginas Web','Curso orientado a la creación de sitios web utilizando HTML, CSS y principios básicos de diseño web.',20.00,100,'2026-01-15','2026-05-31', 1, 3,1,1),
-('Programación Estructurada','Curso que enseña los fundamentos de la programación utilizando estructuras de control como secuencias, decisiones y ciclos.',20.00,100,'2026-01-15','2026-05-31', 1, 1,2,2),
-('Administración de Sistemas Operativos','Curso enfocado en la gestión, configuración y mantenimiento de sistemas operativos en entornos informáticos.',20.00,100,'2026-01-15','2026-05-31', 1, 2,5,1),
-('Programación Orientada a Objetos','Curso que introduce los conceptos de clases, objetos, herencia y encapsulamiento para desarrollar software modular.',20.00,100,'2026-01-15','2026-05-31', 1, 1,2,2),
-('English for Developers','Curso enfocado en el uso del inglés en entornos tecnológicos, lectura de documentación, escritura técnica y comunicación.',20.00,100,'2026-01-01','2026-05-31',1,2,3,1),
-('Machine Learning I','Curso que enseña los conceptos básicos del aprendizaje automático, modelos supervisados y análisis de datos.',20.00,100,'2026-01-15','2026-05-31', 1, 2, 4,1),
-('Diseño UI/UX Fundamentos','Curso introductorio sobre principios de diseño de interfaces y experiencia de usuario aplicados a productos digitales.',20.00,100,'2026-01-15','2026-05-31', 1, 3, 1, 1),
-('Figma para Diseñadores','Curso práctico de diseño de prototipos e interfaces utilizando Figma como herramienta principal.',20.00,100,'2026-01-15','2026-05-31', 1, 3, 1, 1),
-('English for Beginners','Curso de inglés básico orientado a quienes inician desde cero, con énfasis en vocabulario y conversación cotidiana.',20.00,100,'2026-01-15','2026-05-31', 1, 2, 3, 1);
+('Diseño de Páginas Web','Curso orientado a la creación de sitios web utilizando HTML, CSS y principios básicos de diseño web.',20.00,100,'2026-01-15','2026-05-31', 1, 1,1,1),
+('Programación Estructurada','Curso que enseña los fundamentos de la programación utilizando estructuras de control como secuencias, decisiones y ciclos.',20.00,100,'2026-07-15','2026-12-15', 1, 1,2,2),
+('Administración de Sistemas Operativos','Curso enfocado en la gestión, configuración y mantenimiento de sistemas operativos en entornos informáticos.',20.00,100,'2026-01-15','2026-06-15', 1, 1,5,1),
+('Programación Orientada a Objetos','Curso que introduce los conceptos de clases, objetos, herencia y encapsulamiento para desarrollar software modular.',20.00,100,'2026-07-15','2026-12-15', 1, 3,2,2),
+('English for Developers','Curso enfocado en el uso del inglés en entornos tecnológicos, lectura de documentación, escritura técnica y comunicación.',20.00,100,'2026-01-01','2026-06-15',1,2,3,1),
+('Machine Learning I','Curso que enseña los conceptos básicos del aprendizaje automático, modelos supervisados y análisis de datos.',20.00,100,'2026-01-15','2026-06-15', 1, 2, 4,1),
+('Diseño UI/UX Fundamentos','Curso introductorio sobre principios de diseño de interfaces y experiencia de usuario aplicados a productos digitales.',20.00,100,'2026-01-15','2026-06-15', 1, 3, 1, 1),
+('Figma para Diseñadores','Curso práctico de diseño de prototipos e interfaces utilizando Figma como herramienta principal.',20.00,100,'2026-01-15','2026-06-15', 1, 3, 1, 1),
+('English for Beginners','Curso de inglés básico orientado a quienes inician desde cero, con énfasis en vocabulario y conversación cotidiana.',20.00,100,'2026-01-15','2026-06-15', 1, 2, 3, 1);
 
 INSERT INTO `prerrequisitos`(`idCursoActual`, `idCursoPrevio`) VALUES (3,1),(5,3);
 
@@ -693,16 +769,3 @@ INSERT INTO `sesionArchivos` (`idSesion`, `nombreArchivo`, `rutaArchivo`, `tipo`
 (1, 'Video de Introducción', 'https://youtu.be/rDynuZstCwU?si=SjoR8Y7QBGY32RIj', 'Enlace'),
 (2, 'Fundamentos de Diseño Gráfico.pdf', 'editarurl', 'Archivo'),
 (2, 'Video de Fundamentos de Diseño', 'https://youtu.be/7N2v0bpNFKA?si=I6VwB2sOqINrPdkM', 'Enlace');
-
--- Insertar datos para las sesiones ya creadas y sus archivos de apoyo en la tarea
-INSERT INTO `tareas` (`idCurso`, `idSesion`, `titulo`, `descripcion`, `puntajeMaximo`,`intentos`, `fechaLimite`) VALUES
-(1, 1, 'Tarea 1: Algoritmos Básicos', 'Desarrolla algoritmos para resolver problemas simples utilizando pseudocódigo.', 10, 3, '2026-05-30 23:59:59'),
-(1, 2, 'Tarea 2: Estructuras de Control', 'Crea programas que utilicen condicionales y bucles para resolver problemas específicos.', 10, 3, '2026-05-30 23:59:59'),
-(2, 3, 'Tarea 1: Diseño de Logotipo', 'Diseña un logotipo para una empresa ficticia utilizando los principios de diseño gráfico.', 10, 3, '2026-05-30 23:59:59'),
-(2, 4, 'Tarea 2: Prototipo de Página Web', 'Crea un prototipo de página web utilizando herramientas de diseño como Figma o Adobe XD.', 10, 3, '2026-05-30 23:59:59');
-
-INSERT INTO `tareasArchivos` (`idTarea`, `nombreArchivo`, `tipo`, `rutaArchivo`) VALUES
-(1, 'Ejemplo de Algoritmo.pdf', 'Archivo', 'editarurl'),
-(2, 'Ejemplo de Estructuras de Control.pdf', 'Archivo', 'editarurl'),
-(3, 'Ejemplo de Logotipo.pdf', 'Archivo', 'editarurl'),
-(4, 'Ejemplo de Prototipo Web.pdf', 'Archivo', 'editarurl');
