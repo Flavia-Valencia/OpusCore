@@ -112,13 +112,9 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                         <a href="estudiante-tramites-pendientes.php">Trámites pendientes</a>
                     </div>
                 </div>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>Mensajes</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-gear"></i>
-                    <span>Configuración</span>
+                <a href="estudiante-constancias.php" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Constancias</span>
                 </a>
             </nav>
 

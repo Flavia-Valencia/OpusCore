@@ -25,7 +25,7 @@ INSERT INTO `docentes` (`usuario_id`, `especialidad`, `fecha_nacimiento`, `gener
 (6, 'Diseño UI / UX', '2001-01-01', 'F', 500.00, '7634-8732', 'Usulután');
 
 INSERT INTO `PeriodoInscripcion` (`nombre`, `fechaInicio`, `fechaFin`,`fechaInicioCiclo`,`fechaFinCiclo`,`estado`) VALUES 
-('Periodo I - 2026', '2026-05-01', '2026-05-31','2026-01-01','2026-06-30', 1),
+('Periodo I - 2026', '2026-05-01', '2026-06-15','2026-01-01','2026-06-30', 1),
 ('Periodo II - 2026', '2026-07-01', '2026-07-31','2026-07-01','2026-12-31', 0);
 
 -- Insertar datos en las tablas de cursos, horarios, aulas, prerrequisitos y cursoHorario.
