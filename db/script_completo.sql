@@ -662,28 +662,30 @@ BEGIN
 END //
 
 -- trigger para validar que el docente no pueda generar constancias si no tiene el curso asignado o no tiene el curso aprobado
-CREATE TRIGGER `tr_validar_constancia_docente_insert`
-BEFORE INSERT ON `solicitudConstanciaDocente`
+CREATE TRIGGER tr_validar_constancia_docente_insert
+BEFORE INSERT ON solicitudConstanciaDocente
 FOR EACH ROW
 BEGIN
-    DECLARE v_id_docente_curso INT;
+    DECLARE v_usuario_docente INT;
     DECLARE v_fecha_fin_curso DATE;
 
-    SELECT idDocente, fechaFin INTO v_id_docente_curso, v_fecha_fin_curso
-    FROM `cursos`
-    WHERE `id` = NEW.idCurso
+    SELECT d.usuario_id, c.fechaFin
+    INTO v_usuario_docente, v_fecha_fin_curso
+    FROM cursos c
+    INNER JOIN docentes d ON c.idDocente = d.id
+    WHERE c.id = NEW.idCurso
     LIMIT 1;
 
-    IF v_id_docente_curso IS NULL OR v_id_docente_curso <> NEW.idDocente THEN
+    IF v_usuario_docente <> NEW.idDocente THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Error: No puedes solicitar una constancia para un curso que no tienes asignado.';
+        SET MESSAGE_TEXT = 'No puedes solicitar una constancia para un curso que no tienes asignado.';
     END IF;
 
     IF v_fecha_fin_curso > CURDATE() THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Error: No puedes solicitar la constancia hasta que el curso haya finalizado completamente.';
     END IF;
-END //
+END
 DELIMITER ;
 --
 -- Insertar datos en las tablas de usuarios, administradores, estudiantes y docentes.

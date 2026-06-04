@@ -155,6 +155,8 @@ $stmtSes->close();
                     <li onclick="window.location.href='docente-registro-notas.php'">
                         <i class="fas fa-chart-line"></i> Calificaciones
                     </li>
+                    <li onclick="window.location.href='docente-constancias.php'">
+                        <i class="fas fa-file-alt"></i> Constancias
                 </ul>
             </nav>
 
