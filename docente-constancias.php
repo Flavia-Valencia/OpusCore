@@ -18,9 +18,11 @@ function e($v) {
 /* ── Datos del usuario autenticado ── */
 $correo = $_SESSION["usuario"];
 $stmt = $conexion->prepare("
-    SELECT u.id AS usuario_id,
+    SELECT u.id        AS usuario_id,
+           d.id        AS docente_id,
            CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo
     FROM usuarios u
+    INNER JOIN docentes d ON d.usuario_id = u.id 
     WHERE u.correo = ?
     LIMIT 1
 ");
@@ -35,6 +37,7 @@ if (!$usuario) {
 }
 
 $idUsuario = (int) $usuario['usuario_id'];
+$idDocente = (int) $usuario['docente_id'];  
 
 /* ── Cursos finalizados del docente con estado de su solicitud de constancia ── */
 $stmt = $conexion->prepare("
@@ -60,7 +63,7 @@ $stmt = $conexion->prepare("
       AND c.estado = 1
     ORDER BY c.fechaFin DESC, c.nombre ASC
 ");
-$stmt->bind_param("ii", $idUsuario, $idUsuario);
+$stmt->bind_param("ii", $idDocente, $idUsuario);
 $stmt->execute();
 $cursos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
@@ -105,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
         WHERE idDocente = ? AND idCurso = ? AND estado = 'Pendiente'
         LIMIT 1
     ");
-    $dup->bind_param("ii", $idUsuario, $idCurso);
+    $dup->bind_param("ii", $idDocente, $idCurso);
     $dup->execute();
     $yaPendiente = $dup->get_result()->fetch_assoc();
     $dup->close();
@@ -115,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
             INSERT INTO solicitudConstanciaDocente (idDocente, idCurso, motivo)
             VALUES (?, ?, 'Trámite personal')
         ");
-        $ins->bind_param("ii", $idUsuario, $idCurso);
+        $ins->bind_param("ii", $idDocente, $idCurso);
         if ($ins->execute()) {
             $alerta     = 'Tu solicitud fue enviada. El equipo administrativo la procesará pronto.';
             $alertaTipo = 'exito';
@@ -155,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
           AND c.estado = 1
         ORDER BY c.fechaFin DESC, c.nombre ASC
     ");
-    $stmt2->bind_param("ii", $idUsuario, $idUsuario);
+    $stmt2->bind_param("ii", $idDocente, $idUsuario);
     $stmt2->execute();
     $cursos = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt2->close();
