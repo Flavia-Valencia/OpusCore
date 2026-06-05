@@ -2445,6 +2445,12 @@ body {
     border-left: 5px solid #86efac;
 }
 
+.toast-premium.toast-info {
+    background: linear-gradient(135deg, #0d4f8b, #069dbf);
+    color: #ffffff;
+    border-left: 5px solid #93c5fd;
+}
+
 .toast-premium i {
     font-size: 18px;
 }

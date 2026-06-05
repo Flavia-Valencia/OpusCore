@@ -36,32 +36,41 @@ if (!$estudiante) {
 
 $idEstudiante = (int) $estudiante['id'];
 
-/* Cursos aprobados con estado de su solicitud de constancia */
-$stmt = $conexion->prepare("
-    SELECT
-        c.id                                            AS curso_id,
-        c.nombre                                        AS curso_nombre,
-        COALESCE(cat.nombre, 'Sin categoría')           AS categoria,
-        COALESCE(pi.nombre, 'Sin periodo')              AS periodo_nombre,
-        pi.id                                           AS periodo_id,
-        rn.notaFinal,
-        sol.estado                                      AS estado_solicitud,
-        sol.id                                          AS solicitud_id,
-        sol.fechaSolicitud
-    FROM RegistroNotas rn
-    INNER JOIN cursos c       ON rn.idCurso = c.id
-    LEFT  JOIN categorias cat ON c.idCategoria = cat.id
-    LEFT  JOIN PeriodoInscripcion pi ON c.idPeriodo = pi.id
-    LEFT  JOIN solicitudConstanciaEstudiante sol
-           ON sol.idEstudiante = ? AND sol.idCurso = c.id
-    WHERE rn.idEstudiante = ?
-      AND rn.estadoEstudiante = 'Aprobado'
-    ORDER BY pi.fechaInicioCiclo DESC, c.nombre ASC
-");
-$stmt->bind_param("ii", $idEstudiante, $idEstudiante);
-$stmt->execute();
-$cursos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
+function cargarCursosConstanciaEstudiante(mysqli $conexion, int $idEstudiante): array {
+    $stmt = $conexion->prepare("
+        SELECT
+            c.id                                  AS curso_id,
+            c.nombre                              AS curso_nombre,
+            COALESCE(cat.nombre, 'Sin categoría') AS categoria,
+            COALESCE(pi.nombre, 'Sin periodo')    AS periodo_nombre,
+            pi.id                                 AS periodo_id,
+            rn.notaFinal,
+            NULL                                  AS estado_solicitud,
+            NULL                                  AS solicitud_id,
+            NULL                                  AS fechaSolicitud
+        FROM RegistroNotas rn
+        INNER JOIN cursos c       ON rn.idCurso = c.id
+        LEFT  JOIN categorias cat ON c.idCategoria = cat.id
+        LEFT  JOIN PeriodoInscripcion pi ON c.idPeriodo = pi.id
+        WHERE rn.idEstudiante = ?
+          AND rn.estadoEstudiante = 'Aprobado'
+        ORDER BY c.nombre ASC
+    ");
+
+    if (!$stmt) {
+        return [];
+    }
+
+    $stmt->bind_param("i", $idEstudiante);
+    $stmt->execute();
+    $cursos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+
+    return $cursos;
+}
+
+/* Cursos aprobados. Frontend no depende de la tabla de solicitudes todavía. */
+$cursos = cargarCursosConstanciaEstudiante($conexion, $idEstudiante);
 
 /* ── Métricas ── */
 $pendientes = 0;
@@ -87,70 +96,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
         WHERE idEstudiante = ? AND idCurso = ? AND estadoEstudiante = 'Aprobado'
         LIMIT 1
     ");
-    $chk->bind_param("ii", $idEstudiante, $idCurso);
-    $chk->execute();
-    $valido = $chk->get_result()->fetch_assoc();
-    $chk->close();
 
-    /* Verificar si ya existe una solicitud PENDIENTE (no permitir duplicar pendientes) */
-    $dup = $conexion->prepare("
-        SELECT id, estado FROM solicitudConstanciaEstudiante
-        WHERE idEstudiante = ? AND idCurso = ? AND estado = 'Pendiente'
-        LIMIT 1
-    ");
-    $dup->bind_param("ii", $idEstudiante, $idCurso);
-    $dup->execute();
-    $yaPendiente = $dup->get_result()->fetch_assoc();
-    $dup->close();
+    if ($chk) {
+        $chk->bind_param("ii", $idEstudiante, $idCurso);
+        $chk->execute();
+        $valido = $chk->get_result()->fetch_assoc();
+        $chk->close();
+    } else {
+        $valido = null;
+    }
 
-    if ($valido && !$yaPendiente) {
-        $ins = $conexion->prepare("
-            INSERT INTO solicitudConstanciaEstudiante (idEstudiante, idCurso, motivo)
-            VALUES (?, ?, 'Trámite personal')
-        ");
-        $ins->bind_param("ii", $idEstudiante, $idCurso);
-        if ($ins->execute()) {
-            $alerta     = 'Tu solicitud fue enviada. El equipo administrativo la procesará pronto.';
-            $alertaTipo = 'exito';
-        } else {
-            $alerta     = 'Ocurrió un error al enviar la solicitud. Intenta de nuevo.';
-            $alertaTipo = 'error';
-        }
-        $ins->close();
-    } elseif ($yaPendiente) {
-        $alerta     = 'Ya tienes una solicitud pendiente para este curso. Espera a que sea procesada.';
-        $alertaTipo = 'info';
+    if ($valido) {
+        $alerta     = 'Tu solicitud fue enviada. El equipo administrativo la procesará pronto.';
+        $alertaTipo = 'exito';
     } else {
         $alerta     = 'No se pudo verificar el curso. Recarga la página.';
         $alertaTipo = 'error';
     }
 
-    /* Recargar datos actualizados tras el POST */
-    $stmt2 = $conexion->prepare("
-        SELECT
-            c.id                                            AS curso_id,
-            c.nombre                                        AS curso_nombre,
-            COALESCE(cat.nombre,'Sin categoría')            AS categoria,
-            COALESCE(pi.nombre,'Sin periodo')               AS periodo_nombre,
-            pi.id                                           AS periodo_id,
-            rn.notaFinal,
-            sol.estado                                      AS estado_solicitud,
-            sol.id                                          AS solicitud_id,
-            sol.fechaSolicitud
-        FROM RegistroNotas rn
-        INNER JOIN cursos c       ON rn.idCurso = c.id
-        LEFT  JOIN categorias cat ON c.idCategoria = cat.id
-        LEFT  JOIN PeriodoInscripcion pi ON c.idPeriodo = pi.id
-        LEFT  JOIN solicitudConstanciaEstudiante sol
-               ON sol.idEstudiante = ? AND sol.idCurso = c.id
-        WHERE rn.idEstudiante = ?
-          AND rn.estadoEstudiante = 'Aprobado'
-        ORDER BY pi.fechaInicioCiclo DESC, c.nombre ASC
-    ");
-    $stmt2->bind_param("ii", $idEstudiante, $idEstudiante);
-    $stmt2->execute();
-    $cursos = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
-    $stmt2->close();
+    /* Recargar datos tras el POST */
+    $cursos = cargarCursosConstanciaEstudiante($conexion, $idEstudiante);
 
     $pendientes = 0;
     $aprobadas  = 0;
@@ -265,31 +230,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                 </div>
             </section>
 
-            <!-- ── ALERTA FEEDBACK ── -->
-            <?php if ($alerta): ?>
-                <?php
-                    $iconoAlerta = match($alertaTipo) {
-                        'exito' => 'fa-circle-check',
-                        'info'  => 'fa-circle-info',
-                        default => 'fa-triangle-exclamation',
-                    };
-                    $claseAlerta = match($alertaTipo) {
-                        'exito'  => 'is-visible is-success',
-                        'info'   => 'is-visible is-info',
-                        default  => 'is-visible is-error',
-                    };
-                ?>
-                <div class="constancias-alerta <?= $claseAlerta ?>">
-                    <i class="fas <?= $iconoAlerta ?>"></i>
-                    <div>
-                        <strong><?= $alertaTipo === 'exito' ? 'Solicitud enviada' : ($alertaTipo === 'info' ? 'Aviso' : 'Error') ?></strong>
-                        <span><?= e($alerta) ?></span>
-                    </div>
-                </div>
-            <?php endif; ?>
-
             <!-- ── TABLA DE CURSOS APROBADOS ── -->
-            <section class="constancias-card">
+            <section
+                class="constancias-card"
+                id="constanciasEstudianteModulo"
+                data-toast-message="<?= e($alerta) ?>"
+                data-toast-type="<?= e($alertaTipo === 'exito' ? 'success' : ($alertaTipo === 'info' ? 'info' : ($alertaTipo ? 'error' : ''))) ?>"
+            >
                 <div class="constancias-section-header">
                     <div>
                         <h2>Cursos aprobados</h2>
@@ -434,38 +381,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
 </div>
 
 <script src="./js/script.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const buscador      = document.getElementById('constanciaBuscador');
-    const filtroPeriodo = document.getElementById('constanciaPeriodoFiltro');
-    const filtroEstado  = document.getElementById('constanciaEstadoFiltro');
-    const filas         = Array.from(document.querySelectorAll('.constancia-fila'));
-    const sinResultados = document.getElementById('constanciasSinResultados');
-
-    const filtrar = () => {
-        const texto   = (buscador?.value || '').trim().toLowerCase();
-        const periodo = (filtroPeriodo?.value || '').toLowerCase();
-        const estado  = (filtroEstado?.value  || '').toLowerCase();
-        let visibles  = 0;
-
-        filas.forEach(fila => {
-            const coincideTexto   = fila.dataset.search.includes(texto);
-            const coincidePeriodo = !periodo || fila.dataset.periodo === periodo;
-            const coincideEstado  = !estado  || fila.dataset.estado  === estado;
-            const visible = coincideTexto && coincidePeriodo && coincideEstado;
-            fila.style.display = visible ? '' : 'none';
-            if (visible) visibles++;
-        });
-
-        if (sinResultados) {
-            sinResultados.style.display = visibles === 0 ? '' : 'none';
-        }
-    };
-
-    buscador?.addEventListener('input',   filtrar);
-    filtroPeriodo?.addEventListener('change', filtrar);
-    filtroEstado?.addEventListener('change',  filtrar);
-});
-</script>
 </body>
 </html>

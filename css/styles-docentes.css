@@ -959,6 +959,11 @@ body {
   border-left: 5px solid #7f1d1d;
 }
 
+.toast-premium.toast-info {
+  background: linear-gradient(135deg, #0d4f8b, #069DBF);
+  border-left: 5px solid #93c5fd;
+}
+
 .toast-premium i {
   font-size: 16px;
 }
@@ -1484,6 +1489,58 @@ body {
     padding: 8px 12px;
     background: #f1f5f9;
     border-radius: 10px;
+}
+
+/* Constancias docentes */
+.constancias-docente-page {
+  padding-bottom: 32px;
+}
+
+.constancias-docente-banner {
+  align-items: center;
+  gap: 22px;
+}
+
+.constancias-docente-metricas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 10px;
+  min-width: 280px;
+}
+
+.constancias-docente-metricas article {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.constancias-docente-metricas span {
+  display: block;
+  font-size: 11px;
+  opacity: 0.72;
+  margin-bottom: 6px;
+}
+
+.constancias-docente-metricas strong {
+  font-size: 22px;
+}
+
+.docente-constancias-card {
+  margin-top: 18px;
+}
+
+.docente-constancia-form .contenido-modal-actions {
+  padding-top: 0;
+}
+
+.docente-constancias-tabla {
+  min-width: 760px;
+}
+
+.docente-constancias-tabla th:first-child,
+.docente-constancias-tabla td:first-child {
+  text-align: left;
 }
 
 
