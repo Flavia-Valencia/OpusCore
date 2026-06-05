@@ -965,6 +965,11 @@ body {
   border-left: 5px solid #7f1d1d;
 }
 
+.toast-premium.toast-info {
+  background: linear-gradient(135deg, #0f5fa8, #38bdf8);
+  border-left: 5px solid #bae6fd;
+}
+
 .toast-premium i {
   font-size: 16px;
 }
@@ -1772,6 +1777,12 @@ body {
   text-align: left;
 }
 
+.constancias-tabla th:last-child,
+.constancias-tabla td[data-label="Acción"] {
+  text-align: center;
+  width: 150px;
+}
+
 .constancia-curso-nombre {
   display: block;
   color: #053170;
@@ -1821,10 +1832,13 @@ body {
 .constancia-generar-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  justify-content: center;
+  gap: 8px;
+  min-width: 118px;
+  min-height: 36px;
+  padding: 9px 14px;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   background: linear-gradient(135deg, #053170, #069DBF);
   color: #fff;
   font-family: inherit;
@@ -1833,6 +1847,12 @@ body {
   cursor: pointer;
   transition: transform 0.2s, opacity 0.2s;
   white-space: nowrap;
+}
+
+.constancia-form {
+  display: inline-flex;
+  justify-content: center;
+  margin: 0;
 }
 
 .constancia-generar-btn:hover {
@@ -1935,6 +1955,18 @@ body {
   .constancias-tabla td[data-label="Curso"]::before {
     display: block;
     margin-bottom: 4px;
+  }
+
+  .constancias-tabla td[data-label="Acción"] {
+    width: 100%;
+  }
+
+  .constancia-form {
+    flex: 1;
+  }
+
+  .constancia-generar-btn {
+    width: 100%;
   }
 
   .constancias-alerta {

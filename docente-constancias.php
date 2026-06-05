@@ -260,31 +260,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                 </div>
             </section>
 
-            <!-- ── ALERTA FEEDBACK ── -->
-            <?php if ($alerta): ?>
-                <?php
-                    $iconoAlerta = match($alertaTipo) {
-                        'exito' => 'fa-circle-check',
-                        'info'  => 'fa-circle-info',
-                        default => 'fa-triangle-exclamation',
-                    };
-                    $claseAlerta = match($alertaTipo) {
-                        'exito'  => 'is-visible is-success',
-                        'info'   => 'is-visible is-info',
-                        default  => 'is-visible is-error',
-                    };
-                ?>
-                <div class="constancias-alerta <?= $claseAlerta ?>">
-                    <i class="fas <?= $iconoAlerta ?>"></i>
-                    <div>
-                        <strong><?= $alertaTipo === 'exito' ? 'Solicitud enviada' : ($alertaTipo === 'info' ? 'Aviso' : 'Error') ?></strong>
-                        <span><?= e($alerta) ?></span>
-                    </div>
-                </div>
-            <?php endif; ?>
-
             <!-- ── TABLA DE CURSOS FINALIZADOS ── -->
-            <section class="contenido-card entregas-docente-card">
+            <section
+                class="contenido-card entregas-docente-card"
+                id="constanciasModulo"
+                data-toast-message="<?= e($alerta) ?>"
+                data-toast-type="<?= e($alertaTipo === 'exito' ? 'success' : ($alertaTipo === 'info' ? 'info' : ($alertaTipo ? 'error' : ''))) ?>"
+            >
                 <div class="contenido-card-header">
                     <div>
                         <h2>Cursos finalizados</h2>
@@ -366,7 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                                     };
 
                                     $btnDesactivado = ($estado === 'Pendiente');
-                                    $btnTexto       = $btnDesactivado ? 'Solicitado' : 'Solicitar constancia';
+                                    $btnTexto       = $btnDesactivado ? 'Solicitado' : 'Solicitar';
                                     $btnIcono       = $btnDesactivado ? 'fa-clock' : 'fa-paper-plane';
                                 ?>
                                 <tr
@@ -396,7 +378,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                                     </td>
                                     <td data-label="Acción">
                                         <?php if (!$btnDesactivado): ?>
-                                            <form method="POST" style="margin:0;">
+                                            <form method="POST" class="constancia-form">
                                                 <input type="hidden" name="idCurso" value="<?= (int)$c['curso_id'] ?>">
                                                 <button type="submit" class="constancia-generar-btn">
                                                     <i class="fas <?= $btnIcono ?>"></i> <?= $btnTexto ?>
@@ -426,38 +408,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
 
     <label for="sidebar-toggle" class="overlay"></label>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const buscador      = document.getElementById('constanciaBuscador');
-        const filtroPeriodo = document.getElementById('constanciaPeriodoFiltro');
-        const filtroEstado  = document.getElementById('constanciaEstadoFiltro');
-        const filas         = Array.from(document.querySelectorAll('.constancia-fila'));
-        const sinResultados = document.getElementById('constanciasSinResultados');
-
-        const filtrar = () => {
-            const texto   = (buscador?.value || '').trim().toLowerCase();
-            const periodo = (filtroPeriodo?.value || '').toLowerCase();
-            const estado  = (filtroEstado?.value  || '').toLowerCase();
-            let visibles  = 0;
-
-            filas.forEach(fila => {
-                const coincideTexto   = fila.dataset.search.includes(texto);
-                const coincidePeriodo = !periodo || fila.dataset.periodo === periodo;
-                const coincideEstado  = !estado  || fila.dataset.estado  === estado;
-                const visible = coincideTexto && coincidePeriodo && coincideEstado;
-                fila.style.display = visible ? '' : 'none';
-                if (visible) visibles++;
-            });
-
-            if (sinResultados) {
-                sinResultados.style.display = visibles === 0 ? '' : 'none';
-            }
-        };
-
-        buscador?.addEventListener('input',    filtrar);
-        filtroPeriodo?.addEventListener('change', filtrar);
-        filtroEstado?.addEventListener('change',  filtrar);
-    });
-    </script>
+    <script src="./js/script.js"></script>
 </body>
 </html>
