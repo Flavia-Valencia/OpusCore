@@ -274,31 +274,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                 </div>
             </section>
 
-            <!-- ── ALERTA FEEDBACK ── -->
-            <?php if ($alerta): ?>
-                <?php
-                    $iconoAlerta = match($alertaTipo) {
-                        'exito' => 'fa-circle-check',
-                        'info'  => 'fa-circle-info',
-                        default => 'fa-triangle-exclamation',
-                    };
-                    $claseAlerta = match($alertaTipo) {
-                        'exito'  => 'is-visible is-success',
-                        'info'   => 'is-visible is-info',
-                        default  => 'is-visible is-error',
-                    };
-                ?>
-                <div class="constancias-alerta <?= $claseAlerta ?>">
-                    <i class="fas <?= $iconoAlerta ?>"></i>
-                    <div>
-                        <strong><?= $alertaTipo === 'exito' ? 'Solicitud enviada' : ($alertaTipo === 'info' ? 'Aviso' : 'Error') ?></strong>
-                        <span><?= e($alerta) ?></span>
-                    </div>
-                </div>
-            <?php endif; ?>
-
             <!-- ── TABLA DE CURSOS APROBADOS ── -->
-            <section class="constancias-card">
+            <section
+                class="constancias-card"
+                id="constanciasModulo"
+                data-toast-message="<?= e($alerta) ?>"
+                data-toast-type="<?= e($alertaTipo === 'exito' ? 'success' : ($alertaTipo === 'info' ? 'info' : ($alertaTipo ? 'error' : ''))) ?>"
+            >
                 <div class="constancias-section-header">
                     <div>
                         <h2>Cursos aprobados</h2>
@@ -388,7 +370,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                                             'Rechazada' => 'rechazada',
                                             default     => 'sin solicitar',
                                         };
-
                                         $btnDesactivado = ($estado === 'Pendiente');
                                         $btnTexto       = $estado === 'Pendiente' ? 'Solicitado' : ($estado === 'Aprobada' ? 'Re-solicitar' : 'Solicitar constancia');
                                         $btnIcono       = $btnDesactivado ? 'fa-clock' : ($estado === 'Aprobada' ? 'fa-redo' : 'fa-paper-plane');
@@ -451,38 +432,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
 </div>
 
 <script src="./js/script.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const buscador      = document.getElementById('constanciaBuscador');
-    const filtroPeriodo = document.getElementById('constanciaPeriodoFiltro');
-    const filtroEstado  = document.getElementById('constanciaEstadoFiltro');
-    const filas         = Array.from(document.querySelectorAll('.constancia-fila'));
-    const sinResultados = document.getElementById('constanciasSinResultados');
-
-    const filtrar = () => {
-        const texto   = (buscador?.value || '').trim().toLowerCase();
-        const periodo = (filtroPeriodo?.value || '').toLowerCase();
-        const estado  = (filtroEstado?.value  || '').toLowerCase();
-        let visibles  = 0;
-
-        filas.forEach(fila => {
-            const coincideTexto   = fila.dataset.search.includes(texto);
-            const coincidePeriodo = !periodo || fila.dataset.periodo === periodo;
-            const coincideEstado  = !estado  || fila.dataset.estado  === estado;
-            const visible = coincideTexto && coincidePeriodo && coincideEstado;
-            fila.style.display = visible ? '' : 'none';
-            if (visible) visibles++;
-        });
-
-        if (sinResultados) {
-            sinResultados.style.display = visibles === 0 ? '' : 'none';
-        }
-    };
-
-    buscador?.addEventListener('input',   filtrar);
-    filtroPeriodo?.addEventListener('change', filtrar);
-    filtroEstado?.addEventListener('change',  filtrar);
-});
-</script>
 </body>
 </html>

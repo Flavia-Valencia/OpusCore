@@ -1341,7 +1341,7 @@ function mostrarToastPremium(mensaje, tipo = 'error') {
 
     const icono = tipo === 'success'
         ? '<i class="fa-solid fa-circle-check"></i>'
-        : '<i class="fa-solid fa-circle-exclamation"></i>';
+        : (tipo === 'info' ? '<i class="fa-solid fa-circle-info"></i>' : '<i class="fa-solid fa-circle-exclamation"></i>');
 
     const toast = document.createElement('div');
     toast.id = 'toastPremium';
@@ -4309,4 +4309,47 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+});
+
+// Constancias de estudiantes y docentes: toasts de respuesta y filtros de cursos.
+document.addEventListener('DOMContentLoaded', () => {
+    const modulo = document.getElementById('constanciasModulo');
+    if (!modulo) return;
+
+    const mensajeToast = modulo.dataset.toastMessage || '';
+    const tipoToast = modulo.dataset.toastType || 'info';
+    if (mensajeToast) {
+        mostrarToastPremium(mensajeToast, tipoToast);
+    }
+
+    const buscador = document.getElementById('constanciaBuscador');
+    const filtroPeriodo = document.getElementById('constanciaPeriodoFiltro');
+    const filtroEstado = document.getElementById('constanciaEstadoFiltro');
+    const filas = Array.from(document.querySelectorAll('.constancia-fila'));
+    const sinResultados = document.getElementById('constanciasSinResultados');
+
+    const filtrarConstancias = () => {
+        const texto = (buscador?.value || '').trim().toLowerCase();
+        const periodo = (filtroPeriodo?.value || '').toLowerCase();
+        const estado = (filtroEstado?.value || '').toLowerCase();
+        let visibles = 0;
+
+        filas.forEach(fila => {
+            const coincideTexto = fila.dataset.search.includes(texto);
+            const coincidePeriodo = !periodo || fila.dataset.periodo === periodo;
+            const coincideEstado = !estado || fila.dataset.estado === estado;
+            const visible = coincideTexto && coincidePeriodo && coincideEstado;
+
+            fila.style.display = visible ? '' : 'none';
+            if (visible) visibles++;
+        });
+
+        if (sinResultados) {
+            sinResultados.style.display = visibles === 0 ? '' : 'none';
+        }
+    };
+
+    buscador?.addEventListener('input', filtrarConstancias);
+    filtroPeriodo?.addEventListener('change', filtrarConstancias);
+    filtroEstado?.addEventListener('change', filtrarConstancias);
 });

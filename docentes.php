@@ -57,6 +57,9 @@ if(!isset($_SESSION["usuario"])){
                     <li onclick="window.location.href='docente-registro-notas.php'">
                         <i class="fas fa-chart-line"></i> Registro de Notas
                     </li>
+                    <li onclick="window.location.href='docente-constancias.php'">
+                        <i class="fas fa-file-alt"></i> Constancias
+                    </li>
                 </ul>
             </nav>
 

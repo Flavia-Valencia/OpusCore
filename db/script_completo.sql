@@ -347,13 +347,15 @@ CREATE TABLE `constancias` (
     `codigoConstancia` VARCHAR(50) NOT NULL UNIQUE,
     `tipo` ENUM('Estudiante', 'Docente') NOT NULL,
     `idUsuarioSolicitante` INT NOT NULL,
+    `idCurso` INT NOT NULL,
+    `fechaSolicitud` TIMESTAMP NULL,
     `idGeneradoPor` INT NOT NULL,
     `rutaPDF` VARCHAR(255) NOT NULL,
     `fechaGeneracion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT `fk_constancias_solicitante` FOREIGN KEY (`idUsuarioSolicitante`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT `fk_constancias_generador` FOREIGN KEY (`idGeneradoPor`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT `fk_constancias_generador` FOREIGN KEY (`idGeneradoPor`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `fk_constancias_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
--- Tabla para registrar las solicitudes de constancias por parte de los estudiantes.
 CREATE TABLE `solicitudConstanciaEstudiante` (
     `id` INT PRIMARY KEY AUTO_INCREMENT,
     `idEstudiante` INT NOT NULL,
@@ -361,7 +363,7 @@ CREATE TABLE `solicitudConstanciaEstudiante` (
     `motivo` VARCHAR(255) DEFAULT 'Trámite personal', -- es el motivo, ya que no hay seleccion se dejará default, pero en un futuro podría cambiar
     `estado` ENUM('Pendiente', 'Aprobada', 'Rechazada') DEFAULT 'Pendiente',
     `fechaSolicitud` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT `fk_sol_est_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `fk_sol_est_estudiante` FOREIGN KEY (`idEstudiante`) REFERENCES `estudiantes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `fk_sol_est_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 -- Tabla para registrar las solicitudes de constancias por parte de los docentes, el motivo se deja default pero se puede cambiar en un futuro.
@@ -372,7 +374,7 @@ CREATE TABLE `solicitudConstanciaDocente` (
     `motivo` VARCHAR(255) DEFAULT 'Trámite personal',
     `estado` ENUM('Pendiente', 'Aprobada', 'Rechazada') DEFAULT 'Pendiente',
     `fechaSolicitud` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT `fk_sol_doc_docente` FOREIGN KEY (`idDocente`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT `fk_sol_doc_docente` FOREIGN KEY (`idDocente`) REFERENCES `docentes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `fk_sol_doc_curso` FOREIGN KEY (`idCurso`) REFERENCES `cursos` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -650,7 +652,7 @@ FOR EACH ROW
 BEGIN
     DECLARE v_estado_curso VARCHAR(50);
 
-    SELECT estado INTO v_estado_curso
+    SELECT estadoEstudiante INTO v_estado_curso
     FROM `RegistroNotas`
     WHERE `idEstudiante` = NEW.idEstudiante AND `idCurso` = NEW.idCurso
     LIMIT 1;
