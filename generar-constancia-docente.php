@@ -1,4 +1,10 @@
 <?php
+// Verifica que el usuario (administrador) haya iniciado sesión antes de procesar la solicitud.
+// Obtiene los datos completos del docente y el curso asociado a la solicitud de constancia.
+// Valida que la información del docente esté completa (nombre, apellido, correo) y que el curso
+// tenga período asignado. Genera un código correlativo único, renderiza la plantilla HTML,
+// produce el PDF con Dompdf, lo guarda en disco, registra la constancia en la base de datos,
+// actualiza el estado de la solicitud a Aprobada y envía el PDF al correo del docente.
 session_start();
 error_reporting(0);
 ini_set('display_errors', 0);
@@ -27,7 +33,6 @@ if (!$solicitudId) {
     exit();
 }
 
-// 1. Obtener datos completos de la solicitud del docente
 $stmt = $conexion->prepare("
     SELECT
         sol.id              AS solicitud_id,
@@ -61,7 +66,6 @@ if (!$sol) {
     exit();
 }
 
-// 2. Validar datos completos del docente
 if (empty($sol['nombre']) || empty($sol['apellido']) || empty($sol['correo'])) {
     echo json_encode(['error' => true, 'mensaje' => 'El docente no tiene información completa (nombre, apellido o correo)']);
     exit();
@@ -72,10 +76,8 @@ if (empty($sol['curso_nombre']) || empty($sol['periodo_nombre'])) {
     exit();
 }
 
-// 3. Generar código único de constancia
 $codigo = 'CONST-' . strtoupper(substr(md5(uniqid($solicitudId, true)), 0, 8));
 
-// 4. Preparar variables para la plantilla
 date_default_timezone_set('America/El_Salvador');
 $solicitante    = $sol['nombre'] . ' ' . $sol['apellido'];
 $correo         = $sol['correo'];
@@ -95,12 +97,10 @@ $fechaActividad = $fechaSolicitud;
 $codigoConstancia = $codigo;
 $estado         = 'Generada';
 
-// 5. Renderizar plantilla HTML
 ob_start();
 include __DIR__ . '/comprobantes/vista-constancia-administrativa.php';
 $htmlConstancia = ob_get_clean();
 
-// 6. Generar PDF con dompdf
 $options = new Options();
 $options->set('isHtml5ParserEnabled', true);
 $options->set('isRemoteEnabled', true);
@@ -112,7 +112,6 @@ $dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 $pdfOutput = $dompdf->output();
 
-// 7. Guardar PDF en disco
 $carpeta = __DIR__ . '/uploads/constancias/';
 if (!is_dir($carpeta)) {
     mkdir($carpeta, 0755, true);
@@ -122,7 +121,6 @@ $rutaCompleta  = $carpeta . $nombreArchivo;
 file_put_contents($rutaCompleta, $pdfOutput);
 $rutaRelativa  = 'uploads/constancias/' . $nombreArchivo;
 
-// 8. Insertar en tabla constancias
 $stmtAdmin = $conexion->prepare("SELECT id FROM usuarios WHERE correo = ? LIMIT 1");
 $stmtAdmin->bind_param("s", $_SESSION['usuario']);
 $stmtAdmin->execute();
@@ -138,13 +136,11 @@ $ins->bind_param("siis", $codigo, $sol['usuario_id'], $idAdmin, $rutaRelativa);
 $ins->execute();
 $ins->close();
 
-// 9. Actualizar estado de la solicitud a Aprobada
 $upd = $conexion->prepare("UPDATE solicitudConstanciaDocente SET estado = 'Aprobada' WHERE id = ?");
 $upd->bind_param("i", $solicitudId);
 $upd->execute();
 $upd->close();
 
-// 10. Enviar PDF por correo al docente
 $mail = new PHPMailer(true);
 try {
     $mail->isSMTP();
@@ -177,7 +173,6 @@ try {
     $mail->send();
 } catch (Exception $e) {
     error_log('Error enviando constancia docente: ' . $e->getMessage());
-    // No falla la respuesta al admin si el correo falla
 }
 
 echo json_encode([

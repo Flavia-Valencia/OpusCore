@@ -348,8 +348,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                                     };
 
                                     $btnDesactivado = ($estado === 'Pendiente');
-                                    $btnTexto       = $btnDesactivado ? 'Solicitado' : 'Solicitar';
-                                    $btnIcono       = $btnDesactivado ? 'fa-clock' : 'fa-paper-plane';
+                                    $btnTexto       = $btnDesactivado ? 'Solicitado' : ($estado === 'Aprobada' ? 'Re-solicitar' : 'Solicitar');
+                                    $btnIcono       = $btnDesactivado ? 'fa-clock' : ($estado === 'Aprobada' ? 'fa-rotate-right' : 'fa-paper-plane');
                                 ?>
                                 <tr
                                     class="constancia-fila"
