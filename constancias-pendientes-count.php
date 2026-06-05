@@ -9,7 +9,10 @@ if (!isset($_SESSION['usuario'])) {
 
 require_once 'includes/conexion.php';
 
-$result = $conexion->query("SELECT COUNT(*) AS total FROM solicitudConstanciaEstudiante WHERE estado = 'Pendiente'");
-$row    = $result->fetch_assoc();
+$resEst = $conexion->query("SELECT COUNT(*) AS total FROM solicitudConstanciaEstudiante WHERE estado = 'Pendiente'");
+$totalEst = $resEst ? (int)$resEst->fetch_assoc()['total'] : 0;
 
-echo json_encode(['total' => (int)$row['total']]);
+$resDoc = $conexion->query("SELECT COUNT(*) AS total FROM solicitudConstanciaDocente WHERE estado = 'Pendiente'");
+$totalDoc = $resDoc ? (int)$resDoc->fetch_assoc()['total'] : 0;
+
+echo json_encode(['total' => $totalEst + $totalDoc]);
