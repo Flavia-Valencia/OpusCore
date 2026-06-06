@@ -86,16 +86,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
     $telefono = trim($solInfo['telefono'] ?? '');
     $direccion = trim($solInfo['direccion'] ?? '');
     
-    if (empty($nombre) || empty($apellido) || empty($correo) || empty($telefono) || empty($direccion)) {
-        echo json_encode([
-            'error' => true, 
-            'mensaje' => 'La información del usuario está incompleta. Verifique que tenga nombre, apellido, correo, teléfono y dirección antes de generar la constancia.'
-        ]);
+    $camposBase = empty($nombre) || empty($apellido) || empty($correo);
+    $camposEstudiante = ($tipoRol === 'EST') && (empty($telefono) || empty($direccion));
+
+    if ($camposBase || $camposEstudiante) {
+        echo json_encode(['error' => true, 'mensaje' => 'La información del usuario está incompleta. Verifique que tenga nombre, apellido y correo antes de generar la constancia.']);
         exit();
     }
     
     //Generar la constancia y el PDF
-    $codigoConstancia = 'CONST-' . date('Y') . '-' . str_pad($solicitudId, 4, '0', STR_PAD_LEFT);
+    $resNum = $conexion->query("SELECT COUNT(*) AS total FROM constancias");
+    $siguiente = ($resNum->fetch_assoc()['total'] ?? 0) + 1;
+    $codigoConstancia = 'CONST-' . date('Y') . '-' . str_pad($siguiente, 4, '0', STR_PAD_LEFT);
     $solicitante = $nombre . ' ' . $apellido;
     $destino = ($tipoRol === 'EST') ? 'Estudiante' : 'Docente';
     $tipoConstancia = ($tipoRol === 'EST') ? 'Constancia de aprobación de curso' : 'Constancia de docencia impartida';
@@ -574,8 +576,6 @@ if ($resHist) {
                 <select id="constanciaTipoFiltro" class="constancia-filtro-control">
                     <option value="">Todos los tipos</option>
                     <option value="Constancia de aprobación de curso">Constancia de aprobación de curso</option>
-                    <option value="Constancia de participación académica">Constancia de participación académica</option>
-                    <option value="Constancia de inscripción activa">Constancia de inscripción activa</option>
                     <option value="Constancia de docencia impartida">Constancia de docencia impartida</option>
                 </select>
                 <input type="date" id="constanciaFechaFiltro" class="constancia-filtro-control">

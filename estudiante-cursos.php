@@ -154,7 +154,7 @@ sort($categorias);
                     <p>Explora los cursos que forman parte de la oferta académica.</p>
                 </div>
                 <div class="banner-fecha">
-                    <strong><?= date('d/m/Y') ?></strong>
+                    <strong id="fecha-hoy"></strong>
                 </div>
             </div>
 

@@ -166,7 +166,7 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
             }
             countAnterior = data.total;
         } catch (e) {
-            console.error("Error al verificar solicitudes:", e);
+            console.warn("Polling constancias: sin conexión momentánea", e);
         }
     };
     
