@@ -576,8 +576,6 @@ if ($resHist) {
                 <select id="constanciaTipoFiltro" class="constancia-filtro-control">
                     <option value="">Todos los tipos</option>
                     <option value="Constancia de aprobación de curso">Constancia de aprobación de curso</option>
-                    <option value="Constancia de participación académica">Constancia de participación académica</option>
-                    <option value="Constancia de inscripción activa">Constancia de inscripción activa</option>
                     <option value="Constancia de docencia impartida">Constancia de docencia impartida</option>
                 </select>
                 <input type="date" id="constanciaFechaFiltro" class="constancia-filtro-control">

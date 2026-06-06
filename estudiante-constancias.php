@@ -260,7 +260,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
             <section class="constancias-banner">
                 <div class="constancias-banner-texto">
                     <h2>Mis Constancias</h2>
-                    <p>Aquí aparecen los cursos que has aprobado. Envía una solicitud y el equipo administrativo generará tu constancia.</p>
+                    <p>Aquí podrás solicitar las constancias para los cursos que has aprobado. Envía una solicitud y el equipo administrativo generará tu constancia.</p>
                 </div>
                 <div class="constancias-metricas">
                     <article>
@@ -283,8 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
             >
                 <div class="constancias-section-header">
                     <div>
-                        <h2>Cursos aprobados</h2>
-                        <p>Solo se muestran cursos con calificación aprobada. Puedes solicitar una constancia por curso.</p>
+                        <p class="constancia-badge generada">Una vez aprobada la constancia, podrás visualizarla en tu correo electrónico.</p>
                     </div>
                 </div>
 
@@ -318,7 +317,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                             <option value="sin solicitar">Sin solicitar</option>
                             <option value="solicitado">Solicitado</option>
                             <option value="aprobada">Aprobada</option>
-                            <option value="rechazada">Rechazada</option>
                         </select>
                     </div>
                 </div>
@@ -360,19 +358,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                                         [$badgeClase, $badgeTexto] = match($estado) {
                                             'Pendiente' => ['pendiente', 'Solicitado'],
                                             'Aprobada'  => ['generada',  'Aprobada'],
-                                            'Rechazada' => ['rechazada', 'Rechazada'],
                                             default     => ['sin-sol',   'Sin solicitar'],
                                         };
 
                                         $dataEstado = match($estado) {
                                             'Pendiente' => 'solicitado',
                                             'Aprobada'  => 'aprobada',
-                                            'Rechazada' => 'rechazada',
                                             default     => 'sin solicitar',
                                         };
                                         $btnDesactivado = ($estado === 'Pendiente');
-                                        $btnTexto       = $estado === 'Pendiente' ? 'Solicitado' : ($estado === 'Aprobada' ? 'Re-solicitar' : 'Solicitar constancia');
-                                        $btnIcono       = $btnDesactivado ? 'fa-clock' : ($estado === 'Aprobada' ? 'fa-redo' : 'fa-paper-plane');
+                                        $btnTexto       = $estado === 'Pendiente' ? 'Solicitado' : ($estado === 'Aprobada' ? 'Resolicitar constancia' : 'Solicitar constancia');
+                                        $btnIcono       = $btnDesactivado ? 'fa-clock' : ($estado === 'Aprobada' ? 'fa-rotate-right' : 'fa-file-export');
                                     }
                                 ?>
                                 <tr

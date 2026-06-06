@@ -269,8 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
             >
                 <div class="contenido-card-header">
                     <div>
-                        <h2>Cursos finalizados</h2>
-                        <p>Solo se muestran cursos cuya fecha de fin ya pasó. Puedes solicitar una constancia por curso.</p>
+                        <p class="constancia-badge generada">Una vez aprobada la constancia, podrás visualizarla en tu correo electrónico.</p>
                     </div>
                 </div>
 
@@ -348,8 +347,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                                     };
 
                                     $btnDesactivado = ($estado === 'Pendiente');
-                                    $btnTexto       = $btnDesactivado ? 'Solicitado' : ($estado === 'Aprobada' ? 'Re-solicitar' : 'Solicitar');
-                                    $btnIcono       = $btnDesactivado ? 'fa-clock' : ($estado === 'Aprobada' ? 'fa-rotate-right' : 'fa-paper-plane');
+                                    $btnTexto       = $btnDesactivado ? 'Solicitado' : ($estado === 'Aprobada' ? 'Resolicitar constancia' : 'Solicitar constancia');
+                                    $btnIcono       = $btnDesactivado ? 'fa-clock' : ($estado === 'Aprobada' ? 'fa-rotate-right' : 'fa-file-export');
                                 ?>
                                 <tr
                                     class="constancia-fila"

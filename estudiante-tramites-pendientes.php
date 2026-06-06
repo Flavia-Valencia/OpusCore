@@ -180,7 +180,7 @@ $totalPendiente = array_sum(array_map(fn($pago) => (float) $pago['monto'], $tram
                     <p>Consulta los pagos que siguen pendientes para completar tus cursos.</p>
                 </div>
                 <div class="banner-fecha">
-                    <strong><?= date('d/m/Y') ?></strong>
+                    <strong id="fecha-hoy"></strong>
                 </div>
             </div>
 

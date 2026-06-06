@@ -215,8 +215,7 @@ $periodos = array_values(array_unique(array_map(fn($fila) => $fila['periodo_nomb
                         <p>Consulta tus notas por curso, actividades, examen final y estado académico.</p>
                     </div>
                     <div class="banner-fecha">
-                        <span>Actualizado</span>
-                        <strong><?= date('d/m/Y') ?></strong>
+                        <strong id="fecha-hoy"></strong>
                     </div>
                 </section>
 
