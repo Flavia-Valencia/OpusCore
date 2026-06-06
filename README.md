@@ -173,7 +173,7 @@ En caso de dudas con la instalación, contactar a:
 ![Estudiante](Evidencias/docente.png)
 
 ## Version del Sistema
-v0.4 – Sprint 4
+v0.4 – Sprint 4 (Versión Final)
 
 ## Autor(es)
 OpusCore - Equipo de Desarollo
