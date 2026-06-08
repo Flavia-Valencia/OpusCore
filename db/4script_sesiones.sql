@@ -136,18 +136,6 @@ DO
     WHERE `fechaLimite` < NOW()
       AND `estado` = 1
 //
-
--- Evita editar la tarea si ya llegó al tiempo límite
-CREATE TRIGGER `tr_validar_edicion_tarea`
-BEFORE UPDATE ON `tareas`
-FOR EACH ROW
-BEGIN
-    IF OLD.fechaLimite < NOW() AND OLD.estado = 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Error: No se puede editar una tarea cuya fecha límite ya venció';
-    END IF;
-END //
-
 -- No permitir entregas si la fecha límite ya venció
 CREATE TRIGGER `tr_validar_fecha_entrega`
 BEFORE INSERT ON `entregablesTarea`

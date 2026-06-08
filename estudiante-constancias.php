@@ -36,7 +36,7 @@ if (!$estudiante) {
 
 $idEstudiante = (int) $estudiante['id'];
 
-// Cursos aprobados con el estado actual de cada solicitud de constancia.
+// Cursos inscritos con nota y estado actual de solicitud de constancia.
 $stmt = $conexion->prepare("
     SELECT
         c.id                                            AS curso_id,
@@ -45,20 +45,22 @@ $stmt = $conexion->prepare("
         COALESCE(pi.nombre, 'Sin periodo')              AS periodo_nombre,
         pi.id                                           AS periodo_id,
         rn.notaFinal,
+        rn.estadoEstudiante                             AS estado_academico,
         sol.estado                                      AS estado_solicitud,
         sol.id                                          AS solicitud_id,
         sol.fechaSolicitud
-    FROM RegistroNotas rn
-    INNER JOIN cursos c       ON rn.idCurso = c.id
+    FROM inscripciones i
+    INNER JOIN cursos c       ON i.idCurso = c.id
     LEFT  JOIN categorias cat ON c.idCategoria = cat.id
     LEFT  JOIN PeriodoInscripcion pi ON c.idPeriodo = pi.id
+    LEFT  JOIN RegistroNotas rn
+           ON rn.idEstudiante = i.idEstudiante AND rn.idCurso = c.id
     LEFT  JOIN solicitudConstanciaEstudiante sol
-           ON sol.idEstudiante = ? AND sol.idCurso = c.id
-    WHERE rn.idEstudiante = ?
-      AND rn.estadoEstudiante = 'Aprobado'
+           ON sol.idEstudiante = i.idEstudiante AND sol.idCurso = c.id
+    WHERE i.idEstudiante = ?
     ORDER BY pi.fechaInicioCiclo DESC, c.nombre ASC
 ");
-$stmt->bind_param("ii", $idEstudiante, $idEstudiante);
+$stmt->bind_param("i", $idEstudiante);
 $stmt->execute();
 $cursos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
@@ -81,16 +83,19 @@ $alertaTipo = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
     $idCurso = (int) $_POST['idCurso'];
 
-    // Confirma que el estudiante aprobo el curso solicitado.
+    // Confirma que el estudiante aprobo el curso con nota suficiente.
     $chk = $conexion->prepare("
-        SELECT id FROM RegistroNotas
-        WHERE idEstudiante = ? AND idCurso = ? AND estadoEstudiante = 'Aprobado'
+        SELECT id, notaFinal, estadoEstudiante FROM RegistroNotas
+        WHERE idEstudiante = ? AND idCurso = ?
         LIMIT 1
     ");
     $chk->bind_param("ii", $idEstudiante, $idCurso);
     $chk->execute();
-    $valido = $chk->get_result()->fetch_assoc();
+    $notaInfo = $chk->get_result()->fetch_assoc();
     $chk->close();
+
+    // Evita duplicar solicitudes pendientes para el mismo curso.
+    $aprobado = ($notaInfo && $notaInfo['estadoEstudiante'] === 'Aprobado' && (float)$notaInfo['notaFinal'] >= 6.00);
 
     // Evita duplicar solicitudes pendientes para el mismo curso.
     $dup = $conexion->prepare("
@@ -103,26 +108,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
     $yaPendiente = $dup->get_result()->fetch_assoc();
     $dup->close();
 
-    if ($valido && !$yaPendiente) {
+    if (!$aprobado) {
+        $alerta     = 'No cumples con los requisitos para solicitar la constancia de este curso. Debes tener una nota final de 6.00 o superior y el curso aprobado.';
+        $alertaTipo = 'error';
+    } elseif ($yaPendiente) {
+        $alerta     = 'Ya tienes una solicitud pendiente para este curso. Espera a que sea procesada.';
+        $alertaTipo = 'info';
+    } else {
         $ins = $conexion->prepare("
             INSERT INTO solicitudConstanciaEstudiante (idEstudiante, idCurso, motivo)
             VALUES (?, ?, 'Trámite personal')
         ");
         $ins->bind_param("ii", $idEstudiante, $idCurso);
-        if ($ins->execute()) {
-            $alerta     = 'Tu solicitud fue enviada. El equipo administrativo la procesará pronto.';
-            $alertaTipo = 'exito';
-        } else {
-            $alerta     = 'Ocurrió un error al enviar la solicitud. Intenta de nuevo.';
+        try {
+            if ($ins->execute()) {
+                $alerta     = 'Tu solicitud fue enviada. El equipo administrativo la procesará pronto.';
+                $alertaTipo = 'exito';
+            } else {
+                $alerta     = 'Ocurrió un error al enviar la solicitud. Intenta de nuevo.';
+                $alertaTipo = 'error';
+            }
+        } catch (mysqli_sql_exception $e) {
+            $alerta     = 'Error al procesar la solicitud: ' . $e->getMessage();
             $alertaTipo = 'error';
         }
         $ins->close();
-    } elseif ($yaPendiente) {
-        $alerta     = 'Ya tienes una solicitud pendiente para este curso. Espera a que sea procesada.';
-        $alertaTipo = 'info';
-    } else {
-        $alerta     = 'No se pudo verificar el curso. Recarga la página.';
-        $alertaTipo = 'error';
     }
 
     // Recarga cursos y estados luego de guardar la solicitud.
@@ -134,20 +144,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
             COALESCE(pi.nombre,'Sin periodo')               AS periodo_nombre,
             pi.id                                           AS periodo_id,
             rn.notaFinal,
+            rn.estadoEstudiante                             AS estado_academico,
             sol.estado                                      AS estado_solicitud,
             sol.id                                          AS solicitud_id,
             sol.fechaSolicitud
-        FROM RegistroNotas rn
-        INNER JOIN cursos c       ON rn.idCurso = c.id
+        FROM inscripciones i
+        INNER JOIN cursos c       ON i.idCurso = c.id
         LEFT  JOIN categorias cat ON c.idCategoria = cat.id
         LEFT  JOIN PeriodoInscripcion pi ON c.idPeriodo = pi.id
+        LEFT  JOIN RegistroNotas rn
+               ON rn.idEstudiante = i.idEstudiante AND rn.idCurso = c.id
         LEFT  JOIN solicitudConstanciaEstudiante sol
-               ON sol.idEstudiante = ? AND sol.idCurso = c.id
-        WHERE rn.idEstudiante = ?
-          AND rn.estadoEstudiante = 'Aprobado'
+               ON sol.idEstudiante = i.idEstudiante AND sol.idCurso = c.id
+        WHERE i.idEstudiante = ?
         ORDER BY pi.fechaInicioCiclo DESC, c.nombre ASC
     ");
-    $stmt2->bind_param("ii", $idEstudiante, $idEstudiante);
+    $stmt2->bind_param("i", $idEstudiante);
     $stmt2->execute();
     $cursos = $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt2->close();
@@ -251,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
             <section class="constancias-banner">
                 <div class="constancias-banner-texto">
                     <h2>Mis Constancias</h2>
-                    <p>Aquí aparecen los cursos que has aprobado. Envía una solicitud y el equipo administrativo generará tu constancia.</p>
+                    <p>Aquí podrás solicitar las constancias para los cursos que has aprobado. Envía una solicitud y el equipo administrativo generará tu constancia.</p>
                 </div>
                 <div class="constancias-metricas">
                     <article>
@@ -265,35 +277,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                 </div>
             </section>
 
-            <!-- Mensaje de resultado despues de solicitar constancia -->
-            <?php if ($alerta): ?>
-                <?php
-                    $iconoAlerta = match($alertaTipo) {
-                        'exito' => 'fa-circle-check',
-                        'info'  => 'fa-circle-info',
-                        default => 'fa-triangle-exclamation',
-                    };
-                    $claseAlerta = match($alertaTipo) {
-                        'exito'  => 'is-visible is-success',
-                        'info'   => 'is-visible is-info',
-                        default  => 'is-visible is-error',
-                    };
-                ?>
-                <div class="constancias-alerta <?= $claseAlerta ?>">
-                    <i class="fas <?= $iconoAlerta ?>"></i>
-                    <div>
-                        <strong><?= $alertaTipo === 'exito' ? 'Solicitud enviada' : ($alertaTipo === 'info' ? 'Aviso' : 'Error') ?></strong>
-                        <span><?= e($alerta) ?></span>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <!-- Tabla de cursos aprobados disponibles para solicitud -->
-            <section class="constancias-card">
+            <!-- Tabla de cursos disponibles para solicitud de constancia -->
+            <section
+                class="constancias-card"
+                id="constanciasModulo"
+                data-toast-message="<?= e($alerta) ?>"
+                data-toast-type="<?= e($alertaTipo === 'exito' ? 'success' : ($alertaTipo === 'info' ? 'info' : ($alertaTipo ? 'error' : ''))) ?>"
+            >
                 <div class="constancias-section-header">
                     <div>
-                        <h2>Cursos aprobados</h2>
-                        <p>Solo se muestran cursos con calificación aprobada. Puedes solicitar una constancia por curso.</p>
+                        <p class="constancia-badge generada">Una vez aprobada la constancia, podrás visualizarla en tu correo electrónico.</p>
                     </div>
                 </div>
 
@@ -327,7 +320,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                             <option value="sin solicitar">Sin solicitar</option>
                             <option value="solicitado">Solicitado</option>
                             <option value="aprobada">Aprobada</option>
-                            <option value="rechazada">Rechazada</option>
                         </select>
                     </div>
                 </div>
@@ -355,27 +347,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                             <?php else: ?>
                                 <?php foreach ($cursos as $c):
                                     $estado = $c['estado_solicitud'] ?? null;
+                                    $aprobado = ($c['estado_academico'] === 'Aprobado' && (float)$c['notaFinal'] >= 6.00);
 
-                                    // Estado visual mostrado en la tabla.
-                                    [$badgeClase, $badgeTexto] = match($estado) {
-                                        'Pendiente' => ['pendiente', 'Solicitado'],
-                                        'Aprobada'  => ['generada',  'Aprobada'],
-                                        'Rechazada' => ['rechazada', 'Rechazada'],
-                                        default     => ['sin-sol',   'Sin solicitar'],
-                                    };
+                                    // Estado visual y elegibilidad para solicitar constancia.
+                                    if (!$aprobado) {
+                                        $badgeClase = 'rechazada';
+                                        $badgeTexto = 'No Cumple Requisitos';
+                                        $dataEstado = 'sin solicitar';
+                                        $btnDesactivado = true;
+                                        $btnTexto = 'No elegible';
+                                        $btnIcono = 'fa-ban';
+                                    } else {
+                                        [$badgeClase, $badgeTexto] = match($estado) {
+                                            'Pendiente' => ['pendiente', 'Solicitado'],
+                                            'Aprobada'  => ['generada',  'Aprobada'],
+                                            default     => ['sin-sol',   'Sin solicitar'],
+                                        };
 
-                                    // Valor normalizado para el filtro de estado.
-                                    $dataEstado = match($estado) {
-                                        'Pendiente' => 'solicitado',
-                                        'Aprobada'  => 'aprobada',
-                                        'Rechazada' => 'rechazada',
-                                        default     => 'sin solicitar',
-                                    };
-
-                                    // Solo se bloquea cuando ya existe una solicitud pendiente.
-                                    $btnDesactivado = ($estado === 'Pendiente');
-                                    $btnTexto       = $btnDesactivado ? 'Solicitado' : 'Solicitar constancia';
-                                    $btnIcono       = $btnDesactivado ? 'fa-clock' : 'fa-paper-plane';
+                                        $dataEstado = match($estado) {
+                                            'Pendiente' => 'solicitado',
+                                            'Aprobada'  => 'aprobada',
+                                            default     => 'sin solicitar',
+                                        };
+                                        $btnDesactivado = ($estado === 'Pendiente');
+                                        $btnTexto       = $estado === 'Pendiente' ? 'Solicitado' : ($estado === 'Aprobada' ? 'Resolicitar constancia' : 'Solicitar constancia');
+                                        $btnIcono       = $btnDesactivado ? 'fa-clock' : ($estado === 'Aprobada' ? 'fa-rotate-right' : 'fa-file-export');
+                                    }
                                 ?>
                                 <tr
                                     class="constancia-fila"
@@ -434,38 +431,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
 </div>
 
 <script src="./js/script.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const buscador      = document.getElementById('constanciaBuscador');
-    const filtroPeriodo = document.getElementById('constanciaPeriodoFiltro');
-    const filtroEstado  = document.getElementById('constanciaEstadoFiltro');
-    const filas         = Array.from(document.querySelectorAll('.constancia-fila'));
-    const sinResultados = document.getElementById('constanciasSinResultados');
-
-    const filtrar = () => {
-        const texto   = (buscador?.value || '').trim().toLowerCase();
-        const periodo = (filtroPeriodo?.value || '').toLowerCase();
-        const estado  = (filtroEstado?.value  || '').toLowerCase();
-        let visibles  = 0;
-
-        filas.forEach(fila => {
-            const coincideTexto   = fila.dataset.search.includes(texto);
-            const coincidePeriodo = !periodo || fila.dataset.periodo === periodo;
-            const coincideEstado  = !estado  || fila.dataset.estado  === estado;
-            const visible = coincideTexto && coincidePeriodo && coincideEstado;
-            fila.style.display = visible ? '' : 'none';
-            if (visible) visibles++;
-        });
-
-        if (sinResultados) {
-            sinResultados.style.display = visibles === 0 ? '' : 'none';
-        }
-    };
-
-    buscador?.addEventListener('input',   filtrar);
-    filtroPeriodo?.addEventListener('change', filtrar);
-    filtroEstado?.addEventListener('change',  filtrar);
-});
-</script>
 </body>
 </html>

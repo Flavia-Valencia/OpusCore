@@ -49,8 +49,8 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
     });
 });
 
-// Modulo de constancias administrativas (admin-constancias.php)
-document.addEventListener('DOMContentLoaded', () => {
+// MODULO CONSTANCIAS ADMINISTRATIVAS
+ document.addEventListener('DOMContentLoaded', () => {
     const solicitudesWrap = document.getElementById('constanciasSolicitudes');
     if (!solicitudesWrap) return;
 
@@ -65,42 +65,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const buscador = document.getElementById('constanciaBuscador');
     const tipoFiltro = document.getElementById('constanciaTipoFiltro');
     const fechaFiltro = document.getElementById('constanciaFechaFiltro');
-    const historial = [];
-
-    const fechaHoy = () => new Date().toISOString().slice(0, 10);
-    const horaActual = () => new Date().toLocaleTimeString('es-SV', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
 
     // Mantiene sincronizados los contadores y el estado vacio de solicitudes.
     const actualizarKpis = () => {
         const pendientes = solicitudesWrap.querySelectorAll('.constancia-solicitud').length;
         pendientesKpi.textContent = pendientes;
-        generadasKpi.textContent = historial.length;
-        historialKpi.textContent = historial.length;
+        const totalHistorial = historialBody.querySelectorAll('tr[data-historial]').length;
+        historialKpi.textContent = totalHistorial;
         solicitudesEmpty.hidden = pendientes > 0;
     };
 
     // Muestra avisos temporales solo despues de una accion del admin.
-    const mostrarAlerta = (registro) => {
-        alerta.classList.remove('is-success', 'is-info');
-        alerta.classList.add(registro.alertaTipo || 'is-success', 'is-visible');
-        alertaTexto.textContent = registro.mensaje || `${registro.tipo} de ${registro.curso} fue enviada al historial.`;
+    const mostrarAlerta = (mensaje, tipo) => {
+        alerta.classList.remove('is-success', 'is-info', 'is-error');
+        alerta.classList.add(tipo || 'is-success', 'is-visible');
+        alertaTexto.textContent = mensaje;
         clearTimeout(mostrarAlerta.timeoutId);
         mostrarAlerta.timeoutId = setTimeout(() => {
             alerta.classList.remove('is-visible');
         }, 4500);
     };
 
-    // Filtra el historial generado sin alterar las solicitudes pendientes.
+    // Filtra el historial generado.
     const filtrarHistorial = () => {
         const texto = (buscador.value || '').trim().toLowerCase();
         const tipo = tipoFiltro.value;
         const fecha = fechaFiltro.value;
         let visibles = 0;
+        const rows = historialBody.querySelectorAll('tr[data-historial]');
 
-        historialBody.querySelectorAll('tr[data-historial]').forEach(row => {
+        rows.forEach(row => {
             const visible = row.dataset.busqueda.includes(texto)
                 && (!tipo || row.dataset.tipo === tipo)
                 && (!fecha || row.dataset.fecha === fecha);
@@ -108,101 +102,85 @@ document.addEventListener('DOMContentLoaded', () => {
             if (visible) visibles++;
         });
 
-        sinHistorial.hidden = historial.length > 0 && visibles > 0;
-        if (historial.length > 0 && visibles === 0) {
+        sinHistorial.hidden = rows.length > 0 && visibles > 0;
+        if (rows.length > 0 && visibles === 0) {
             sinHistorial.querySelector('td').textContent = 'No se encontraron constancias con esos filtros.';
         } else {
             sinHistorial.querySelector('td').textContent = 'Todavía no hay constancias generadas.';
         }
     };
 
-    // Reconstruye la tabla cada vez que una solicitud pasa a historial.
-    const renderHistorial = () => {
-        historialBody.querySelectorAll('tr[data-historial]').forEach(row => row.remove());
-
-        historial.forEach(registro => {
-            const row = document.createElement('tr');
-            row.dataset.historial = 'true';
-            row.dataset.busqueda = `${registro.codigo} ${registro.solicitante} ${registro.curso} ${registro.codigoCurso}`.toLowerCase();
-            row.dataset.tipo = registro.tipo;
-            row.dataset.fecha = registro.fechaGeneracion;
-
-            const params = new URLSearchParams({
-                codigo: registro.codigo,
-                tipo: registro.tipo,
-                solicitante: registro.solicitante,
-                correo: registro.correo,
-                destino: registro.rol,
-                curso: registro.curso,
-                codigoCurso: registro.codigoCurso,
-                periodo: registro.periodo,
-                notaFinal: registro.notaFinal,
-                resultado: registro.resultado,
-                fechaActividad: registro.fechaActividad,
-                motivo: registro.motivo,
-                fechaSolicitud: registro.fechaSolicitud,
-                horaSolicitud: registro.horaSolicitud,
-                fechaEmision: registro.fechaGeneracion,
-                horaEmision: registro.horaGeneracion
-            });
-
-            row.innerHTML = `
-                <td data-label="Código">${registro.codigo}</td>
-                <td data-label="Tipo">${registro.tipo}</td>
-                <td data-label="Solicitante">${registro.solicitante}</td>
-                <td data-label="Curso">${registro.curso}<br><small>${registro.codigoCurso} · ${registro.periodo}</small></td>
-                <td data-label="Fecha solicitud">${registro.fechaSolicitud}</td>
-                <td data-label="Fecha generación">${registro.fechaGeneracion}</td>
-                <td data-label="Estado"><span class="constancia-badge generada">${registro.estado}</span></td>
-                <td data-label="Acciones">
-                    <a class="link-accion constancia-pdf-btn" href="comprobantes/vista-constancia-administrativa.php?${params.toString()}" target="_blank" rel="noopener">Ver constancia</a>
-                </td>
-            `;
-
-            historialBody.insertBefore(row, sinHistorial);
-        });
-
-        sinHistorial.hidden = historial.length > 0;
-        filtrarHistorial();
-        actualizarKpis();
-    };
-
-    // Refleja la aprobacion en pantalla y crea el registro historico local.
-    solicitudesWrap.addEventListener('click', (event) => {
+    // Genera constancias desde el servidor y actualiza el panel al finalizar.
+    solicitudesWrap.addEventListener('click', async (event) => {
         const boton = event.target.closest('.constancia-generar-btn');
         if (!boton) return;
 
         const card = boton.closest('.constancia-solicitud');
-        const registro = {
-            codigo: `CONST-${String(historial.length + 1).padStart(4, '0')}`,
-            solicitud: card.dataset.id,
-            solicitante: card.dataset.solicitante,
-            correo: card.dataset.correo,
-            rol: card.dataset.rol,
-            tipo: card.dataset.tipo,
-            curso: card.dataset.curso,
-            codigoCurso: card.dataset.codigoCurso,
-            periodo: card.dataset.periodo,
-            notaFinal: card.dataset.notaFinal,
-            resultado: card.dataset.resultado,
-            fechaActividad: card.dataset.fechaActividad,
-            motivo: card.dataset.motivo,
-            fechaSolicitud: card.dataset.fecha,
-            horaSolicitud: horaActual(),
-            fechaGeneracion: fechaHoy(),
-            horaGeneracion: horaActual(),
-            estado: 'Generada'
-        };
+        const idFull = card.dataset.id; // e.g. SOL-EST-5
 
-        historial.unshift(registro);
-        card.remove();
-        renderHistorial();
-        mostrarAlerta(registro);
+        boton.disabled = true;
+        boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+
+        try {
+            const res = await fetch('admin-constancias.php?action=generar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    solicitud_id_full: idFull,
+                    motivo: card.dataset.motivo
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.error) {
+                mostrarToast(data.mensaje, 'error');
+                boton.disabled = false;
+                boton.innerHTML = '<i class="fas fa-file-circle-plus"></i> Generar constancia';
+            } else {
+                mostrarToast(data.mensaje, 'success');
+                card.remove();
+                actualizarKpis();
+                mostrarAlerta(data.mensaje, 'is-success');
+                setTimeout(() => window.location.reload(), 2000);
+            }
+        } catch (e) {
+            console.error(e);
+            mostrarToast('Error al conectar con el servidor.', 'error');
+            boton.disabled = false;
+            boton.innerHTML = '<i class="fas fa-file-circle-plus"></i> Generar constancia';
+        }
     });
 
+    // Polling en tiempo real para notificaciones del administrador al recibir solicitud
+    let countAnterior = null;
+    const verificarNuevasSolicitudes = async () => {
+        try {
+            const res = await fetch('admin-constancias.php?check_new_requests=1');
+            if (!res.ok) return;
+            const data = await res.json();
+            if (countAnterior !== null && data.total > countAnterior) {
+                mostrarToast('¡Nueva solicitud de constancia recibida en tiempo real!', 'success');
+                setTimeout(() => window.location.reload(), 2000);
+            }
+            countAnterior = data.total;
+        } catch (e) {
+            console.warn("Polling constancias: sin conexión momentánea", e);
+        }
+    };
+
+    // Verificar cada 5 segundos
+    setInterval(verificarNuevasSolicitudes, 5000);
+    // Ejecución inicial para fijar countAnterior
+    verificarNuevasSolicitudes();
+
     [buscador, tipoFiltro, fechaFiltro].forEach(control => {
-        control.addEventListener('input', filtrarHistorial);
-        control.addEventListener('change', filtrarHistorial);
+        if (control) {
+            control.addEventListener('input', filtrarHistorial);
+            control.addEventListener('change', filtrarHistorial);
+        }
     });
 
     actualizarKpis();
@@ -246,7 +224,6 @@ if (modalNuevoDocente) {
         if (e.target === this) cerrarModalNuevoDocente();
     });
 }
-
 
 
 // --- MODAL EDITAR ESTUDIANTE ---
@@ -349,7 +326,7 @@ if (formEditarEstudiante) {
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mDiff = hoy.getMonth() - nacimiento.getMonth();
         if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--; 
+            edad--;
         }
 
         if (nacimiento < minima) {
@@ -416,7 +393,7 @@ if (formNuevoEstudiante) {
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mDiff = hoy.getMonth() - nacimiento.getMonth();
         if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--; 
+            edad--;
         }
 
         if (nacimiento < minima) {
@@ -484,7 +461,7 @@ if (formEditarDocente) {
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mDiff = hoy.getMonth() - nacimiento.getMonth();
         if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--; 
+            edad--;
         }
 
         if (nacimiento < minima) {
@@ -552,7 +529,7 @@ if (formNuevoDocente) {
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mDiff = hoy.getMonth() - nacimiento.getMonth();
         if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--; 
+            edad--;
         }
 
         if (nacimiento < minima) {
@@ -576,6 +553,204 @@ if (formNuevoDocente) {
             } else {
                 cerrarModalNuevoDocente();
                 mostrarToastPremium('Docente creado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
+        }
+    });
+}
+
+
+// --- MODAL EDITAR ADMINISTRADOR ---
+
+// Abre el modal de edición de administradores y carga los datos del administrador seleccionado en el formulario
+document.querySelectorAll('.abrir-modal-admin').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        const modal = document.getElementById('modalEditarAdministrador');
+        if (!modal) return;
+
+        // rellena cada campo del formulario con los datos del administrador
+        document.getElementById('edita-admin_id').value = this.dataset.admin_id;
+        document.getElementById('edita-usuario_id').value = this.dataset.usuario_id;
+        document.getElementById('edita-nombre').value = this.dataset.nombre;
+        document.getElementById('edita-apellido').value = this.dataset.apellido;
+        document.getElementById('edita-fecha_nacimiento').value = this.dataset.fecha_nacimiento;
+        document.getElementById('edita-genero').value = this.dataset.genero;
+        document.getElementById('edita-salario').value = this.dataset.salario;
+        document.getElementById('edita-telefono').value = this.dataset.telefono;
+        document.getElementById('edita-direccion').value = this.dataset.direccion;
+        document.getElementById('edita-correo').value = this.dataset.correo;
+        document.getElementById('edita-password_hash').value = this.dataset.password_hash;
+
+        // Convierte el valor numérico de estado a texto para que coincida con el select
+        const estado = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
+        document.getElementById('edita-estado').value = estado;
+        // Mostrar el modal
+        modal.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+// Cierra el modal de edición de administrador y restaura el scroll
+function cerrarModalAdministrador() {
+    const modal = document.getElementById('modalEditarAdministrador');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+
+// Cierra el modal de administrador al hacer clic fuera de el
+const modalEditarAdministrador = document.getElementById('modalEditarAdministrador');
+if (modalEditarAdministrador) {
+    modalEditarAdministrador.addEventListener('click', function (e) {
+        if (e.target === this) cerrarModalAdministrador();
+    });
+}
+// --- MODAL NUEVO ADMINISTRADOR ---
+function cerrarModalNuevoAdministrador() {
+    const modal = document.getElementById('modalNuevoAdministrador');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+// Cierra el modal de nuevo administrador al hacer clic fuera de el
+const modalNuevoAdministrador = document.getElementById('modalNuevoAdministrador');
+if (modalNuevoAdministrador) {
+    modalNuevoAdministrador.addEventListener('click', function (e) {
+        if (e.target === this) cerrarModalNuevoAdministrador();
+    });
+}
+
+// VALIDACIÓN DE CAMPOS EN MODAL EDITAR ADMINISTRADOR
+const formEditarAdministrador = document.querySelector('#modalEditarAdministrador form');
+if (formEditarAdministrador) {
+    formEditarAdministrador.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const nombre = document.getElementById('edita-nombre').value.trim();
+        const apellido = document.getElementById('edita-apellido').value.trim();
+        const fechaNac = document.getElementById('edita-fecha_nacimiento').value.trim();
+        const salario = document.getElementById('edita-salario').value.trim();
+        const telefono = document.getElementById('edita-telefono').value.trim();
+        const direccion = document.getElementById('edita-direccion').value.trim();
+        const correo = document.getElementById('edita-correo').value.trim();
+        const password = document.getElementById('edita-password_hash').value.trim();
+
+        if (!nombre || !apellido || !fechaNac || !salario || !telefono || !direccion || !correo || !password) {
+            e.preventDefault();
+            mostrarToastPremium('Complete todos los campos');
+            return;
+        }
+
+        const hoy      = new Date();
+        const nacimiento = new Date(fechaNac);
+        const minima   = new Date('1950-01-01');
+
+        const anio = nacimiento.getFullYear();
+        if (anio < 1000 || anio > 9999) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un año válido (4 dígitos)');
+            return;
+        }
+
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mDiff = hoy.getMonth() - nacimiento.getMonth();
+        if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--;
+        }
+
+        if (nacimiento < minima) {
+            e.preventDefault();
+            mostrarToastPremium('La fecha de nacimiento no puede ser anterior a 1950');
+            return;
+        }
+
+        if (edad < 18) {
+            e.preventDefault();
+            mostrarToastPremium('El administrador debe tener al menos 18 años');
+            return;
+        }
+
+        const formData = new FormData(this);
+        try {
+            const res  = await fetch('editar-administrador.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalAdministrador();
+                mostrarToastPremium('Administrador editado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
+        }
+    });
+}
+
+// VALIDACIÓN DE CAMPOS EN MODAL NUEVO ADMINISTRADOR
+const formNuevoAdministrador = document.querySelector('#modalNuevoAdministrador form');
+if (formNuevoAdministrador) {
+    formNuevoAdministrador.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const nombre = formNuevoAdministrador.querySelector('[name="nombre"]').value.trim();
+        const apellido = formNuevoAdministrador.querySelector('[name="apellido"]').value.trim();
+        const fechaNac = formNuevoAdministrador.querySelector('[name="fecha_nacimiento"]').value.trim();
+        const salario = formNuevoAdministrador.querySelector('[name="salario"]').value.trim();
+        const telefono = formNuevoAdministrador.querySelector('[name="telefono"]').value.trim();
+        const direccion = formNuevoAdministrador.querySelector('[name="direccion"]').value.trim();
+        const correo = formNuevoAdministrador.querySelector('[name="correo"]').value.trim();
+        const password = formNuevoAdministrador.querySelector('[name="password_hash"]').value.trim();
+
+        if (!nombre || !apellido || !fechaNac || !salario || !telefono || !direccion || !correo || !password) {
+            e.preventDefault();
+            mostrarToastPremium('Complete todos los campos');
+            return;
+        }
+
+        const hoy      = new Date();
+        const nacimiento = new Date(fechaNac);
+        const minima   = new Date('1950-01-01');
+
+        const anio = nacimiento.getFullYear();
+        if (anio < 1000 || anio > 9999) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un año válido (4 dígitos)');
+            return;
+        }
+
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mDiff = hoy.getMonth() - nacimiento.getMonth();
+        if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--;
+        }
+
+        if (nacimiento < minima) {
+            e.preventDefault();
+            mostrarToastPremium('La fecha de nacimiento no puede ser anterior a 1950');
+            return;
+        }
+
+        if (edad < 18) {
+            e.preventDefault();
+            mostrarToastPremium('El administrador debe tener al menos 18 años');
+            return;
+        }
+
+        const formData = new FormData(this);
+        try {
+            const res  = await fetch('crear-administrador.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalNuevoAdministrador();
+                mostrarToastPremium('Administrador creado exitosamente', 'success');
                 setTimeout(() => window.location.reload(), 1500);
             }
         } catch {
@@ -793,6 +968,7 @@ document.addEventListener('click', function (e) {
     else if (document.getElementById('buscador-estudiante')) tipo = 'estudiante';
     else if (document.getElementById('buscador-periodo')) tipo = 'periodo'
     else if (document.getElementById('buscador-plazo')) tipo = 'plazo';
+    else if (document.getElementById('buscador-admin')) tipo = 'administrador';
 
 
     mTitle.innerText = isActivo
@@ -822,7 +998,7 @@ document.addEventListener('click', function (e) {
         else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
         else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
         else if (document.getElementById('buscador-plazo')) archivo = 'toggle-estado-plazo.php';
-
+        else if (document.getElementById('buscador-admin')) archivo = 'toggle-estado-admin.php';
 
         const res = await fetch(archivo, {
             method: 'POST',
@@ -869,7 +1045,7 @@ document.addEventListener('click', function (e) {
             if (celdaDocente) celdaDocente.textContent = '—';
         }
 
-        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-plazo');
+        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-plazo, .abrir-modal-admin');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (isActivo) {
@@ -957,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const esInactivo = btnEstado.classList.contains('estado-inactivo');
 
-        const btnEditar = fila.querySelector('abrir-modal-periodo, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso, abrir-modal-plazo');
+        const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso, .abrir-modal-plazo, .abrir-modal-admin');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (esInactivo) {
@@ -1016,7 +1192,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (estado.textContent.trim() === 'Inactivo') {
 
-            const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-curso, .abrir-modal-plazo');
+            const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-curso, .abrir-modal-plazo, .abrir-modal-admin');
             const btnHorarios = fila.querySelector('.horarios');
 
             fila.querySelectorAll('td').forEach(td => {
@@ -1214,6 +1390,7 @@ if (btnNuevo) {
         const modalNuevoDocente = document.getElementById('modalNuevoDocente');
         const modalNuevo = document.getElementById('modalNuevo');
         const modalPeriodo = document.getElementById('modalPeriodo');
+        const modalAdmin = document.getElementById('modalNuevoAdministrador');
 
         if (modalNuevoCurso) {
             modalNuevoCurso.classList.add('activo');
@@ -1224,6 +1401,8 @@ if (btnNuevo) {
             modalNuevo.classList.add('activo');
         } else if (modalPeriodo) {
             abrirModalNuevoPeriodo();
+        } else if (modalAdmin) {
+            modalAdmin.classList.add('activo');
         }
 
         document.body.style.overflow = 'hidden';
@@ -1288,6 +1467,7 @@ document.addEventListener('keydown', e => {
         cerrarModalNuevoCurso();
         cerrarModalPeriodo();
         cerrarModalInscripcion();
+        cerrarModalNuevoAdministrador();
     }
 });
 
@@ -1357,6 +1537,23 @@ if (buscadorPago) {
     });
 }
 
+// --- BUSCADOR ADMINISTRADORES ---
+const buscadorAdministrador = document.getElementById('buscador-admin');
+if (buscadorAdministrador) {
+    buscadorAdministrador.addEventListener('keyup', function () {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
+
+        filas.forEach(function (fila) {
+            const id = fila.cells[0].textContent.toLowerCase();
+            const nombre = fila.cells[1].textContent.toLowerCase();
+            const apellido = fila.cells[2].textContent.toLowerCase();
+
+            fila.style.display = (id.includes(filtro) || nombre.includes(filtro) || apellido.includes(filtro)) ? '' : 'none';
+        });
+    });
+}
+
 // --- TOAST PREMIUM ---
 function mostrarToastPremium(mensaje, tipo = 'error') {
     // Eliminar toast anterior si existe
@@ -1365,7 +1562,7 @@ function mostrarToastPremium(mensaje, tipo = 'error') {
 
     const icono = tipo === 'success'
         ? '<i class="fa-solid fa-circle-check"></i>'
-        : '<i class="fa-solid fa-circle-exclamation"></i>';
+        : (tipo === 'info' ? '<i class="fa-solid fa-circle-info"></i>' : '<i class="fa-solid fa-circle-exclamation"></i>');
 
     const toast = document.createElement('div');
     toast.id = 'toastPremium';
@@ -1660,7 +1857,7 @@ async function validarInscripcion(idCurso, btn) {
     }
 }
 
-// 
+//
 
 
 // INSCRIPCIÓN DE CURSOS (estudiante-inscripciones.php)
@@ -2680,7 +2877,7 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
         }
     });
 
-            
+
         });
 
         formNuevaFactura.addEventListener('input', function (e) {
@@ -2797,7 +2994,7 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
 // tabla de ítems dentro del modal (funciones globales llamadas con oninput/onclick desde el HTML)
 (function () {
     let filaId = 1;
- 
+
     // Recalcula subtotal de una fila y actualiza el total general
     window.recalcFila = function (id) {
         const cant   = parseFloat(document.getElementById('cant-'   + id)?.value) || 0;
@@ -2806,7 +3003,7 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
         if (celda) celda.textContent = '$' + (cant * precio).toFixed(2);
         recalcTotal();
     };
- 
+
     function recalcTotal() {
         let total = 0;
         document.querySelectorAll('[id^="sub-"]').forEach(el => {
@@ -2815,14 +3012,14 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
         const label = document.getElementById('facturaTotal');
         if (label) label.textContent = '$' + total.toFixed(2);
     }
- 
+
     // Agrega una nueva fila
     window.agregarFila = function () {
         filaId++;
         const id    = filaId;
         const tbody = document.getElementById('detalleBody');
         if (!tbody) return;
- 
+
         const tr = document.createElement('tr');
         tr.dataset.fila = id;
         tr.innerHTML = `
@@ -2837,14 +3034,14 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
             </td>`;
         tbody.appendChild(tr);
     };
- 
+
     // Elimina las filas dejando solo 1
     window.eliminarFila = function (id) {
         if (document.querySelectorAll('#detalleBody tr').length <= 1) return;
         const tr = document.querySelector(`[data-fila="${id}"]`);
         if (tr) { tr.remove(); recalcTotal(); }
     };
- 
+
     // Resetea la tabla al cerrar el modal
     window.resetDetalle = function () {
         filaId = 1;
@@ -2888,7 +3085,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const buscar = document.getElementById('buscarContenido');
     const filtroEstado = document.getElementById('filtroEstadoContenido');
     const adjuntosActuales = document.getElementById('adjuntosActuales');
-    
+
 
     if (!modal || !form || !tbody) return;
 
@@ -2906,7 +3103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function abrirModalContenido(modo = 'crear', fila = null) {
         form.reset();
         limpiarValidacionContenido();
-        document.getElementById('listaAdjuntos').innerHTML = ''; 
+        document.getElementById('listaAdjuntos').innerHTML = '';
         if (adjuntosActuales) adjuntosActuales.innerHTML = '';
         campos.id.value = '';
         campos.modalTitulo.textContent = modo === 'editar' ? 'Editar contenido' : 'Nuevo contenido';
@@ -3016,7 +3213,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <i class="fas ${adjunto.tipo === 'Enlace' ? 'fa-link' : 'fa-paperclip'}"></i>
                     ${escapeContenido(adjunto.nombre)}
                 </span>
-                <button type="button" class="adjunto-remove adjunto-remove-existente" 
+                <button type="button" class="adjunto-remove adjunto-remove-existente"
                     data-id-archivo="${adjunto.id}" title="Eliminar adjunto">
                     <i class="fas fa-times"></i>
                 </button>
@@ -3042,7 +3239,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fila.dataset.descripcion = campos.descripcion.value.trim();
             fila.dataset.fecha       = campos.fecha.value;
             fila.dataset.estado      = campos.estado.value;
-            
+
         }
         if (fila.dataset.estado === 'Deshabilitado') {
     fila.classList.add('fila-deshabilitada');
@@ -3095,7 +3292,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </td>`;
     }
-    
+
 
     function crearFila() {
         tbody.querySelector('.contenido-empty')?.remove();
@@ -3307,7 +3504,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.ok) {
                 mostrarToastPremium('Contenido guardado correctamente.', 'success');
                 cerrarModalContenido();
-                setTimeout(() => location.reload(), 1500); 
+                setTimeout(() => location.reload(), 1500);
             } else {
                 mostrarToastPremium('Error: ' + data.msg);
             }
@@ -3315,7 +3512,7 @@ document.addEventListener('DOMContentLoaded', function () {
             mostrarToastPremium('Error de conexión: ' + err.message);
         }
     });
-    
+
     // Buscador y filtro estado
 if (buscar) buscar.addEventListener('input', filtrarContenidos);
 if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
@@ -3350,7 +3547,7 @@ document.addEventListener('DOMContentLoaded', function () {
     modalTitulo: document.getElementById('tareaModalTitulo')
 };
 
-   
+
 
    function abrirModalTarea(fila = null) {
     form.reset();
@@ -3363,7 +3560,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (campos.id) campos.id.value = '';
 
     if (fila) {
-       
+
         if (campos.id) campos.id.value = fila.dataset.id || '';
 
         campos.titulo.value      = fila.dataset.titulo      || '';
@@ -3507,7 +3704,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const archivoNuevo = campos.archivo.files?.[0]?.name || '';
 
     if (idReal && !filaEditando) {
-        fila.dataset.id = idReal; 
+        fila.dataset.id = idReal;
     }
 
     fila.dataset.titulo      = campos.titulo.value.trim();
@@ -3544,7 +3741,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const idsArchivos = filaEditando?.dataset.idsArchivos || '';
     if (!filaEditando || !idsArchivos) return;
 
-    const idArchivo = idsArchivos.split(',')[0]; 
+    const idArchivo = idsArchivos.split(',')[0];
     if (!idArchivo) return;
 
     try {
@@ -3555,7 +3752,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = await res.json();
 
         if (data.ok) {
-          
+
             filaEditando.dataset.archivo     = '';
             filaEditando.dataset.idsArchivos = '';
             mostrarToastPremium('Archivo eliminado correctamente', 'success');
@@ -4021,7 +4218,7 @@ function recalcularKPIs() {
         if (kpiAprobacion) kpiAprobacion.textContent = '0%';
     }
 }
-    
+
    // Acciones de guardado manual y edicion.
 document.querySelectorAll('.btn-nota-editar').forEach(btn => {
     btn.addEventListener('click', function () {
@@ -4032,7 +4229,7 @@ document.querySelectorAll('.btn-nota-editar').forEach(btn => {
         const row = this.closest('tr');
         row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
         row.querySelectorAll('.nota-input')[0].focus();
-        
+
         const btnGuardar = row.querySelector('.btn-guardar-nota');
         btnGuardar.disabled = false;
         btnGuardar.style.display = '';
@@ -4089,7 +4286,7 @@ document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
                     badge.classList.add(parseFloat(data.nota_final) >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
                 }
 
-               
+
                 let btnEditar = row.querySelector('.btn-nota-editar');
                 if (!btnEditar) {
                     btnEditar = document.createElement('button');
@@ -4263,8 +4460,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const mesFin    = fin.substring(0, 7);  
-            const mesInicio = inicio.substring(0, 7); 
+            const mesFin    = fin.substring(0, 7);
+            const mesInicio = inicio.substring(0, 7);
 
             if (mesInicio !== mesFin) {
                 mostrarToastPremium('El inicio del plazo debe ser dentro del mes de cierre del período');
@@ -4331,4 +4528,47 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+});
+
+// Constancias de estudiantes y docentes: toasts de respuesta y filtros de cursos.
+document.addEventListener('DOMContentLoaded', () => {
+    const modulo = document.getElementById('constanciasModulo');
+    if (!modulo) return;
+
+    const mensajeToast = modulo.dataset.toastMessage || '';
+    const tipoToast = modulo.dataset.toastType || 'info';
+    if (mensajeToast) {
+        mostrarToastPremium(mensajeToast, tipoToast);
+    }
+
+    const buscador = document.getElementById('constanciaBuscador');
+    const filtroPeriodo = document.getElementById('constanciaPeriodoFiltro');
+    const filtroEstado = document.getElementById('constanciaEstadoFiltro');
+    const filas = Array.from(document.querySelectorAll('.constancia-fila'));
+    const sinResultados = document.getElementById('constanciasSinResultados');
+
+    const filtrarConstancias = () => {
+        const texto = (buscador?.value || '').trim().toLowerCase();
+        const periodo = (filtroPeriodo?.value || '').toLowerCase();
+        const estado = (filtroEstado?.value || '').toLowerCase();
+        let visibles = 0;
+
+        filas.forEach(fila => {
+            const coincideTexto = fila.dataset.search.includes(texto);
+            const coincidePeriodo = !periodo || fila.dataset.periodo === periodo;
+            const coincideEstado = !estado || fila.dataset.estado === estado;
+            const visible = coincideTexto && coincidePeriodo && coincideEstado;
+
+            fila.style.display = visible ? '' : 'none';
+            if (visible) visibles++;
+        });
+
+        if (sinResultados) {
+            sinResultados.style.display = visibles === 0 ? '' : 'none';
+        }
+    };
+
+    buscador?.addEventListener('input', filtrarConstancias);
+    filtroPeriodo?.addEventListener('change', filtrarConstancias);
+    filtroEstado?.addEventListener('change', filtrarConstancias);
 });

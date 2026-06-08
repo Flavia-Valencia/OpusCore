@@ -378,15 +378,17 @@ body {
 }
 
 .nav .btn-nav:nth-of-type(1)::before { content: "\f015"; }
-.nav .btn-nav:nth-of-type(2)::before { content: "\f073"; }
-.nav .btn-nav:nth-of-type(3)::before { content: "\f501"; }
-.nav .btn-nav:nth-of-type(4)::before { content: "\f02d"; }
-.nav .btn-nav:nth-of-type(5)::before { content: "\f51c"; }
-.nav .btn-nav:nth-of-type(6)::before { content: "\f09d"; }
-.nav .btn-nav:nth-of-type(7)::before { content: "\f571"; }
-.nav .btn-nav:nth-of-type(8)::before { content: "\f5da"; }
-.nav .btn-nav:nth-of-type(9)::before { content: "\f1c1"; }
+.nav .btn-nav:nth-of-type(2)::before { content: "\f007"; }
+.nav .btn-nav:nth-of-type(3)::before { content: "\f51c"; }
+.nav .btn-nav:nth-of-type(4)::before { content: "\f501"; }
+.nav .btn-nav:nth-of-type(5)::before { content: "\f073"; }
+.nav .btn-nav:nth-of-type(6)::before { content: "\f02d"; }
+.nav .btn-nav:nth-of-type(7)::before { content: "\f5da"; }
+.nav .btn-nav:nth-of-type(8)::before { content: "\f09d"; }
+.nav .btn-nav:nth-of-type(9)::before { content: "\f571"; } 
+.nav .btn-nav:nth-of-type(10)::before { content: "\f1c1"; }
 
+/*-admin "\f509" docentes: f51c estudiantes f501 periodos f073 cursos \f02d plazo f5da pagos \f09d facturacion: f571 constancias f1c1*/
 
 .btn-nav:hover {
     background: rgba(255, 255, 255, 0.12);
@@ -603,7 +605,8 @@ body {
 .link-accion.abrir-modal-docente,
 .link-accion.abrir-modal-periodo,
 .link-accion.abrir-modal-plazo,
-.link-accion.abrir-modal-curso {
+.link-accion.abrir-modal-curso,
+.link-accion.abrir-modal-admin {
     color: var(--accent-teal);
     background: var(--accent-teal-light);
 }
@@ -612,7 +615,8 @@ body {
 .link-accion.abrir-modal-docente:hover,
 .link-accion.abrir-modal-periodo:hover,
 .link-accion.abrir-modal-plazo:hover,
-.link-accion.abrir-modal-curso:hover {
+.link-accion.abrir-modal-curso:hover,
+.link-accion.abrir-modal-admin:hover {
     background: var(--accent-teal);
     color: white;
 }
@@ -834,7 +838,8 @@ body {
 }
 
 .ver-contrasena-docente,
-.ver-contrasena-estudiante {
+.ver-contrasena-estudiante,
+.ver-contrasena-admin {
     position: absolute;
     right: 12px;
     top: 50%;

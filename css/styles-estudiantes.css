@@ -1869,6 +1869,26 @@ body {
     overflow: hidden;
 }
 
+.constancias-card .tabla-placeholder {
+    background: #ffffff;
+    max-width: 100%;
+    overflow-x: auto;
+    width: 100%;
+}
+
+.constancias-card .tabla-placeholder::-webkit-scrollbar {
+    height: 8px;
+}
+
+.constancias-card .tabla-placeholder::-webkit-scrollbar-thumb {
+    background: #c8d7ec;
+    border-radius: 999px;
+}
+
+.constancias-card .tabla-placeholder::-webkit-scrollbar-track {
+    background: #f4f8fd;
+}
+
 /* Header de sección */
 .constancias-section-header {
     align-items: center;
@@ -1998,6 +2018,12 @@ body {
     vertical-align: middle;
 }
 
+.constancias-tabla th:last-child,
+.constancias-tabla td[data-label="Acción"] {
+    text-align: center;
+    width: 150px;
+}
+
 .constancias-tabla tbody tr:hover {
     background: #f5f9ff;
 }
@@ -2023,19 +2049,21 @@ body {
 .constancia-generar-btn {
     align-items: center;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     background: linear-gradient(135deg, #053170, #1D4B73);
     color: white;
     cursor: pointer;
     display: inline-flex;
     font-family: inherit;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     gap: 8px;
     justify-content: center;
-    min-width: 160px;
-    padding: 10px 16px;
+    min-height: 36px;
+    min-width: 118px;
+    padding: 9px 14px;
     transition: opacity 0.2s, transform 0.2s;
+    white-space: nowrap;
 }
 
 .constancia-generar-btn:hover:not(:disabled) {
@@ -2052,7 +2080,9 @@ body {
 
 /* Formulario de solicitud dentro de la celda */
 .constancia-form {
-    display: inline;
+    display: inline-flex;
+    justify-content: center;
+    margin: 0;
 }
 
 /* Nombre del curso en la tabla */
@@ -2077,6 +2107,7 @@ body {
 
 /* Estado vacío: sin cursos aprobados */
 .constancias-empty-td {
+    background: #fbfdff;
     padding: 48px 24px;
     text-align: center;
 }
@@ -2089,15 +2120,19 @@ body {
 }
 
 .constancias-empty-title {
+    color: #314467;
     font-size: 15px;
-    font-weight: 600;
-    color: #6b7a97;
+    font-weight: 800;
     margin-bottom: 6px;
 }
 
 .constancias-empty-sub {
     color: #9aa5b8;
+    display: block;
     font-size: 13px;
+    line-height: 1.45;
+    margin: 0 auto;
+    max-width: 360px;
 }
 
 /* Fila de sin resultados al filtrar */
@@ -2122,12 +2157,55 @@ body {
 }
 
 @media (max-width: 900px) {
+    .constancias-card {
+        border-radius: 12px;
+    }
+
+    .constancias-section-header,
+    .constancias-filtros {
+        padding: 18px;
+    }
+
     .constancias-filtros {
         grid-template-columns: 1fr;
+        gap: 14px;
     }
 }
 
 @media (max-width: 768px) {
+    .constancias-page {
+        padding-bottom: 28px;
+    }
+
+    .constancias-banner {
+        margin-bottom: 18px;
+        padding: 18px;
+    }
+
+    .constancias-section-header {
+        align-items: flex-start;
+        padding: 18px 16px;
+    }
+
+    .constancias-section-header h2 {
+        font-size: 16px;
+    }
+
+    .constancias-section-header p {
+        line-height: 1.45;
+    }
+
+    .constancias-filtros {
+        padding: 16px;
+    }
+
+    .constancias-card .tabla-placeholder {
+        padding: 14px;
+        background: #f7fafd;
+        box-sizing: border-box;
+        overflow-x: visible;
+    }
+
     .constancias-tabla thead {
         display: none;
     }
@@ -2139,18 +2217,66 @@ body {
     }
 
     .constancias-tabla tr {
-        border-top: 1px solid #eef1f7;
+        background: #ffffff;
+        border: 1px solid #e4ebf5;
+        border-radius: 12px;
+        box-shadow: 0 8px 18px rgba(5, 49, 112, 0.06);
+        margin-bottom: 14px;
         padding: 14px 16px;
+    }
+
+    .constancias-tabla tr:last-child {
+        margin-bottom: 0;
+    }
+
+    .constancias-tabla tr#constanciasSinCursos {
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 0;
     }
 
     .constancias-tabla td {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 12px;
+        gap: 16px;
         border-top: 0;
-        padding: 8px 0;
+        padding: 10px 0;
         text-align: right;
+    }
+
+    .constancias-tabla td + td {
+        border-top: 1px solid #eef3f9;
+    }
+
+    .constancias-tabla tr#constanciasSinCursos .constancias-empty-td {
+        align-items: center;
+        background: #ffffff;
+        border: 1px dashed #cbd8ea;
+        border-radius: 14px;
+        box-shadow: 0 8px 18px rgba(5, 49, 112, 0.05);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 220px;
+        padding: 34px 20px;
+        text-align: center;
+    }
+
+    .constancias-tabla tr#constanciasSinCursos .constancias-empty-td::before {
+        display: none;
+    }
+
+    .constancias-empty-icon {
+        font-size: 34px;
+        margin-bottom: 14px;
+    }
+
+    .constancias-empty-title {
+        font-size: 15px;
+        line-height: 1.35;
     }
 
     .constancias-tabla td::before {
@@ -2163,9 +2289,68 @@ body {
         flex-shrink: 0;
     }
 
+    .constancias-tabla td[data-label="Curso"] {
+        align-items: flex-start;
+        display: block;
+        text-align: left;
+    }
+
+    .constancias-tabla td[data-label="Curso"]::before {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .constancia-curso-nombre {
+        font-size: 14px;
+        line-height: 1.35;
+        margin-bottom: 4px;
+    }
+
+    .constancia-curso-categoria {
+        line-height: 1.35;
+    }
+
+    .constancias-tabla td[data-label="Acción"] {
+        align-items: stretch;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 12px;
+        text-align: left;
+        width: 100%;
+    }
+
+    .constancias-tabla td[data-label="Acción"]::before {
+        display: none;
+    }
+
+    .constancia-form {
+        flex: 1;
+    }
+
     .constancia-generar-btn {
         width: 100%;
         justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .constancias-banner,
+    .constancias-card {
+        margin-inline: -2px;
+    }
+
+    .constancias-metricas {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .constancias-card .tabla-placeholder {
+        padding: 12px;
+    }
+
+    .constancias-tabla tr {
+        padding: 13px 14px;
     }
 }
 /* ── RESPONSIVE ──────────────────────────────────────────── */
@@ -2431,6 +2616,12 @@ body {
     background: linear-gradient(135deg, #15803d, #22c55e);
     color: #ffffff;
     border-left: 5px solid #86efac;
+}
+
+.toast-premium.toast-info {
+    background: linear-gradient(135deg, #0f5fa8, #38bdf8);
+    color: #ffffff;
+    border-left: 5px solid #bae6fd;
 }
 
 .toast-premium i {
