@@ -1,9 +1,8 @@
 <?php
 date_default_timezone_set('America/El_Salvador');
 
-// FRONTEND/TEMPLATE:
-// Backend podra definir estas variables antes de incluir esta vista.
-// Si se abre directo, se muestra la plantilla vacia para validar el diseño.
+// Plantilla de factura docente compatible con Dompdf.
+// El backend puede definir estas variables antes de incluir la vista.
 $facturaId     = $facturaId ?? '';
 $docente       = $docente ?? '';
 $correo        = $correo ?? '';
@@ -83,7 +82,7 @@ if (is_readable($logoPath)) {
 <title>Factura Docente #<?= htmlspecialchars($facturaId ?: '—') ?> — Academia Futuro Digital</title>
 <style>
 <?php
-// CSS simple compatible con Dompdf.
+// Inserta CSS compatible con Dompdf dentro de la plantilla.
 $cssPdfPath = __DIR__ . '/../css/stylePlantillasPdf.css';
 if (is_readable($cssPdfPath)) {
     echo file_get_contents($cssPdfPath);

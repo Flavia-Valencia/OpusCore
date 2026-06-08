@@ -1,4 +1,5 @@
-<?php #cree este archivo para que cuando el usuario le de click al icono de cerrar sesion(logout) se salga y lo redirija al login.php
+<?php
+// Cierra la sesion actual, limpia la cookie de sesion y redirige al login.
 session_start();
 
 $_SESSION = [];

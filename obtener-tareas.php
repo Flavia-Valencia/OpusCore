@@ -1,7 +1,6 @@
 <?php
-// Obtiene la lista de tareas de un curso en particular, 
-// con sus archivos adjuntos agrupados, 
-// para mostrar en el panel del docente
+// Devuelve las tareas de un curso con archivos y enlaces agrupados.
+// Solo permite consultar cursos activos asignados al docente autenticado.
 
 session_start();
 header('Content-Type: application/json');
@@ -35,7 +34,7 @@ if (!$stmtVerif->get_result()->fetch_assoc()) {
 }
 $stmtVerif->close();
 
-// Obtener tareas con archivos adjuntos agrupados
+// Agrupa adjuntos por tarea para reducir trabajo en la interfaz.
 $stmt = $conexion->prepare("
     SELECT 
         t.id,

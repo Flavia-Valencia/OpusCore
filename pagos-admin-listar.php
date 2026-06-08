@@ -1,10 +1,10 @@
 <?php
-// Devuelve todos los pagos para el panel del administrador
+// Devuelve el historial de pagos para el panel del administrador.
 
 session_start();
 header('Content-Type: application/json');
 
-// Verificar que sea administrador
+// Restringe el listado a sesiones administrativas.
 if (!isset($_SESSION['usuario']) || $_SESSION['rol'] !== 'admin') {
     http_response_code(401);
     echo json_encode(['error' => 'No autorizado']);
@@ -13,7 +13,7 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] !== 'admin') {
 
 require_once '../includes/conexion.php';
 
-// Consultar pagos con datos del estudiante
+// Incluye datos del estudiante y estado listo para mostrar en la tabla.
 $sql = "
     SELECT 
         p.id,

@@ -1,7 +1,7 @@
 <?php
-# Recibe el ID de un curso y cambia su estado entre activo e inactivo.
-# Verifica que no existan estudiantes con inscripción activa antes de deshabilitarlo.
-# Al desactivar, elimina la asignación de docente y horarios, y devuelve el nuevo estado en JSON.
+// Cambia el estado de un curso entre activo e inactivo.
+// Antes de deshabilitarlo verifica que no tenga inscripciones activas.
+// Al desactivar, libera docente y horarios, y responde el nuevo estado en JSON.
 include("includes/conexion.php");
 
 $id = intval($_POST['id']);

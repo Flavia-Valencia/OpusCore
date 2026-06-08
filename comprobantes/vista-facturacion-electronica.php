@@ -3,7 +3,7 @@ date_default_timezone_set('America/El_Salvador');
 
 $pagoId = isset($_GET['pago_id']) ? (int)$_GET['pago_id'] : 0;
 
-// ─── Carga desde BD 
+// Carga datos desde BD cuando la vista se abre con pago_id.
 if (!isset($estudiante) && $pagoId > 0) {
     session_start();
     if (!isset($_SESSION['usuario'])) {
@@ -13,7 +13,7 @@ if (!isset($estudiante) && $pagoId > 0) {
     if ($pagoId > 0) {
         require_once __DIR__ . '/../includes/conexion.php';
 
-        // Datos principales del pago
+        // Datos principales del pago y del estudiante.
         $stmtPago = $conexion->prepare("
             SELECT p.id,
                    p.monto,
@@ -43,7 +43,7 @@ if (!isset($estudiante) && $pagoId > 0) {
             $idEst = $datosPago['idEstudiante'];
             $items = [];
 
-            // ── Inscripciones vinculadas al pago 
+            // Inscripciones vinculadas al pago.
             $stmtInsc = $conexion->prepare("
                 SELECT c.nombre             AS descripcion,
                        pi.nombre           AS periodo,
@@ -60,7 +60,7 @@ if (!isset($estudiante) && $pagoId > 0) {
             while ($row = $resInsc->fetch_assoc()) $items[] = $row;
             $stmtInsc->close();
 
-            // ── Mensualidades vinculadas al pago 
+            // Mensualidades vinculadas al pago.
             $stmtMens = $conexion->prepare("
                 SELECT CONCAT(c.nombre, ' — ', m.mesPagado) AS descripcion,
                        pi.nombre                             AS periodo,
@@ -77,7 +77,7 @@ if (!isset($estudiante) && $pagoId > 0) {
             while ($row = $resMens->fetch_assoc()) $items[] = $row;
             $stmtMens->close();
 
-            // ── Matrícula vinculada al pago 
+            // Matricula vinculada al pago.
             $stmtMat = $conexion->prepare("
                 SELECT 'Matrícula'   AS descripcion,
                        pi.nombre     AS periodo,
@@ -94,7 +94,7 @@ if (!isset($estudiante) && $pagoId > 0) {
             while ($row = $resMat->fetch_assoc()) $items[] = $row;
             $stmtMat->close();
 
-            // ── Asignar variables globales 
+            // Variables consumidas por la plantilla PDF.
             $estudiante  = $datosPago['nombre_estudiante'];
             $correo      = $datosPago['correo'];
             $telefono    = $datosPago['telefono'] ?? '';
@@ -125,7 +125,7 @@ $fecha       = $fecha ?? '';
 $hora        = $hora ?? '';
 $periodo     = $periodo ?? '';
 
-// Total en letras (utilidad simple)
+// Convierte el total numerico a letras para la factura.
 function numeroALetras(float $n): string {
     $entero = (int) $n;
     $centavos = round(($n - $entero) * 100);
@@ -161,7 +161,7 @@ function numeroALetras(float $n): string {
 
 $totalLetras = numeroALetras((float)$total);
 
-// Logo en base64
+// Incrusta el logo como base64 para que Dompdf lo renderice sin rutas externas.
 $logoSrc = '';
 $logoPath = __DIR__ . '/../img/logo.svg';
 if (is_readable($logoPath)) {
@@ -176,7 +176,7 @@ if (is_readable($logoPath)) {
 <title>Comprobante de Pago #<?= $pagoId ?? '—' ?> — Academia Futuro Digital</title>
 <style>
 <?php
-// CSS simple compatible con Dompdf.
+// Inserta CSS compatible con Dompdf dentro de la plantilla.
 $cssPdfPath = __DIR__ . '/../css/stylePlantillasPdf.css';
 if (is_readable($cssPdfPath)) {
     echo file_get_contents($cssPdfPath);
@@ -291,7 +291,7 @@ if (is_readable($cssPdfPath)) {
         <span class="sello">No Devolución</span>
     </div>
 
-    <!-- ── TOTALES -->
+    <!-- Totales de la factura -->
     <div class="totales-wrap" style="margin-top: 8px;">
         <table class="totales">
             <tr>
@@ -309,7 +309,7 @@ if (is_readable($cssPdfPath)) {
         </table>
     </div>
 
-    <!-- ── VALOR EN LETRAS + DATOS TRANSACCIÓN -->
+    <!-- Valor en letras y datos de transaccion -->
     <div class="observaciones">
         <div class="letras">
             Valor en Letras: <?= htmlspecialchars($totalLetras) ?>
@@ -326,7 +326,7 @@ if (is_readable($cssPdfPath)) {
         </table>
     </div>
 
-    <!-- ── PIE -->
+    <!-- Pie del documento -->
     <footer class="footer">
         <table class="footer-table">
             <tr>

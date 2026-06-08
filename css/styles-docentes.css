@@ -1,3 +1,5 @@
+/* Estilos compartidos para las vistas del docente.
+   Incluye el panel de cursos, organizacion de clases, tareas, entregas y notas. */
 * {
   margin: 0;
   padding: 0;
@@ -16,7 +18,7 @@ body {
   min-height: 100vh;
 }
 
-/* Ocultar el checkbox del menú hamburguesa sin que genere espacio ni líneas */
+/* Control invisible que abre/cierra el sidebar en móvil */
 #sidebar-toggle {
   position: fixed;
   opacity: 0;
@@ -79,8 +81,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.3px;
 }
-
-/*Para mostrar la X de cerrar*/
+/* Boton de cierre del sidebar en movil */
 .sidebar-close {
   display: none;
   position: absolute;
@@ -96,7 +97,7 @@ body {
   color: white;
 }
 
-/* Navegación del sidebar */
+/* Navegacion principal del sidebar docente */
 .sidebar nav ul {
   list-style: none;
   display: flex;
@@ -134,7 +135,7 @@ body {
   font-weight: 600;
 }
 
-/* Cerrar sesión al fondo del sidebar */
+/* Acceso de cierre de sesion dentro del sidebar movil */
 .sidebar-logout {
   display: none;
   margin-top: auto;
@@ -181,7 +182,7 @@ body {
   z-index: 100;
 }
 
-/* Label que actúa como botón hamburguesa (solo móvil) */
+/* Boton hamburguesa visible solo en movil */
 .menu-toggle {
   display: none;
   color: white;
@@ -192,7 +193,7 @@ body {
   user-select: none;
 }
 
-/* Botón logout en el header */
+/* Perfil y cierre de sesion en la barra superior */
 .user-profile {
   display: flex;
   align-items: center;
@@ -233,8 +234,7 @@ body {
   font-size: 14px;
   opacity: 0.9;
 }
-
-/*Para el banner de bienvenido*/
+/* Banner de bienvenida y resumen de la vista */
 .banner {
   margin: 28px 28px 0;
   background: linear-gradient(to top, #053170);
@@ -283,21 +283,10 @@ body {
   opacity: 0.7;
 }
 
-.banner-date {
-  font-size: 13px;
-  font-weight: 600;
-  opacity: 0.85;
-  text-align: right;
-  white-space: nowrap;
-}
-
-/* Custom Modal (UI Feedback) */
+/* Modal generico de feedback usado por acciones del docente */
 .custom-modal-overlay {
   display: none;
 }
-
-/*Fin custom modal*/
-
 .section-title {
   font-size: 13px;
   font-weight: 600;
@@ -314,8 +303,7 @@ body {
   gap: 18px;
   align-items: start;
 }
-
-/* Tarjetas de los cursos*/
+/* Tarjetas de cursos asignados al docente */
 .card {
   background: white;
   border-radius: 14px;
@@ -492,7 +480,7 @@ body {
   z-index: 900;
 }
 
-/* ORGANIZACION DE CLASES */
+/* Modulo de organizacion de clases y contenidos */
 .organizacion-page {
   gap: 0;
 }
@@ -1112,7 +1100,7 @@ body {
   background-color: #c8e6c9;
 }
 
-/* Gestion de tareas docente */
+/* Modulo de gestion de tareas docente */
 .tareas-banner .organizacion-metricas strong {
   font-size: 17px;
 }
@@ -1329,7 +1317,7 @@ body {
   transform: translateY(-1px);
 }
 
-/* Estilos para contenedores de entrada de notas*/
+/* Controles de entrada para registro de notas */
 .grade-input-container {
   display: inline-flex;
   align-items: center;
@@ -1441,7 +1429,7 @@ body {
   background: rgba(239, 68, 68, 0.05) !important;
 }
 
-/*Para el botón de finalizar notas*/
+/* Accion para finalizar el registro de notas */
 .btn-guardar-nota {
   background: linear-gradient(135deg, #053170, #069DBF);
   color: #fff;
@@ -1462,7 +1450,7 @@ body {
   opacity: .95;
 }
 
-/*Botón editar notas*/
+/* Accion para habilitar edicion de notas */
 .btn-nota-editar {
   background: linear-gradient(135deg, #053170, #069DBF);
   color: #fff;
@@ -2056,11 +2044,6 @@ body {
 
   .banner-left {
     font-size: 18px;
-  }
-
-  .baner-date {
-    text-align: left;
-    font-size: 12px;
   }
 
   .section-title {

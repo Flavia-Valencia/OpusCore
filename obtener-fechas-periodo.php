@@ -1,8 +1,6 @@
 <?php
-// Este archivo obtiene las fechas sugeridas de un período académico para autocompletar el formulario de plazo.
-// Recibe el ID del período por GET, consulta su fecha de inicio y fin de ciclo en PeriodoInscripcion.
-// Calcula la fecha de inicio sugerida como 15 días antes del fin del ciclo.
-// Responde en formato JSON con las fechas de inicio sugerido y fin del ciclo.
+// Sugiere fechas para el formulario de plazos de notas.
+// Usa el fin del ciclo y calcula el inicio 15 dias antes.
 include("includes/conexion.php");
 header('Content-Type: application/json');
 

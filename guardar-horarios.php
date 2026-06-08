@@ -1,7 +1,7 @@
 <?php
 include("includes/conexion.php");
 
-$data = json_decode(file_get_contents('php://input'), true); // recibe el JSON que manda JS
+$data = json_decode(file_get_contents('php://input'), true); // JSON enviado por el modal de horarios.
 $idCurso = intval($data['idCurso'] ?? 0);
 $bloques = $data['bloques'] ?? [];
 
@@ -23,7 +23,7 @@ foreach($bloques as $bloque){
         $registros[] = ['dia' => $dia, 'idHorario' => $idHorario, 'idAula' => $idAula];
     }
 }
-//Valida que el aula no esté ocupada
+// Evita solapar aulas en el mismo dia y horario.
 
 foreach($registros as $r){
     $stmt = $conexion-> prepare("
@@ -57,7 +57,7 @@ foreach($registros as $r){
        }
        $stmt->close();
 }
-// Obtener registros actuales de la BD
+// Registros actuales del curso en base de datos.
 $stmt = $conexion->prepare("SELECT id, dia, idHorario, idAula FROM cursohorario WHERE idCurso = ?");
 $stmt->bind_param("i", $idCurso);
 $stmt->execute();
@@ -68,21 +68,21 @@ while ($row = $res->fetch_assoc()) {
 }
 $stmt->close();
 
-// Convertir nuevos registros a formato comparable
+// Nuevos horarios indexados por dia, horario y aula.
 $nuevosSet = [];
 foreach ($registros as $r) {
     $clave = $r['dia'] . '-' . $r['idHorario'] . '-' . $r['idAula'];
     $nuevosSet[$clave] = $r;
 }
 
-// Convertir actuales a formato comparable
+// Horarios actuales indexados con la misma clave.
 $actualesSet = [];
 foreach ($actuales as $a) {
     $clave = $a['dia'] . '-' . $a['idHorario'] . '-' . $a['idAula'];
     $actualesSet[$clave] = $a;
 }
 
-// Eliminar solo los que ya no están en los nuevos
+// Elimina solo horarios retirados desde el modal.
 $stmtDel = $conexion->prepare("DELETE FROM cursohorario WHERE id = ?");
 foreach ($actuales as $a) {
     $clave = $a['dia'] . '-' . $a['idHorario'] . '-' . $a['idAula'];
@@ -93,7 +93,7 @@ foreach ($actuales as $a) {
 }
 $stmtDel->close();
 
-// Insertar solo los que no existen aún
+// Inserta solo horarios que aun no existen.
 $stmtIns = $conexion->prepare("INSERT INTO cursohorario (idCurso, dia, idHorario, idAula) VALUES (?, ?, ?, ?)");
 foreach ($nuevosSet as $clave => $r) {
     if (!isset($actualesSet[$clave])) {

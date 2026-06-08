@@ -108,7 +108,7 @@ if ($resPeriodos) {
             <button class="btn-nuevo">+ Nuevo Plazo</button>
         </div>
 
-        <!-- Banner plazo activo — reutiliza .banner del CSS -->
+        <!-- Banner con informacion del plazo activo -->
         <div class="banner">
             <div class="banner-texto">
                 <h1><?php echo $plazo_activo ? htmlspecialchars($plazo_activo['nombre']) : 'Sin plazo activo'; ?></h1>
@@ -146,7 +146,7 @@ if ($resPeriodos) {
             </div>
         </div>
 
-        <!-- Tabla de plazos -->
+        <!-- Tabla de plazos registrados -->
         <div class="card">
             <div class="toolbar">
                 <input type="text" id="buscador-plazo" placeholder="🔎 Buscar un plazo" class="input-buscar">
@@ -158,7 +158,7 @@ if ($resPeriodos) {
 
     </main>
 
-    <!-- MODAL CREAR / EDITAR PLAZOS -->
+    <!-- Modal para crear o editar plazos de notas -->
     <div id="modalPlazo" class="modal-overlay">
         <div class="modal-contenido">
             <button class="modal-cerrar" onclick="cerrarModalPlazo()">

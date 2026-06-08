@@ -1,5 +1,5 @@
 <?php
-// Obtiene las entregas de una tarea específica para mostrar en el panel del docente
+// Devuelve las entregas de una tarea para el panel del docente.
 session_start();
 header('Content-Type: application/json');
 
@@ -17,7 +17,7 @@ if (!$idTarea) {
     exit();
 }
 
-// Verificar que la tarea pertenece a un curso del docente autenticado
+// Confirma que la tarea pertenece a un curso del docente autenticado.
 $stmtVerif = $conexion->prepare("
     SELECT t.id, t.puntajeMaximo, t.titulo, t.fechaLimite
     FROM tareas t
@@ -37,7 +37,7 @@ if (!$tarea) {
     exit();
 }
 
-// Obtener todos los estudiantes inscritos en el curso con su estado de entrega
+// Lista estudiantes inscritos junto con su entrega, archivos y enlaces.
 $stmt = $conexion->prepare("
     SELECT
         e.id AS idEstudiante,

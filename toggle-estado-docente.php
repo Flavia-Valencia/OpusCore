@@ -1,7 +1,7 @@
 <?php
-# Recibe el ID de un docente y cambia su estado entre activo e inactivo.
-# Verifica que no tenga cursos activos asignados antes de deshabilitarlo.
-# Devuelve el nuevo estado en formato JSON para actualizar la interfaz.
+// Cambia el estado de un docente entre activo e inactivo.
+// Antes de deshabilitarlo verifica que no tenga cursos activos asignados.
+// Responde el nuevo estado en JSON para actualizar la interfaz.
 
 include("includes/conexion.php");
 

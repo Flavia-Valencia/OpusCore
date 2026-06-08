@@ -12,8 +12,7 @@ if(!isset($_SESSION["usuario"])){
 
 require_once 'includes/conexion.php';
 
-// Consulta real: facturas de estudiantes (generadas automáticamente por pagos)
-// y facturas de docentes (generadas manualmente por el admin)
+// Historial unificado de facturas emitidas para estudiantes y docentes.
 $sql = "
     SELECT 
         f.id,
@@ -52,19 +51,19 @@ $sql = "
 $result   = $conexion->query($sql);
 $facturas = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 
-// MÉTRICAS REALES 
+// Metricas mostradas en el resumen superior del modulo.
 $totalFacturas = 0;
 $totalDocentes = 0;
 $totalEstudiantes = 0;
 $totalFacturado = 0;
 
-// Total de facturas
+// Conteo total de facturas emitidas.
 $qTotal = $conexion->query("SELECT COUNT(*) AS total FROM facturas");
 if ($qTotal && $row = $qTotal->fetch_assoc()) {
     $totalFacturas = (int)$row['total'];
 }
 
-// Facturas a docentes
+// Conteo de facturas manuales emitidas a docentes.
 $qDoc = $conexion->query("
     SELECT COUNT(*) AS total 
     FROM facturas 
@@ -74,7 +73,7 @@ if ($qDoc && $row = $qDoc->fetch_assoc()) {
     $totalDocentes = (int)$row['total'];
 }
 
-// Facturas a estudiantes
+// Conteo de facturas generadas para estudiantes.
 $qEst = $conexion->query("
     SELECT COUNT(*) AS total 
     FROM facturas 
@@ -84,7 +83,7 @@ if ($qEst && $row = $qEst->fetch_assoc()) {
     $totalEstudiantes = (int)$row['total'];
 }
 
-// Total facturado
+// Monto acumulado de todas las facturas registradas.
 $qMonto = $conexion->query("
     SELECT COALESCE(SUM(total), 0) AS total 
     FROM facturas
@@ -93,7 +92,7 @@ if ($qMonto && $row = $qMonto->fetch_assoc()) {
     $totalFacturado = (float)$row['total'];
 }
 
-// DOCENTES PARA EL MODAL 
+// Docentes disponibles para generar facturas manuales.
 $sqlDocentes = "
     SELECT 
         d.id,

@@ -110,13 +110,14 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
         }
     };
 
+    // Genera constancias desde el servidor y actualiza el panel al finalizar.
     solicitudesWrap.addEventListener('click', async (event) => {
         const boton = event.target.closest('.constancia-generar-btn');
         if (!boton) return;
 
         const card = boton.closest('.constancia-solicitud');
         const idFull = card.dataset.id; // e.g. SOL-EST-5
-        
+
         boton.disabled = true;
         boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
 
@@ -169,7 +170,7 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
             console.warn("Polling constancias: sin conexión momentánea", e);
         }
     };
-    
+
     // Verificar cada 5 segundos
     setInterval(verificarNuevasSolicitudes, 5000);
     // Ejecución inicial para fijar countAnterior
@@ -325,7 +326,7 @@ if (formEditarEstudiante) {
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mDiff = hoy.getMonth() - nacimiento.getMonth();
         if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--; 
+            edad--;
         }
 
         if (nacimiento < minima) {
@@ -392,7 +393,7 @@ if (formNuevoEstudiante) {
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mDiff = hoy.getMonth() - nacimiento.getMonth();
         if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--; 
+            edad--;
         }
 
         if (nacimiento < minima) {
@@ -460,7 +461,7 @@ if (formEditarDocente) {
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mDiff = hoy.getMonth() - nacimiento.getMonth();
         if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--; 
+            edad--;
         }
 
         if (nacimiento < minima) {
@@ -528,7 +529,7 @@ if (formNuevoDocente) {
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mDiff = hoy.getMonth() - nacimiento.getMonth();
         if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--; 
+            edad--;
         }
 
         if (nacimiento < minima) {
@@ -659,7 +660,7 @@ if (formEditarAdministrador) {
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mDiff = hoy.getMonth() - nacimiento.getMonth();
         if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--; 
+            edad--;
         }
 
         if (nacimiento < minima) {
@@ -726,7 +727,7 @@ if (formNuevoAdministrador) {
         let edad = hoy.getFullYear() - nacimiento.getFullYear();
         const mDiff = hoy.getMonth() - nacimiento.getMonth();
         if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--; 
+            edad--;
         }
 
         if (nacimiento < minima) {
@@ -910,7 +911,8 @@ if (selectCategoriaEditar && selectPreEditar) {
 }
 
 
-// --- NUEVO UI MODAL (Inyectado en body) esto sirve para generar modal de advertencia dinámicamente y reutilizar el mismo modal en diferentes acciones sin duplicar código en el HTML
+// --- MODAL GENERICO DE CONFIRMACION ---
+// Se inyecta una sola vez en el body para reutilizarlo en acciones administrativas.
 
 const customModalHTML = `
 <div class="custom-modal-overlay" id="customConfirmModal">
@@ -1161,7 +1163,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ordenar activos por nombre alafabéticamente
+    // Ordena los cursos activos alfabeticamente por nombre.
     activos.sort((a, b) => {
         if (document.getElementById('buscador-curso')) {
             const nombreA = a.cells[0].textContent.trim().toLowerCase();
@@ -1378,7 +1380,7 @@ if (buscadorPeriodo) {
     });
 }
 
-//-- funcion para nuevo curso, nuevo docente o nuevo estudiante, dependiendo de cuál exista en la página, para evitar duplicar código al tener un botón "+ Nuevo" que abre diferentes modales según la página en la que se encuentre el admin
+// Abre el modal de creacion correspondiente segun la pagina administrativa actual.
 const btnNuevo = document.querySelector('.btn-nuevo');
 
 if (btnNuevo) {
@@ -1469,7 +1471,7 @@ document.addEventListener('keydown', e => {
     }
 });
 
-// --- BUSCADOR DOCENTES ---
+// Buscador de docentes en la tabla administrativa.
 const buscadorDocente = document.getElementById('buscador-docente');
 if (buscadorDocente) {
     buscadorDocente.addEventListener('keyup', function () {
@@ -1855,7 +1857,7 @@ async function validarInscripcion(idCurso, btn) {
     }
 }
 
-// 
+//
 
 
 // INSCRIPCIÓN DE CURSOS (estudiante-inscripciones.php)
@@ -1903,7 +1905,7 @@ function togglePagosOnline() {
     const menu = document.getElementById('pagosOnlineMenu');
     if (!menu) return;
 
-    // FRONTEND: permite contraer/expandir el submenu de Pagos en linea.
+    // Permite contraer o expandir el submenu de Pagos en linea.
     // La pagina activa sigue marcada por el enlace hijo con clase "active".
     const dropdown = menu.closest('.nav-dropdown');
     const toggle = dropdown?.querySelector('.nav-dropdown-toggle');
@@ -2366,14 +2368,14 @@ function inicializarPayPalCuota() {
     const container = document.getElementById('paypal-cuota-button-container');
     if (!container || !tramitePendienteSeleccionado) return;
 
-    // front: se limpia para evitar duplicar botones si el modal se abre varias veces.
+    // Limpia el contenedor para no duplicar botones si el modal se abre varias veces.
     container.innerHTML = '';
 
     paypal.Buttons({
         createOrder: function (data, actions) {
             const monto = parseFloat(tramitePendienteSeleccionado.monto || '0').toFixed(2);
 
-            // front: crea la orden desde el SDK con el monto mostrado en pantalla.
+            // Crea la orden desde el SDK con el monto mostrado en pantalla.
             // No llama endpoints PHP ni guarda datos en la base.
             return actions.order.create({
                 purchase_units: [{
@@ -2678,7 +2680,7 @@ function mostrarToast(mensaje, tipo) {
     }, 3000);
 }
 
-// ── PAYPAL ────────────────────────────────────────────────────────────────────
+// Flujo de pago con PayPal.
 // Inicializa el botón de PayPal dentro del modal de pago.
 // Se llama desde abrirModalPago() una sola vez gracias al flag data-rendered.
 function inicializarPayPal() {
@@ -2743,7 +2745,7 @@ function inicializarPayPal() {
 
     }).render('#paypal-button-container');
 
-    container.dataset.rendered = 'true'; // evita renderizar el botón dos veces
+    container.dataset.rendered = 'true'; // Evita renderizar el boton dos veces.
 }
 
 // MODULO FACTURACION
@@ -2875,7 +2877,7 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
         }
     });
 
-            
+
         });
 
         formNuevaFactura.addEventListener('input', function (e) {
@@ -2992,7 +2994,7 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
 // tabla de ítems dentro del modal (funciones globales llamadas con oninput/onclick desde el HTML)
 (function () {
     let filaId = 1;
- 
+
     // Recalcula subtotal de una fila y actualiza el total general
     window.recalcFila = function (id) {
         const cant   = parseFloat(document.getElementById('cant-'   + id)?.value) || 0;
@@ -3001,7 +3003,7 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
         if (celda) celda.textContent = '$' + (cant * precio).toFixed(2);
         recalcTotal();
     };
- 
+
     function recalcTotal() {
         let total = 0;
         document.querySelectorAll('[id^="sub-"]').forEach(el => {
@@ -3010,14 +3012,14 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
         const label = document.getElementById('facturaTotal');
         if (label) label.textContent = '$' + total.toFixed(2);
     }
- 
+
     // Agrega una nueva fila
     window.agregarFila = function () {
         filaId++;
         const id    = filaId;
         const tbody = document.getElementById('detalleBody');
         if (!tbody) return;
- 
+
         const tr = document.createElement('tr');
         tr.dataset.fila = id;
         tr.innerHTML = `
@@ -3032,14 +3034,14 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
             </td>`;
         tbody.appendChild(tr);
     };
- 
+
     // Elimina las filas dejando solo 1
     window.eliminarFila = function (id) {
         if (document.querySelectorAll('#detalleBody tr').length <= 1) return;
         const tr = document.querySelector(`[data-fila="${id}"]`);
         if (tr) { tr.remove(); recalcTotal(); }
     };
- 
+
     // Resetea la tabla al cerrar el modal
     window.resetDetalle = function () {
         filaId = 1;
@@ -3083,7 +3085,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const buscar = document.getElementById('buscarContenido');
     const filtroEstado = document.getElementById('filtroEstadoContenido');
     const adjuntosActuales = document.getElementById('adjuntosActuales');
-    
+
 
     if (!modal || !form || !tbody) return;
 
@@ -3101,7 +3103,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function abrirModalContenido(modo = 'crear', fila = null) {
         form.reset();
         limpiarValidacionContenido();
-        document.getElementById('listaAdjuntos').innerHTML = ''; 
+        document.getElementById('listaAdjuntos').innerHTML = '';
         if (adjuntosActuales) adjuntosActuales.innerHTML = '';
         campos.id.value = '';
         campos.modalTitulo.textContent = modo === 'editar' ? 'Editar contenido' : 'Nuevo contenido';
@@ -3211,7 +3213,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <i class="fas ${adjunto.tipo === 'Enlace' ? 'fa-link' : 'fa-paperclip'}"></i>
                     ${escapeContenido(adjunto.nombre)}
                 </span>
-                <button type="button" class="adjunto-remove adjunto-remove-existente" 
+                <button type="button" class="adjunto-remove adjunto-remove-existente"
                     data-id-archivo="${adjunto.id}" title="Eliminar adjunto">
                     <i class="fas fa-times"></i>
                 </button>
@@ -3237,7 +3239,7 @@ document.addEventListener('DOMContentLoaded', function () {
             fila.dataset.descripcion = campos.descripcion.value.trim();
             fila.dataset.fecha       = campos.fecha.value;
             fila.dataset.estado      = campos.estado.value;
-            
+
         }
         if (fila.dataset.estado === 'Deshabilitado') {
     fila.classList.add('fila-deshabilitada');
@@ -3290,7 +3292,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </td>`;
     }
-    
+
 
     function crearFila() {
         tbody.querySelector('.contenido-empty')?.remove();
@@ -3502,7 +3504,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.ok) {
                 mostrarToastPremium('Contenido guardado correctamente.', 'success');
                 cerrarModalContenido();
-                setTimeout(() => location.reload(), 1500); 
+                setTimeout(() => location.reload(), 1500);
             } else {
                 mostrarToastPremium('Error: ' + data.msg);
             }
@@ -3510,13 +3512,13 @@ document.addEventListener('DOMContentLoaded', function () {
             mostrarToastPremium('Error de conexión: ' + err.message);
         }
     });
-    
+
     // Buscador y filtro estado
 if (buscar) buscar.addEventListener('input', filtrarContenidos);
 if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
 });
 
-// Interacciones frontend para gestion de tareas del docente
+// Interacciones de gestion de tareas del docente.
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('modalTarea');
     const form = document.getElementById('formTareaDocente');
@@ -3545,7 +3547,7 @@ document.addEventListener('DOMContentLoaded', function () {
     modalTitulo: document.getElementById('tareaModalTitulo')
 };
 
-   
+
 
    function abrirModalTarea(fila = null) {
     form.reset();
@@ -3558,7 +3560,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (campos.id) campos.id.value = '';
 
     if (fila) {
-       
+
         if (campos.id) campos.id.value = fila.dataset.id || '';
 
         campos.titulo.value      = fila.dataset.titulo      || '';
@@ -3702,7 +3704,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const archivoNuevo = campos.archivo.files?.[0]?.name || '';
 
     if (idReal && !filaEditando) {
-        fila.dataset.id = idReal; 
+        fila.dataset.id = idReal;
     }
 
     fila.dataset.titulo      = campos.titulo.value.trim();
@@ -3739,7 +3741,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const idsArchivos = filaEditando?.dataset.idsArchivos || '';
     if (!filaEditando || !idsArchivos) return;
 
-    const idArchivo = idsArchivos.split(',')[0]; 
+    const idArchivo = idsArchivos.split(',')[0];
     if (!idArchivo) return;
 
     try {
@@ -3750,7 +3752,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = await res.json();
 
         if (data.ok) {
-          
+
             filaEditando.dataset.archivo     = '';
             filaEditando.dataset.idsArchivos = '';
             mostrarToastPremium('Archivo eliminado correctamente', 'success');
@@ -3893,7 +3895,7 @@ document.addEventListener('click', async function (e) {
             btn.disabled    = false;
             btn.textContent = 'Calificar';
         } else {
-            // Actualizar UI
+            // Actualiza la interfaz despues de guardar la calificacion.
             const td = btn.closest('td');
             const idEntrega = btn.dataset.idEntrega || fila?.dataset.idEntrega;
             if (td) td.innerHTML = `
@@ -4084,7 +4086,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 500);
     }
 
-    // Actualizar notas en localStorage provisional hasta implementar guardado definitivo
+    // Actualiza notas en localStorage mientras se conserva el respaldo local.
     function actualizarStorage(inscId, notaNum, valor) {
 
         if (!gradesData[inscId]) {
@@ -4182,8 +4184,7 @@ if (typeof promedioGrupalInicial !== 'undefined' && promedioGrupalInicial !== nu
         });
         recalcularKPIs();
     }
-    // Actualizar métricas generales del curso
-   // Actualizar métricas generales del curso
+    // Actualiza metricas generales del curso.
 function recalcularKPIs() {
     const badges = document.querySelectorAll('[id^="promedio-"]');
 
@@ -4217,9 +4218,8 @@ function recalcularKPIs() {
         if (kpiAprobacion) kpiAprobacion.textContent = '0%';
     }
 }
-    
-   // Botones de guardado manual
-   // Botón Editar
+
+   // Acciones de guardado manual y edicion.
 document.querySelectorAll('.btn-nota-editar').forEach(btn => {
     btn.addEventListener('click', function () {
         if (!plazoActivo) {
@@ -4229,7 +4229,7 @@ document.querySelectorAll('.btn-nota-editar').forEach(btn => {
         const row = this.closest('tr');
         row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
         row.querySelectorAll('.nota-input')[0].focus();
-        
+
         const btnGuardar = row.querySelector('.btn-guardar-nota');
         btnGuardar.disabled = false;
         btnGuardar.style.display = '';
@@ -4286,7 +4286,7 @@ document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
                     badge.classList.add(parseFloat(data.nota_final) >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
                 }
 
-               
+
                 let btnEditar = row.querySelector('.btn-nota-editar');
                 if (!btnEditar) {
                     btnEditar = document.createElement('button');
@@ -4460,8 +4460,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const mesFin    = fin.substring(0, 7);  
-            const mesInicio = inicio.substring(0, 7); 
+            const mesFin    = fin.substring(0, 7);
+            const mesInicio = inicio.substring(0, 7);
 
             if (mesInicio !== mesFin) {
                 mostrarToastPremium('El inicio del plazo debe ser dentro del mes de cierre del período');

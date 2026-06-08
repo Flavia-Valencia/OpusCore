@@ -1,7 +1,7 @@
 <?php
 // Elimina un archivo o enlace adjunto de una sesión de clase.
 // Primero verifica si es un archivo físico para borrarlo del servidor,
-// luego elimina el registro correspondiente de la base de datos.
+// y luego elimina el registro correspondiente de la base de datos.
 session_start();
 header('Content-Type: application/json');
 

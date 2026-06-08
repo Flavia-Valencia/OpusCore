@@ -11,7 +11,8 @@ if(!isset($_SESSION["usuario"])){
 }
 
 require_once 'includes/conexion.php';
-// conexión a la tabla de pagos
+
+// Historial de pagos con datos del estudiante y metodo usado.
 $sql = "
     SELECT 
         p.id,

@@ -40,7 +40,7 @@ $selectPeriodo = $tienePeriodoEnCursos ? "COALESCE(pi.nombre, 'Sin periodo asign
 $joinPeriodo = $tienePeriodoEnCursos ? "LEFT JOIN PeriodoInscripcion pi ON c.idPeriodo = pi.id" : "";
 $groupPeriodo = $tienePeriodoEnCursos ? ", pi.nombre" : "";
 
-// FRONTEND: modulo informativo para estudiantes. Lista todos los cursos sin filtrar por periodo activo.
+// Modulo informativo para estudiantes: lista todos los cursos sin filtrar por periodo activo.
 $sqlCursos = "
     SELECT c.id, c.nombre, c.descripcion, c.costoMensual, c.estado,
            COALESCE(cat.nombre, 'Sin categoria') AS categoria_nombre,

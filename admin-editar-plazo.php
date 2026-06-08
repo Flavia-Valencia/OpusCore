@@ -1,9 +1,6 @@
 <?php
-// Este archivo gestiona la edición de un plazo de notas existente.
-// Valida la sesión activa, campos obligatorios y que el fin no sea menor al inicio.
-// Verifica que el período seleccionado exista y que las fechas estén dentro de su ciclo.
-// Comprueba que no exista otro plazo con el mismo nombre o para el mismo período excluyendo el actual.
-// Actualiza el registro en PlazoNotas y responde en formato JSON.
+// Edita un plazo de notas existente y responde el resultado en JSON.
+// Mantiene las fechas dentro del ciclo del periodo y evita duplicados.
 session_start();
 header('Content-Type: application/json');
 

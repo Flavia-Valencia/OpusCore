@@ -15,7 +15,7 @@ function e($v) {
     return htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');
 }
 
-//Obtener datos del estudiante
+// Datos del estudiante autenticado para filtrar sus solicitudes.
 $correo = $_SESSION["usuario"];
 $stmt = $conexion->prepare("
     SELECT e.id, CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo
@@ -36,7 +36,7 @@ if (!$estudiante) {
 
 $idEstudiante = (int) $estudiante['id'];
 
-//Cursos en los que está inscrito el estudiante con estado de su solicitud de constancia y notas
+// Cursos inscritos con nota y estado actual de solicitud de constancia.
 $stmt = $conexion->prepare("
     SELECT
         c.id                                            AS curso_id,
@@ -65,7 +65,7 @@ $stmt->execute();
 $cursos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
-// Métricas 
+// Metricas del banner de constancias.
 $pendientes = 0;
 $aprobadas  = 0;
 foreach ($cursos as $c) {
@@ -73,16 +73,17 @@ foreach ($cursos as $c) {
     if ($c['estado_solicitud'] === 'Aprobada')  $aprobadas++;
 }
 
-
+// Periodos disponibles para el filtro de la tabla.
 $periodos = array_values(array_unique(array_column($cursos, 'periodo_nombre')));
 
+// Procesa la solicitud de constancia enviada desde la tabla.
 $alerta     = '';
 $alertaTipo = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
     $idCurso = (int) $_POST['idCurso'];
 
-    //Verificar que el curso está aprobado por el estudiante con nota >= 6.00 
+    // Confirma que el estudiante aprobo el curso con nota suficiente.
     $chk = $conexion->prepare("
         SELECT id, notaFinal, estadoEstudiante FROM RegistroNotas
         WHERE idEstudiante = ? AND idCurso = ?
@@ -93,9 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
     $notaInfo = $chk->get_result()->fetch_assoc();
     $chk->close();
 
+    // Evita duplicar solicitudes pendientes para el mismo curso.
     $aprobado = ($notaInfo && $notaInfo['estadoEstudiante'] === 'Aprobado' && (float)$notaInfo['notaFinal'] >= 6.00);
 
-    // Verificar si ya existe una solicitud PENDIENTE
+    // Evita duplicar solicitudes pendientes para el mismo curso.
     $dup = $conexion->prepare("
         SELECT id, estado FROM solicitudConstanciaEstudiante
         WHERE idEstudiante = ? AND idCurso = ? AND estado = 'Pendiente'
@@ -133,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
         $ins->close();
     }
 
+    // Recarga cursos y estados luego de guardar la solicitud.
     $stmt2 = $conexion->prepare("
         SELECT
             c.id                                            AS curso_id,
@@ -189,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <div class="layout">
-    <!-- ── SIDEBAR ── -->
+    <!-- Sidebar de navegacion del estudiante -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <img src="img/logo.svg" alt="Logo" class="logo-img">
@@ -239,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
         </a>
     </aside>
 
-    <!-- ── CONTENIDO ── -->
+    <!-- Contenido principal del modulo de constancias -->
     <div class="content">
         <header class="header-panel">
             <button class="hamburger" onclick="toggleSidebar()">
@@ -256,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
 
         <main class="main constancias-page">
 
-            <!-- ── BANNER CON MÉTRICAS ── -->
+            <!-- Banner de resumen de solicitudes -->
             <section class="constancias-banner">
                 <div class="constancias-banner-texto">
                     <h2>Mis Constancias</h2>
@@ -274,7 +277,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                 </div>
             </section>
 
-            <!-- ── TABLA DE CURSOS APROBADOS ── -->
+            <!-- Tabla de cursos disponibles para solicitud de constancia -->
             <section
                 class="constancias-card"
                 id="constanciasModulo"
@@ -346,7 +349,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
                                     $estado = $c['estado_solicitud'] ?? null;
                                     $aprobado = ($c['estado_academico'] === 'Aprobado' && (float)$c['notaFinal'] >= 6.00);
 
-                                    // Badge visual y estado de elegibilidad
+                                    // Estado visual y elegibilidad para solicitar constancia.
                                     if (!$aprobado) {
                                         $badgeClase = 'rechazada';
                                         $badgeTexto = 'No Cumple Requisitos';

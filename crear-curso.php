@@ -12,12 +12,12 @@ $idPeriodo = intval($_POST['idPeriodo']);
 $idCategoria = intval($_POST['idCategoria']);
 $estado       = 1;
 
-// Validación fechas incorrectas
+// Valida que la fecha de fin sea posterior a la fecha de inicio.
     if ($fechaFin <= $fechaInicio) {
     header("Location: admin-cursos.php?error=fechas");
     exit();
 }
-// Verifica si ya existe un curso con ese nombre
+// Evita crear cursos con nombres duplicados.
 $sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre')";
 $resultado_verificar = mysqli_query($conexion, $sql_verificar);
 if (mysqli_num_rows($resultado_verificar) > 0) {
@@ -25,7 +25,7 @@ if (mysqli_num_rows($resultado_verificar) > 0) {
     exit();
 }
 
-// Verifica que el docente no tenga ya 4 cursos activos
+// Limita la asignacion a cuatro cursos activos por docente.
 $sql_limite = "SELECT COUNT(*) AS total FROM cursos WHERE idDocente = '$idDocente' AND estado = 1";
 $res_limite = mysqli_query($conexion, $sql_limite);
 $row_limite = mysqli_fetch_assoc($res_limite);
@@ -35,15 +35,15 @@ if ($row_limite['total'] >= 4) {
 }
 
 
-// Insertar curso
+// Crea el curso con sus datos academicos y comerciales.
 $sql_curso = "INSERT INTO cursos (nombre, descripcion, costoMensual, cupos, fechaInicio, fechaFin, estado, idDocente, idCategoria, idPeriodo)
               VALUES ('$nombre', '$descripcion', '$costoMensual', '$cupos', '$fechaInicio', '$fechaFin', '$estado', '$idDocente','$idCategoria', '$idPeriodo')";
 mysqli_query($conexion, $sql_curso);
 
-// Obtener el ID del curso recién creado
+// Obtiene el ID generado para registrar dependencias relacionadas.
 $idCursoNuevo = mysqli_insert_id($conexion);
 
-// guarda prerrequisito si se seleccionó alguno
+// Registra el prerrequisito si se selecciono un curso previo valido.
 $idPrerrequisito = isset($_POST['idPrerrequisitos']) ? intval($_POST['idPrerrequisitos']) : 0;
 if ($idPrerrequisito > 0 && $idPrerrequisito != $idCursoNuevo) {
     $sql_pre = "INSERT INTO prerrequisitos (idCursoActual, idCursoPrevio) 

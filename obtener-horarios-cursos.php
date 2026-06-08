@@ -18,7 +18,7 @@ $stmt->bind_param("i", $idCurso);
 $stmt->execute();
 $res = $stmt->get_result();
 
-// Agrupar días por horario y aula
+// Agrupa dias que comparten el mismo horario y aula.
 $grupos = [];
 while ($row = $res->fetch_assoc()) {
     $clave = $row['idHorario'] . '-' . $row['idAula'];

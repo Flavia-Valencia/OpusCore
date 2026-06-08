@@ -11,6 +11,7 @@ if ($resColumnas) {
 $tienePlazo = in_array('plazoInicio', $columnasPlazo, true) && in_array('plazoFin', $columnasPlazo, true);
 $selectPlazo = $tienePlazo ? ', pn.plazoInicio, pn.plazoFin' : ", NULL AS plazoInicio, NULL AS plazoFin";
 
+// Mantiene compatibilidad con bases que aun no tienen rango de plazo.
 $sql = "SELECT pn.id, pn.idPeriodo, pn.nombre, pi.nombre AS periodo_nombre, pn.estado $selectPlazo
         FROM PlazoNotas pn
         INNER JOIN PeriodoInscripcion pi ON pn.idPeriodo = pi.id

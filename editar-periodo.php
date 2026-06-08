@@ -1,6 +1,6 @@
 <?php
 include("includes/conexion.php");
-// evita que el navegaador interprete como HTML la respuesta
+// Responde siempre en JSON para que la interfaz procese el resultado.
 header('Content-Type: application/json');
 
 try {
@@ -12,12 +12,12 @@ try {
     $fechaInicioCiclo = isset($_POST['fechaInicioCiclo']) ? $_POST['fechaInicioCiclo'] : null;
     $fechaFinCiclo    = isset($_POST['fechaFinCiclo']) ? $_POST['fechaFinCiclo'] : null;
 
- // Validación fechas incorrectas
+    // Valida que los rangos de inscripcion y ciclo sean coherentes.
     if ($fechaFin <= $fechaInicio || $fechaFinCiclo <= $fechaInicioCiclo) {
         echo json_encode(['success' => false, 'error' => 'fechas']);
         exit();
     }
-// Validar nombre repetido
+    // Evita duplicar nombres de periodos, excluyendo el registro actual.
     $sql_verificar = "SELECT id FROM PeriodoInscripcion 
                       WHERE LOWER(nombre) = LOWER('$nombre') 
                       AND id != '$id'";

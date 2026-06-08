@@ -11,6 +11,7 @@ if ($resColumnas) {
 $tieneFechasCiclo = in_array('fechaInicioCiclo', $columnasPeriodo, true) && in_array('fechaFinCiclo', $columnasPeriodo, true);
 $selectFechasCiclo = $tieneFechasCiclo ? ', fechaInicioCiclo, fechaFinCiclo' : ", NULL AS fechaInicioCiclo, NULL AS fechaFinCiclo";
 
+// Mantiene compatibilidad con bases que aun no tienen fechas de ciclo.
 $sql = "SELECT id, nombre, fechaInicio, fechaFin, estado $selectFechasCiclo
         FROM PeriodoInscripcion 
         ORDER BY estado DESC, id DESC";

@@ -18,8 +18,7 @@ if (!$pagoId) {
 
 $esAdmin = isset($_SESSION['rol_id']) && $_SESSION['rol_id'] == 1;
 
-// Si es admin busca el pago directo sin validar que sea su estudiante
-// Si es estudiante valida que el pago le pertenezca
+// El admin puede descargar cualquier comprobante; el estudiante solo los propios.
 if ($esAdmin) {
     $stmtEstudiante = $conexion->prepare("
         SELECT e.id, CONCAT(u.nombre, ' ', u.apellido) AS estudiante_nombre, u.correo
@@ -103,7 +102,7 @@ if (!$pago) {
 $codigo = $pago['idTransaccionPasarela'] ?: 'PAY-' . str_pad((string) $pago['pago_id'], 5, '0', STR_PAD_LEFT);
 $nombreArchivo = 'comprobante-pago-' . preg_replace('/[^A-Za-z0-9_-]/', '-', $codigo) . '.pdf';
 
-// Variables que consume la plantilla HTML del comprobante.
+// Variables que consume la plantilla visual del comprobante.
 $estudianteNombre = $estudiante['estudiante_nombre'];
 $correo = $estudiante['correo'];
 $metodoPago = $pago['metodo_pago'] ?: 'PayPal';
@@ -122,7 +121,7 @@ $cursos = [[
 ]];
 $estudiante = $estudianteNombre;
 
-// Genera el PDF usando la misma plantilla visual del comprobante.
+// Genera el PDF con la misma plantilla usada en correos y vista directa.
 ob_start();
 include __DIR__ . '/vista-comprobante-pago.php';
 $html = ob_get_clean();

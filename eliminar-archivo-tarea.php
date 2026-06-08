@@ -1,5 +1,5 @@
 <?php
-// Permite al docente eliminar un archivo adjunto de una tarea
+// Permite eliminar adjuntos de tareas pertenecientes al docente autenticado.
 
 session_start();
 header('Content-Type: application/json');
@@ -18,7 +18,7 @@ if (!$idArchivo) {
     exit();
 }
 
-// Verificar que el archivo pertenece a una tarea de un curso del docente autenticado
+// Confirma que el adjunto pertenece a una tarea del docente autenticado.
 $stmt = $conexion->prepare("
     SELECT ta.rutaArchivo, ta.tipo
     FROM tareasArchivos ta
@@ -39,12 +39,12 @@ if (!$archivo) {
     exit();
 }
 
-// Eliminar archivo físico solo si es tipo Archivo (no Enlace)
+// Elimina el archivo fisico solo cuando el adjunto no es un enlace.
 if ($archivo['tipo'] === 'Archivo' && !empty($archivo['rutaArchivo']) && file_exists($archivo['rutaArchivo'])) {
     unlink($archivo['rutaArchivo']);
 }
 
-// Eliminar registro de la BD
+// Elimina el registro del adjunto en base de datos.
 $stmtDel = $conexion->prepare("DELETE FROM tareasArchivos WHERE id = ?");
 $stmtDel->bind_param('i', $idArchivo);
 $stmtDel->execute();

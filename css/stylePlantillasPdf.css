@@ -1,8 +1,11 @@
+/* Plantillas PDF compartidas para facturas y constancias.
+   Usa reglas simples porque Dompdf no soporta todo el CSS moderno. */
 @page {
     size: A4;
     margin: 18px;
 }
 
+/* Base del documento renderizado */
 body {
     margin: 0;
     padding: 0;
@@ -12,6 +15,7 @@ body {
     font-size: 10px;
 }
 
+/* Hoja principal del documento */
 .doc {
     width: 100%;
     margin: 0 auto;
@@ -21,6 +25,7 @@ body {
     color: #111111;
 }
 
+/* Cabecera institucional reutilizable */
 .doc .header {
     padding: 16px 20px 14px;
     border-bottom: 2px solid #1f2937;
@@ -54,6 +59,7 @@ body {
     font-weight: bold;
 }
 
+/* Datos del emisor y bloque del numero de documento */
 .emisor-info {
     padding: 0 16px 0 0;
 }
@@ -100,6 +106,7 @@ body {
     font-size: 8.5px;
 }
 
+/* Estado del documento: pagado, pendiente, generado, etc. */
 .estado-badge {
     display: inline-block;
     margin-top: 7px;
@@ -112,6 +119,7 @@ body {
     text-transform: uppercase;
 }
 
+/* Secciones laterales de emisor/receptor */
 .partes {
     width: 100%;
     overflow: hidden;

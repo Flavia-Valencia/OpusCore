@@ -1,9 +1,6 @@
 <?php
-// Este archivo gestiona la creación de plazos de notas para un período académico.
-// Valida la sesión activa, campos obligatorios y que el fin no sea menor al inicio.
-// Verifica que el período seleccionado exista y que las fechas estén dentro de su ciclo.
-// Comprueba que no exista otro plazo con el mismo nombre o para el mismo período.
-// Inserta el nuevo plazo en PlazoNotas con estado inactivo por defecto y responde en formato JSON.
+// Crea plazos de notas y responde el resultado en JSON.
+// Valida ciclo academico, fechas y duplicados antes de insertar.
 session_start();
 header('Content-Type: application/json');
 

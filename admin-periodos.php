@@ -102,7 +102,7 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
             <button class="btn-nuevo">+ Nuevo Período</button>
         </div>
 
-        <!-- Banner período activo — reutiliza .banner del CSS -->
+        <!-- Banner con informacion del periodo activo -->
         <div class="banner">
             <div class="banner-texto">
                 <h1><?php echo $periodo_activo ? htmlspecialchars($periodo_activo['nombre']) : 'Sin período activo'; ?></h1>
@@ -152,7 +152,7 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
             </div>
         </div>
 
-        <!-- Tabla de períodos -->
+        <!-- Tabla de periodos registrados -->
         <div class="card">
             <div class="toolbar">
                 <input type="text" id="buscador-periodo" placeholder="🔎 Buscar un período" class="input-buscar">
@@ -164,7 +164,7 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
 
     </main>
 
-    <!-- MODAL CREAR / EDITAR PERÍODO -->
+    <!-- Modal para crear o editar periodos -->
     <div id="modalPeriodo" class="modal-overlay">
         <div class="modal-contenido">
             <button class="modal-cerrar" onclick="cerrarModalPeriodo()">
