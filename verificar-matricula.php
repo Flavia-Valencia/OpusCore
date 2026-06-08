@@ -1,7 +1,6 @@
 <?php
-// Verifica si el estudiante ya canceló la matrícula del período activo.
-// Consulta la matrícula pagada asociada al estudiante y período vigente.
-// Retorna una respuesta JSON usada para decidir si se suma el costo de matrícula.
+// Indica si el estudiante ya pago matricula en el periodo activo.
+// La interfaz usa esta respuesta para evitar cobrar matricula duplicada.
 session_start();
 header('Content-Type: application/json');
 

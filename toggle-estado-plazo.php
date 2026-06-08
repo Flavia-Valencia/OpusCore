@@ -1,8 +1,6 @@
 <?php
-// Este archivo gestiona el toggle de estado de un plazo de notas.
-// Valida que el ID recibido sea válido y que el plazo exista en la base de datos.
-// Si se intenta activar, verifica que no haya otro plazo ya activo.
-// Cambia el estado entre activo e inactivo y responde en formato JSON.
+// Activa o desactiva un plazo de notas y responde en JSON.
+// Solo permite mantener un plazo activo a la vez.
 session_start();
 header('Content-Type: application/json');
 

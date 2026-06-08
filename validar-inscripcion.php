@@ -1,15 +1,14 @@
 <?php
-//Este archivo gestiona la inscripción de estudiantes a cursos.
-//Valida la sesión activa, verifica disponibilidad del curso, evita inscripciones duplicadas,
-//controla el límite de cursos por período y comprueba prerrequisitos.
-//Si todo es válido, registra la inscripción y actualiza los cupos mediante una transacción.
-//Responde en formato JSON con el resultado de la operación.
+// Gestiona la inscripcion de estudiantes a cursos.
+// Valida sesion, disponibilidad, duplicados, limite por periodo y prerrequisitos.
+// Si todo es valido, registra la inscripcion y actualiza cupos dentro de una transaccion.
+// Responde en JSON para que la interfaz muestre el resultado.
 session_start();
 
 header('Content-Type: application/json');
 header("Cache-Control: no-store, no-cache, must-revalidate");
 
-//Validar sesión activa
+// Valida que el estudiante tenga una sesion activa.
 if (!isset($_SESSION["usuario"])) {
     echo json_encode(['success' => false, 'mensaje' => 'Sesión expirada. Inicie sesión nuevamente.']);
     exit();
@@ -25,7 +24,7 @@ if (!$idCurso) {
     exit();
 }
 
-// Obtener id del estudiante
+// Obtiene el ID interno del estudiante autenticado.
 $stmt = $conexion->prepare("
     SELECT e.id FROM estudiantes e
     INNER JOIN usuarios u ON e.usuario_id = u.id
@@ -44,7 +43,7 @@ if (!$estudiante) {
 
 $idEstudiante = $estudiante['id'];
 
-// Verificar que el curso existe, y tiene cupos disponiblees
+// Verifica que el curso exista, este activo y tenga cupos disponibles.
 $stmt = $conexion->prepare("
     SELECT id, cupos, idPeriodo FROM cursos
     WHERE id = ? AND estado = 1 AND cupos > 0
@@ -62,7 +61,7 @@ if (!$curso) {
 
 $idPeriodo = $curso['idPeriodo'];
 
-//Verificar que no esté ya inscrito en ese curso
+// Evita inscripciones duplicadas en el mismo periodo.
 $stmt = $conexion->prepare("
     SELECT id FROM inscripciones
     WHERE idEstudiante = ? AND idCurso = ? AND idPeriodo = ?
@@ -78,7 +77,7 @@ if ($yaInscrito) {
     exit();
 }
 
-// Verificar límite de 5 cursos por período.
+// Verifica el limite de 5 cursos por periodo.
 // Esta validación bloquea la inscripción de un sexto curso en el mismo período,
 // pero no oculta cursos disponibles en la lista de inscripción.
 $stmt = $conexion->prepare("
@@ -96,7 +95,7 @@ if ($conteo['total'] >= 5) {
     exit();
 }
 
-// Verificar prerrequisitos
+// Comprueba que el estudiante haya finalizado los prerrequisitos.
 $stmt = $conexion->prepare("
     SELECT idCursoPrevio FROM prerrequisitos
     WHERE idCursoActual = ?
@@ -137,7 +136,7 @@ foreach ($prerrequisitos as $pre) {
     }
 }
 
-// Todas las validaciones pasaron 
+// Todas las validaciones pasaron; se confirma la inscripcion.
 $conexion->begin_transaction();
 
 try {

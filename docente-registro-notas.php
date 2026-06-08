@@ -21,7 +21,7 @@ $cursoValido = null;
 $estudiantes = [];
 
 if ($cursoId > 0) {
-    // Validar que el curso pertenezca al docente actual
+    // Confirma que el curso pertenezca al docente autenticado.
     $stmt = $conexion->prepare("
         SELECT c.id, c.nombre, p.nombre AS periodo_nombre
         FROM cursos c
@@ -39,7 +39,7 @@ if ($cursoId > 0) {
     if ($cursoValido) {
         $cursoSeleccionado = $cursoValido['nombre'];
 
-        // Estudiantes inscritos activos + notas del plazo activo si existen
+        // Estudiantes activos y notas asociadas al plazo vigente.
         $stmt = $conexion->prepare("
             SELECT i.id AS inscripcion_id,
                    e.id AS estudiante_id,
@@ -73,11 +73,11 @@ if ($cursoId > 0) {
         $stmt->close();
     }
 } else {
-    // Si no hay curso_id, obtener todos los cursos del docente
+    // Sin curso seleccionado se muestran los cursos disponibles del docente.
     $cursos = getCursosDocente($conexion, $_SESSION["usuario"]);
 }
 
-// Obtener plazo activo para este curso
+// Plazo activo que habilita la edicion de notas.
 $plazoActivo = null;
 $stmt = $conexion->prepare("
     SELECT pn.id, pn.nombre, pn.plazoFin
@@ -93,7 +93,7 @@ $stmt->execute();
 $plazoActivo = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
-// Promedio grupal real desde BD
+// Promedio grupal registrado para el plazo activo.
 $promedioGrupal = null;
 if ($plazoActivo && $cursoValido) {
     $stmt = $conexion->prepare("
@@ -183,7 +183,7 @@ if ($plazoActivo && $cursoValido) {
             </header>
 
             <?php if ($cursoId === 0): ?>
-                <!-- Vista de cursos en tarjeta para asignar notas -->
+                <!-- Vista de cursos disponibles para registrar notas -->
                 <section class="banner organizacion-banner">
                     <div class="banner-left">
                         <h2>Registro de Notas de Estudiantes</h2>
@@ -242,7 +242,7 @@ if ($plazoActivo && $cursoValido) {
                 <?php endif; ?>
 
             <?php else: ?>
-                <!-- Vista de registro de notas -->
+                <!-- Vista de registro de notas del curso seleccionado -->
                 <div class="organizacion-topbar">
                     <div>
                         <a href="docente-registro-notas.php" class="organizacion-back">

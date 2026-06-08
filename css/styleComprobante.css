@@ -1,8 +1,11 @@
+/* Plantilla PDF del comprobante de pago.
+   Mantiene medidas compactas para renderizar correctamente con Dompdf. */
 @page {
     size: letter;
     margin: 22px;
 }
 
+/* Base del documento PDF */
 body {
     margin: 0;
     padding: 0;
@@ -12,6 +15,7 @@ body {
     font-size: 11px;
 }
 
+/* Contenedor principal del comprobante */
 .comprobante {
     width: 100%;
     margin: 0 auto;
@@ -21,6 +25,7 @@ body {
     box-sizing: border-box;
 }
 
+/* Cabecera con logo, fecha y datos institucionales */
 .header {
     width: 100%;
     min-height: 60px;
@@ -59,6 +64,7 @@ body {
     font-size: 10px;
 }
 
+/* Titulo central del comprobante */
 .titulo {
     clear: both;
     text-align: center;
@@ -78,6 +84,7 @@ body {
     font-size: 11px;
 }
 
+/* Bloques de datos del estudiante, curso o pago */
 .box {
     margin-bottom: 14px;
     padding: 10px 12px;
@@ -97,6 +104,7 @@ body {
     color: #374151;
 }
 
+/* Tabla de detalle del comprobante */
 table {
     width: 100%;
     border-collapse: collapse;

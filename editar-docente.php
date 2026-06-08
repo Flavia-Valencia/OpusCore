@@ -14,10 +14,10 @@ $salario = $_POST['salario'];
 $telefono = $_POST['telefono'];
 $direccion = $_POST['direccion'];
 $estadoTexto = $_POST['estado'];
-$estado = ($estadoTexto === 'Activo') ? 1 : 0;    #envía el estado correctamente a la bd, cuando se modifique la bd, lo cambio
+$estado = ($estadoTexto === 'Activo') ? 1 : 0;    // Convierte el estado del formulario al valor numerico de la BD.
 
 header('Content-Type: application/json');
-# validar correos duplicados excluyendo el del usuario seleccionado.
+// Evita correos duplicados, excluyendo el usuario que se esta editando.
 $check = "SELECT id FROM usuarios WHERE correo = '$correo' AND id != '$usuario_id'";
 $resultado = mysqli_query($conexion, $check);
 if (mysqli_num_rows($resultado) > 0) {
@@ -25,7 +25,7 @@ if (mysqli_num_rows($resultado) > 0) {
     exit();
 }
 
-# validar fecha nacimiento.
+// Valida edad minima y rango de fecha de nacimiento.
 $fechaNac = new DateTime($fecha_nacimiento);
 $hoy      = new DateTime();
 $minima   = new DateTime('1950-01-01');

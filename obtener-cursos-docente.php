@@ -1,13 +1,10 @@
 <?php
-// Obtiene los cursos activos asignados a un docente según su correo.
-// Une las tablas usuarios, docentes y cursos para filtrar solo los cursos
-// donde estado = 1 y retorna un arreglo con los datos de cada curso.
+// Obtiene cursos activos del docente durante el periodo vigente.
 
 function getCursosDocente($conexion, $correoDocente) {
     $correo = mysqli_real_escape_string($conexion, $correoDocente);
 
-    // Se agrega COUNT y LEFT JOIN para mostrar la cantidad de alumnos inscritos por curso
-    // y GROUP BY Agrupa los cursos para que el COUNT funcione correctamente por cada curso
+    // Calcula alumnos inscritos por curso sin excluir cursos con cero estudiantes.
     $query = "
         SELECT c.id, c.nombre, c.descripcion, c.costoMensual, 
             c.cupos, c.fechaInicio, c.fechaFin,

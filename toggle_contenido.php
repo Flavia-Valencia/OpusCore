@@ -1,7 +1,5 @@
 <?php
-// Actualiza el estado de un contenido verificando sesión activa,
-// recibe el ID y estado por POST, realiza la actualización
-// en la base de datos y devuelve una respuesta JSON.
+// Actualiza el estado visible de un contenido de sesion.
 session_start();
 header('Content-Type: application/json');
 

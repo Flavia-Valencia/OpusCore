@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 
-/* ─── VARIABLES ──────────────────────────────────────────────────── */
+/* ─── VARIABLES DEL DOCUMENTO PDF/IMPRESION ─────────────────────── */
 :root {
     --ink:       #111827;
     --ink-soft:  #4b5563;
@@ -32,7 +32,7 @@
     color: var(--ink);
 }
 
-/* Franja lateral de acento */
+/* Franja lateral que identifica visualmente el documento */
 .doc::before {
     content: '';
     position: absolute;
@@ -54,7 +54,7 @@
     background: var(--white);
 }
 
-/* Logo */
+/* Logo o placeholder si no existe imagen institucional */
 .logo-wrap img,
 .logo-wrap .logo-placeholder {
     height: 52px;
@@ -76,7 +76,7 @@
     font-weight: 700;
 }
 
-/* Info del emisor en cabecera */
+/* Datos del emisor mostrados en la cabecera */
 .emisor-info {
     padding-left: 4px;
 }
@@ -271,7 +271,7 @@ table.items tbody td {
 table.items tbody td.center { text-align: center; }
 table.items tbody td.num    { font-family: var(--mono); font-size: 10px; }
 
-/* Badges de tipo dentro de la tabla */
+/* Tipo de cobro dentro de la tabla de items */
 .tipo-tag {
     display: inline-block;
     padding: 2px 7px;
@@ -423,7 +423,8 @@ table.totales tr.total-row .tv { font-family: var(--mono); color: #fff; }
 
 .print-btn:hover { background: #0b223d; }
 
-/* ─── MODAL NUEVA FACTURA ────────────────────────────────────────── */
+/* ─── MODAL NUEVA FACTURA ──────────────────────────────────────────
+   Estos estilos complementan y aislan el modal de facturacion del CSS admin. */
 .facturacion-modal .modal-contenido {
     max-width: 760px !important;
 }
@@ -500,7 +501,7 @@ table.totales tr.total-row .tv { font-family: var(--mono); color: #fff; }
     vertical-align: middle;
     background: #fff;
 
-    /* cancela stylesAdmin */
+    /* Aisla la tabla del comportamiento mobile-cards de stylesAdmin */
     display: table-cell !important;
     width: auto !important;
     flex: unset !important;
@@ -512,7 +513,7 @@ table.totales tr.total-row .tv { font-family: var(--mono); color: #fff; }
     position: static !important;
 }
 
-/* cancela labels fantasmas mobile-cards */
+/* Evita labels generados por mobile-cards dentro del modal */
 .detalle-tabla tbody td::before {
     display: none !important;
     content: none !important;
@@ -535,7 +536,7 @@ table.totales tr.total-row .tv { font-family: var(--mono); color: #fff; }
     background: #fff !important;
     box-sizing: border-box;
     transition: border-color .15s, background .15s;
-    /* neutraliza stylesAdmin */
+    /* Restablece alineacion para inputs numericos del modal */
     box-shadow: none !important;
 }
 
@@ -668,7 +669,7 @@ table.totales tr.total-row .tv { font-family: var(--mono); color: #fff; }
         margin-bottom: 0;
     }
 
-    /* labels mobile */
+    /* Labels visibles solo en la version movil del detalle */
     .detalle-tabla tbody td:nth-child(1)::before {
         content: "Descripción";
     }

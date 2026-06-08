@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set('America/El_Salvador');
 
-// Plantilla frontend compatible con Dompdf
+// Plantilla de constancia administrativa compatible con Dompdf.
 // Backend podra definir estas variables antes de incluir esta vista
 $codigoConstancia = $codigoConstancia ?? ($_GET['codigo'] ?? 'CONST-0001');
 $tipoConstancia   = $tipoConstancia ?? ($_GET['tipo'] ?? 'Constancia de aprobación de curso');

@@ -1,9 +1,9 @@
 <?php
-// Los datos ahora vienen desde enviar-comprobante.php
-// $estudiante, $correo, $cursos (array), $periodo, $metodoPago, $estado, $transaccion, $fecha, $hora, $total
+// Vista reutilizable para comprobantes generados por correo, descarga PDF o vista directa.
+// Variables esperadas: estudiante, correo, cursos, periodo, metodoPago, estado, transaccion, fecha, hora y total.
 date_default_timezone_set('America/El_Salvador');
 
-// Si se abre directo sin pago_id, se muestra la plantilla vacia para revisar diseño.
+// Permite consultar un comprobante desde el navegador cuando se recibe pago_id.
 if (!isset($estudiante)) {
     $pagoId = isset($_GET['pago_id']) ? (int)$_GET['pago_id'] : 0;
 
@@ -17,7 +17,7 @@ if (!isset($estudiante)) {
 
         require_once __DIR__ . '/../includes/conexion.php';
 
-        // Verificar que el pago pertenece al estudiante logueado
+        // Valida que el pago pertenezca al estudiante autenticado.
         $stmtPago = $conexion->prepare("
             SELECT p.id, p.monto, p.idTransaccionPasarela, p.estado, p.fechaPago,
                    mp.nombre AS metodo_pago,
@@ -39,7 +39,7 @@ if (!isset($estudiante)) {
             die('Comprobante no encontrado o no tienes permiso para verlo.');
         }
 
-        // Obtener cursos vinculados via idFactura
+        // Obtiene los cursos vinculados al pago para detallar el comprobante.
         $stmtCursos = $conexion->prepare("
             SELECT c.nombre, c.costoMensual AS costo,
                    pi.nombre AS periodo_nombre,
@@ -90,7 +90,7 @@ $total       = isset($total) ? (float)$total : 0;
     <title>Comprobante de Pago</title>
     <style>
     <?php
-    // CSS simple compatible con Dompdf.
+    // Inserta CSS compatible con Dompdf dentro de la plantilla.
     $cssComprobantePath = __DIR__ . '/../css/styleComprobante.css';
     if (is_readable($cssComprobantePath)) {
         echo file_get_contents($cssComprobantePath);

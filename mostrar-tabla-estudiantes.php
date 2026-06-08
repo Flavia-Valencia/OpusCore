@@ -1,7 +1,7 @@
 <?php
 include('includes/conexion.php');   
 
-// Consulta que une la tabla estudiantes con usuarios para obtener todos sus datos
+// Datos combinados de usuario y perfil estudiante para la tabla administrativa.
 $sql = "SELECT
     u.id AS usuario_id,
     e.id AS estudiante_id,
@@ -16,7 +16,7 @@ $sql = "SELECT
     e.direccion
     FROM estudiantes e 
     INNER JOIN usuarios u ON e.usuario_id = u.id
-    WHERE u.rol_id = 2"; // rol_id 2 corresponde al rol de estudiante
+    WHERE u.rol_id = 2"; // rol_id 2: estudiante.
     
 $resultado = mysqli_query($conexion, $sql);
 
@@ -36,7 +36,6 @@ if (mysqli_num_rows($resultado) > 0 ){
             </tr>
         </thead>
 
-        <!-- Editar estudiante-->
         <tbody>
             <?php while($fila = mysqli_fetch_assoc($resultado)){ ?>
             <tr data-id="<?php echo $fila['usuario_id']; ?>">
@@ -49,7 +48,7 @@ if (mysqli_num_rows($resultado) > 0 ){
                 <td data-label="Dirección"><?php echo htmlspecialchars($fila['direccion']); ?></td>
                 <td data-label="Acciones" class="acciones-cell">
                     <div class="acciones-texto">
-                        <!-- Los data-* pasan los datos del estudiante al modal de edición via JavaScript -->
+                        <!-- Datos usados por JavaScript para precargar el modal de edicion. -->
                         <a 
                             href="#"
                             class="link-accion abrir-modal-estudiante"
@@ -68,8 +67,6 @@ if (mysqli_num_rows($resultado) > 0 ){
                         >
                             Editar
                         </a>
-                         <!-- Pide confirmación antes de eliminar para evitar borrados accidentales -->
-                        
                         <a 
                             href="#" 
                             class="link-accion btn-toggle-estado <?php echo ($fila['estado'] == 'Activo' || $fila['estado'] == 1) ? 'estado-activo' : 'estado-inactivo'; ?>"

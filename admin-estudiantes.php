@@ -1,4 +1,4 @@
-<?php                   #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
+<?php
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -17,7 +17,7 @@ if(!isset($_SESSION["usuario"])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!--PARA FUENTES-->
+    <!-- Fuentes e iconos de la interfaz -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -49,13 +49,11 @@ if(!isset($_SESSION["usuario"])){
         <label for="menu-toggle" class="menu-overlay"></label>
         
         <nav class="nav">
-            <!--Funciona para nombre el celu -->
+            <!-- Datos del usuario visibles dentro del menu movil -->
             <div class="menu-user">
                 <div class="menu-user-role">Admin</div>
                 <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
             </div>
-            <!-------------->
-
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
             <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
             <a href="./admin-estudiantes.php" class="btn-nav active">Estudiantes</a>
@@ -66,9 +64,8 @@ if(!isset($_SESSION["usuario"])){
             <a href="./admin-plazo.php" class="btn-nav">Plazo Notas</a>
             <a href="./admin-constancias.php" class="btn-nav">Constancias</a>
         
-            <!--Boton para cerrar sesión en celu-->
+            <!-- Cierre de sesion dentro del menu movil -->
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
-            <!-------------->
 
             <a href="includes/logout.php" style="text-decoration:none;">
                 <div class="user-profile">
@@ -99,14 +96,14 @@ if(!isset($_SESSION["usuario"])){
         </div>
     </main>
 
-      <!-- Modal para editar estudiante -->
+      <!-- Modal para editar estudiantes -->
     <div id="modalEditar" class="modal-overlay">
         <div class="modal-contenido">
             <button class="modal-cerrar" onclick="cerrarModal()"><i class="fas fa-times"></i></button>
              <h2 class="modal-titulo"><i class="fas fa-user-edit"></i> Editar Estudiante</h2>
-            <!-- Formulario para registrar un nuevo estudiante en el sistema -->
+            <!-- Envia los datos actualizados del estudiante -->
             <form method="POST" action="editar-estudiante.php">
-                <!-- ID oculto para identificar qué estudiante se está editando -->
+                <!-- Identificadores internos del usuario y estudiante editado -->
                 <input type="hidden" name="usuario_id" id="editd-usuario_id">
                 <input type="hidden" name="estudiante_id" id="editd-estudiante_id">
 
@@ -123,7 +120,7 @@ if(!isset($_SESSION["usuario"])){
                             <option value="F">Femenino</option>
                         </select>
                     </div>
-                </div>  <!-- ajuste de diseño para que se muestre igual que los otros modales-->
+                </div>
 
                 <h3 class="modal-subtitulo">Acceso al sistema</h3>
                 <div class="modal-grid">
@@ -139,9 +136,9 @@ if(!isset($_SESSION["usuario"])){
                     </div>
 
                      <div class="modal-campo" style="display: none;"><label>Estado</label>
-                        <!-- El valor debe coincidir exactamente con "Activo"/"Inactivo" en la base de datos -->
+                        <!-- Valores esperados por la base de datos para el estado del usuario -->
                         <select name="estado" id="edit-estado">
-                            <option value="Activo">Activo</option>    <!-- cambio de minuscula a mayuscula ya que el valor en la base de datos es "Activo" -->
+                            <option value="Activo">Activo</option>
                             <option value="Inactivo">Inactivo</option>
                         </select>
                     </div>
@@ -155,7 +152,7 @@ if(!isset($_SESSION["usuario"])){
         </div>
     </div>
 
-        <!-- MODAL NUEVO ESTUDIANTE -->
+        <!-- Modal para registrar estudiantes -->
     <div id="modalNuevo" class="modal-overlay">
         <div class="modal-contenido">
             <button class="modal-cerrar" onclick="cerrarModalNuevo()"><i class="fas fa-times"></i></button>
@@ -184,8 +181,8 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo">
                         <label>Contraseña</label>
                         <div class="input-password">
-                            <!-- Se muestra como texto plano para que el admin vea la contraseña al crearla -->
-                            <input type="text" name="password_hash" id="nuevo-contrasena-est" required> <!-- cambio para el tipo de password a text para que se muestre la contraseña al escribirla, ya que es un nuevo usuario y el admin necesita ver lo que escribe -->
+                            <!-- Texto visible para que el admin confirme la contrasena inicial -->
+                            <input type="text" name="password_hash" id="nuevo-contrasena-est" required>
                         </div>
                     </div>
                 </div>
@@ -198,7 +195,7 @@ if(!isset($_SESSION["usuario"])){
         </div>
     </div>
 
-    <!-- Librería SweetAlert2 para mostrar alertas personalizadas en la interfaz -->
+    <!-- SweetAlert2 para alertas personalizadas -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script src="js/script.js"></script>

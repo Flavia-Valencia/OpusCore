@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarKpis();
     };
 
-    // Simula la generacion frontend: remueve la solicitud y crea su registro historico.
+    // Refleja la aprobacion en pantalla y crea el registro historico local.
     solicitudesWrap.addEventListener('click', (event) => {
         const boton = event.target.closest('.constancia-generar-btn');
         if (!boton) return;
@@ -736,7 +736,8 @@ if (selectCategoriaEditar && selectPreEditar) {
 }
 
 
-// --- NUEVO UI MODAL (Inyectado en body) esto sirve para generar modal de advertencia dinámicamente y reutilizar el mismo modal en diferentes acciones sin duplicar código en el HTML
+// --- MODAL GENERICO DE CONFIRMACION ---
+// Se inyecta una sola vez en el body para reutilizarlo en acciones administrativas.
 
 const customModalHTML = `
 <div class="custom-modal-overlay" id="customConfirmModal">
@@ -986,7 +987,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ordenar activos por nombre alafabéticamente
+    // Ordena los cursos activos alfabeticamente por nombre.
     activos.sort((a, b) => {
         if (document.getElementById('buscador-curso')) {
             const nombreA = a.cells[0].textContent.trim().toLowerCase();
@@ -1203,7 +1204,7 @@ if (buscadorPeriodo) {
     });
 }
 
-//-- funcion para nuevo curso, nuevo docente o nuevo estudiante, dependiendo de cuál exista en la página, para evitar duplicar código al tener un botón "+ Nuevo" que abre diferentes modales según la página en la que se encuentre el admin
+// Abre el modal de creacion correspondiente segun la pagina administrativa actual.
 const btnNuevo = document.querySelector('.btn-nuevo');
 
 if (btnNuevo) {
@@ -1290,7 +1291,7 @@ document.addEventListener('keydown', e => {
     }
 });
 
-// --- BUSCADOR DOCENTES ---
+// Buscador de docentes en la tabla administrativa.
 const buscadorDocente = document.getElementById('buscador-docente');
 if (buscadorDocente) {
     buscadorDocente.addEventListener('keyup', function () {
@@ -1707,7 +1708,7 @@ function togglePagosOnline() {
     const menu = document.getElementById('pagosOnlineMenu');
     if (!menu) return;
 
-    // FRONTEND: permite contraer/expandir el submenu de Pagos en linea.
+    // Permite contraer o expandir el submenu de Pagos en linea.
     // La pagina activa sigue marcada por el enlace hijo con clase "active".
     const dropdown = menu.closest('.nav-dropdown');
     const toggle = dropdown?.querySelector('.nav-dropdown-toggle');
@@ -2170,14 +2171,14 @@ function inicializarPayPalCuota() {
     const container = document.getElementById('paypal-cuota-button-container');
     if (!container || !tramitePendienteSeleccionado) return;
 
-    // front: se limpia para evitar duplicar botones si el modal se abre varias veces.
+    // Limpia el contenedor para no duplicar botones si el modal se abre varias veces.
     container.innerHTML = '';
 
     paypal.Buttons({
         createOrder: function (data, actions) {
             const monto = parseFloat(tramitePendienteSeleccionado.monto || '0').toFixed(2);
 
-            // front: crea la orden desde el SDK con el monto mostrado en pantalla.
+            // Crea la orden desde el SDK con el monto mostrado en pantalla.
             // No llama endpoints PHP ni guarda datos en la base.
             return actions.order.create({
                 purchase_units: [{
@@ -2482,7 +2483,7 @@ function mostrarToast(mensaje, tipo) {
     }, 3000);
 }
 
-// ── PAYPAL ────────────────────────────────────────────────────────────────────
+// Flujo de pago con PayPal.
 // Inicializa el botón de PayPal dentro del modal de pago.
 // Se llama desde abrirModalPago() una sola vez gracias al flag data-rendered.
 function inicializarPayPal() {
@@ -2547,7 +2548,7 @@ function inicializarPayPal() {
 
     }).render('#paypal-button-container');
 
-    container.dataset.rendered = 'true'; // evita renderizar el botón dos veces
+    container.dataset.rendered = 'true'; // Evita renderizar el boton dos veces.
 }
 
 // MODULO FACTURACION
@@ -3320,7 +3321,7 @@ if (buscar) buscar.addEventListener('input', filtrarContenidos);
 if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
 });
 
-// Interacciones frontend para gestion de tareas del docente
+// Interacciones de gestion de tareas del docente.
 document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('modalTarea');
     const form = document.getElementById('formTareaDocente');
@@ -3697,7 +3698,7 @@ document.addEventListener('click', async function (e) {
             btn.disabled    = false;
             btn.textContent = 'Calificar';
         } else {
-            // Actualizar UI
+            // Actualiza la interfaz despues de guardar la calificacion.
             const td = btn.closest('td');
             const idEntrega = btn.dataset.idEntrega || fila?.dataset.idEntrega;
             if (td) td.innerHTML = `
@@ -3888,7 +3889,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 500);
     }
 
-    // Actualizar notas en localStorage provisional hasta implementar guardado definitivo
+    // Actualiza notas en localStorage mientras se conserva el respaldo local.
     function actualizarStorage(inscId, notaNum, valor) {
 
         if (!gradesData[inscId]) {
@@ -3986,8 +3987,7 @@ if (typeof promedioGrupalInicial !== 'undefined' && promedioGrupalInicial !== nu
         });
         recalcularKPIs();
     }
-    // Actualizar métricas generales del curso
-   // Actualizar métricas generales del curso
+    // Actualiza metricas generales del curso.
 function recalcularKPIs() {
     const badges = document.querySelectorAll('[id^="promedio-"]');
 
@@ -4022,8 +4022,7 @@ function recalcularKPIs() {
     }
 }
     
-   // Botones de guardado manual
-   // Botón Editar
+   // Acciones de guardado manual y edicion.
 document.querySelectorAll('.btn-nota-editar').forEach(btn => {
     btn.addEventListener('click', function () {
         if (!plazoActivo) {

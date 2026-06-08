@@ -23,12 +23,12 @@ require_once 'obtener-cursos-disponibles.php';
 
     <input type="checkbox" id="sidebar-toggle">
 
-    <!-- overlay para cerrar sidebar en móvil -->
+    <!-- Overlay para cerrar el sidebar en movil -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <div class="layout">
 
-        <!-- sidebar -->
+        <!-- Sidebar de navegacion del estudiante -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
                 <img src="img/logo.svg" alt="Logo" class="logo-img">
@@ -83,10 +83,10 @@ require_once 'obtener-cursos-disponibles.php';
 
         </aside>
 
-        <!-- contenido principal -->
+        <!-- Contenido principal de inscripciones -->
         <div class="content">
 
-            <!-- header -->
+            <!-- Barra superior del modulo -->
             <header class="header-panel">
                 <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
@@ -273,7 +273,7 @@ require_once 'obtener-cursos-disponibles.php';
     </div><!-- /layout -->
 
 
-<!-- MODAL CONFIRMAR INSCRIPCIÓN -->
+<!-- Modal de confirmacion de inscripcion -->
 <div id="modalInscripcion" class="modal-overlay">
     <div class="modal-contenido modal-horarios-premium">
         <button class="modal-cerrar" onclick="cerrarModalInscripcion()">
@@ -334,7 +334,7 @@ require_once 'obtener-cursos-disponibles.php';
     </div>
 </div>
 
-<!-- MODAL DE PAGO -->
+<!-- Modal para procesar el pago de inscripcion -->
 <div id="modalPago" class="modal-overlay">
     <div class="modal-contenido modal-pago">
         <button class="modal-cerrar" onclick="cerrarModalPago()">
@@ -348,7 +348,7 @@ require_once 'obtener-cursos-disponibles.php';
         <div class="pago-resumen">
             <h3>Resumen de Inscripción</h3>
             <div id="pago-lista-cursos" class="pago-lista-cursos"></div>
-            <!-- ← Línea de matrícula -->
+            <!-- Linea fija de matricula dentro del resumen -->
             <div class="pago-total-line" id="linea-matricula">
                 <span>Matrícula</span>
                 <span>$25.00</span>

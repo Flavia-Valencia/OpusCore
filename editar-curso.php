@@ -10,17 +10,17 @@ $fechaFin     = $_POST['fechaFin'];
 $cupos        = intval($_POST['cupos']);
 $idDocente    = intval($_POST['idDocente']);
 $idPeriodo = !empty($_POST['idPeriodo']) ? intval($_POST['idPeriodo']) : NULL;
-$idPeriodo_sql = ($idPeriodo !== NULL) ? "$idPeriodo" : "NULL"; // Si se seleccionó un período se guarda su ID, de lo contrario se guarda NULL para evitar error de FK
+$idPeriodo_sql = ($idPeriodo !== NULL) ? "$idPeriodo" : "NULL"; // Guarda NULL cuando no se selecciona periodo para evitar error de FK.
 $idCategoria  = intval($_POST['idCategoria']);
 $estado       = $_POST['estado'] == 'Activo' ? 1 : 0;
 
-// Validación fechas incorrectas
+// Valida que la fecha de fin sea posterior a la fecha de inicio.
     if ($fechaFin <= $fechaInicio) {
     header("Location: admin-cursos.php?error=fechas");
     exit();
 }
 
-# Verificar que el nombre no lo use OTRO curso (distinto al que estamos editando)
+// Evita que otro curso use el mismo nombre.
 $sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre') AND id != '$id'";
 $resultado_verificar = mysqli_query($conexion, $sql_verificar);
 
@@ -29,7 +29,7 @@ if (mysqli_num_rows($resultado_verificar) > 0) {
     exit();
 }
 
-// Verifica límite solo si el docente cambió
+// Verifica el limite de cursos solo si se cambio el docente asignado.
 $sql_docente_actual = "SELECT idDocente FROM cursos WHERE id = '$id'";
 $res_docente_actual = mysqli_query($conexion, $sql_docente_actual);
 $row_docente_actual = mysqli_fetch_assoc($res_docente_actual);
@@ -44,7 +44,7 @@ if ($row_docente_actual['idDocente'] != $idDocente) {
         exit();
     }
 }
-# Actualizar curso
+// Actualiza los datos principales del curso.
 $sql = "UPDATE cursos SET
     nombre        = '$nombre',
     descripcion   = '$descripcion',
@@ -60,7 +60,7 @@ WHERE id = '$id'";
 mysqli_query($conexion, $sql);
 
 
-// inserta nuevos prerrequisitos si se seleccionó alguno
+// Reemplaza el prerrequisito anterior por el seleccionado actualmente.
 mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
 $idPrerrequisito = isset($_POST['idPrerrequisitos']) ? intval($_POST['idPrerrequisitos']) : 0;
 if ($idPrerrequisito > 0 && $idPrerrequisito != $id) {

@@ -1,5 +1,5 @@
 <?php
-// CONGIFURACIÓN DE PAYPAL (CREDENCIALES DEL SANBOX)
+// Configuracion de PayPal para el entorno sandbox.
 
 define ('PAYPAL_MODE', 'sandbox');
 define ('PAYPAL_CLIENT_ID', 'Af2BotGg3h9wRXyUvU4sJPB1MDX9Mp74DMzh-v2YuU0sVHTN1POJ0LJriJ4x8J0D0kU_DATVXJMLkad2');
@@ -9,7 +9,7 @@ define('PAYPAL_BASE_URL',
     PAYPAL_MODE === 'sandbox' ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com'
 );
 
-// función para obtener el token de acceso de PayPal con las credencales
+// Obtiene el token de acceso de PayPal usando las credenciales configuradas.
 function paypalGetAccessToken(): string {
     $ch = curl_init(PAYPAL_BASE_URL . '/v1/oauth2/token');
     curl_setopt_array($ch, [

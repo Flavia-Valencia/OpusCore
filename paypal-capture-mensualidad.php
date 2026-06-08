@@ -77,8 +77,7 @@ $monto = (float)$pending['monto'];
 
 $captureId = $result['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
 
-// Yahir: se detecta la fuente real del pago para registrar correctamente
-// si la mensualidad fue pagada con PayPal o tarjeta.
+// Detecta la fuente real del pago para registrar PayPal o tarjeta correctamente.
 $paymentSource = $result['payment_source'] ?? [];
 if (isset($paymentSource['card'])) {
     $idMetodoPago = 2;
@@ -94,7 +93,7 @@ $conexion->begin_transaction();
 
 try {
 
-    // Registrar pago
+    // Registra el pago de la mensualidad.
     $stmtPago = $conexion->prepare("
         INSERT INTO pagos (
             idEstudiante,
@@ -114,9 +113,9 @@ try {
     );
 
     $stmtPago->execute();
-    $idPago = $conexion->insert_id; // id del pago recién registrado
+    $idPago = $conexion->insert_id; // ID del pago recien registrado.
 
-    // Actualizar mensualidad
+    // Marca la mensualidad como pagada.
     $stmtMensualidad = $conexion->prepare("
         UPDATE mensualidades
         SET estado = 'Pagado'
@@ -138,7 +137,7 @@ try {
     ]);
     exit;
 }
-// Obtener datos del estudiante para el correo
+// Obtiene datos del estudiante para enviar el comprobante.
 $stmtDatos = $conexion->prepare("
     SELECT u.correo, u.nombre, u.apellido
     FROM usuarios u
@@ -150,7 +149,7 @@ $stmtDatos->execute();
 $datosEst = $stmtDatos->get_result()->fetch_assoc();
 $stmtDatos->close();
 
-// Obtener datos de la mensualidad para el comprobante
+// Obtiene datos de la mensualidad para el comprobante.
 $stmtMens = $conexion->prepare("
     SELECT c.nombre AS curso_nombre, c.costoMensual,
            pi.nombre AS periodo_nombre,
@@ -171,7 +170,7 @@ $stmtMens->execute();
 $datosMens = $stmtMens->get_result()->fetch_assoc();
 $stmtMens->close();
 
-// FACTURA ELECTRONICA
+// Genera la factura electronica de la mensualidad.
 
  $anio = date('Y');
         $stmtUltima = $conexion->prepare("
@@ -217,9 +216,9 @@ $stmtMens->close();
         $stmtDetFact->bind_param('iisdd', $idFactura, $mensualidadId, $descMens, $monto, $monto);
         $stmtDetFact->execute();
         $stmtDetFact->close();
-          // FACTURA ELECTRONICA END
+          // Finaliza el detalle de la factura electronica.
 
-// Enviar comprobante por correo
+// Envia el comprobante de pago por correo.
 require_once 'includes/enviar-comprobante.php';
 
 $datosCorreo = [

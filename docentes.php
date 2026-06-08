@@ -1,4 +1,4 @@
-<?php #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
+<?php
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -17,7 +17,7 @@ if(!isset($_SESSION["usuario"])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--PARA FUENTES-->
+    <!-- Fuentes e iconos de la interfaz -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -74,7 +74,7 @@ if(!isset($_SESSION["usuario"])){
 
             <header class="header">
 
-                <!-- Para el menú hamburguesa -->
+                <!-- Control del menu movil -->
                 <label for="sidebar-toggle" class="menu-toggle">
                     <i class="fas fa-bars"></i>
                 </label>
@@ -108,7 +108,7 @@ if(!isset($_SESSION["usuario"])){
 
             <p class="section-title">Mis Cursos</p>
 
-            <!-- TARJETAS DE CURSOS -->
+            <!-- Cursos activos asignados al docente -->
             <section class="courses">
                 <?php
                 include("includes/conexion.php");
@@ -156,7 +156,7 @@ if(!isset($_SESSION["usuario"])){
                                     <span class="meta-value price">$<?php echo number_format($curso['costoMensual'], 2); ?></span>
                                 </div>
                             </div>
-                            <!-- Acciones visibles del curso -->
+                            <!-- Accesos de gestion para el curso -->
                             <div class="curso-acciones-panel">
                                 <p>¿Qué quieres gestionar?</p>
                                 <div class="curso-acciones-grid">

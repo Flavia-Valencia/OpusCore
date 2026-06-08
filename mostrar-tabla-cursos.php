@@ -23,7 +23,7 @@ $sql = "SELECT c.id,
         LEFT JOIN PeriodoInscripcion pi ON c.idPeriodo = pi.id
         LEFT JOIN categorias ca ON c.idCategoria = ca.id
         GROUP BY c.id
-        ORDER BY c.estado DESC, c.nombre ASC"; // Ordena alfebéticamente las tablas
+        ORDER BY c.estado DESC, c.nombre ASC"; // Cursos activos primero y luego orden alfabetico.
 
 $resultado = mysqli_query($conexion, $sql);
 
@@ -61,7 +61,6 @@ if (mysqli_num_rows($resultado) > 0 ){
                 <td data-label="Acciones" class="acciones-cell">
                     <div class="acciones-texto">
                         
-                        <!-- BOTÓN EDITAR -->
                          <?php
                          $idCurso = $fila['id'];
                         $sqlPre = "SELECT idCursoPrevio FROM prerrequisitos WHERE idCursoActual = '$idCurso'";
@@ -95,7 +94,6 @@ if (mysqli_num_rows($resultado) > 0 ){
                             Editar
                         </a>
 
-                        <!-- BOTÓN de estado -->
                         <a 
                             href="javascript:void(0);" 
                             class="link-accion btn-toggle-estado <?php echo $fila['estado'] == 1 ? 'estado-activo' : 'estado-inactivo'; ?>"
@@ -103,7 +101,6 @@ if (mysqli_num_rows($resultado) > 0 ){
                             <?php echo $fila['estado'] == 1 ? 'Desactivar' : 'Activar'; ?>
                         </a>
 
-                        <!-- BOTÓN HORARIOS -->
                         <a 
                             href="#"
                             class="link-accion horarios"

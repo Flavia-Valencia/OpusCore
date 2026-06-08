@@ -1,7 +1,6 @@
 <?php
-// Genera una orden de pago en PayPal para cancelar una mensualidad pendiente.
-// Consulta el monto correspondiente en la base de datos y valida que aún no esté pagada.
-// Guarda temporalmente la información necesaria en sesión para completar la captura.
+// Crea una orden PayPal para pagar una mensualidad pendiente.
+// Guarda en sesion los datos necesarios para completar la captura.
 session_start();
 header('Content-Type: application/json');
 

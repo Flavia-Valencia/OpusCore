@@ -1,12 +1,8 @@
 <?php
-//Este archivo gestiona la entrega de tareas por parte de los estudiantes.
-//Valida la sesión activa y verifica que el usuario tenga rol de estudiante.
-//Comprueba que la tarea exista, esté activa y el plazo no haya vencido.
-//Verifica que el estudiante esté inscrito en el curso y no haya entregado ya.
-//Valida que se adjunte al menos un archivo o enlace antes de procesar.
-//Procesa la subida de archivos con nombre único, respetando el límite de 20MB.
-//Inicializa conteoIntentos en 1 al registrar la primera entrega.
-//Utiliza transacciones para guardar la entrega de forma segura y responde en formato JSON.
+// Gestiona la entrega de tareas por parte de estudiantes.
+// Valida sesion, rol, tarea activa, plazo vigente e inscripcion al curso.
+// Exige al menos un archivo o enlace, guarda adjuntos con nombre unico y responde en JSON.
+// Usa transacciones para registrar la entrega y su primer intento de forma segura.
 session_start();
 include("includes/conexion.php");
 

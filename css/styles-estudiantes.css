@@ -1,10 +1,12 @@
+/* Estilos compartidos para vistas del estudiante.
+   Cubre inicio, cursos, inscripciones, constancias, pagos, tareas y calificaciones. */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* fuente importada de Google Fonts */
+/* Fuente base importada desde Google Fonts */
 .raleway-all {
   font-family: "Raleway", sans-serif;
   font-optical-sizing: auto;
@@ -17,18 +19,18 @@ body {
     background-size: 200% 200%;
 }
 
-/* ── HEADER (pantalla de inicio - estudiantes.php) ───────── */
+/* ── HEADER DEL PANEL INICIAL ────────────────────────────── */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    /* color extra al de docentes: el morado al final */
+    /* Gradiente propio del panel inicial de estudiante */
     background: linear-gradient(135deg, #069DBF, #1D4B73, #053170, #5624cc);
     color: white;
 }
 
-/* logo: ícono + texto apilado */
+/* Marca: logo y texto institucional */
 .logo {
     display: flex;
     align-items: center;
@@ -53,7 +55,7 @@ body {
     font-weight: bold;
 }
 
-/* botón de perfil/logout — glassmorphism */
+/* Perfil y cierre de sesion */
 .user-profile {
     display: flex;
     align-items: center;
@@ -67,7 +69,7 @@ body {
     transition: background-color 0.4s;
 }
 
-/* info del usuario dentro del botón de perfil */
+/* Datos del usuario dentro del boton de perfil */
 .user-info {
     display: flex;
     flex-direction: column;
@@ -85,17 +87,13 @@ body {
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* ícono de cerrar sesión */
+/* Icono de cierre de sesion */
 .logout-icon {
     font-size: 18px;
     color: white;
 }
 
-.logout-btn {
-    color: white;
-}
-
-/* ── CONTENIDO PRINCIPAL (estudiantes.php) ───────────────── */
+/* ── CONTENIDO DEL PANEL INICIAL ─────────────────────────── */
 .main {
     padding: 40px;
 }
@@ -105,14 +103,14 @@ body {
     margin-bottom: 30px;
 }
 
-/* grilla de opciones del panel de inicio */
+/* Accesos rapidos del panel inicial */
 .cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
 }
 
-/* cada tarjeta/opción */
+/* Tarjeta de acceso a modulo */
 .card-opcion {
     background: white;
     padding: 25px;
@@ -131,7 +129,7 @@ body {
     transform: translateY(-4px);
 }
 
-/* ícono de cada tarjeta */
+/* Icono dentro de cada tarjeta */
 .icono {
     font-size: 22px;
     background: linear-gradient(135deg, #053170, #069DBF);
@@ -140,7 +138,7 @@ body {
     color: transparent;
 }
 
-/* ── LAYOUT CON SIDEBAR (inscripciones y siguientes vistas) ─ */
+/* ── LAYOUT CON SIDEBAR PARA MODULOS INTERNOS ────────────── */
 .layout {
     display: flex;
     min-height: 100vh;
@@ -162,7 +160,7 @@ body {
     flex-direction: column;
 }
 
-/* logo */
+/* Logo del sidebar */
 .sidebar-logo {
     display: flex;
     align-items: center;
@@ -183,7 +181,7 @@ body {
     font-weight: 700;
 }
 
-/* navegación */
+/* Navegacion principal del estudiante */
 .sidebar-nav {
     display: flex;
     flex-direction: column;
@@ -214,7 +212,7 @@ body {
     color: white;
 }
 
-/* activo */
+/* Estado activo de la opcion actual */
 .nav-item.active {
     background: rgba(255, 255, 255, 0.2);
     color: white;
@@ -273,16 +271,7 @@ body {
     color: white;
 }
 
-/* footer */
-.sidebar-footer {
-    margin-top: auto;
-}
-
-.logout-item {
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-/* overlay oscuro para cerrar sidebar en móvil */
+/* Overlay para cerrar el sidebar en movil */
 .sidebar-overlay {
     display: none;
     position: fixed;
@@ -314,7 +303,7 @@ body {
     gap: 12px;
 }
 
-/* botón hamburguesa para móvil */
+/* Boton hamburguesa para movil */
 .hamburger {
     display: none;
     background: none;
@@ -325,7 +314,7 @@ body {
     margin-right: auto;
 }
 
-/* perfil en el header del panel */
+/* Perfil en la barra superior de modulos internos */
 .user-profile-panel {
     display: flex;
     align-items: center;
@@ -383,7 +372,7 @@ body {
 
 /* ── SECCIÓN DE INSCRIPCIONES ────────────────────────────── */
 
-/* barra con buscador */
+/* Toolbar de busqueda y filtros */
 .inscripcion-toolbar {
     align-items: center;
     display: flex;
@@ -392,7 +381,7 @@ body {
     padding: 0 24px 16px;
 }
 
-/* Buscador de inscripciones: glass suave, aislado de los .input-buscar del admin. */
+/* Buscador aislado de los estilos globales del admin */
 .inscripcion-buscador {
     width: 100%;
     max-width: 350px;
@@ -420,7 +409,7 @@ body {
     background: rgba(255, 255, 255, 0.68);
     box-shadow: 0 14px 34px rgba(5, 49, 112, 0.14), 0 0 0 4px rgba(6, 157, 191, 0.12);
 }
-/*Estilo para el filtro selector de categorías*/
+/* Selector de categorias para filtrar cursos */
 .inscripcion-filtro {
     padding: 13px 36px 13px 18px;
     border: 1px solid rgba(255, 255, 255, 0.48);
@@ -449,7 +438,7 @@ body {
     box-shadow: 0 14px 34px rgba(5, 49, 112, 0.14), 0 0 0 4px rgba(6, 157, 191, 0.12);
 }
 
-/* grilla de tarjetas de cursos */
+/* Grilla de tarjetas de cursos */
 .courses-inscripcion {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -457,7 +446,7 @@ body {
     padding: 0 24px 32px;
 }
 
-/* tarjeta de cada curso */
+/* Tarjeta individual de curso */
 .curso-card {
     background: white;
     border-radius: 14px;
@@ -480,13 +469,13 @@ body {
     text-decoration: none;
 }
 
-/* tarjeta sin cupos — borde gris y opacidad reducida */
+/* Curso sin cupos disponibles */
 .curso-card.sin-cupos {
     border-left-color: #ccc;
     opacity: 0.7;
 }
 
-/* fila superior: nombre + badge */
+/* Encabezado interno: nombre y badge */
 .curso-card-top {
     display: flex;
     justify-content: space-between;
@@ -501,7 +490,7 @@ body {
     line-height: 1.3;
 }
 
-/* badges de disponibilidad */
+/* Badges de disponibilidad */
 .curso-badge {
     font-size: 11px;
     font-weight: 600;
@@ -525,20 +514,20 @@ body {
     color: #888;
 }
 
-/* descripción del curso */
+/* Descripcion del curso */
 .curso-desc {
     font-size: 13px;
     color: #5a6a82;
     line-height: 1.5;
 }
 
-/* línea divisoria dentro de la tarjeta */
+/* Separador visual dentro de la tarjeta */
 .curso-divider {
     height: 1px;
     background: #eef1f6;
 }
 
-/* metadatos: inicio, fin, cupos, costo */
+/* Metadatos del curso: fechas, cupos y costo */
 .curso-meta {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -569,12 +558,12 @@ body {
     color: #aaa;
 }
 
-/* precio en verde azulado */
+/* Valor monetario destacado */
 .meta-value.price {
     color: #069DBF;
 }
 
-/* botón de inscripción */
+/* Accion principal de inscripcion */
 .btn-inscribir {
     width: 100%;
     padding: 11px;
@@ -599,7 +588,7 @@ body {
     transform: translateY(-1px);
 }
 
-/* botón deshabilitado cuando no hay cupos */
+/* Accion deshabilitada cuando no hay cupos */
 .btn-inscribir.lleno {
     background: #ddd;
     color: #999;
@@ -607,7 +596,7 @@ body {
     transform: none;
 }
 
-/* contenedor de botones */
+/* Acciones disponibles en cada curso */
 .curso-botones {
     display: flex;
     gap: 10px;
@@ -619,7 +608,7 @@ body {
     margin-top: 0;
 }
 
-/* tarjeta seleccionada — cambio de color a oscuro */
+/* Curso seleccionado dentro del flujo de inscripcion */
 .curso-card.seleccionado {
     background: linear-gradient(135deg, #053170, #1D4B73);
     color: white;
@@ -656,7 +645,7 @@ body {
     background: rgba(255, 255, 255, 0.15);
 }
 
-/* botones blancos en tarjeta seleccionada */
+/* Acciones contrastadas sobre tarjeta seleccionada */
 .curso-card.seleccionado .btn-inscribir {
     background: white;
     color: #053170;
@@ -672,7 +661,7 @@ body {
     color: #069DBF;
 }
 
-/* estado vacío: sin periodo o sin cursos */
+/* Estado vacio: sin periodo activo o sin cursos */
 .inscripcion-vacia {
     display: flex;
     flex-direction: column;
@@ -826,8 +815,7 @@ body {
     gap: 16px;
 }
 
-.detalle-main-col,
-.detalle-side-col {
+.detalle-main-col {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -2782,13 +2770,6 @@ body.inscripcion-barra-visible .content {
     text-align: center;
 }
 
-.pago-nota {
-    margin-top: 12px;
-    font-size: 12px;
-    color: #6b7a97;
-    font-style: italic;
-}
-
 /* ── HISTORIAL DE PAGOS DEL ESTUDIANTE ───────────────────── */
 .pagos-resumen {
     display: grid;
@@ -2855,30 +2836,6 @@ body.inscripcion-barra-visible .content {
     color: #6b7a97;
     font-size: 13px;
     font-weight: 700;
-}
-
-.pagos-categorias {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 16px 20px 0;
-}
-
-.pagos-categorias a {
-    background: #f8fbff;
-    color: #053170;
-    border: 1px solid #e8f4fc;
-    border-radius: 999px;
-    padding: 8px 12px;
-    font-size: 12px;
-    font-weight: 800;
-    text-decoration: none;
-}
-
-.pagos-categorias a.active {
-    background: #053170;
-    border-color: #053170;
-    color: white;
 }
 
 .pagos-tabla-wrap {
@@ -2975,12 +2932,6 @@ body.inscripcion-barra-visible .content {
 
 .pago-accion-secundaria {
     background: #069dbf;
-}
-
-.pago-accion-texto {
-    color: #6b7a97;
-    font-size: 12px;
-    font-weight: 800;
 }
 
 .pagos-vacio {

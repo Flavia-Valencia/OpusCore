@@ -335,7 +335,7 @@ $stmtSes->close();
 
     <label for="sidebar-toggle" class="overlay"></label>
 
-    <!-- MODAL TAREA -->
+    <!-- Modal para crear o editar tareas -->
     <div class="contenido-modal" id="modalTarea" aria-hidden="true">
         <div class="contenido-modal-box" role="dialog" aria-modal="true" aria-labelledby="tareaModalTitulo">
             <div class="contenido-modal-header">

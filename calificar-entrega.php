@@ -1,5 +1,5 @@
 <?php
-// maneja la logica de calificar una entrega de tarea por parte del docente
+// Gestiona la calificacion de una entrega de tarea por parte del docente.
 session_start();
 header('Content-Type: application/json');
 
@@ -18,7 +18,7 @@ if (!$idEntrega || $nota === false || $nota === null) {
     exit();
 }
 
-// Obtener la entrega con su tarea y verificar permiso del docente
+// Obtiene la entrega con su tarea y verifica permiso del docente.
 $stmt = $conexion->prepare("
     SELECT 
         et.id,
@@ -45,13 +45,13 @@ if (!$entrega) {
     exit();
 }
 
-// Validar que el estado sea Entregado (solo se califica lo que fue entregado)
+// Solo permite calificar entregas enviadas o ya revisadas.
 if ($entrega['estado'] !== 'Entregado' && $entrega['estado'] !== 'Revisado') {
     echo json_encode(['error' => true, 'mensaje' => 'Solo se pueden calificar entregas con estado Entregado']);
     exit();
 }
 
-// Validar que la fecha límite de la tarea ya haya vencido
+// Bloquea la calificacion hasta que venza la fecha limite.
 if (strtotime($entrega['fechaLimite']) > time()) {
     echo json_encode([
         'error'   => true,
@@ -60,7 +60,7 @@ if (strtotime($entrega['fechaLimite']) > time()) {
     exit();
 }
 
-// Validar rango de nota
+// Valida que la nota este dentro del puntaje permitido.
 if ($nota < 0 || $nota > $entrega['puntajeMaximo']) {
     echo json_encode([
         'error'   => true,

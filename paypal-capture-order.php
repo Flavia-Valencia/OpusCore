@@ -17,12 +17,11 @@ require_once 'includes/paypal-config.php';
  use Dompdf\Dompdf;
 use Dompdf\Options;
 
-// Leer el Order ID que manda el SDK de PayPal tras la aprobación
+// Lee el Order ID enviado por el SDK de PayPal tras la aprobacion.
 $body    = json_decode(file_get_contents('php://input'), true);
 $orderId = trim($body['orderID'] ?? '');
 
-// Yahir: se recibe el método seleccionado para registrar PayPal o tarjeta
-// y mostrar el mismo dato en el comprobante.
+// Registra el metodo seleccionado para reflejarlo en pagos y comprobantes.
 $metodoPago = strtolower(trim($body['metodoPago'] ?? 'paypal'));
 $idMetodoPago = match ($metodoPago) {
     'tarjeta', 'card', 'credit' => 2,
@@ -35,7 +34,7 @@ if (!$orderId) {
     exit;
 }
 
-// Obtener token y capturar la orden
+// Obtiene token de PayPal y captura la orden aprobada.
 try {
     $token = paypalGetAccessToken();
 } catch (RuntimeException $e) {
@@ -61,25 +60,24 @@ curl_close($ch);
 $capture = json_decode($response, true);
 $estadoPayPal = $capture['status'] ?? '';
 
-// Verificar que la respuesta de PayPal fue exitosa
+// Verifica que PayPal haya respondido correctamente.
 if ($httpCode !== 201) {
     http_response_code(402);
     echo json_encode(['error' => 'Error al comunicarse con PayPal. Código: ' . $httpCode]);
     exit;
 }
 
-// Recuperar datos guardados en sesión al crear la orden
+// Recupera los datos guardados en sesion al crear la orden.
 $pending      = $_SESSION['paypal_pending'];
 $cursoIds     = $pending['cursoIds'];
 $idPeriodo    = $pending['idPeriodo'];
 $idEstudiante = $pending['idEstudiante'];
 $totalCursos     = $pending['total'];
-$yaPayoMatricula = $pending['yaPayoMatricula'] ?? false; // ← nuevo
+$yaPayoMatricula = $pending['yaPayoMatricula'] ?? false; // Indica si la matricula ya fue pagada en el periodo.
 
-// Datos que devuelve PayPal tras capturar
+// Datos devueltos por PayPal tras capturar el pago.
 $captureId   = $capture['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
-// Yahir: se prioriza la fuente real devuelta por PayPal para que pagos
-// y comprobantes no queden con métodos distintos.
+// Prioriza la fuente real devuelta por PayPal para mantener consistentes pagos y comprobantes.
 $paymentSource = $capture['payment_source'] ?? [];
 if (isset($paymentSource['card'])) {
     $idMetodoPago = 2; // Tarjeta de Crédito/Débito
@@ -96,9 +94,9 @@ $payerNombre = trim(
     ($capture['payer']['name']['surname']    ?? '')
 );
 
-// Solo cobrar matrícula si no la ha pagado
+// Cobra matricula solo si el estudiante aun no la ha pagado en este periodo.
 $totalConMatricula = (float)$pending['total'];
-// Obtener correo y nombre del estudiante desde la BD
+// Obtiene datos del estudiante para comprobante y correo.
 $stmtEstudiante = $conexion->prepare("
     SELECT u.correo, u.nombre, u.apellido 
     FROM usuarios u
@@ -147,11 +145,11 @@ foreach ($cursoIds as $idCurso) {
     ];
 }
 
-// Registrar en BD con TRANSACCIÓN
+// Registra el pago y sus efectos academicos dentro de una transaccion.
 $conexion->begin_transaction();
 
 try {
-    // Determinar estado según respuesta de PayPal
+    // Determina el estado interno segun la respuesta de PayPal.
     if ($estadoPayPal === 'COMPLETED') {
         $estadoBD = 'Completado';
         $pagoExitoso = true;
@@ -165,7 +163,7 @@ try {
         $pagoExitoso = false;
     }
     
-    // Insertar registro en tabla pagos
+    // Inserta el registro principal del pago.
     $stmtPago = $conexion->prepare("
         INSERT INTO pagos (
             idEstudiante, 
@@ -180,7 +178,7 @@ try {
     $stmtPago->execute();
     $idPago = $conexion->insert_id;
     
-    // Solo si el pago fue COMPLETADO, se registran inscripciones, matrícula y se descuentan cupos
+    // Si el pago se completo, registra inscripciones, matricula y descuenta cupos.
     if ($pagoExitoso) {
         $stmtIns = $conexion->prepare("
             INSERT INTO inscripciones (idEstudiante, idCurso, idPeriodo, estado_academico)
@@ -191,11 +189,11 @@ try {
             $stmtIns->bind_param('iii', $idEstudiante, $idCurso, $idPeriodo);
             $stmtIns->execute();
             
-            // Descontar cupo
+            // Descuenta un cupo del curso inscrito.
             $conexion->query("UPDATE cursos SET cupos = cupos - 1 WHERE id = $idCurso AND cupos > 0");
         }
         
-        // Solo registrar matrícula si no la había pagado
+        // Registra matricula si aun no existia para este periodo.
         if (!$yaPayoMatricula) {
             $stmtMatricula = $conexion->prepare("
                 INSERT INTO matricula (idEstudiante, idPeriodo, monto, estado)
@@ -206,7 +204,7 @@ try {
             $stmtMatricula->execute();
         }
 
-        // FACTURA ELECTRONICA
+        // Genera la factura electronica asociada al pago.
          $anio = date('Y');
         $stmtUltima = $conexion->prepare("
             SELECT COUNT(*) AS total FROM facturas WHERE YEAR(fechaEmision) = ?
@@ -252,7 +250,7 @@ try {
         }
         $stmtDetalle->close();
 
-        // Inserta matricula solo si se cobró
+        // Agrega el detalle de matricula solo si se cobro en este pago.
         if (!$yaPayoMatricula) {
             $stmtDetalleMatricula = $conexion->prepare("
                 INSERT INTO detalle_facturas 
@@ -264,14 +262,14 @@ try {
             $stmtDetalleMatricula->execute();
             $stmtDetalleMatricula->close();
         }
-    // FACTURA ELECTRONICA END
+    // Envia comprobante y adjunta la factura generada.
        require_once 'includes/enviar-comprobante.php';
 
-// ── Generar PDF de la factura electrónica para adjuntarlo al correo ──
+// Genera el PDF de la factura electronica para adjuntarlo al correo.
 $pdfFactura = null;
 try {
 
-    // Variables que necesita vista-facturacion-electronica.php
+    // Variables esperadas por la vista de factura electronica.
     $pagoId      = $idPago;
     $estudiante  = $nombreEstudiante;
     $correo      = $correoEstudiante;
@@ -287,7 +285,7 @@ try {
     $hora  = date('h:i A');
     $periodo     = $periodoNombre;
 
-    // Construir $items para la vista
+    // Construye los items que mostrara la vista de factura.
     $items = [];
     foreach ($cursosDetalle as $c) {
         $items[] = [
@@ -334,8 +332,8 @@ $datosCorreo = [
     'metodoPago'     => $nombreMetodoPago,
     'periodo_nombre' => $periodoNombre,
     'cursos'         => $cursosDetalle,
-    'pdfFactura'     => $pdfFactura,         // ← PDF adjunto
-    'numeroFactura'  => $numeroFactura,      // ← para el nombre del archivo
+    'pdfFactura'     => $pdfFactura,         // PDF adjunto al correo.
+    'numeroFactura'  => $numeroFactura,      // Numero usado para nombrar el archivo.
 ];
 
 $resultado = enviarComprobante($correoEstudiante, $nombreEstudiante, $datosCorreo);
@@ -350,10 +348,10 @@ $resultado = enviarComprobante($correoEstudiante, $nombreEstudiante, $datosCorre
     exit;
 }
 
-// Limpiar sesión
+// Limpia la sesion temporal del pago.
 unset($_SESSION['paypal_pending']);
 
-// Respuesta al frontend
+// Respuesta final para actualizar la interfaz.
 $mensaje = match($estadoBD) {
     'Completado' => 'Pago exitoso. Ya estás inscrito.',
     'Procesando' => 'Pago pendiente de confirmación. Recibirás un correo cuando se complete.',

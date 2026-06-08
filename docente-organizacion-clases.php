@@ -337,7 +337,7 @@ if ($cursoId > 0) {
 
                         <div id="adjuntosActuales" class="adjuntos-actuales"></div>
                         <div id="listaAdjuntos">
-                            <!-- Los items se agregan dinámicamente -->
+                            <!-- Adjuntos agregados dinamicamente desde JavaScript -->
                         </div>
                         <div class="contenido-adjunto-btns">
                             <button type="button" class="contenido-btn contenido-btn-light" id="btnAgregarArchivo">

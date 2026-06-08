@@ -1,7 +1,6 @@
 <?php
-// Recibe los datos del formulario del admin, guarda la factura en BD,
-// genera el PDF con vista-factura-docente.php y lo envía por correo al docente.
-// Responde JSON { success, numeroFactura, idFactura }.
+// Genera una factura docente desde el panel administrativo.
+// Guarda el registro, crea el PDF y responde el estado del envio por correo.
 
 error_reporting(0);
 ini_set('display_errors', 0);
@@ -27,13 +26,13 @@ require_once __DIR__ . '/dompdf/autoload.inc.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Recibir datos del formulario 
+// Datos enviados desde el formulario administrativo.
 $idDocente     = (int)($_POST['idDocente'] ?? 0);
 $metodoPago    = trim($_POST['metodoPago']    ?? '');
 $noReferencia  = trim($_POST['noReferencia']  ?? '');
 $observaciones = trim($_POST['observaciones'] ?? '');
 $fechaEmision  = trim($_POST['fechaEmision']  ?? date('Y-m-d'));
-$items         = $_POST['items'] ?? [];   // array de {descripcion, cantidad, precio}
+$items         = $_POST['items'] ?? [];   // Items: descripcion, cantidad y precio.
 
 if (!$idDocente || empty($metodoPago) || empty($items)) {
     http_response_code(400);
@@ -64,7 +63,7 @@ if (empty($itemsLimpios)) {
     exit;
 }
 
-// Datos del docente 
+// Datos del docente receptor de la factura.
 $stmtDoc = $conexion->prepare("
     SELECT u.nombre, u.apellido, u.correo, d.especialidad, d.telefono, d.direccion
     FROM docentes d
@@ -84,7 +83,7 @@ if (!$docente) {
 
 $nombreDocente = trim($docente['nombre'] . ' ' . $docente['apellido']);
 
-//Número de factura 
+// Numero correlativo de factura para el anio de emision.
 $anio = date('Y', strtotime($fechaEmision));
 $stmtCount = $conexion->prepare("SELECT COUNT(*) AS total FROM facturas WHERE YEAR(fechaEmision) = ?");
 $stmtCount->bind_param('i', $anio);
@@ -141,10 +140,10 @@ try {
     exit;
 }
 
-// Generar PDF 
+// Genera el PDF con la plantilla de factura docente.
 date_default_timezone_set('America/El_Salvador');
 
-// Variables vista-factura-docente.php
+// Variables esperadas por vista-factura-docente.php.
 $facturaId    = $numeroFactura;
 $docente_var  = $nombreDocente;
 $correo       = $docente['correo'];
@@ -167,7 +166,7 @@ $items        = array_map(fn($it) => [
     'monto'       => $it['subtotal'],
 ], $itemsLimpios);
 
-// Renombrar para la vista (evitar conflicto con $docente array)
+// Renombra la variable para evitar conflicto con el arreglo del docente.
 $docente = $docente_var;
 
 ob_start();
@@ -190,7 +189,7 @@ try {
     error_log('Dompdf error factura docente: ' . $e->getMessage());
 }
 
-// Enviar por correo al docente 
+// Envia la factura al correo del docente.
 $correoEnviado = false;
 try {
     $mail = new PHPMailer(true);

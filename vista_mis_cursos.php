@@ -20,12 +20,12 @@ require_once 'mis_cursos.php';
 
     <input type="checkbox" id="sidebar-toggle">
 
-    <!-- overlay para cerrar sidebar en móvil -->
+    <!-- Overlay para cerrar el sidebar en movil -->
     <div class="sidebar-overlay js-sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="layout">
 
-        <!-- sidebar -->
+        <!-- Sidebar de navegacion del estudiante -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
                 <img src="img/logo.svg" alt="Logo" class="logo-img">
@@ -80,10 +80,10 @@ require_once 'mis_cursos.php';
 
         </aside>
 
-        <!-- contenido principal -->
+        <!-- Contenido principal de cursos inscritos -->
         <div class="content">
 
-            <!-- header -->
+            <!-- Barra superior del modulo -->
             <header class="header-panel">
                 <button class="hamburger js-sidebar-toggle" id="hamburgerBtn">
                     <i class="fas fa-bars"></i>
@@ -97,7 +97,7 @@ require_once 'mis_cursos.php';
                 </a>
             </header>
 
-            <!-- banner -->
+            <!-- Banner de resumen academico -->
             <div class="banner">
                 <div class="banner-left">
                     <h1>Mis cursos 📚</h1>

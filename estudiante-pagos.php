@@ -203,8 +203,8 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                                     ?>
                                     <tr>
                                         <td data-label="Código"><?= htmlspecialchars($codigo) ?></td>
-                                        <td data-label="Curso">"Espera Factura Electronica"</td> <!-- Esto se modificará cuando se implemente la facturación electronica-->
-                                        <td data-label="Periodo">Espera Factura Electronica</td> <!-- Esto se modificará cuando se implemente la facturación electronica-->
+                                        <td data-label="Curso">"Espera Factura Electronica"</td> <!-- Placeholder hasta enlazar el detalle de factura electronica. -->
+                                        <td data-label="Periodo">Espera Factura Electronica</td> <!-- Placeholder hasta enlazar el periodo desde factura electronica. -->
                                         <td data-label="Monto">$<?= number_format((float) $pago['monto'], 2) ?></td>
                                         <td data-label="Método"><?= htmlspecialchars($pago['metodo_pago'] ?: 'PayPal') ?></td>
                                         <td data-label="Fecha"><?= htmlspecialchars($fechaPago) ?></td>

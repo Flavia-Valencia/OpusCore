@@ -1,7 +1,6 @@
 <?php
-// Este documento maneja la descarga de facturas en PDF tanto para estudiantes como para docentes, 
-// con validaciones de seguridad para asegurar que solo el receptor legítimo o un admin puedan acceder al documento. 
-// Utiliza Dompdf para generar el PDF a partir de vistas HTML específicas según el tipo de receptor (estudiante o docente).
+// Descarga facturas PDF para estudiantes, docentes o administradores autorizados.
+// Selecciona la plantilla Dompdf segun el tipo de receptor.
 session_start();
 
 if (!isset($_SESSION['usuario'])) {
@@ -24,7 +23,7 @@ if (!$idFactura) {
 
 $rolId = $_SESSION['rol_id'] ?? 0;
 
-// Datos principales de la factura
+// Datos principales de la factura y del receptor.
 $stmtFact = $conexion->prepare("
     SELECT 
         f.id,
@@ -105,7 +104,7 @@ if ($rolId == 2) {
     }
 }
 
-// Detalle de la factura
+// Lineas de detalle que alimentan la plantilla PDF.
 $stmtDet = $conexion->prepare("
     SELECT tipoOrigen, descripcion, cantidad, precioUnitario, subtotal
     FROM detalle_facturas
@@ -122,7 +121,7 @@ date_default_timezone_set('America/El_Salvador');
 $nombreArchivo = 'factura-' . $factura['numeroFactura'] . '.pdf';
 $numeroFacturaVista = $factura['numeroFactura'];
 
-// Generar HTML según tipo de receptor
+// Renderiza la plantilla correspondiente al tipo de receptor.
 if ($factura['tipoReceptor'] === 'Docente') {
 
     $facturaId     = $factura['numeroFactura'];
@@ -179,7 +178,7 @@ if ($factura['tipoReceptor'] === 'Docente') {
     $html = ob_get_clean();
 }
 
-// Generar PDF y forzar descarga
+// Genera el PDF y fuerza la descarga en el navegador.
 $options = new Options();
 $options->set('isHtml5ParserEnabled', true);
 $options->set('isRemoteEnabled', true);

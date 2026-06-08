@@ -1,7 +1,6 @@
 <?php
-// Recibe los IDs de cursos seleccionados desde el frontend,
-// valida disponibilidad y crea la orden en PayPal.
-// Devuelve JSON { id: "ORDER_ID" } para que el SDK renderice el botón.
+// Crea una orden PayPal para los cursos seleccionados.
+// Valida disponibilidad, cupos, duplicados y cobro de matricula.
 
 session_start();
 header('Content-Type: application/json');
@@ -15,7 +14,7 @@ if (!isset($_SESSION['usuario'])) {
 require_once 'includes/conexion.php';
 require_once 'includes/paypal-config.php';
 
-// validar los IDs de cursos
+// Valida los IDs de cursos enviados por la interfaz.
 $body     = json_decode(file_get_contents('php://input'), true);
 $cursoIds = array_map('intval', $body['cursos'] ?? []);
 
@@ -25,7 +24,7 @@ if (empty($cursoIds) || count($cursoIds) > 5) {
     exit;
 }
 
-// Obtener el periodo activo
+// Obtiene el periodo de inscripcion activo.
 $periodoRes = $conexion->query("
     SELECT id FROM PeriodoInscripcion
     WHERE estado = 1 AND CURDATE() BETWEEN fechaInicio AND fechaFin
@@ -40,7 +39,7 @@ if (!$periodo) {
 }
 $idPeriodo = $periodo['id'];
 
-// Obtener datos de los cursos seleccionados y valida que existan y tengan cupos
+// Valida que los cursos seleccionados existan, pertenezcan al periodo y tengan cupos.
 $placeholders = implode(',', array_fill(0, count($cursoIds), '?'));
 $types        = str_repeat('i', count($cursoIds));
 
@@ -63,7 +62,7 @@ if (count($cursos) !== count($cursoIds)) {
     exit;
 }
 
-// Verificar que el estudiante no esté ya inscrito en esos cursos
+// Evita que el estudiante pague cursos en los que ya esta inscrito.
 $correo  = $_SESSION['usuario'];
 $stmtEst = $conexion->prepare("
     SELECT e.id FROM estudiantes e
@@ -89,7 +88,7 @@ foreach ($cursoIds as $idCurso) {
     }
 }
 
-// ← Verificar si ya pagó matrícula en este periodo
+// Verifica si el estudiante ya pago matricula en este periodo.
 $stmtMat = $conexion->prepare("
     SELECT id FROM matricula 
     WHERE idEstudiante = ? AND idPeriodo = ? AND estado = 'Pagado'
@@ -98,20 +97,20 @@ $stmtMat->bind_param('ii', $idEstudiante, $idPeriodo);
 $stmtMat->execute();
 $yaPayoMatricula = $stmtMat->get_result()->num_rows > 0;
 
-// Calcular total — solo agregar matrícula si no la ha pagado
+// Calcula el total e incluye matricula solo si corresponde.
 $totalCursos = array_sum(array_column($cursos, 'costoMensual'));
 $total = number_format($totalCursos + ($yaPayoMatricula ? 0 : 25.00), 2, '.', '');
 
-// Guardar en sesión para usarlo al capturar sin recalcular
+// Guarda datos en sesion para capturar el pago sin recalcular.
 $_SESSION['paypal_pending'] = [
     'cursoIds'        => $cursoIds,
     'idPeriodo'       => $idPeriodo,
     'idEstudiante'    => $idEstudiante,
     'total'           => $total,
-    'yaPayoMatricula' => $yaPayoMatricula, // ← nuevo
+    'yaPayoMatricula' => $yaPayoMatricula, // Evita cobrar matricula dos veces.
 ];
 
-// Construir items
+// Construye los items que PayPal mostrara al comprador.
 $items = [];
 foreach ($cursos as $c) {
     $items[] = [
@@ -121,7 +120,7 @@ foreach ($cursos as $c) {
     ];
 }
 
-// ← Solo agregar matrícula si no la ha pagado
+// Agrega matricula como item solo si aun no fue pagada.
 if (!$yaPayoMatricula) {
     $items[] = [
         'name'        => 'Matrícula',
@@ -130,7 +129,7 @@ if (!$yaPayoMatricula) {
     ];
 }
 
-// Obtener token y crear orden en PayPal
+// Obtiene token y crea la orden en PayPal.
 try {
     $token = paypalGetAccessToken();
 } catch (RuntimeException $e) {
