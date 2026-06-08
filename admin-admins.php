@@ -97,7 +97,6 @@ if(!isset($_SESSION["usuario"])){
             <!-- tabla de administradores cargada dinámicamente desde mostrar-tabla-admin.php -->
             <div class="tabla-placeholder">
                 <?php include('mostrar-tabla-admin.php'); ?>
-
             </div>
         </div>
     </main>
@@ -112,7 +111,7 @@ if(!isset($_SESSION["usuario"])){
             <!-- formulario que envia los datos actualizados del administrador-->
             <form method="POST" action="editar-administrador.php">
                 <input type="hidden" name="usuario_id" id="edita-usuario_id">
-                <input type="hidden" name="administrador_id" id="edita-administrador_id">
+                <input type="hidden" name="administrador_id" id="edita-admin_id">
 
                 <h3 class="modal-subtitulo">Detalles del administrador</h3>
                 <div class="modal-grid">

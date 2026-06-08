@@ -225,7 +225,6 @@ if (modalNuevoDocente) {
 }
 
 
-
 // --- MODAL EDITAR ESTUDIANTE ---
 
 // Abre el modal de edición de estudiantes y carga datos
@@ -562,6 +561,204 @@ if (formNuevoDocente) {
 }
 
 
+// --- MODAL EDITAR ADMINISTRADOR ---
+
+// Abre el modal de edición de administradores y carga los datos del administrador seleccionado en el formulario
+document.querySelectorAll('.abrir-modal-admin').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        const modal = document.getElementById('modalEditarAdministrador');
+        if (!modal) return;
+
+        // rellena cada campo del formulario con los datos del administrador
+        document.getElementById('edita-admin_id').value = this.dataset.admin_id;
+        document.getElementById('edita-usuario_id').value = this.dataset.usuario_id;
+        document.getElementById('edita-nombre').value = this.dataset.nombre;
+        document.getElementById('edita-apellido').value = this.dataset.apellido;
+        document.getElementById('edita-fecha_nacimiento').value = this.dataset.fecha_nacimiento;
+        document.getElementById('edita-genero').value = this.dataset.genero;
+        document.getElementById('edita-salario').value = this.dataset.salario;
+        document.getElementById('edita-telefono').value = this.dataset.telefono;
+        document.getElementById('edita-direccion').value = this.dataset.direccion;
+        document.getElementById('edita-correo').value = this.dataset.correo;
+        document.getElementById('edita-password_hash').value = this.dataset.password_hash;
+
+        // Convierte el valor numérico de estado a texto para que coincida con el select
+        const estado = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
+        document.getElementById('edita-estado').value = estado;
+        // Mostrar el modal
+        modal.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+    });
+});
+
+// Cierra el modal de edición de administrador y restaura el scroll
+function cerrarModalAdministrador() {
+    const modal = document.getElementById('modalEditarAdministrador');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+
+// Cierra el modal de administrador al hacer clic fuera de el
+const modalEditarAdministrador = document.getElementById('modalEditarAdministrador');
+if (modalEditarAdministrador) {
+    modalEditarAdministrador.addEventListener('click', function (e) {
+        if (e.target === this) cerrarModalAdministrador();
+    });
+}
+// --- MODAL NUEVO ADMINISTRADOR ---
+function cerrarModalNuevoAdministrador() {
+    const modal = document.getElementById('modalNuevoAdministrador');
+    if (modal) {
+        modal.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+}
+// Cierra el modal de nuevo administrador al hacer clic fuera de el
+const modalNuevoAdministrador = document.getElementById('modalNuevoAdministrador');
+if (modalNuevoAdministrador) {
+    modalNuevoAdministrador.addEventListener('click', function (e) {
+        if (e.target === this) cerrarModalNuevoAdministrador();
+    });
+}
+
+// VALIDACIÓN DE CAMPOS EN MODAL EDITAR ADMINISTRADOR
+const formEditarAdministrador = document.querySelector('#modalEditarAdministrador form');
+if (formEditarAdministrador) {
+    formEditarAdministrador.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const nombre = document.getElementById('edita-nombre').value.trim();
+        const apellido = document.getElementById('edita-apellido').value.trim();
+        const fechaNac = document.getElementById('edita-fecha_nacimiento').value.trim();
+        const salario = document.getElementById('edita-salario').value.trim();
+        const telefono = document.getElementById('edita-telefono').value.trim();
+        const direccion = document.getElementById('edita-direccion').value.trim();
+        const correo = document.getElementById('edita-correo').value.trim();
+        const password = document.getElementById('edita-password_hash').value.trim();
+
+        if (!nombre || !apellido || !fechaNac || !salario || !telefono || !direccion || !correo || !password) {
+            e.preventDefault();
+            mostrarToastPremium('Complete todos los campos');
+            return;
+        }
+
+        const hoy      = new Date();
+        const nacimiento = new Date(fechaNac);
+        const minima   = new Date('1950-01-01');
+
+        const anio = nacimiento.getFullYear();
+        if (anio < 1000 || anio > 9999) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un año válido (4 dígitos)');
+            return;
+        }
+
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mDiff = hoy.getMonth() - nacimiento.getMonth();
+        if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--; 
+        }
+
+        if (nacimiento < minima) {
+            e.preventDefault();
+            mostrarToastPremium('La fecha de nacimiento no puede ser anterior a 1950');
+            return;
+        }
+
+        if (edad < 18) {
+            e.preventDefault();
+            mostrarToastPremium('El administrador debe tener al menos 18 años');
+            return;
+        }
+
+        const formData = new FormData(this);
+        try {
+            const res  = await fetch('editar-administrador.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalAdministrador();
+                mostrarToastPremium('Administrador editado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
+        }
+    });
+}
+
+// VALIDACIÓN DE CAMPOS EN MODAL NUEVO ADMINISTRADOR
+const formNuevoAdministrador = document.querySelector('#modalNuevoAdministrador form');
+if (formNuevoAdministrador) {
+    formNuevoAdministrador.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const nombre = formNuevoAdministrador.querySelector('[name="nombre"]').value.trim();
+        const apellido = formNuevoAdministrador.querySelector('[name="apellido"]').value.trim();
+        const fechaNac = formNuevoAdministrador.querySelector('[name="fecha_nacimiento"]').value.trim();
+        const salario = formNuevoAdministrador.querySelector('[name="salario"]').value.trim();
+        const telefono = formNuevoAdministrador.querySelector('[name="telefono"]').value.trim();
+        const direccion = formNuevoAdministrador.querySelector('[name="direccion"]').value.trim();
+        const correo = formNuevoAdministrador.querySelector('[name="correo"]').value.trim();
+        const password = formNuevoAdministrador.querySelector('[name="password_hash"]').value.trim();
+
+        if (!nombre || !apellido || !fechaNac || !salario || !telefono || !direccion || !correo || !password) {
+            e.preventDefault();
+            mostrarToastPremium('Complete todos los campos');
+            return;
+        }
+
+        const hoy      = new Date();
+        const nacimiento = new Date(fechaNac);
+        const minima   = new Date('1950-01-01');
+
+        const anio = nacimiento.getFullYear();
+        if (anio < 1000 || anio > 9999) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un año válido (4 dígitos)');
+            return;
+        }
+
+        let edad = hoy.getFullYear() - nacimiento.getFullYear();
+        const mDiff = hoy.getMonth() - nacimiento.getMonth();
+        if (mDiff < 0 || (mDiff === 0 && hoy.getDate() < nacimiento.getDate())) {
+            edad--; 
+        }
+
+        if (nacimiento < minima) {
+            e.preventDefault();
+            mostrarToastPremium('La fecha de nacimiento no puede ser anterior a 1950');
+            return;
+        }
+
+        if (edad < 18) {
+            e.preventDefault();
+            mostrarToastPremium('El administrador debe tener al menos 18 años');
+            return;
+        }
+
+        const formData = new FormData(this);
+        try {
+            const res  = await fetch('crear-administrador.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalNuevoAdministrador();
+                mostrarToastPremium('Administrador creado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
+        }
+    });
+}
+
+
 // MODAL NUEVO CURSO
 
 function cerrarModalNuevoCurso() {
@@ -769,6 +966,7 @@ document.addEventListener('click', function (e) {
     else if (document.getElementById('buscador-estudiante')) tipo = 'estudiante';
     else if (document.getElementById('buscador-periodo')) tipo = 'periodo'
     else if (document.getElementById('buscador-plazo')) tipo = 'plazo';
+    else if (document.getElementById('buscador-admin')) tipo = 'administrador';
 
 
     mTitle.innerText = isActivo
@@ -798,7 +996,7 @@ document.addEventListener('click', function (e) {
         else if (document.getElementById('buscador-curso')) archivo = 'toggle-estado-curso.php';
         else if (document.getElementById('buscador-periodo')) archivo = 'toggle-estado-periodo.php';
         else if (document.getElementById('buscador-plazo')) archivo = 'toggle-estado-plazo.php';
-
+        else if (document.getElementById('buscador-admin')) archivo = 'toggle-estado-admin.php';
 
         const res = await fetch(archivo, {
             method: 'POST',
@@ -845,7 +1043,7 @@ document.addEventListener('click', function (e) {
             if (celdaDocente) celdaDocente.textContent = '—';
         }
 
-        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-plazo');
+        const btnEditar = fila.querySelector('.abrir-modal-periodo,.abrir-modal-curso, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-plazo, .abrir-modal-admin');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (isActivo) {
@@ -933,7 +1131,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const esInactivo = btnEstado.classList.contains('estado-inactivo');
 
-        const btnEditar = fila.querySelector('abrir-modal-periodo, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso, abrir-modal-plazo');
+        const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-docente, .abrir-modal-estudiante, .abrir-modal-curso, .abrir-modal-plazo, .abrir-modal-admin');
         const btnHorarios = fila.querySelector('.horarios');
 
         if (esInactivo) {
@@ -992,7 +1190,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (estado.textContent.trim() === 'Inactivo') {
 
-            const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-curso, .abrir-modal-plazo');
+            const btnEditar = fila.querySelector('.abrir-modal-periodo, .abrir-modal-curso, .abrir-modal-plazo, .abrir-modal-admin');
             const btnHorarios = fila.querySelector('.horarios');
 
             fila.querySelectorAll('td').forEach(td => {
@@ -1190,6 +1388,7 @@ if (btnNuevo) {
         const modalNuevoDocente = document.getElementById('modalNuevoDocente');
         const modalNuevo = document.getElementById('modalNuevo');
         const modalPeriodo = document.getElementById('modalPeriodo');
+        const modalAdmin = document.getElementById('modalNuevoAdministrador');
 
         if (modalNuevoCurso) {
             modalNuevoCurso.classList.add('activo');
@@ -1200,6 +1399,8 @@ if (btnNuevo) {
             modalNuevo.classList.add('activo');
         } else if (modalPeriodo) {
             abrirModalNuevoPeriodo();
+        } else if (modalAdmin) {
+            modalAdmin.classList.add('activo');
         }
 
         document.body.style.overflow = 'hidden';
@@ -1264,6 +1465,7 @@ document.addEventListener('keydown', e => {
         cerrarModalNuevoCurso();
         cerrarModalPeriodo();
         cerrarModalInscripcion();
+        cerrarModalNuevoAdministrador();
     }
 });
 
@@ -1329,6 +1531,23 @@ if (buscadorPago) {
 
         filas.forEach(function (fila) {
             fila.style.display = fila.textContent.toLowerCase().includes(filtro) ? '' : 'none';
+        });
+    });
+}
+
+// --- BUSCADOR ADMINISTRADORES ---
+const buscadorAdministrador = document.getElementById('buscador-admin');
+if (buscadorAdministrador) {
+    buscadorAdministrador.addEventListener('keyup', function () {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll('.tabla-placeholder .data-table tbody tr');
+
+        filas.forEach(function (fila) {
+            const id = fila.cells[0].textContent.toLowerCase();
+            const nombre = fila.cells[1].textContent.toLowerCase();
+            const apellido = fila.cells[2].textContent.toLowerCase();
+
+            fila.style.display = (id.includes(filtro) || nombre.includes(filtro) || apellido.includes(filtro)) ? '' : 'none';
         });
     });
 }
