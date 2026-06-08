@@ -78,15 +78,15 @@ if ($resPeriodos) {
                 <div class="menu-user-role">Admin</div>
                 <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
             </div>
-
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
-            <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
-            <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
-            <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
+            <a href="./admin-admins.php" class="btn-nav">Administradores</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
+            <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
+            <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
+            <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
+            <a href="./admin-plazo.php" class="btn-nav active">Plazo Notas</a>
             <a href="./admin-pagos.php" class="btn-nav">Pagos</a>
             <a href="./admin-facturacion.php" class="btn-nav">Facturación</a>
-            <a href="./admin-plazo.php" class="btn-nav active">Plazo Notas</a>
             <a href="./admin-constancias.php" class="btn-nav">Constancias</a>
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
             <a href="includes/logout.php" style="text-decoration:none;">

@@ -6,16 +6,12 @@ USE db_academiadigital;
 -- Insertar datos en las tablas de usuarios, administradores, estudiantes y docentes.
 USE db_academiadigital;
 
-INSERT INTO `usuarios` (`nombre`, `apellido`, `correo`, `password_hash`, `estado`, `rol_id`) VALUES 
-('Sabrina', 'Saravia', 'sabrina@gmail.com', 'SabriAdmin-12', 1, 1),
+INSERT INTO `usuarios` (`nombre`, `apellido`, `correo`, `password_hash`, `estado`, `rol_id`) VALUES
 ('Yamileth', 'Valencia', 'yamiiacademia3@gmail.com', 'YamiEstudiante-19', 1, 2),
 ('Karla', 'Morales', 'karladocente19@gmail.com', 'KarliDocente_22', 1, 3),
 ('Daniel', 'García', 'daniel@gmail.com', 'Daniel123', 1, 2),
 ('Yahir', 'Romero', 'yahir@gmail.com', 'Yahir123', 1, 3),
 ('Keyri', 'Sanchez', 'keyri@gmail.com', 'keyri123', 1, 3);  
-
-INSERT INTO `administradores` (`usuario_id`, `fecha_nacimiento`, `genero`, `salario`, `telefono`, `direccion`) VALUES
-(1, '2001-01-01', 'F', 500.00, '1234-5678', 'San Miguel');
 
 INSERT INTO `estudiantes` (`usuario_id`, `fecha_nacimiento`, `genero`, `telefono`, `direccion`) VALUES
 (2, '2001-01-01', 'F', '5678-1234', 'Usulután'), (4, '2001-01-01', 'M', '3456-7891', 'Usulután');
