@@ -17,6 +17,22 @@ $estado       = 1;
     header("Location: admin-cursos.php?error=fechas");
     exit();
 }
+
+// Obtener la fecha fin del ciclo/periodo
+$fechaFinCiclo = null;
+if ($idPeriodo > 0) {
+    $sql_periodo_info = "SELECT fechaFinCiclo FROM PeriodoInscripcion WHERE id = '$idPeriodo'";
+    $res_periodo_info = mysqli_query($conexion, $sql_periodo_info);
+    if ($res_periodo_info && $row_periodo = mysqli_fetch_assoc($res_periodo_info)) {
+        $fechaFinCiclo = $row_periodo['fechaFinCiclo'];
+    }
+}
+
+// Validar que la fecha de fin del curso no sea mayor a la del ciclo
+if ($fechaFinCiclo !== null && $fechaFin > $fechaFinCiclo) {
+    echo json_encode(['success' => false, 'error' => 'fecha_fin_ciclo']);
+    exit();
+}
 // Evita crear cursos con nombres duplicados.
 $sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre')";
 $resultado_verificar = mysqli_query($conexion, $sql_verificar);

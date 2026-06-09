@@ -123,14 +123,6 @@ if ($id > 0) {
         exit();
     }
 
-    $fechaLimiteExistente = new DateTime($tareaExistente['fechaLimite']);
-    $ahora                = new DateTime();
-
-    if ($fechaLimiteExistente < $ahora) {
-        echo json_encode(['error' => true, 'mensaje' => 'No se puede editar una tarea cuya fecha límite ya venció']);
-        exit();
-    }
-
     // 'ss id is ii' → titulo(s), descripcion(s), idSesion(i), puntaje(d), fechaLimiteFmt(s), intentos(i), id(i), idCurso(i)
     $stmt = $conexion->prepare("
         UPDATE tareas SET titulo=?, descripcion=?, idSesion=?, puntajeMaximo=?, fechaLimite=?, intentos=?
