@@ -5,6 +5,7 @@ $nombre = $_POST['nombre'];
 $apellido = $_POST['apellido'];
 $correo = $_POST['correo'];
 $password = $_POST['password_hash'];
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 $especialidad = $_POST['especialidad'];
 $fecha_nacimiento = $_POST['fecha_nacimiento'];
 $genero = $_POST['genero'];
@@ -37,7 +38,7 @@ if (mysqli_num_rows($resultado) > 0) {
 $sql_usuario = "INSERT INTO usuarios
 (nombre, apellido, correo, password_hash, estado, rol_id)
 VALUES
-('$nombre','$apellido','$correo','$password','$estado',3)"; // rol_id 3: docente
+('$nombre','$apellido','$correo','$hashed_password','$estado',3)"; // rol_id 3: docente
 
 mysqli_query($conexion, $sql_usuario);
 $usuario_id = mysqli_insert_id($conexion);
