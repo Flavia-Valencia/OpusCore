@@ -6,7 +6,7 @@ $docente_id = $_POST['docente_id'];
 $nombre = $_POST['nombre'];
 $apellido = $_POST['apellido'];
 $correo = $_POST['correo'];
-$password = $_POST['password_hash'];
+$password = trim($_POST['password_hash']);
 $especialidad = $_POST['especialidad'];
 $fecha_nacimiento = $_POST['fecha_nacimiento'];
 $genero = $_POST['genero'];
@@ -35,13 +35,23 @@ if ($fechaNac < $minima || $edad < 18) {
     exit();
 }
 
-$sql_usuario = "UPDATE usuarios SET
-nombre='$nombre',
-apellido='$apellido',
-correo='$correo',
-estado='$estado',
-password_hash='$password'
-WHERE id='$usuario_id'";
+if ($password === '') {
+    $sql_usuario = "UPDATE usuarios SET
+    nombre='$nombre',
+    apellido='$apellido',
+    correo='$correo',
+    estado='$estado'
+    WHERE id='$usuario_id'";
+} else {
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    $sql_usuario = "UPDATE usuarios SET
+    nombre='$nombre',
+    apellido='$apellido',
+    correo='$correo',
+    estado='$estado',
+    password_hash='$hashed_password'
+    WHERE id='$usuario_id'";
+}
 mysqli_query($conexion, $sql_usuario);
 
 

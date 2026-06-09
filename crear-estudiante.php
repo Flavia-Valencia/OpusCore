@@ -5,6 +5,7 @@ $nombre = $_POST['nombre'];
 $apellido = $_POST['apellido'];
 $correo = $_POST['correo'];
 $password = $_POST['password_hash'];
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 $fecha_nacimiento = $_POST['fecha_nacimiento'];
 $genero = $_POST['genero'];
 $telefono = $_POST['telefono'];
@@ -33,7 +34,7 @@ if ($fechaNac < $minima || $edad < 12) {
 // Crea primero el usuario con rol estudiante.
 $sql_usuario = "INSERT INTO usuarios 
 (nombre, apellido, correo, password_hash, estado, rol_id)
-VALUES('$nombre', '$apellido', '$correo', '$password', '$estado', 2)"; // rol_id 2: estudiante
+VALUES('$nombre', '$apellido', '$correo', '$hashed_password', '$estado', 2)"; // rol_id 2: estudiante
 mysqli_query($conexion, $sql_usuario);
 $usuario_id = mysqli_insert_id($conexion);
 
