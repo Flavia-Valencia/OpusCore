@@ -184,6 +184,16 @@ BEGIN
     ) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: La modificación de las fechas de periodo choca con otro periodo existente';
     END IF;
+
+    -- Valida que la nueva fecha fin del ciclo no sea menor que la de sus cursos activos
+    IF EXISTS (
+        SELECT 1 FROM `cursos`
+        WHERE idPeriodo = NEW.id
+          AND estado = 1
+          AND fechaFin > NEW.fechaFinCiclo
+    ) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: No se puede reducir la fecha de fin del ciclo porque hay cursos activos que finalizan después';
+    END IF;
 END //
 CREATE TRIGGER `tr_vencimiento_matricula_dinamico`
 BEFORE INSERT ON `matricula`
@@ -230,5 +240,49 @@ BEGIN
         -- se suma un mes para la siguiente vuelta del bucle
         SET v_fecha_pago = DATE_ADD(v_fecha_pago, INTERVAL 1 MONTH);
     END WHILE;
+END //
+DELIMITER ;
+-- para eliminar los creados del trigger anterior y agregar las nuevas validacciones
+DROP TRIGGER IF EXISTS tr_validar_fechas_insert;
+DROP TRIGGER IF EXISTS tr_validar_fechas_update;
+
+-- Crea una restriccion donde no se puede seleccionar una feccha fin anterior a la fecha inicio (crear y editar)
+DELIMITER //
+CREATE TRIGGER `tr_validar_fechas_insert`
+BEFORE INSERT ON `cursos`
+FOR EACH ROW
+BEGIN
+    DECLARE v_fecha_fin_ciclo DATE;
+    IF NEW.fechaFin < NEW.fechaInicio THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Error: La fecha de fin no puede ser anterior a la de inicio';
+    END IF;
+
+    IF NEW.idPeriodo IS NOT NULL THEN
+        SELECT fechaFinCiclo INTO v_fecha_fin_ciclo FROM `PeriodoInscripcion` WHERE id = NEW.idPeriodo;
+        IF v_fecha_fin_ciclo IS NOT NULL AND NEW.fechaFin > v_fecha_fin_ciclo THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Error: La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo';
+        END IF;
+    END IF;
+END //
+
+CREATE TRIGGER `tr_validar_fechas_update`
+BEFORE UPDATE ON `cursos`
+FOR EACH ROW
+BEGIN
+    DECLARE v_fecha_fin_ciclo DATE;
+    IF NEW.fechaFin < NEW.fechaInicio THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Error: La fecha de fin no puede ser anterior a la de inicio';
+    END IF;
+
+    IF NEW.idPeriodo IS NOT NULL THEN
+        SELECT fechaFinCiclo INTO v_fecha_fin_ciclo FROM `PeriodoInscripcion` WHERE id = NEW.idPeriodo;
+        IF v_fecha_fin_ciclo IS NOT NULL AND NEW.fechaFin > v_fecha_fin_ciclo THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Error: La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo';
+        END IF;
+    END IF;
 END //
 DELIMITER ;
