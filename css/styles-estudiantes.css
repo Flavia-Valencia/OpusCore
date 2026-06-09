@@ -254,10 +254,13 @@ body {
 
 /* Estado activo de la opcion actual */
 .nav-item.active {
-    background: linear-gradient(135deg, #1477f8, #2253bd);
+    background: rgba(20, 119, 248, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: white;
     font-weight: 700;
-    box-shadow: 0 10px 22px rgba(20, 119, 248, 0.24);
+    box-shadow: 0 8px 18px rgba(20, 119, 248, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 .nav-dropdown {

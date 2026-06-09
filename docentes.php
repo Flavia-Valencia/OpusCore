@@ -154,10 +154,7 @@ if(!isset($_SESSION["usuario"])){
                                     <span class="meta-label">Inscritos</span>
                                     <span class="meta-value"><?php echo $curso['alumnos_inscritos']; ?> </span>
                                 </div>
-                                <div class="meta-item">
-                                    <span class="meta-label">Costo mensual</span>
-                                    <span class="meta-value price">$<?php echo number_format($curso['costoMensual'], 2); ?></span>
-                                </div>
+                               
                             </div>
                             <!-- Accesos de gestion para el curso -->
                             <div class="curso-acciones-panel">
