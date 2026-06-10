@@ -16,7 +16,7 @@ $estado       = $_POST['estado'] == 'Activo' ? 1 : 0;
 
 // Valida que la fecha de fin sea posterior a la fecha de inicio.
     if ($fechaFin <= $fechaInicio) {
-    header("Location: admin-cursos.php?error=fechas");
+    echo json_encode(['error' => true, 'mensaje' => 'La fecha de fin no debe ser menor a la fecha de inicio.']);
     exit();
 }
 
@@ -32,7 +32,7 @@ if ($idPeriodo > 0) {
 
 // Validar que la fecha de fin del curso no sea mayor a la del ciclo
 if ($fechaFinCiclo !== null && $fechaFin > $fechaFinCiclo) {
-    echo json_encode(['success' => false, 'error' => 'fecha_fin_ciclo']);
+      echo json_encode(['error' => true, 'mensaje' => 'La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo.']);
     exit();
 }
 
@@ -41,7 +41,7 @@ $sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre') A
 $resultado_verificar = mysqli_query($conexion, $sql_verificar);
 
 if (mysqli_num_rows($resultado_verificar) > 0) {
-    header("Location: admin-cursos.php?error=existe");
+    echo json_encode(['error' => true, 'mensaje' => 'El curso ya existe. Intenta con otro nombre.']);
     exit();
 }
 
@@ -56,35 +56,45 @@ if ($row_docente_actual['idDocente'] != $idDocente) {
     $res_limite = mysqli_query($conexion, $sql_limite);
     $row_limite = mysqli_fetch_assoc($res_limite);
     if ($row_limite['total'] >= 4) {
-        header("Location: admin-cursos.php?error=limite_docente");
+        echo json_encode(['error' => true, 'mensaje' => 'El docente ya tiene el límite de cursos activos asignados.']);
         exit();
     }
 }
-// Actualiza los datos principales del curso.
-$sql = "UPDATE cursos SET
-    nombre        = '$nombre',
-    descripcion   = '$descripcion',
-    costoMensual  = '$costoMensual',
-    fechaInicio   = '$fechaInicio',
-    fechaFin      = '$fechaFin',
-    cupos         = '$cupos',
-    estado        = '$estado',
-    idDocente     = '$idDocente',
-    idPeriodo = $idPeriodo_sql,
-    idCategoria   = '$idCategoria'
-WHERE id = '$id'";
-mysqli_query($conexion, $sql);
+try {
+    // Actualiza los datos principales del curso.
+    $sql = "UPDATE cursos SET
+        nombre        = '$nombre',
+        descripcion   = '$descripcion',
+        costoMensual  = '$costoMensual',
+        fechaInicio   = '$fechaInicio',
+        fechaFin      = '$fechaFin',
+        cupos         = '$cupos',
+        estado        = '$estado',
+        idDocente     = '$idDocente',
+        idPeriodo = $idPeriodo_sql,
+        idCategoria   = '$idCategoria'
+    WHERE id = '$id'";
+    mysqli_query($conexion, $sql);
 
+    // Reemplaza el prerrequisito anterior por el seleccionado actualmente.
+    mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
+    $idPrerrequisito = isset($_POST['idPrerrequisitos']) ? intval($_POST['idPrerrequisitos']) : 0;
+    if ($idPrerrequisito > 0 && $idPrerrequisito != $id) {
+        $sql_pre = "INSERT INTO prerrequisitos (idCursoActual, idCursoPrevio)
+                    VALUES ('$id', '$idPrerrequisito')";
+        mysqli_query($conexion, $sql_pre);
+    }
 
-// Reemplaza el prerrequisito anterior por el seleccionado actualmente.
-mysqli_query($conexion, "DELETE FROM prerrequisitos WHERE idCursoActual = '$id'");
-$idPrerrequisito = isset($_POST['idPrerrequisitos']) ? intval($_POST['idPrerrequisitos']) : 0;
-if ($idPrerrequisito > 0 && $idPrerrequisito != $id) {
-    $sql_pre = "INSERT INTO prerrequisitos (idCursoActual, idCursoPrevio) 
-                VALUES ('$id', '$idPrerrequisito')";
-    mysqli_query($conexion, $sql_pre);
+    echo json_encode(['error' => false, 'mensaje' => 'Curso actualizado exitosamente']);
+    exit();
+
+} catch (Exception $e) {
+    $msg = $e->getMessage();
+    if (strpos($msg, 'fecha') !== false || strpos($msg, 'ciclo') !== false) {
+        echo json_encode(['error' => true, 'mensaje' => 'La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo.']);
+    } else {
+        echo json_encode(['error' => true, 'mensaje' => 'Ocurrió un error al guardar el curso. Verifica los datos e intenta de nuevo.']);
+    }
+    exit();
 }
-
-header("Location: admin-cursos.php");
-exit();
 ?>

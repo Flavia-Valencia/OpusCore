@@ -119,6 +119,8 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
             mostrarToastPremium('El docente ya tiene el límite de cursos activos asignados.');
         <?php elseif($_GET['error'] == 'fecha_fin_ciclo'): ?>
             mostrarToastPremium('La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo.');
+        <?php elseif($_GET['error'] == 'general'): ?>
+            mostrarToastPremium('Ocurrió un error al guardar el curso. Verifica los datos e intenta de nuevo.');
         <?php endif; ?>
     });
 </script>

@@ -1231,6 +1231,52 @@ if (modalEditarCurso) {
     });
 }
 
+// --- VALIDACIÓN MODAL NUEVO CURSO ---
+const formNuevoCurso = document.getElementById('formNuevoCurso');
+if (formNuevoCurso) {
+    formNuevoCurso.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        try {
+            const res = await fetch('crear-curso.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalNuevoCurso();
+                mostrarToastPremium('Curso creado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
+        }
+    });
+}
+
+// --- VALIDACIÓN MODAL EDITAR CURSO ---
+const formEditarCurso = document.getElementById('formEditarCurso');
+if (formEditarCurso) {
+    formEditarCurso.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        try {
+            const res = await fetch('editar-curso.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalCurso();
+                mostrarToastPremium('Curso actualizado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
+        }
+    });
+}
+
 
 // --- MODAL PERÍODO DE INSCRIPCIÓN ---
 
