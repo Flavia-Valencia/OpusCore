@@ -186,6 +186,40 @@ if (tablaExiste($conexion, 'tareas')) {
     $stmt->execute();
     $tareas = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
+    if ($tieneArchivos && !empty($tareas)) {
+        $tareaIds = array_map(function ($tarea) {
+            return (int) $tarea['id'];
+        }, $tareas);
+
+        $idsList = implode(',', $tareaIds);
+        $stmtArchivos = $conexion->prepare(
+            "SELECT idTarea, nombreArchivo, rutaArchivo, tipo
+             FROM tareasArchivos
+             WHERE idTarea IN ($idsList)
+             ORDER BY fechaSubida DESC, id DESC"
+        );
+        $stmtArchivos->execute();
+        $archivosRows = $stmtArchivos->get_result()->fetch_all(MYSQLI_ASSOC);
+        $archivosPorTarea = [];
+        foreach ($archivosRows as $archivoRow) {
+            $archivosPorTarea[(int) $archivoRow['idTarea']][] = [
+                'nombre' => $archivoRow['nombreArchivo'],
+                'ruta' => $archivoRow['rutaArchivo'],
+                'tipo' => $archivoRow['tipo'],
+            ];
+        }
+
+        foreach ($tareas as &$tarea) {
+            $tarea['archivos'] = $archivosPorTarea[(int) $tarea['id']] ?? [];
+        }
+        unset($tarea);
+    } else {
+        foreach ($tareas as &$tarea) {
+            $tarea['archivos'] = [];
+        }
+        unset($tarea);
+    }
+
    $pendientes = 0;
 $vencidas = 0;
 $hoy = new DateTime('today');
@@ -449,16 +483,16 @@ if (!empty($tareas)) {
                                         </div>
                                     </div>
                                     <div class="tarea-estudiante-actions">
-                                        <?php if (!empty($tarea['nombre_archivo'])): ?>
-                                            <?php if ($tarea['tipo_archivo'] === 'Enlace' && $ruta): ?>
-                                                <a href="<?= e($ruta) ?>" target="_blank" rel="noopener" class="contenido-ver">
-                                                    Apoyo <i class="fas fa-chevron-right"></i>
-                                                </a>
-                                            <?php elseif ($tarea['tipo_archivo'] === 'Archivo' && $ruta): ?>
-                                                <a href="<?= e($ruta) ?>" download="<?= e($tarea['nombre_archivo']) ?>" class="contenido-ver">
-                                                    Apoyo <i class="fas fa-chevron-right"></i>
-                                                </a>
-                                            <?php endif; ?>
+                                        <?php if (!empty($tarea['archivos'])): ?>
+                                            <button
+                                                type="button"
+                                                class="contenido-ver js-ver-contenido"
+                                                data-title="<?= e($tarea['titulo']) ?>"
+                                                data-date="<?= e(fechaCorta($tarea['fechaLimite'])) ?>"
+                                                data-adjuntos="<?= htmlspecialchars(json_encode($tarea['archivos'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES, 'UTF-8') ?>"
+                                            >
+                                                Apoyo <i class="fas fa-chevron-right"></i>
+                                            </button>
                                         <?php endif; ?>
                                         <button
                                             type="button"
@@ -515,6 +549,21 @@ if (!empty($tareas)) {
                     <button type="submit" class="entrega-modal-btn entrega-modal-btn-primary" id="entregaTareaSubmit">Marcar como entregada</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay contenido-recursos-modal" id="modalContenidoRecursos" aria-hidden="true">
+        <div class="modal-contenido contenido-recursos-box" role="dialog" aria-modal="true" aria-labelledby="contenidoRecursosTitulo">
+            <button class="modal-cerrar js-cerrar-contenido-recursos" type="button" aria-label="Cerrar modal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="modal-titulo" id="contenidoRecursosTitulo"><i class="fas fa-folder-open"></i> Materiales de apoyo</h2>
+            <div class="entrega-tarea-resumen">
+                <strong id="contenidoRecursosNombre">Apoyo de la tarea</strong>
+                <span id="contenidoRecursosMeta">Disponible</span>
+                <small>Archivos y enlaces compartidos por el docente para esta tarea.</small>
+            </div>
+            <div class="contenido-recursos-lista" id="contenidoRecursosLista"></div>
         </div>
     </div>
 

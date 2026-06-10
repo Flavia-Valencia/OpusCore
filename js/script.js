@@ -2175,6 +2175,8 @@ function inicializarModalContenidosEstudiante() {
                     const ruta = adjunto.ruta || '#';
                     const nombre = adjunto.nombre || `Material ${index + 1}`;
                     const preview = crearPreviewRecurso(adjunto);
+                    const puedeDescargar = String(tipo).toLowerCase() === 'archivo';
+                    const downloadAttr = puedeDescargar ? `download="${escaparHtml(nombre)}"` : '';
                     return `
                         <article class="contenido-recurso-card">
                             <div class="contenido-recurso-item">
@@ -2185,7 +2187,7 @@ function inicializarModalContenidosEstudiante() {
                                     <strong>${escaparHtml(nombre)}</strong>
                                     <small>${escaparHtml(tipo)}</small>
                                 </span>
-                                <a class="contenido-recurso-link" href="${escaparHtml(ruta)}" target="_blank" rel="noopener" aria-label="Abrir recurso en una pestaña nueva">
+                                <a class="contenido-recurso-link" href="${escaparHtml(ruta)}" ${downloadAttr} target="_blank" rel="noopener" aria-label="Abrir recurso en una pestaña nueva">
                                     <i class="fas fa-arrow-up-right-from-square"></i>
                                 </a>
                             </div>
