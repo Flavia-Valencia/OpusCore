@@ -14,8 +14,9 @@
 }
 
 body {
-  background: #f0f4f8;
+  background: #f6f9fe;
   min-height: 100vh;
+  color: #061b43;
 }
 
 /* Control invisible que abre/cierra el sidebar en móvil */
@@ -35,9 +36,9 @@ body {
 .sidebar {
   width: 230px;
   min-height: 100vh;
-  background: linear-gradient(to top, #04224e 75%);
+  background: linear-gradient(180deg, #061b43 0%, #031531 100%);
   color: white;
-  padding: 24px 16px;
+  padding: 26px 14px;
   position: fixed;
   top: 0;
   left: 0;
@@ -45,20 +46,54 @@ body {
   display: flex;
   flex-direction: column;
   transition: left 0.3s ease;
+  box-shadow: 10px 0 28px rgba(3, 21, 49, 0.14);
+  overflow: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.sidebar::before,
+.sidebar::after {
+  content: "";
+  position: absolute;
+  left: -32px;
+  right: -42px;
+  bottom: -92px;
+  height: 230px;
+  border-radius: 50% 50% 0 0;
+  pointer-events: none;
+}
+
+.sidebar::before {
+  background: rgba(12, 67, 151, 0.34);
+  transform: rotate(8deg);
+}
+
+.sidebar::after {
+  bottom: -128px;
+  background: rgba(5, 38, 95, 0.52);
+  transform: rotate(-7deg);
 }
 
 .sidebar-logo {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 8px 24px;
+  padding: 0 10px 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .logo-img-sidebar {
-  width: 40px;
-  height: 40px;
+  width: 46px;
+  height: 46px;
   object-fit: contain;
   opacity: 0.95;
 }
@@ -77,9 +112,9 @@ body {
 
 .logo-text-sidebar strong {
   display: block;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
 }
 /* Boton de cierre del sidebar en movil */
 .sidebar-close {
@@ -99,50 +134,59 @@ body {
 
 /* Navegacion principal del sidebar docente */
 .sidebar nav ul {
+  position: relative;
+  z-index: 1;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  margin-bottom: 118px;
 }
 
 .sidebar li {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  min-height: 46px;
   padding: 11px 14px;
-  border-radius: 10px;
+  border-radius: 9px;
   cursor: pointer;
   font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.65);
-  transition: background 0.2s, color 0.2s;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  transition: background 0.2s, color 0.2s, transform 0.2s;
 }
 
 .sidebar li i {
-  width: 16px;
+  width: 18px;
   text-align: center;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .sidebar li:hover {
   background: rgba(255, 255, 255, 0.12);
   color: white;
+  transform: translateX(2px);
 }
 
 .sidebar li.active {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(20, 119, 248, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: white;
-  font-weight: 600;
+  font-weight: 700;
+  box-shadow: 0 8px 18px rgba(20, 119, 248, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 /* Acceso de cierre de sesion dentro del sidebar movil */
 .sidebar-logout {
-  display: none;
+  display: none !important;
   margin-top: auto;
-  padding: 12px 14px;
-  border-radius: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.65);
+  padding: 14px 12px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.78);
   text-decoration: none;
   font-size: 13px;
   font-weight: 500;
@@ -161,7 +205,45 @@ body {
 }
 
 .menu-user {
-  display: none;
+  display: none !important;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.menu-user::before {
+  content: "DO";
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  grid-row: 1 / span 2;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #08a8cf, #1477f8);
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.menu-user-role {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.menu-user-email {
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .content {
@@ -175,11 +257,14 @@ body {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
-  padding: 13px 28px;
+  background: linear-gradient(135deg, #061b43 0%, #0d3f91 58%, #069DBF 100%);
+  padding: 14px 28px;
   position: sticky;
   top: 0;
   z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 22px rgba(6, 27, 67, 0.14);
+  backdrop-filter: blur(12px);
 }
 
 /* Boton hamburguesa visible solo en movil */
@@ -202,13 +287,13 @@ body {
   border-radius: 50px;
   text-decoration: none;
   color: white;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.24);
   transition: all 0.25s ease;
 }
 
 .user-profile:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.22);
   transform: translateY(-1px);
 }
 
@@ -226,8 +311,12 @@ body {
 
 .user-email {
   font-size: 11px;
-  opacity: 0.7;
+  max-width: 190px;
+  overflow: hidden;
+  opacity: 0.72;
   line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .logout-icon {
@@ -237,8 +326,8 @@ body {
 /* Banner de bienvenida y resumen de la vista */
 .banner {
   margin: 28px 28px 0;
-  background: linear-gradient(to top, #053170);
-  border-radius: 16px;
+  background: linear-gradient(135deg, #061b43 0%, #1267df 68%, #08a8cf 100%);
+  border-radius: 14px;
   padding: 28px 36px;
   display: flex;
   justify-content: space-between;
@@ -246,6 +335,7 @@ body {
   color: white;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 16px 32px rgba(6, 27, 67, 0.16);
 }
 
 .banner::before {
@@ -281,6 +371,29 @@ body {
 .banner-left p {
   font-size: 13px;
   opacity: 0.7;
+}
+
+.banner-fecha {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+}
+
+.banner-fecha strong {
+  font-weight: 700;
+}
+
+.banner-fecha::before {
+  content: "\f133";
+  margin-right: 8px;
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
 }
 
 /* Modal generico de feedback usado por acciones del docente */
@@ -1629,7 +1742,6 @@ body {
 }
 
 /*  ESTILO CONSTANCIAS  */
-.constancias-page {}
 
 /* Alerta feedback */
 .constancias-alerta {
@@ -1991,11 +2103,12 @@ body {
 
   .menu-user {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: center;
     width: auto;
-    padding: 5px 6px;
+    min-width: 0;
+    padding: 12px;
     text-align: left;
     color: white;
     box-sizing: border-box;
@@ -2004,12 +2117,23 @@ body {
   .menu-user-role,
   .menu-user-email {
     width: 100%;
+    overflow: hidden;
     text-align: left;
     margin: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .menu-user-role {
+    color: #55c9ff;
+    font-size: 12px;
+    font-weight: 700;
   }
 
   .user-profile {
-    display: none;
+    display: flex;
+    max-width: 178px;
+    padding: 7px 10px;
   }
 
   .content {
@@ -2040,6 +2164,11 @@ body {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
+  }
+
+  .banner-fecha {
+    width: 100%;
+    text-align: left;
   }
 
   .banner-left {

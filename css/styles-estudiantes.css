@@ -17,6 +17,7 @@
 body {
     background: radial-gradient(circle at top left, #d8e8ff, #eaf4ff, #ffffff);
     background-size: 200% 200%;
+    color: #061b43;
 }
 
 /* ── HEADER DEL PANEL INICIAL ────────────────────────────── */
@@ -149,30 +150,64 @@ body {
 .sidebar {
     width: 230px;
     min-height: 100vh;
-    background: linear-gradient(to top, #04224e 75%);
+    background: linear-gradient(180deg, #061b43 0%, #031531 100%);
     color: white;
-    padding: 24px 16px;
+    padding: 26px 14px;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
     display: flex;
     flex-direction: column;
+    box-shadow: 10px 0 28px rgba(3, 21, 49, 0.14);
+    overflow: hidden;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+.sidebar::before,
+.sidebar::after {
+    content: "";
+    position: absolute;
+    left: -32px;
+    right: -42px;
+    bottom: -92px;
+    height: 230px;
+    border-radius: 50% 50% 0 0;
+    pointer-events: none;
+}
+
+.sidebar::before {
+    background: rgba(12, 67, 151, 0.34);
+    transform: rotate(8deg);
+}
+
+.sidebar::after {
+    bottom: -128px;
+    background: rgba(5, 38, 95, 0.52);
+    transform: rotate(-7deg);
 }
 
 /* Logo del sidebar */
 .sidebar-logo {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 0 8px 24px;
+    padding: 0 10px 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 }
 
 .logo-img {
-    width: 40px;
-    height: 40px;
+    width: 46px;
+    height: 46px;
     object-fit: contain;
 }
 
@@ -183,40 +218,49 @@ body {
 
 /* Navegacion principal del estudiante */
 .sidebar-nav {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
+    margin-bottom: 118px;
 }
 
 .nav-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    min-height: 46px;
     padding: 11px 14px;
-    border-radius: 10px;
+    border-radius: 9px;
     text-decoration: none;
     font-size: 13px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.65);
-    transition: background 0.2s, color 0.2s;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.72);
+    transition: background 0.2s, color 0.2s, transform 0.2s;
 }
 
 .nav-item i {
-    width: 16px;
+    width: 18px;
     text-align: center;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .nav-item:hover {
     background: rgba(255, 255, 255, 0.12);
     color: white;
+    transform: translateX(2px);
 }
 
 /* Estado activo de la opcion actual */
 .nav-item.active {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(20, 119, 248, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: white;
-    font-weight: 600;
+    font-weight: 700;
+    box-shadow: 0 8px 18px rgba(20, 119, 248, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 .nav-dropdown {
@@ -263,6 +307,7 @@ body {
     font-size: 12px;
     font-weight: 600;
     text-decoration: none;
+    transition: background 0.2s, color 0.2s;
 }
 
 .nav-submenu a:hover,
@@ -298,9 +343,15 @@ body {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding: 12px 28px;
-    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #061b43 0%, #0d3f91 58%, #069DBF 100%);
     gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 22px rgba(6, 27, 67, 0.14);
+    backdrop-filter: blur(12px);
 }
 
 /* Boton hamburguesa para movil */
@@ -319,17 +370,33 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.14);
     backdrop-filter: blur(10px);
     padding: 8px 14px;
     border-radius: 20px;
     cursor: pointer;
     text-decoration: none;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.24);
     transition: background 0.3s;
 }
 
 .user-profile-panel:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.user-profile-panel .user-role,
+.user-profile-panel .user-email,
+.user-profile-panel .logout-icon {
+    color: white;
+}
+
+.user-profile-panel .user-email {
+    max-width: 190px;
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.72);
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* ── BANNER ──────────────────────────────────────────────── */
@@ -337,12 +404,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, #053170, #1D4B73, #069DBF);
+    background: linear-gradient(135deg, #061b43 0%, #1267df 68%, #08a8cf 100%);
     color: white;
     padding: 28px 36px;
     margin: 24px;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(5, 49, 112, 0.25);
+    border-radius: 14px;
+    box-shadow: 0 16px 32px rgba(6, 27, 67, 0.16);
 }
 
 .banner-left h1 {
@@ -361,13 +428,32 @@ body {
 }
 
 .banner-fecha {
+    flex-shrink: 0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.92);
     text-align: right;
+}
+
+.banner-fecha::before {
+    content: "\f133";
+    margin-right: 8px;
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
 }
 
 .periodo-banner p + p {
   margin-top: 6px;
+}
+
+@media (min-width: 769px) {
+    .hamburger {
+        pointer-events: none;
+    }
 }
 
 /* ── SECCIÓN DE INSCRIPCIONES ────────────────────────────── */
@@ -1530,7 +1616,7 @@ body {
 
 .sidebar {
     height: 100vh;
-    overflow-y: auto;
+    overflow-y: visible;
 }
 
 .sidebar-close,
@@ -1538,8 +1624,60 @@ body {
     display: none;
 }
 
+.sidebar-logout {
+    display: none !important;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    padding: 14px 12px;
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 9px;
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
 .menu-user {
-    display: none;
+    display: none !important;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.menu-user::before {
+    content: "ES";
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    grid-row: 1 / span 2;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #08a8cf, #1477f8);
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.menu-user-role {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.menu-user-email {
+    min-width: 0;
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 11px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .custom-modal-overlay {
@@ -2463,12 +2601,28 @@ body {
     }
 
     .menu-user {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 5px 6px;
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr);
+        align-items: center;
+        min-width: 0;
+        padding: 12px;
         color: white;
         margin-top: 6px;
+    }
+
+    .menu-user-role {
+        color: #55c9ff;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .menu-user-email {
+        max-width: 100%;
+        overflow: hidden;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .logo-text-sidebar {
@@ -2480,15 +2634,21 @@ body {
         align-items: center;
         gap: 10px;
         margin-top: auto;
-        padding-top: 14px;
-        border-top: 1px solid rgba(255,255,255,0.15);
+        padding: 14px 12px;
+        border: 1px solid rgba(255,255,255,0.16);
+        border-radius: 9px;
         text-decoration: none;
-        color: inherit;
+        color: rgba(255, 255, 255, 0.78);
     }
 
-    .user-profile,
-    .user-profile-panel {
+    .user-profile {
         display: none !important;
+    }
+
+    .user-profile-panel {
+        display: flex !important;
+        max-width: 178px;
+        padding: 7px 10px;
     }
 
     .detalle-curso-page {

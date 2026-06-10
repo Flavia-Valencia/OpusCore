@@ -283,7 +283,6 @@ body {
 /* ── LAYOUT: HEADER & NAV */
 .header {
     background: var(--header-gradient);
-    backdrop-filter: blur(10px);
     color: white;
     padding: 15px 40px;
     display: flex;
@@ -327,33 +326,65 @@ body {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 6px;
+    gap: 8px;
     position: fixed;
-    top: 70px;
+    top: 0;
     left: 0;
     width: 230px;
-    height: calc(100vh - 70px);
-    padding: 24px 16px;
-    background: linear-gradient(to top, #04224e 75%, #053170 100%);
+    height: 100vh;
+    padding: 26px 14px;
+    background: linear-gradient(180deg, #061b43 0%, #031531 100%);
     box-shadow: 12px 0 28px rgba(5, 49, 112, 0.12);
     z-index: 800;
-    overflow-y: auto;
+    overflow-y: visible;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    box-sizing: border-box;
+}
+
+.nav::-webkit-scrollbar {
+    display: none;
+}
+
+.nav::after {
+    content: "";
+    position: absolute;
+    left: -32px;
+    right: -42px;
+    bottom: -92px;
+    height: 230px;
+    border-radius: 50% 50% 0 0;
+    background:
+        linear-gradient(180deg, rgba(12, 67, 151, 0.34), rgba(5, 38, 95, 0.52));
+    transform: rotate(8deg);
+    pointer-events: none;
+    z-index: 0;
 }
 
 .nav::before {
-    content: "Panel Admin";
+    content: "ACADEMIA\A Futuro Digital";
     display: block;
-    padding: 0 12px 18px;
-    margin-bottom: 8px;
+    min-height: 58px;
+    padding: 8px 8px 22px 64px;
+    margin-bottom: 12px;
+    background-image: url("../img/logo.svg");
+    background-position: 8px 6px;
+    background-repeat: no-repeat;
+    background-size: 46px 46px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.14);
     color: rgba(255, 255, 255, 0.78);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    line-height: 1.25;
+    white-space: pre-line;
+    position: relative;
+    z-index: 1;
 }
 
 .btn-nav {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -397,8 +428,12 @@ body {
 }
 
 .btn-nav.active {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(20, 119, 248, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: #ffffff;
+    box-shadow: 0 8px 18px rgba(20, 119, 248, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 .user-profile {
@@ -446,11 +481,59 @@ body {
 }
 
 .menu-user {
-    display: none;
+    display: none !important;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    color: white;
+}
+
+.menu-user::before {
+    content: "AD";
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    grid-row: 1 / span 2;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #08a8cf, #1477f8);
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.menu-user-role {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.menu-user-email {
+    min-width: 0;
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 11px;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .btn-salir {
-    display: none;
+    display: none !important;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    padding: 14px 12px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 /* ── LAYOUT: MAIN CONTENT ── */
@@ -459,6 +542,8 @@ body {
     max-width: none;
     width: calc(100% - 230px);
     margin: 0 0 0 230px;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .page-header {
@@ -947,6 +1032,30 @@ body {
     font-size: 14px;
     opacity: 0.85;
     text-transform: capitalize;
+}
+
+@media (min-width: 769px) {
+    .header {
+        margin-left: 230px;
+        width: calc(100% - 230px);
+        min-height: 70px;
+        padding: 14px 24px;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+
+    .header > .logo {
+        display: none;
+    }
+
+    .user-profile {
+        top: 14px;
+        right: 24px;
+        min-width: 210px;
+        justify-content: flex-start;
+        border: 1px solid rgba(255, 255, 255, 0.26);
+        border-radius: 999px;
+    }
 }
 
 .stats-grid {
@@ -1585,6 +1694,12 @@ body {
         z-index: 997;
         background: linear-gradient(90deg, #053170 0%, #1D4B73 100%);
         height: 60px;
+        justify-content: flex-start;
+        gap: 12px;
+    }
+
+    .logo {
+        display: none;
     }
 
     .logo-img {
@@ -1601,8 +1716,20 @@ body {
     }
 
     .menu-btn {
-        display: block;
-        order: 2;
+        display: grid;
+        place-items: center;
+        position: relative;
+        order: 1;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        font-size: 20px;
+        margin-left: 0;
+        transition: background 0.2s ease;
+    }
+
+    .menu-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
     }
 
     .menu-btn .hamburguesa {
@@ -1621,28 +1748,60 @@ body {
         display: block;
     }
 
+    .menu-checkbox:checked~.menu-btn {
+        position: fixed;
+        top: 12px;
+        left: 15px;
+        z-index: 1001;
+        background: rgba(255, 255, 255, 0.12);
+    }
+
     .user-profile {
-        display: none;
+        display: flex;
+        top: 10px;
+        right: 12px;
+        max-width: 178px;
+        padding: 7px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
     }
 
     .nav {
         display: flex;
         position: fixed;
-        top: 60px;
-        left: auto;
-        right: -280px;
-        width: 280px;
-        height: calc(100vh - 60px);
-        background: linear-gradient(180deg, #053170 0%, #1D4B73 100%);
+        top: 0;
+        left: -250px;
+        right: auto;
+        width: 230px;
+        height: 100vh;
+        background: linear-gradient(180deg, #061b43 0%, #031531 100%);
         flex-direction: column;
-        padding: 20px 0;
-        transition: right 0.3s ease;
+        gap: 8px;
+        padding: 72px 14px 26px;
+        transition: left 0.3s ease;
         z-index: 999;
         box-sizing: border-box;
+        box-shadow: 10px 0 28px rgba(3, 21, 49, 0.2);
+    }
+
+    .nav::before {
+        content: "ACADEMIA\A Futuro Digital";
+        min-height: 58px;
+        padding: 8px 8px 20px 64px;
+        margin-bottom: 10px;
+        background-image: url("../img/logo.svg");
+        background-position: 8px 6px;
+        background-repeat: no-repeat;
+        background-size: 46px 46px;
+        font-size: 11px;
+        line-height: 1.25;
+        letter-spacing: 1.2px;
+        white-space: pre-line;
     }
 
     .menu-checkbox:checked~.nav {
-        right: 0;
+        left: 0;
     }
 
     .menu-checkbox:checked~.menu-overlay {
@@ -1654,7 +1813,10 @@ body {
         flex-direction: column;
         align-items: flex-start;
         width: 100%;
-        padding: 12px 16px;
+        min-width: 0;
+        padding: 7px 8px 14px;
+        margin-bottom: 4px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         text-align: left;
         color: white;
         box-sizing: border-box;
@@ -1662,30 +1824,64 @@ body {
 
     .menu-user-role, .menu-user-email {
         width: 100%;
+        overflow: hidden;
         text-align: left;
         margin: 0;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .menu-user-role {
+        color: #55c9ff;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .menu-user-email {
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 12px;
     }
 
     .btn-nav {
         width: 100%;
-        border-radius: 0;
-        background: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        min-height: 46px;
+        padding: 11px 14px;
+        border-radius: 9px;
+        background: transparent;
+        border-bottom: 0;
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.72);
+    }
+
+    .btn-nav::before {
+        width: 18px;
+        font-size: 15px;
+    }
+
+    .btn-nav:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        transform: translateX(2px);
     }
 
     .btn-nav.active {
-        border-left: 4px solid #55D9D9;
+        border-left: 0;
+        background: linear-gradient(135deg, #1477f8, #2253bd);
+        box-shadow: 0 10px 22px rgba(20, 119, 248, 0.24);
+        color: #ffffff;
     }
 
     .btn-salir {
         margin-top: auto;
-        border-top: 2px solid rgba(255, 255, 255, 0.2);
-        color: #ff3a3a;
-        padding: 18px 25px;
-        display: flex;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.78);
+        padding: 14px 8px 0;
         align-items: center;
         gap: 12px;
         text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
     }
 
     /* Contenido principal en movil */
@@ -1775,6 +1971,31 @@ body {
         text-transform: uppercase;
         flex-basis: 35%;
         flex-shrink: 0;
+    }
+
+    table.mobile-cards tr.constancias-sin-historial,
+    table.mobile-cards tr.facturacion-sin-resultados {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    table.mobile-cards tr.constancias-sin-historial td,
+    table.mobile-cards tr.facturacion-sin-resultados td {
+        display: block;
+        width: 100%;
+        padding: 24px 18px !important;
+        border-bottom: 0;
+        color: var(--text-muted);
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.45;
+        text-align: center !important;
+        white-space: normal;
+    }
+
+    table.mobile-cards tr.constancias-sin-historial td::before,
+    table.mobile-cards tr.facturacion-sin-resultados td::before {
+        content: none;
     }
 
     td.acciones-cell {
