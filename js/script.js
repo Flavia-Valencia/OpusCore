@@ -1504,9 +1504,9 @@ function toggleContrasena(inputId, iconoId) {
     }
 }
 
-function inicializarOjoPasswordAdmin() {
-    const input = document.getElementById('edita-password_hash');
-    const iconoImg = document.getElementById('icono-ojo-admin');
+function inicializarOjoPassword(inputId, iconoImgId) {
+    const input = document.getElementById(inputId);
+    const iconoImg = document.getElementById(iconoImgId);
     const iconoSpan = iconoImg?.parentElement;
     if (!input || !iconoImg || !iconoSpan) return;
 
@@ -2010,7 +2010,9 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarFiltrosContenidosEstudiante();
     inicializarModalContenidosEstudiante();
     inicializarTareasEstudiante();
-    inicializarOjoPasswordAdmin();
+    inicializarOjoPassword('edita-password_hash', 'icono-ojo-admin');
+    inicializarOjoPassword('editd-password_hash', 'icono-ojo-docente');
+    inicializarOjoPassword('edit-password_hash', 'icono-ojo-estudiante');
 });
 
 function inicializarFiltrosContenidosEstudiante() {
