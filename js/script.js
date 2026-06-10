@@ -1504,6 +1504,25 @@ function toggleContrasena(inputId, iconoId) {
     }
 }
 
+function inicializarOjoPassword(inputId, iconoImgId) {
+    const input = document.getElementById(inputId);
+    const iconoImg = document.getElementById(iconoImgId);
+    const iconoSpan = iconoImg?.parentElement;
+    if (!input || !iconoImg || !iconoSpan) return;
+
+    const actualizarOjo = () => {
+        const tieneTexto = input.value.trim() !== '';
+        iconoSpan.style.display = tieneTexto ? 'flex' : 'none';
+        if (!tieneTexto) {
+            input.style.webkitTextSecurity = 'disc';
+            iconoImg.src = 'img/ojo-cerrado.svg';
+        }
+    };
+
+    input.addEventListener('input', actualizarOjo);
+    actualizarOjo();
+}
+
 // Muestra u oculta el ícono del ojo según si hay texto escrito en el campo contraseña
 const inputContrasena = document.getElementById("contrasena");
 const spanOjo = document.querySelector(".ver-contrasena");
@@ -1991,6 +2010,9 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarFiltrosContenidosEstudiante();
     inicializarModalContenidosEstudiante();
     inicializarTareasEstudiante();
+    inicializarOjoPassword('edita-password_hash', 'icono-ojo-admin');
+    inicializarOjoPassword('editd-password_hash', 'icono-ojo-docente');
+    inicializarOjoPassword('edit-password_hash', 'icono-ojo-estudiante');
 });
 
 function inicializarFiltrosContenidosEstudiante() {

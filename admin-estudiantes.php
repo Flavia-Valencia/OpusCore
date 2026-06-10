@@ -129,14 +129,15 @@ if(!isset($_SESSION["usuario"])){
                     <div class="modal-campo">
                         <label>Contraseña</label>
                         <div class="input-password">
-                            <input type="text" name="password_hash" id="edit-password_hash" placeholder="Dejar vacío si no cambiará la contraseña"
+                            <input type="text" name="password_hash" id="edit-password_hash"
                                 autocomplete="off"
                                 style="-webkit-text-security: disc;"
                                 data-modal="true">
-                            <span class="ver-contrasena-estudiante" onclick="toggleContrasena('edit-password_hash', 'icono-ojo-estudiante')">
+                            <span class="ver-contrasena-estudiante" style="display:none;" onclick="toggleContrasena('edit-password_hash', 'icono-ojo-estudiante')">
                                 <img id="icono-ojo-estudiante" src="img/ojo-cerrado.svg" width="20" height="20">
                             </span>
                         </div>
+                        <small class="input-note">Dejar vacío si no se cambiará la contraseña</small>
                     </div>
 
                      <div class="modal-campo" style="display: none;"><label>Estado</label>

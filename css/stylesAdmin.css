@@ -942,6 +942,14 @@ body {
     padding-right: 42px;
 }
 
+.input-password .input-note {
+    display: block;
+    margin-top: 8px;
+    color: #657488;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
 .ver-contrasena-docente,
 .ver-contrasena-estudiante,
 .ver-contrasena-admin {
