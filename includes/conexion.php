@@ -19,6 +19,6 @@ $conexion->query("
     SET c.estado = 0
     WHERE p.fechaFinCiclo < CURDATE()
       AND c.estado = 1
-");
-
+ ");
+ 
 ?>

@@ -2091,24 +2091,31 @@ body {
   }
 
   .sidebar-logout {
-    display: flex;
+    display: flex !important;
   }
 
   .sidebar-logo {
     display: flex;
     align-items: center;
     gap: 2px;
+    flex-wrap: wrap;
     width: 100%;
   }
 
-  .menu-user {
+  .logo-text-sidebar {
+    display: block;
     flex: 1;
+    min-width: 0;
+  }
+
+  .menu-user {
     display: grid;
     grid-template-columns: 42px minmax(0, 1fr);
     align-items: center;
-    width: auto;
+    width: 100%;
     min-width: 0;
     padding: 12px;
+    margin-top: 10px;
     text-align: left;
     color: white;
     box-sizing: border-box;
@@ -2131,9 +2138,7 @@ body {
   }
 
   .user-profile {
-    display: flex;
-    max-width: 178px;
-    padding: 7px 10px;
+    display: none;
   }
 
   .content {
@@ -2152,10 +2157,6 @@ body {
 
   #sidebar-toggle:checked~.overlay {
     display: block;
-  }
-
-  .logo-text-sidebar {
-    display: none;
   }
 
   .banner {

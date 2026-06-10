@@ -52,14 +52,14 @@ try {
         $stmt->close();
     }
 
-    $uploadDir = __DIR__ . '/../uploads/sesiones/';
+    $uploadDir = __DIR__ . '/uploads/sesiones/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
 
     $archivosSubidos = $_FILES['archivos'] ?? null;
     if ($archivosSubidos && is_array($archivosSubidos['name'])) {
-        $permitidos = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'zip', 'png', 'jpg', 'jpeg'];
+        $permitidos = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'zip', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'mp4', 'webm', 'ogg', 'mov'];
         $stmtArch = $conexion->prepare("
             INSERT INTO sesionArchivos (idSesion, nombreArchivo, rutaArchivo, tipo)
             VALUES (?, ?, ?, 'Archivo')

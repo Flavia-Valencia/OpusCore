@@ -35,6 +35,32 @@ function tablaExiste($conexion, $tabla) {
     return $stmt->get_result()->num_rows > 0;
 }
 
+function normalizarRutaAdjunto($ruta) {
+    $ruta = trim((string) $ruta);
+    if ($ruta === '' || preg_match('/^https?:\/\//i', $ruta)) {
+        return $ruta;
+    }
+
+    $rutaRelativa = ltrim(str_replace('\\', '/', $ruta), '/');
+    $rutaProyecto = __DIR__ . '/' . $rutaRelativa;
+    $rutaHtdocs = dirname(__DIR__) . '/' . $rutaRelativa;
+
+    if (!file_exists($rutaProyecto) && file_exists($rutaHtdocs)) {
+        return '../' . $rutaRelativa;
+    }
+
+    return $rutaRelativa;
+}
+
+function tipoVistaAdjunto($ruta, $tipo) {
+    $extension = strtolower(pathinfo(parse_url((string) $ruta, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION));
+    if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) return 'imagen';
+    if (in_array($extension, ['mp4', 'webm', 'ogg', 'mov'])) return 'video';
+    if ($extension === 'pdf') return 'pdf';
+    if (strtolower((string) $tipo) === 'enlace') return 'enlace';
+    return 'archivo';
+}
+
 function columnaExiste($conexion, $tabla, $columna) {
     $stmt = $conexion->prepare("
         SELECT 1
@@ -142,32 +168,9 @@ if ($tieneHorarios) {
 $contenidos = [];
 if (tablaExiste($conexion, 'sesionContenido')) {
     $tieneArchivos = tablaExiste($conexion, 'sesionArchivos');
-    $selectArchivo = $tieneArchivos
-        ? ", (
-              SELECT sa.nombreArchivo
-              FROM sesionArchivos sa
-              WHERE sa.idSesion = sc.id
-              ORDER BY sa.fechaSubida DESC, sa.id DESC
-              LIMIT 1
-            ) AS nombre_archivo,
-            (
-              SELECT sa.rutaArchivo
-              FROM sesionArchivos sa
-              WHERE sa.idSesion = sc.id
-              ORDER BY sa.fechaSubida DESC, sa.id DESC
-              LIMIT 1
-            ) AS ruta_archivo,
-            (
-              SELECT sa.tipo
-              FROM sesionArchivos sa
-              WHERE sa.idSesion = sc.id
-              ORDER BY sa.fechaSubida DESC, sa.id DESC
-              LIMIT 1
-            ) AS tipo_archivo"
-        : ", NULL AS nombre_archivo, NULL AS ruta_archivo, NULL AS tipo_archivo";
 
     $stmt = $conexion->prepare("
-        SELECT sc.id, sc.titulo, sc.descripcion, sc.fecha $selectArchivo
+        SELECT sc.id, sc.titulo, sc.descripcion, sc.fecha
         FROM sesionContenido sc
         WHERE sc.idCurso = ? AND sc.estado = 1
         ORDER BY sc.fecha DESC, sc.id DESC
@@ -175,6 +178,42 @@ if (tablaExiste($conexion, 'sesionContenido')) {
     $stmt->bind_param("i", $cursoId);
     $stmt->execute();
     $contenidos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+    foreach ($contenidos as &$contenido) {
+        $contenido['adjuntos'] = [];
+    }
+    unset($contenido);
+
+    if ($tieneArchivos && !empty($contenidos)) {
+        $contenidoIds = array_map('intval', array_column($contenidos, 'id'));
+        $placeholders = implode(',', array_fill(0, count($contenidoIds), '?'));
+        $tiposBind = str_repeat('i', count($contenidoIds));
+        $stmt = $conexion->prepare("
+            SELECT idSesion, nombreArchivo, rutaArchivo, tipo
+            FROM sesionArchivos
+            WHERE idSesion IN ($placeholders)
+            ORDER BY fechaSubida ASC, id ASC
+        ");
+        $stmt->bind_param($tiposBind, ...$contenidoIds);
+        $stmt->execute();
+        $adjuntosRows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        $adjuntosPorSesion = [];
+        foreach ($adjuntosRows as $adjunto) {
+            $rutaAdjunto = normalizarRutaAdjunto($adjunto['rutaArchivo']);
+            $adjuntosPorSesion[(int) $adjunto['idSesion']][] = [
+                'nombre' => $adjunto['nombreArchivo'],
+                'ruta' => $rutaAdjunto,
+                'tipo' => $adjunto['tipo'],
+                'vista' => tipoVistaAdjunto($rutaAdjunto, $adjunto['tipo']),
+            ];
+        }
+
+        foreach ($contenidos as &$contenido) {
+            $contenido['adjuntos'] = $adjuntosPorSesion[(int) $contenido['id']] ?? [];
+        }
+        unset($contenido);
+    }
 }
 ?>
 
@@ -346,10 +385,21 @@ if (tablaExiste($conexion, 'sesionContenido')) {
                         <div class="contenidos-lista" id="contenidosLista">
                             <?php foreach ($contenidos as $index => $contenido): ?>
                                 <?php
-                                    $tipo = strtolower((string) ($contenido['tipo_archivo'] ?? ''));
-                                    $tipoFiltro = $tipo ?: 'sin-material';
-                                    $tipoTexto = $tipo ? ucfirst($tipo) : 'Sin material';
-                                    $ruta = trim((string) ($contenido['ruta_archivo'] ?? ''));
+                                    $adjuntos = $contenido['adjuntos'] ?? [];
+                                    $tiposAdjuntos = array_values(array_unique(array_map(
+                                        fn($adjunto) => strtolower((string) ($adjunto['tipo'] ?? '')),
+                                        $adjuntos
+                                    )));
+                                    $tiposAdjuntos = array_filter($tiposAdjuntos);
+                                    $tipoFiltro = empty($tiposAdjuntos) ? 'sin-material' : implode(' ', $tiposAdjuntos);
+                                    $tipoTexto = empty($tiposAdjuntos)
+                                        ? 'Sin material'
+                                        : (count($tiposAdjuntos) > 1 ? 'Mixto' : ucfirst($tiposAdjuntos[0]));
+                                    $adjuntosJson = json_encode($adjuntos, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+                                    $primerAdjunto = $adjuntos[0]['nombre'] ?? '';
+                                    $resumenAdjuntos = count($adjuntos) > 1
+                                        ? count($adjuntos) . ' materiales disponibles'
+                                        : $primerAdjunto;
                                 ?>
                                 <article
                                     class="contenido-publicado-item"
@@ -363,17 +413,23 @@ if (tablaExiste($conexion, 'sesionContenido')) {
                                     <div class="contenido-publicado-body">
                                         <strong><?= e($contenido['titulo']) ?></strong>
                                         <p><?= e($contenido['descripcion']) ?></p>
-                                        <?php if (!empty($contenido['nombre_archivo'])): ?>
-                                            <small><?= e($contenido['nombre_archivo']) ?></small>
+                                        <?php if (!empty($resumenAdjuntos)): ?>
+                                            <small><?= e($resumenAdjuntos) ?></small>
                                         <?php endif; ?>
                                     </div>
                                     <time>Publicado<br><?= fechaCorta($contenido['fecha']) ?></time>
                                     <span class="contenido-tipo"><?= e($tipoTexto) ?></span>
-                                    <?php if ($ruta): ?>
-                                        <a class="contenido-ver" href="<?= e($ruta) ?>" target="_blank" rel="noopener">
+                                    <?php if (!empty($adjuntos)): ?>
+                                        <button
+                                            type="button"
+                                            class="contenido-ver js-ver-contenido"
+                                            data-title="<?= e($contenido['titulo']) ?>"
+                                            data-date="<?= e(fechaCorta($contenido['fecha'])) ?>"
+                                            data-adjuntos="<?= e($adjuntosJson) ?>"
+                                        >
                                             Ver
                                             <i class="fas fa-chevron-right"></i>
-                                        </a>
+                                        </button>
                                     <?php else: ?>
                                         <span class="contenido-ver disabled">Ver</span>
                                     <?php endif; ?>
@@ -384,6 +440,21 @@ if (tablaExiste($conexion, 'sesionContenido')) {
                     <?php endif; ?>
                 </section>
             </main>
+        </div>
+    </div>
+
+    <div class="modal-overlay contenido-recursos-modal" id="modalContenidoRecursos" aria-hidden="true">
+        <div class="modal-contenido contenido-recursos-box" role="dialog" aria-modal="true" aria-labelledby="contenidoRecursosTitulo">
+            <button class="modal-cerrar js-cerrar-contenido-recursos" type="button" aria-label="Cerrar modal">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="modal-titulo" id="contenidoRecursosTitulo"><i class="fas fa-folder-open"></i> Materiales publicados</h2>
+            <div class="entrega-tarea-resumen">
+                <strong id="contenidoRecursosNombre">Contenido seleccionado</strong>
+                <span id="contenidoRecursosMeta">Publicado</span>
+                <small>Archivos y enlaces compartidos por el docente.</small>
+            </div>
+            <div class="contenido-recursos-lista" id="contenidoRecursosLista"></div>
         </div>
     </div>
 
