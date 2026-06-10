@@ -17,6 +17,17 @@ try {
         echo json_encode(['success' => false, 'error' => 'fechas']);
         exit();
     }
+
+     // Validar que la nueva fecha fin de ciclo no sea menor que la de sus cursos activos
+    if ($fechaFinCiclo !== null) {
+        $sql_cursos_activos = "SELECT COUNT(*) AS total FROM cursos WHERE idPeriodo = '$id' AND estado = 1 AND fechaFin > '$fechaFinCiclo'";
+        $res_cursos_activos = mysqli_query($conexion, $sql_cursos_activos);
+        $row_cursos_activos = mysqli_fetch_assoc($res_cursos_activos);
+        if ($row_cursos_activos['total'] > 0) {
+            echo json_encode(['success' => false, 'error' => 'fecha_fin_ciclo_curso']);
+            exit();
+        }
+    }
     // Evita duplicar nombres de periodos, excluyendo el registro actual.
     $sql_verificar = "SELECT id FROM PeriodoInscripcion 
                       WHERE LOWER(nombre) = LOWER('$nombre') 

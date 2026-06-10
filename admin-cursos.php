@@ -107,14 +107,20 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
             <button class="btn-nuevo">+ Nuevo Curso</button>
         </div>
 
-        <!-- Mensajes enviados por crear-curso.php despues de validar datos -->
-       <?php if(isset($_GET['error'])): ?>
+        <!-- Mensajes enviados por crear-curso.php y editar-curso.php despues de validar datos -->
+        <?php if(isset($_GET['error'])): ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         <?php if($_GET['error'] == 'existe'): ?>
             mostrarToastPremium('El curso ya existe. Intenta con otro nombre.');
         <?php elseif($_GET['error'] == 'fechas'): ?>
             mostrarToastPremium('La fecha de fin no debe ser menor a la fecha de inicio. Intente con otras fechas');
+        <?php elseif($_GET['error'] == 'limite_docente'): ?>
+            mostrarToastPremium('El docente ya tiene el límite de cursos activos asignados.');
+        <?php elseif($_GET['error'] == 'fecha_fin_ciclo'): ?>
+            mostrarToastPremium('La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo.');
+        <?php elseif($_GET['error'] == 'general'): ?>
+            mostrarToastPremium('Ocurrió un error al guardar el curso. Verifica los datos e intenta de nuevo.');
         <?php endif; ?>
     });
 </script>
@@ -141,7 +147,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
             <i class="fas fa-book"></i> Nuevo Curso
         </h2>
 
-        <form method="POST" action="crear-curso.php">
+        <form id="formNuevoCurso" method="POST" action="crear-curso.php">
 
             <h3 class="modal-subtitulo">Detalles del curso</h3>
             <div class="modal-grid">
@@ -251,7 +257,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
             <i class="fas fa-edit"></i> Editar Curso
         </h2>
 
-        <form method="POST" action="editar-curso.php">
+        <form id="formEditarCurso" method="POST" action="editar-curso.php">
 
             <!-- Identificador del curso que se esta editando -->
             <input type="hidden" name="id" id="edit-id-curso">
