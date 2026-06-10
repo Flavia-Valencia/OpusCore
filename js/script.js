@@ -1942,6 +1942,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     inicializarFiltrosContenidosEstudiante();
+    inicializarModalContenidosEstudiante();
     inicializarTareasEstudiante();
 });
 
@@ -1971,7 +1972,8 @@ function inicializarFiltrosContenidosEstudiante() {
         let visibles = 0;
         items.forEach(item => {
             const coincideTexto = !termino || (item.dataset.title || '').includes(termino);
-            const coincideTipo = !tipo || item.dataset.type === tipo;
+            const tiposItem = (item.dataset.type || '').split(/\s+/);
+            const coincideTipo = !tipo || tiposItem.includes(tipo);
             const visible = coincideTexto && coincideTipo;
             item.classList.toggle('is-hidden', !visible);
             if (visible) visibles++;
@@ -1983,6 +1985,191 @@ function inicializarFiltrosContenidosEstudiante() {
     buscador?.addEventListener('input', aplicarFiltros);
     tipoFiltro?.addEventListener('change', aplicarFiltros);
     ordenFiltro?.addEventListener('change', aplicarFiltros);
+}
+
+function inicializarModalContenidosEstudiante() {
+    // Inicializa el modal que muestra los recursos/adjuntos de un contenido
+    const modal = document.getElementById('modalContenidoRecursos');
+    if (!modal) return;
+
+    const botones = document.querySelectorAll('.js-ver-contenido');
+    const cerrarBtns = modal.querySelectorAll('.js-cerrar-contenido-recursos');
+    const titulo = document.getElementById('contenidoRecursosNombre');
+    const meta = document.getElementById('contenidoRecursosMeta');
+    const lista = document.getElementById('contenidoRecursosLista');
+
+    function escaparHtml(valor) {
+        // Escapa contenido para evitar inyección de HTML
+        const div = document.createElement('div');
+        div.textContent = valor || '';
+        return div.innerHTML;
+    }
+
+    function iconoPorTipo(tipo) {
+        // Selecciona icono según tipo: enlace -> link, otro -> archivo genérico
+        return String(tipo).toLowerCase() === 'enlace' ? 'fa-link' : 'fa-file-lines';
+    }
+
+    function obtenerExtension(ruta) {
+        // Extrae la extensión del archivo de una URL/ruta (sin query ni fragment)
+        const limpia = String(ruta || '').split('?')[0].split('#')[0];
+        const partes = limpia.split('.');
+        return partes.length > 1 ? partes.pop().toLowerCase() : '';
+    }
+
+    function obtenerEmbedYoutube(ruta) {
+        // Detecta ID de YouTube en varias formas (youtu.be, watch, shorts, embed)
+        try {
+            const url = new URL(ruta, window.location.href);
+            const host = url.hostname.replace(/^www\./, '');
+            let id = '';
+
+            if (host === 'youtu.be') {
+                id = url.pathname.split('/').filter(Boolean)[0] || '';
+            } else if (host.endsWith('youtube.com')) {
+                if (url.pathname.startsWith('/watch')) id = url.searchParams.get('v') || '';
+                if (url.pathname.startsWith('/shorts/')) id = url.pathname.split('/')[2] || '';
+                if (url.pathname.startsWith('/embed/')) id = url.pathname.split('/')[2] || '';
+            }
+
+            return id ? `https://www.youtube.com/embed/${encodeURIComponent(id)}` : '';
+        } catch (error) {
+            // Si la URL no es válida, devuelve cadena vacía
+            return '';
+        }
+    }
+
+    function obtenerEmbedVimeo(ruta) {
+        // Extrae ID de Vimeo (solo si el host corresponde a vimeo.com)
+        try {
+            const url = new URL(ruta, window.location.href);
+            const host = url.hostname.replace(/^www\./, '');
+            if (!host.endsWith('vimeo.com')) return '';
+
+            const id = url.pathname.split('/').filter(Boolean).find(parte => /^\d+$/.test(parte));
+            return id ? `https://player.vimeo.com/video/${encodeURIComponent(id)}` : '';
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function esUrlHttp(ruta) {
+        // Determina si la ruta es una URL absoluta HTTP/HTTPS
+        return /^https?:\/\//i.test(String(ruta || ''));
+    }
+
+    function crearPreviewRecurso(adjunto) {
+        // Genera el HTML de vista previa según el tipo/extension/ruta del adjunto
+        const ruta = adjunto.ruta || '#';
+        const vista = String(adjunto.vista || '').toLowerCase();
+        const extension = obtenerExtension(ruta);
+        const youtube = obtenerEmbedYoutube(ruta);
+        const vimeo = obtenerEmbedVimeo(ruta);
+
+        // Imagenes: muestra etiqueta <img>
+        if (vista === 'imagen') {
+            return `<div class="contenido-recurso-preview"><img src="${escaparHtml(ruta)}" alt="${escaparHtml(adjunto.nombre || 'Imagen del contenido')}"></div>`;
+        }
+
+        // Videos locales (mp4/webm/ogg/mov) y etiqueta <video>
+        if (vista === 'video' || ['mp4', 'webm', 'ogg', 'mov'].includes(extension)) {
+            return `
+                <div class="contenido-recurso-preview">
+                    <video src="${escaparHtml(ruta)}" controls preload="metadata"></video>
+                </div>
+            `;
+        }
+
+        // Embeds de YouTube o Vimeo
+        if (youtube || vimeo) {
+            return `
+                <div class="contenido-recurso-preview contenido-recurso-preview-video">
+                    <iframe src="${escaparHtml(youtube || vimeo)}" title="${escaparHtml(adjunto.nombre || 'Video')}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            `;
+        }
+
+        // PDFs embebidos
+        if (vista === 'pdf' || extension === 'pdf') {
+            return `<div class="contenido-recurso-preview"><iframe src="${escaparHtml(ruta)}" title="${escaparHtml(adjunto.nombre || 'Documento PDF')}"></iframe></div>`;
+        }
+
+        // Enlaces externos (si son http/https) se muestran en un iframe
+        if (String(adjunto.tipo || '').toLowerCase() === 'enlace' && esUrlHttp(ruta)) {
+            return `
+                <div class="contenido-recurso-preview contenido-recurso-preview-web">
+                    <iframe src="${escaparHtml(ruta)}" title="${escaparHtml(adjunto.nombre || 'Enlace publicado')}"></iframe>
+                </div>
+            `;
+        }
+
+        // Si no se puede generar preview, devuelve cadena vacía
+        return '';
+    }
+
+    function abrirModalContenido(boton) {
+        // Abre el modal y construye la lista de adjuntos a partir del dataset del botón
+        let adjuntos = [];
+        try {
+            adjuntos = JSON.parse(boton.dataset.adjuntos || '[]');
+        } catch (error) {
+            adjuntos = [];
+        }
+
+        // Actualiza título y metadatos del modal (si existen los elementos)
+        if (titulo) titulo.textContent = boton.dataset.title || 'Contenido seleccionado';
+        if (meta) meta.textContent = `Publicado: ${boton.dataset.date || 'Sin fecha'}`;
+
+        // Construye el HTML de la lista: tarjeta por cada adjunto o mensaje vacío
+        if (lista) {
+            lista.innerHTML = adjuntos.length
+                ? adjuntos.map((adjunto, index) => {
+                    const tipo = adjunto.tipo || 'Archivo';
+                    const ruta = adjunto.ruta || '#';
+                    const nombre = adjunto.nombre || `Material ${index + 1}`;
+                    const preview = crearPreviewRecurso(adjunto);
+                    return `
+                        <article class="contenido-recurso-card">
+                            <div class="contenido-recurso-item">
+                                <span class="contenido-recurso-icon">
+                                    <i class="fas ${iconoPorTipo(tipo)}"></i>
+                                </span>
+                                <span class="contenido-recurso-info">
+                                    <strong>${escaparHtml(nombre)}</strong>
+                                    <small>${escaparHtml(tipo)}</small>
+                                </span>
+                                <a class="contenido-recurso-link" href="${escaparHtml(ruta)}" target="_blank" rel="noopener" aria-label="Abrir recurso en una pestaña nueva">
+                                    <i class="fas fa-arrow-up-right-from-square"></i>
+                                </a>
+                            </div>
+                            ${preview}
+                        </article>
+                    `;
+                }).join('')
+                : '<div class="detalle-empty">Este contenido no tiene materiales disponibles.</div>';
+        }
+
+        // Muestra el modal y bloquea el scroll del body
+        modal.classList.add('activo');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModalContenido() {
+        // Cierra y limpia el modal, restaurando el scroll
+        modal.classList.remove('activo');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (lista) lista.innerHTML = '';
+    }
+
+    botones.forEach(boton => {
+        // Asigna evento de apertura a cada botón de ver contenido
+        boton.addEventListener('click', () => abrirModalContenido(boton));
+    });
+
+    // Asigna evento de cierre a los botones del modal
+    cerrarBtns.forEach(btn => btn.addEventListener('click', cerrarModalContenido));
 }
 
 function inicializarTareasEstudiante() {
