@@ -754,7 +754,7 @@ DELIMITER ;
 -- Insertar datos en las tablas de usuarios, administradores, estudiantes y docentes.
 -- 
 INSERT INTO `usuarios` (`nombre`, `apellido`, `correo`, `password_hash`, `estado`, `rol_id`) VALUES 
-('Sabrina', 'Saravia', 'sabrina@gmail.com', 'SabriAdmin-12', 1, 1);
+('Sabrina', 'Saravia', 'sabrina@gmail.com', '$2a$12$CeWe7tBHRFLrYH9ceOIHne.zpLMqvzLBiQQMnFwF5.SvWh6wawbBO', 1, 1);
 
 INSERT INTO `administradores` (`usuario_id`, `fecha_nacimiento`, `genero`, `salario`, `telefono`, `direccion`) VALUES
 (1, '2001-01-01', 'F', 500.00, '1234-5678', 'San Miguel');

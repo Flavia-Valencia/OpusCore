@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
         
-        if ($contrasena === $usuario['password_hash']) {
+        if (password_verify($contrasena, $usuario['password_hash']) || $contrasena === $usuario['password_hash']) {
             $_SESSION["usuario"] = $usuario["correo"];
             $_SESSION["rol_id"] = $usuario["rol_id"];
             $_SESSION["nombre"] = $usuario["nombre"];

@@ -38,7 +38,7 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
         document.getElementById('editd-telefono').value = this.dataset.telefono;
         document.getElementById('editd-direccion').value = this.dataset.direccion;
         document.getElementById('editd-correo').value = this.dataset.correo;
-        document.getElementById('editd-password_hash').value = this.dataset.password_hash;
+        document.getElementById('editd-password_hash').value = '';
 
         // Convierte el valor numérico de estado a texto para que coincida con el select
         const estado = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
@@ -245,7 +245,7 @@ document.querySelectorAll('.abrir-modal-estudiante').forEach(btn => {
         document.getElementById('edit-telefono').value = this.dataset.telefono;
         document.getElementById('edit-direccion').value = this.dataset.direccion;
         document.getElementById('edit-correo').value = this.dataset.correo;
-        document.getElementById('edit-password_hash').value = this.dataset.password_hash;
+        document.getElementById('edit-password_hash').value = '';
 
         // Convierte el valor numérico de estado a texto para que coincida con el select
         const estado = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
@@ -306,7 +306,7 @@ if (formEditarEstudiante) {
         const correo = document.getElementById('edit-correo').value.trim();
         const password = document.getElementById('edit-password_hash').value.trim();
 
-        if (!nombre || !apellido || !telefono || !fechaNac || !direccion || !correo || !password) {
+        if (!nombre || !apellido || !telefono || !fechaNac || !direccion || !correo) {
             e.preventDefault();
             mostrarToastPremium('Complete todos los campos');
             return;
@@ -441,7 +441,7 @@ if (formEditarDocente) {
         const correo = document.getElementById('editd-correo').value.trim();
         const password = document.getElementById('editd-password_hash').value.trim();
 
-        if (!nombre || !apellido || !especialidad || !fechaNac || !salario || !telefono || !direccion || !correo || !password) {
+        if (!nombre || !apellido || !especialidad || !fechaNac || !salario || !telefono || !direccion || !correo) {
             e.preventDefault();
             mostrarToastPremium('Complete todos los campos');
             return;
@@ -582,7 +582,7 @@ document.querySelectorAll('.abrir-modal-admin').forEach(btn => {
         document.getElementById('edita-telefono').value = this.dataset.telefono;
         document.getElementById('edita-direccion').value = this.dataset.direccion;
         document.getElementById('edita-correo').value = this.dataset.correo;
-        document.getElementById('edita-password_hash').value = this.dataset.password_hash;
+        document.getElementById('edita-password_hash').value = '';
 
         // Convierte el valor numérico de estado a texto para que coincida con el select
         const estado = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
@@ -640,7 +640,7 @@ if (formEditarAdministrador) {
         const correo = document.getElementById('edita-correo').value.trim();
         const password = document.getElementById('edita-password_hash').value.trim();
 
-        if (!nombre || !apellido || !fechaNac || !salario || !telefono || !direccion || !correo || !password) {
+        if (!nombre || !apellido || !fechaNac || !salario || !telefono || !direccion || !correo) {
             e.preventDefault();
             mostrarToastPremium('Complete todos los campos');
             return;
@@ -1440,9 +1440,20 @@ function toggleContrasena(inputId, iconoId) {
     const icono = document.getElementById(iconoId);
 
     if (input && icono) {
-        const viendo = input.type === "text";
-        input.type = viendo ? "password" : "text";
-        icono.src = `img/ojo-${viendo ? "cerrado" : "abierto"}.svg`;
+        if (input.type === 'password') {
+            // Login: alterna type
+            input.type = 'text';
+            icono.src = 'img/ojo-abierto.svg';
+        } else if (input.dataset.modal) {
+            // Modales: alterna webkit-text-security
+            const viendo = input.style.webkitTextSecurity === 'none';
+            input.style.webkitTextSecurity = viendo ? 'disc' : 'none';
+            icono.src = `img/ojo-${viendo ? "cerrado" : "abierto"}.svg`;
+        } else {
+            // Login mostrando (type text sin data-modal)
+            input.type = 'password';
+            icono.src = 'img/ojo-cerrado.svg';
+        }
     }
 }
 

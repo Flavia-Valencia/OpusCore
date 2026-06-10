@@ -7,11 +7,11 @@ USE db_academiadigital;
 USE db_academiadigital;
 
 INSERT INTO `usuarios` (`nombre`, `apellido`, `correo`, `password_hash`, `estado`, `rol_id`) VALUES
-('Yamileth', 'Valencia', 'yamiiacademia3@gmail.com', 'YamiEstudiante-19', 1, 2),
-('Karla', 'Morales', 'karladocente19@gmail.com', 'KarliDocente_22', 1, 3),
-('Daniel', 'García', 'daniel@gmail.com', 'Daniel123', 1, 2),
-('Yahir', 'Romero', 'yahir@gmail.com', 'Yahir123', 1, 3),
-('Keyri', 'Sanchez', 'keyri@gmail.com', 'keyri123', 1, 3);  
+('Yamileth', 'Valencia', 'yamiiacademia3@gmail.com', '$2y$10$UIrbUik3vmiPeIYtPjMycONkhkmH.jI4uFUmTJJqI9VqA/HkeguLS', 1, 2),
+('Karla', 'Morales', 'karladocente19@gmail.com', '$2y$10$iFjfIyZu5VrAB0aXUV904eSTe.InMx2Ov16URE3xvdZ3iPe1/yZsG', 1, 3),
+('Daniel', 'García', 'daniel@gmail.com', '$2a$12$VCgWK3siryS.awKwkypHceHVAEgBR7jFMh8Da92iUMuiavFiuS23O', 1, 2),
+('Yahir', 'Romero', 'yahir@gmail.com', '$2a$12$a3BYJ7XIZcGmW9ZCuwyljuVge.LDrH/oxMMYlJkVq6TIjN6mKl39C', 1, 3),
+('Keyri', 'Sanchez', 'keyri@gmail.com', '$2a$12$iH4Eh/5OsseaTOWo01gIDOkn8QxKqf19QMiql9A1L4Fvhsll8MMGS', 1, 3);  
 
 INSERT INTO `estudiantes` (`usuario_id`, `fecha_nacimiento`, `genero`, `telefono`, `direccion`) VALUES
 (2, '2001-01-01', 'F', '5678-1234', 'Usulután'), (4, '2001-01-01', 'M', '3456-7891', 'Usulután');
