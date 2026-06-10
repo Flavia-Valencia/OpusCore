@@ -1,3 +1,4 @@
+use db_academiadigital;
 -- se guardará el historial de constancias generadas para estudiantes y docentes, con un código único para cada constancia, 
 -- el tipo de constancia, el usuario solicitante, el usuario que generó la constancia, la ruta del PDF generado y la fecha de generación.
 CREATE TABLE `constancias` (

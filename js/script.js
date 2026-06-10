@@ -976,7 +976,7 @@ document.addEventListener('click', function (e) {
         : `¿Activar ${tipo}?`;
     if (isActivo) {
         if (tipo === 'curso') {
-            mText.innerText = `El curso pasará a Inactivo. Se eliminará el docente y los horarios asignados para liberar los cupos.`;
+            mText.innerText = `El curso pasará a Inactivo.`;
         } else {
             mText.innerText = `Pasará a Inactivo.`;
         }
@@ -1231,6 +1231,52 @@ if (modalEditarCurso) {
     });
 }
 
+// --- VALIDACIÓN MODAL NUEVO CURSO ---
+const formNuevoCurso = document.getElementById('formNuevoCurso');
+if (formNuevoCurso) {
+    formNuevoCurso.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        try {
+            const res = await fetch('crear-curso.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalNuevoCurso();
+                mostrarToastPremium('Curso creado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
+        }
+    });
+}
+
+// --- VALIDACIÓN MODAL EDITAR CURSO ---
+const formEditarCurso = document.getElementById('formEditarCurso');
+if (formEditarCurso) {
+    formEditarCurso.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        try {
+            const res = await fetch('editar-curso.php', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                cerrarModalCurso();
+                mostrarToastPremium('Curso actualizado exitosamente', 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión', 'error');
+        }
+    });
+}
+
 
 // --- MODAL PERÍODO DE INSCRIPCIÓN ---
 
@@ -1348,6 +1394,9 @@ if (formPeriodo) {
                 } else if (data.error === 'traslape') {
                     mostrarToastPremium('Las fechas ingresadas coinciden con otro período existente. Intenta con otras fechas');
 
+                } else if (data.error === 'fecha_fin_ciclo_curso') {
+                    mostrarToastPremium('No puedes reducir la fecha de fin del ciclo porque hay cursos activos que finalizan después de esa fecha.');
+
                 } else {
                     console.error(data);
                     mostrarToastPremium('Error al guardar');
@@ -1359,8 +1408,6 @@ if (formPeriodo) {
             });
     });
 }
-
-
 // Cierra al hacer clic fuera del modal
 const modalPeriodo = document.getElementById('modalPeriodo');
 if (modalPeriodo) {

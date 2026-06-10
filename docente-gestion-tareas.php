@@ -315,11 +315,11 @@ $stmtSes->close();
                                             <td data-label="Acciones">
                                                 <div class="contenido-acciones">
                                                     <button type="button"
-                                                        class="contenido-icon-btn editar-tarea <?= $vencida ? 'is-disabled' : '' ?>"
-                                                        title="<?= $vencida ? 'No se puede editar, fecha vencida' : 'Editar tarea' ?>"
-                                                        <?= $vencida ? 'disabled' : '' ?>>
+                                                        class="contenido-icon-btn editar-tarea"
+                                                        title="Editar tarea">
                                                         <i class="fas fa-pen"></i>
                                                     </button>
+                                                    
                                                 </div>
                                             </td>
                                         </tr>

@@ -60,7 +60,6 @@ $stmt = $conexion->prepare("
     INNER JOIN docentes d         ON c.idDocente = d.id
     WHERE d.usuario_id = ?
       AND c.fechaFin < CURDATE()
-      AND c.estado = 1
     ORDER BY c.fechaFin DESC, c.nombre ASC
 ");
 $stmt->bind_param("ii", $idDocente, $idUsuario);
@@ -86,7 +85,7 @@ $alertaTipo = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
     $idCurso = (int) $_POST['idCurso'];
 
-    /* Verificar que el curso pertenece al docente y ya finalizó */
+    /* Verificar que el curso pertenece al docente y ya finalizó (sin importar estado activo/inactivo) */
     $chk = $conexion->prepare("
     SELECT c.id
     FROM cursos c
@@ -94,7 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
     WHERE c.id = ?
       AND d.usuario_id = ?
       AND c.fechaFin < CURDATE()
-      AND c.estado = 1
     LIMIT 1
     ");
     $chk->bind_param("ii", $idCurso, $idUsuario);
@@ -155,7 +153,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['idCurso'])) {
         INNER JOIN docentes d ON c.idDocente = d.id
         WHERE d.usuario_id = ?
           AND c.fechaFin < CURDATE()
-          AND c.estado = 1
         ORDER BY c.fechaFin DESC, c.nombre ASC
     ");
     $stmt2->bind_param("ii", $idDocente, $idUsuario);
