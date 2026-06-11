@@ -38,12 +38,22 @@ $stmt = $conexion->prepare("
         p.estado AS estado_pago,
         p.fechaPago,
         p.monto,
-        mp.nombre AS metodo_pago
+        mp.nombre AS metodo_pago,
+        f.numeroFactura,
+        GROUP_CONCAT(DISTINCT c.nombre SEPARATOR ', ') AS curso,
+        pi.nombre AS periodo
     FROM pagos p
     INNER JOIN MetodosPago mp ON p.idMetodoPago = mp.id
+    LEFT JOIN facturas f ON f.idPago = p.id
+    LEFT JOIN detalle_facturas df ON df.idFactura = f.id AND df.tipoOrigen = 'Inscripcion'
+    LEFT JOIN cursos c ON c.id = df.idOrigen
+    LEFT JOIN inscripciones i ON i.idEstudiante = p.idEstudiante AND i.idCurso = c.id
+    LEFT JOIN PeriodoInscripcion pi ON i.idPeriodo = pi.id
     WHERE p.idEstudiante = ? AND p.estado = 'Completado'
+    GROUP BY p.id
     ORDER BY p.fechaPago DESC
 ");
+
 $stmt->bind_param('i', $idEstudiante);
 $stmt->execute();
 $pagosRealizados = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -203,8 +213,8 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                                     ?>
                                     <tr>
                                         <td data-label="Código"><?= htmlspecialchars($codigo) ?></td>
-                                        <td data-label="Curso">"Espera Factura Electronica"</td> <!-- Placeholder hasta enlazar el detalle de factura electronica. -->
-                                        <td data-label="Periodo">Espera Factura Electronica</td> <!-- Placeholder hasta enlazar el periodo desde factura electronica. -->
+                                        <td data-label="Curso"><?= htmlspecialchars($pago['curso'] ?? '—') ?></td>
+                                        <td data-label="Periodo"><?= htmlspecialchars($pago['periodo'] ?? '—') ?></td>
                                         <td data-label="Monto">$<?= number_format((float) $pago['monto'], 2) ?></td>
                                         <td data-label="Método"><?= htmlspecialchars($pago['metodo_pago'] ?: 'PayPal') ?></td>
                                         <td data-label="Fecha"><?= htmlspecialchars($fechaPago) ?></td>
