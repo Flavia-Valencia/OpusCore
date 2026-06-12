@@ -41,7 +41,7 @@ if (!$ok || !$finCiclo) {
 
 $fin = new DateTime($finCiclo);
 $inicio = clone $fin;
-$inicio->modify('-15 days');
+$inicio->modify('-30 days');
 
 echo json_encode([
     'success' => true,

@@ -4715,6 +4715,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (inputPeriodo) inputPeriodo.value = btn.dataset.idperiodo || '';
         if (inputInicio) inputInicio.value = btn.dataset.plazoInicio || '';
         if (inputFin) inputFin.value = btn.dataset.plazoFin || '';
+        modalPlazo.dataset.fechaFinCiclo = btn.dataset.fechaFinCiclo || '';
 
         abrirModal();
     });
@@ -4740,6 +4741,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 inputInicio.max = data.fin;
                 inputFin.max = data.fin;
+
+                modalPlazo.dataset.fechaFinCiclo = data.fin;
 
             } catch (err) {
                 console.error(err);
@@ -4770,12 +4773,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const mesFin = fin.substring(0, 7);
-            const mesInicio = inicio.substring(0, 7);
+            const fechaFinCiclo = modalPlazo.dataset.fechaFinCiclo;
+            if (fechaFinCiclo) {
+                const dInicio = new Date(inicio + 'T12:00:00');
+                const dFinCiclo = new Date(fechaFinCiclo + 'T12:00:00');
+                const diffTime = dFinCiclo - dInicio;
+                const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-            if (mesInicio !== mesFin) {
-                mostrarToastPremium('El inicio del plazo debe ser dentro del mes de cierre del período');
-                return;
+                if (diffDays > 30) {
+                    mostrarToastPremium('El inicio del plazo no puede ser más de 30 días antes del fin del ciclo (' + fechaFinCiclo + ')');
+                    return;
+                }
+                if (diffDays < 0) {
+                    mostrarToastPremium('El inicio del plazo no puede ser después del fin del ciclo (' + fechaFinCiclo + ')');
+                    return;
+                }
+
+                const dFin = new Date(fin + 'T12:00:00');
+                if (dFin > dFinCiclo) {
+                    mostrarToastPremium('El fin del plazo no puede ser después del fin del ciclo (' + fechaFinCiclo + ')');
+                    return;
+                }
             }
 
             const body = new URLSearchParams({
