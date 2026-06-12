@@ -16,6 +16,11 @@ $estado = 1;  // Los docentes nuevos se crean activos por defecto.
 
 header('Content-Type: application/json');
 
+if (!preg_match('/^[267][0-9]{3}-?[0-9]{4}$/', $telefono)) {
+    echo json_encode(['error' => true, 'mensaje' => 'Número validado con un tipo de insertacion con número salvadoreño']);
+    exit();
+}
+
 // Valida edad minima y evita fechas de nacimiento fuera del rango aceptado.
 $fechaNac = new DateTime($fecha_nacimiento);
 $hoy      = new DateTime();

@@ -16,6 +16,11 @@ $estadoTexto = $_POST['estado'];
 $estado = ($estadoTexto === 'Activo') ? 1 : 0;    #envía el estado correctamente a la bd, cuando se modifique la bd, lo cambio
 
 header('Content-Type: application/json');
+
+if (!preg_match('/^[267][0-9]{3}-?[0-9]{4}$/', $telefono)) {
+    echo json_encode(['error' => true, 'mensaje' => 'Número validado con un tipo de insertacion con número salvadoreño']);
+    exit();
+}
 # validar correos duplicados excluyendo el del usuario seleccionado.
 $check = "SELECT id FROM usuarios WHERE correo = '$correo' AND id != '$usuario_id'";
 $resultado = mysqli_query($conexion, $check);
