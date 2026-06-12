@@ -15,6 +15,11 @@ $estadoTexto = $_POST['estado'];
 $estado = ($estadoTexto === 'Activo') ? 1 : 0;    // Convierte el estado del formulario al valor numerico de la BD.
 
 header('Content-Type: application/json');
+
+if (!preg_match('/^[267][0-9]{3}-?[0-9]{4}$/', $telefono)) {
+    echo json_encode(['error' => true, 'mensaje' => 'Número validado con un tipo de insertacion con número salvadoreño']);
+    exit();
+}
 // Evita correos duplicados, excluyendo el usuario que se esta editando.
 $check = "SELECT id FROM usuarios WHERE correo = '$correo' AND id != '$usuario_id'";
 $resultado = mysqli_query($conexion, $check);

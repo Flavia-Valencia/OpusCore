@@ -50,7 +50,7 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
 });
 
 // MODULO CONSTANCIAS ADMINISTRATIVAS
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const solicitudesWrap = document.getElementById('constanciasSolicitudes');
     if (!solicitudesWrap) return;
 
@@ -296,7 +296,7 @@ if (modalNuevo) {
 const formEditarEstudiante = document.querySelector('#modalEditar form');
 if (formEditarEstudiante) {
     formEditarEstudiante.addEventListener('submit', async function (e) {
-    e.preventDefault();
+        e.preventDefault();
 
         const nombre = document.getElementById('edit-nombre').value.trim();
         const apellido = document.getElementById('edit-apellido').value.trim();
@@ -310,11 +310,17 @@ if (formEditarEstudiante) {
             e.preventDefault();
             mostrarToastPremium('Complete todos los campos');
             return;
-
         }
-        const hoy      = new Date();
+
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1940-01-01');
+        const minima = new Date('1940-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -343,7 +349,7 @@ if (formEditarEstudiante) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('editar-estudiante.php', { method: 'POST', body: formData });
+            const res = await fetch('editar-estudiante.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -379,9 +385,16 @@ if (formNuevoEstudiante) {
             mostrarToastPremium('Complete todos los campos');
             return;
         }
-        const hoy      = new Date();
+
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1940-01-01');
+        const minima = new Date('1940-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -410,7 +423,7 @@ if (formNuevoEstudiante) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('crear-estudiante.php', { method: 'POST', body: formData });
+            const res = await fetch('crear-estudiante.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -447,9 +460,16 @@ if (formEditarDocente) {
             return;
         }
 
-        const hoy      = new Date();
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1950-01-01');
+        const minima = new Date('1950-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -478,7 +498,7 @@ if (formEditarDocente) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('editar-docente.php', { method: 'POST', body: formData });
+            const res = await fetch('editar-docente.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -515,9 +535,16 @@ if (formNuevoDocente) {
             return;
         }
 
-        const hoy      = new Date();
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1950-01-01');
+        const minima = new Date('1950-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -546,7 +573,7 @@ if (formNuevoDocente) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('crear-docente.php', { method: 'POST', body: formData });
+            const res = await fetch('crear-docente.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -646,9 +673,16 @@ if (formEditarAdministrador) {
             return;
         }
 
-        const hoy      = new Date();
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1950-01-01');
+        const minima = new Date('1950-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -677,7 +711,7 @@ if (formEditarAdministrador) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('editar-administrador.php', { method: 'POST', body: formData });
+            const res = await fetch('editar-administrador.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -713,9 +747,16 @@ if (formNuevoAdministrador) {
             return;
         }
 
-        const hoy      = new Date();
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1950-01-01');
+        const minima = new Date('1950-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -744,7 +785,7 @@ if (formNuevoAdministrador) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('crear-administrador.php', { method: 'POST', body: formData });
+            const res = await fetch('crear-administrador.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -835,7 +876,7 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
             ? this.dataset.prerrequisitos.split(",")
             : [];
 
-            if (document.getElementById('edit-estado-curso')) {
+        if (document.getElementById('edit-estado-curso')) {
             const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
             document.getElementById('edit-estado-curso').value = estadoTexto;
         }
@@ -850,7 +891,7 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
 });
 
 const selectCategoriaNuevo = document.getElementById('nuevo-categoria-curso');
-const selectPreNuevo       = document.getElementById('nuevo-prerrequisitos');
+const selectPreNuevo = document.getElementById('nuevo-prerrequisitos');
 
 if (selectCategoriaNuevo && selectPreNuevo) {
     selectCategoriaNuevo.addEventListener('change', async function () {
@@ -862,7 +903,7 @@ if (selectCategoriaNuevo && selectPreNuevo) {
             return;
         }
 
-        const res    = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}`);
+        const res = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}`);
         const cursos = await res.json();
 
         selectPreNuevo.innerHTML = '<option value="">Ninguno</option>';
@@ -878,11 +919,11 @@ if (selectCategoriaNuevo && selectPreNuevo) {
 }
 
 const selectCategoriaEditar = document.getElementById('edit-categoria-curso');
-const selectPreEditar        = document.getElementById('edit-prerrequisitos');
+const selectPreEditar = document.getElementById('edit-prerrequisitos');
 
 if (selectCategoriaEditar && selectPreEditar) {
     selectCategoriaEditar.addEventListener('change', async function () {
-        const idCategoria   = this.value;
+        const idCategoria = this.value;
         const idCursoActual = document.getElementById('edit-id-curso').value;
 
         if (!idCategoria) {
@@ -891,7 +932,7 @@ if (selectCategoriaEditar && selectPreEditar) {
             return;
         }
 
-        const res    = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}&idCursoActual=${idCursoActual}`);
+        const res = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}&idCursoActual=${idCursoActual}`);
         const cursos = await res.json();
 
         selectPreEditar.innerHTML = '<option value="">Ninguno</option>';
@@ -1852,14 +1893,14 @@ if (btnGuardarHorarios) {
 // -- MODAL INSCRIPCIÓN
 // Lee todos los datos desde data-* del botón (el PHP los inyecta en render time).
 // No requiere fetch adicional: evita una petición extra por cada clic.
-let cursoInscripcionId  = null;
+let cursoInscripcionId = null;
 let btnInscripcionActual = null;
 
 function abrirModalInscripcion(btn) {
-    cursoInscripcionId  = btn.dataset.id;
+    cursoInscripcionId = btn.dataset.id;
     btnInscripcionActual = btn;
 
-    document.getElementById('modalCursoNombre').textContent      = btn.dataset.nombre     || '';
+    document.getElementById('modalCursoNombre').textContent = btn.dataset.nombre || '';
     document.getElementById('modalCursoDescripcion').textContent = btn.dataset.descripcion || '';
 
     const elDocente = document.getElementById('modalCursoDocente');
@@ -1870,10 +1911,10 @@ function abrirModalInscripcion(btn) {
     const elDias = document.getElementById('modalCursoDias');
     if (elDias) elDias.textContent = btn.dataset.dias || '—';
 
-    document.getElementById('modalCursoAula').textContent    = btn.dataset.aula  || 'Sin aula asignada';
-    document.getElementById('modalCursoFecha').textContent   = btn.dataset.fecha || '';
-    document.getElementById('modalCursoCosto').textContent   = btn.dataset.costo || '';
-    document.getElementById('modalCursoCupos').textContent   = btn.dataset.cupos || '';
+    document.getElementById('modalCursoAula').textContent = btn.dataset.aula || 'Sin aula asignada';
+    document.getElementById('modalCursoFecha').textContent = btn.dataset.fecha || '';
+    document.getElementById('modalCursoCosto').textContent = btn.dataset.costo || '';
+    document.getElementById('modalCursoCupos').textContent = btn.dataset.cupos || '';
 
     const modal = document.getElementById('modalInscripcion');
     if (!modal) return;
@@ -2451,7 +2492,7 @@ function inicializarTareasEstudiante() {
                 if (archivo) formData.append('archivos[]', archivo);
             } else {
                 const nombre = item.querySelector('.entrega-enlace-nombre')?.value.trim() || 'Enlace adjunto';
-                const url    = item.querySelector('.entrega-enlace-url')?.value.trim();
+                const url = item.querySelector('.entrega-enlace-url')?.value.trim();
                 if (url) {
                     formData.append('enlace', url);
                     formData.append('nombreEnlace', nombre);
@@ -2476,7 +2517,7 @@ function inicializarTareasEstudiante() {
                 if (tareaActiva) {
                     tareaActiva.dataset.status = 'entregada';
                     const estado = tareaActiva.querySelector('.tarea-estado');
-                    const boton  = tareaActiva.querySelector('.btn-entregar-tarea');
+                    const boton = tareaActiva.querySelector('.btn-entregar-tarea');
                     const intentosBadge = tareaActiva.querySelector('.tarea-intentos');
                     const fechaBadge = tareaActiva.querySelector('.tarea-fecha-entrega');
                     if (estado) { estado.textContent = 'Entregada'; estado.className = 'tarea-estado entregada'; }
@@ -2760,7 +2801,7 @@ function seleccionarCurso(button) {
 
 // Agregar curso a la lista de seleccionados y actualizar totales
 function agregarCursoSeleccionado(id, nombre, costo) {
-    cursosSeleccionados.push({id, nombre, costo});
+    cursosSeleccionados.push({ id, nombre, costo });
     totalCursos++;
     totalCosto += costo;
     actualizarBarraInscripcion(); // Refleja cambios en la barra inferior
@@ -2870,7 +2911,7 @@ function confirmarInscripcion() {
 
 //  Abrir modal de pago con resumen de cursos y total
 // Prepara los datos que necesita el boton de PayPal.
-async function abrirModalPago(){
+async function abrirModalPago() {
     const modal = document.getElementById('modalPago');
     if (!modal) return;
 
@@ -2878,7 +2919,7 @@ async function abrirModalPago(){
     const totalPago = document.getElementById('pago-total');
     const lineaMatricula = document.getElementById('linea-matricula');
 
-        // Consultar si ya pagó matrícula
+    // Consultar si ya pagó matrícula
     const ids = cursosSeleccionados.map(c => parseInt(c.id));
     const res = await fetch('verificar-matricula.php', {
         method: 'POST',
@@ -2964,9 +3005,9 @@ function inicializarPayPal() {
             metodoPagoSDK = normalizarFuentePagoPayPal(paypalData);
             const ids = cursosSeleccionados.map(c => parseInt(c.id));
             const res = await fetch('paypal-create-order.php', {
-                method:  'POST',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ cursos: ids }),
+                body: JSON.stringify({ cursos: ids }),
             });
             const data = await res.json();
             if (data.error) {
@@ -2980,9 +3021,9 @@ function inicializarPayPal() {
         onApprove: async function (data) {
             metodoPagoSDK = normalizarFuentePagoPayPal(data) || metodoPagoSDK;
             const res = await fetch('paypal-capture-order.php', {
-                method:  'POST',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ orderID: data.orderID, metodoPago: metodoPagoSDK }),
+                body: JSON.stringify({ orderID: data.orderID, metodoPago: metodoPagoSDK }),
             });
             const result = await res.json();
 
@@ -2991,7 +3032,7 @@ function inicializarPayPal() {
                 cancelarInscripcion();
                 mostrarToast(
                     '¡Pago completado! Inscrito en ' + result.cursos + ' curso(s). Total: $' + result.totalCursos,
-                     'success'
+                    'success'
                 );
                 setTimeout(() => window.location.reload(), 2500);
             } else {
@@ -3086,65 +3127,65 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // recoger ítems de la tabla
-const filas = document.querySelectorAll('#detalleBody tr');
-const items = [];
-filas.forEach(fila => {
-    const inputs  = fila.querySelectorAll('input');
-    const desc    = inputs[0]?.value.trim();
-    const cantidad = inputs[1]?.value;
-    const precio  = inputs[2]?.value;
-    if (desc && parseFloat(precio) > 0) {
-        items.push({ descripcion: desc, cantidad, precio });
-    }
-});
+            const filas = document.querySelectorAll('#detalleBody tr');
+            const items = [];
+            filas.forEach(fila => {
+                const inputs = fila.querySelectorAll('input');
+                const desc = inputs[0]?.value.trim();
+                const cantidad = inputs[1]?.value;
+                const precio = inputs[2]?.value;
+                if (desc && parseFloat(precio) > 0) {
+                    items.push({ descripcion: desc, cantidad, precio });
+                }
+            });
 
-if (items.length === 0) {
-    mostrarToastPremium('Agrega al menos un ítem con monto válido');
-    return;
-}
+            if (items.length === 0) {
+                mostrarToastPremium('Agrega al menos un ítem con monto válido');
+                return;
+            }
 
-const idDocente    = document.getElementById('factura-docente-id').value;
-const metodoPago   = document.getElementById('factura-metodo').value.trim();
-const noReferencia = document.getElementById('factura-referencia').value.trim();
-const observ       = document.getElementById('factura-observaciones').value.trim();
-const fechaEmis    = document.getElementById('factura-fecha').value;
+            const idDocente = document.getElementById('factura-docente-id').value;
+            const metodoPago = document.getElementById('factura-metodo').value.trim();
+            const noReferencia = document.getElementById('factura-referencia').value.trim();
+            const observ = document.getElementById('factura-observaciones').value.trim();
+            const fechaEmis = document.getElementById('factura-fecha').value;
 
-const fd = new FormData();
-fd.append('idDocente',     idDocente);
-fd.append('metodoPago',    metodoPago);
-fd.append('noReferencia',  noReferencia);
-fd.append('observaciones', observ);
-fd.append('fechaEmision',  fechaEmis);
-items.forEach((it, i) => {
-    fd.append(`items[${i}][descripcion]`, it.descripcion);
-    fd.append(`items[${i}][cantidad]`,    it.cantidad);
-    fd.append(`items[${i}][precio]`,      it.precio);
-});
+            const fd = new FormData();
+            fd.append('idDocente', idDocente);
+            fd.append('metodoPago', metodoPago);
+            fd.append('noReferencia', noReferencia);
+            fd.append('observaciones', observ);
+            fd.append('fechaEmision', fechaEmis);
+            items.forEach((it, i) => {
+                fd.append(`items[${i}][descripcion]`, it.descripcion);
+                fd.append(`items[${i}][cantidad]`, it.cantidad);
+                fd.append(`items[${i}][precio]`, it.precio);
+            });
 
-const btnSubmit = formNuevaFactura.querySelector('button[type="submit"]');
-if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.textContent = 'Generando...'; }
+            const btnSubmit = formNuevaFactura.querySelector('button[type="submit"]');
+            if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.textContent = 'Generando...'; }
 
-fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            cerrarModalFactura();
-            Swal.fire({
-                icon: 'success',
-                title: '¡Factura generada!',
-                html: `<b>${data.numeroFactura}</b><br>Total: $${data.total}<br>${data.mensaje}`,
-            }).then(() => location.reload());
-        } else {
-            mostrarToastPremium(data.error || 'Error al generar la factura');
-        }
-    })
-    .catch(err => mostrarToastPremium('Error de red: ' + err.message))
-    .finally(() => {
-        if (btnSubmit) {
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = '<i class="fas fa-file-circle-plus"></i> Generar factura';
-        }
-    });
+            fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cerrarModalFactura();
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Factura generada!',
+                            html: `<b>${data.numeroFactura}</b><br>Total: $${data.total}<br>${data.mensaje}`,
+                        }).then(() => location.reload());
+                    } else {
+                        mostrarToastPremium(data.error || 'Error al generar la factura');
+                    }
+                })
+                .catch(err => mostrarToastPremium('Error de red: ' + err.message))
+                .finally(() => {
+                    if (btnSubmit) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<i class="fas fa-file-circle-plus"></i> Generar factura';
+                    }
+                });
 
 
         });
@@ -3266,9 +3307,9 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
 
     // Recalcula subtotal de una fila y actualiza el total general
     window.recalcFila = function (id) {
-        const cant   = parseFloat(document.getElementById('cant-'   + id)?.value) || 0;
+        const cant = parseFloat(document.getElementById('cant-' + id)?.value) || 0;
         const precio = parseFloat(document.getElementById('precio-' + id)?.value) || 0;
-        const celda  = document.getElementById('sub-' + id);
+        const celda = document.getElementById('sub-' + id);
         if (celda) celda.textContent = '$' + (cant * precio).toFixed(2);
         recalcTotal();
     };
@@ -3285,7 +3326,7 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
     // Agrega una nueva fila
     window.agregarFila = function () {
         filaId++;
-        const id    = filaId;
+        const id = filaId;
         const tbody = document.getElementById('detalleBody');
         if (!tbody) return;
 
@@ -3377,20 +3418,20 @@ document.addEventListener('DOMContentLoaded', function () {
         campos.id.value = '';
         campos.modalTitulo.textContent = modo === 'editar' ? 'Editar contenido' : 'Nuevo contenido';
 
-        if(modo === 'crear'){
+        if (modo === 'crear') {
             const totalSesiones = tbody.querySelectorAll('tr:not(.contenido-empty)').length;
             const siguienteNumero = totalSesiones + 1;
             campos.sesion.value = `Sesión ${String(siguienteNumero).padStart(2, '0')}`;
         }
 
         if (fila) {
-            campos.id.value        = fila.dataset.id || '';
-            campos.curso.value     = fila.dataset.curso || '';
-            campos.sesion.value    = fila.dataset.sesion || '';
-            campos.titulo.value    = fila.dataset.titulo || '';
+            campos.id.value = fila.dataset.id || '';
+            campos.curso.value = fila.dataset.curso || '';
+            campos.sesion.value = fila.dataset.sesion || '';
+            campos.titulo.value = fila.dataset.titulo || '';
             campos.descripcion.value = fila.dataset.descripcion || '';
-            campos.fecha.value     = fila.dataset.fecha || '';
-            campos.estado.value    = fila.dataset.estado || 'Publicado';
+            campos.fecha.value = fila.dataset.fecha || '';
+            campos.estado.value = fila.dataset.estado || 'Publicado';
             renderAdjuntosActuales(fila);
         }
 
@@ -3412,33 +3453,33 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function validarContenido() {
-    limpiarValidacionContenido();
-    let valido = true;
-    let mensajeError = '';
+        limpiarValidacionContenido();
+        let valido = true;
+        let mensajeError = '';
 
-    const requeridos = [campos.curso, campos.sesion, campos.titulo, campos.descripcion, campos.fecha, campos.estado];
-    requeridos.forEach(campo => {
-        if (!campo.value.trim()) {
-            campo.closest('.contenido-field')?.classList.add('is-invalid');
-            valido = false;
-            if (!mensajeError) mensajeError = 'Complete los campos obligatorios del contenido';
-        }
-    });
+        const requeridos = [campos.curso, campos.sesion, campos.titulo, campos.descripcion, campos.fecha, campos.estado];
+        requeridos.forEach(campo => {
+            if (!campo.value.trim()) {
+                campo.closest('.contenido-field')?.classList.add('is-invalid');
+                valido = false;
+                if (!mensajeError) mensajeError = 'Complete los campos obligatorios del contenido';
+            }
+        });
 
-    if (campos.fecha.value) {
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
-        const fechaSel = new Date(campos.fecha.value + 'T00:00:00');
-        if (fechaSel < hoy) {
-            campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
-            mensajeError = 'La fecha de la publicación no puede ser menor que la fecha actual';
-            valido = false;
+        if (campos.fecha.value) {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            const fechaSel = new Date(campos.fecha.value + 'T00:00:00');
+            if (fechaSel < hoy) {
+                campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
+                mensajeError = 'La fecha de la publicación no puede ser menor que la fecha actual';
+                valido = false;
+            }
         }
+
+        if (!valido) mostrarToastPremium(mensajeError);
+        return valido;
     }
-
-    if (!valido) mostrarToastPremium(mensajeError);
-    return valido;
-}
 
     function crearBadgeEstado(estado) {
         const clase = estado.toLowerCase();
@@ -3457,12 +3498,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function obtenerAdjuntosFila(fila) {
         const nombresArchivos = (fila?.dataset.archivo || '').split(',').map(s => s.trim()).filter(Boolean);
-        const idsArchivos     = (fila?.dataset.archivoIds || '').split(',').map(s => s.trim()).filter(Boolean);
-        const nombresEnlaces  = (fila?.dataset.enlaces || '').split(',').map(s => s.trim()).filter(Boolean);
-        const idsEnlaces      = (fila?.dataset.enlaceIds || '').split(',').map(s => s.trim()).filter(Boolean);
+        const idsArchivos = (fila?.dataset.archivoIds || '').split(',').map(s => s.trim()).filter(Boolean);
+        const nombresEnlaces = (fila?.dataset.enlaces || '').split(',').map(s => s.trim()).filter(Boolean);
+        const idsEnlaces = (fila?.dataset.enlaceIds || '').split(',').map(s => s.trim()).filter(Boolean);
 
         const archivos = nombresArchivos.map((nombre, i) => ({ tipo: 'Archivo', nombre, id: idsArchivos[i] || '' }));
-        const enlaces  = nombresEnlaces.map((nombre, i) => ({ tipo: 'Enlace', nombre, id: idsEnlaces[i] || '' }));
+        const enlaces = nombresEnlaces.map((nombre, i) => ({ tipo: 'Enlace', nombre, id: idsEnlaces[i] || '' }));
 
         return [...archivos, ...enlaces];
     }
@@ -3502,41 +3543,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function actualizarFila(fila, usarFormulario = true) {
         if (usarFormulario) {
-            fila.dataset.curso       = campos.curso.value;
-            fila.dataset.sesion      = formatearSesion(campos.sesion.value);
-            fila.dataset.titulo      = campos.titulo.value.trim();
+            fila.dataset.curso = campos.curso.value;
+            fila.dataset.sesion = formatearSesion(campos.sesion.value);
+            fila.dataset.titulo = campos.titulo.value.trim();
             fila.dataset.descripcion = campos.descripcion.value.trim();
-            fila.dataset.fecha       = campos.fecha.value;
-            fila.dataset.estado      = campos.estado.value;
+            fila.dataset.fecha = campos.fecha.value;
+            fila.dataset.estado = campos.estado.value;
 
         }
         if (fila.dataset.estado === 'Deshabilitado') {
-    fila.classList.add('fila-deshabilitada');
-    tbody.appendChild(fila);
-} else {
-    fila.classList.remove('fila-deshabilitada');
+            fila.classList.add('fila-deshabilitada');
+            tbody.appendChild(fila);
+        } else {
+            fila.classList.remove('fila-deshabilitada');
 
-    const filasActivas = Array.from(
-        tbody.querySelectorAll('tr:not(.contenido-empty):not(.fila-deshabilitada)')
-    ).filter(f => f !== fila);
+            const filasActivas = Array.from(
+                tbody.querySelectorAll('tr:not(.contenido-empty):not(.fila-deshabilitada)')
+            ).filter(f => f !== fila);
 
-    let insertado = false;
+            let insertado = false;
 
-    for (const otraFila of filasActivas) {
-        const idActual = parseInt(fila.dataset.id);
-        const otroId = parseInt(otraFila.dataset.id);
+            for (const otraFila of filasActivas) {
+                const idActual = parseInt(fila.dataset.id);
+                const otroId = parseInt(otraFila.dataset.id);
 
-        if (idActual < otroId) {
-            tbody.insertBefore(fila, otraFila);
-            insertado = true;
-            break;
+                if (idActual < otroId) {
+                    tbody.insertBefore(fila, otraFila);
+                    insertado = true;
+                    break;
+                }
+            }
+
+            if (!insertado) {
+                tbody.appendChild(fila);
+            }
         }
-    }
-
-    if (!insertado) {
-        tbody.appendChild(fila);
-    }
-}
 
         const archivo = fila.dataset.archivo || '';
 
@@ -3630,10 +3671,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         <i class="fas fa-times"></i>
                     </button>`;
 
-                div.querySelector('.adjunto-file-input').addEventListener('change', function () {
-                    const texto = div.querySelector('.adjunto-file-texto');
-                    texto.textContent = this.files[0]?.name || 'Seleccionar archivo';
-                });
+            div.querySelector('.adjunto-file-input').addEventListener('change', function () {
+                const texto = div.querySelector('.adjunto-file-texto');
+                texto.textContent = this.files[0]?.name || 'Seleccionar archivo';
+            });
         } else {
             div.innerHTML = `
                 <span class="adjunto-tipo"><i class="fas fa-link"></i> Enlace</span>
@@ -3673,18 +3714,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'POST',
                 body: new URLSearchParams({ id: idArchivo })
             })
-            .then(r => r.json())
-            .then(data => {
-                if (data.ok) {
-                    btn.closest('.adjunto-existente')?.remove();
-                    if (!adjuntosActuales.querySelector('.adjunto-existente')) {
-                        adjuntosActuales.innerHTML = '<span class="contenido-muted">Sin adjuntos guardados</span>';
+                .then(r => r.json())
+                .then(data => {
+                    if (data.ok) {
+                        btn.closest('.adjunto-existente')?.remove();
+                        if (!adjuntosActuales.querySelector('.adjunto-existente')) {
+                            adjuntosActuales.innerHTML = '<span class="contenido-muted">Sin adjuntos guardados</span>';
+                        }
+                    } else {
+                        mostrarToastPremium('Error al eliminar adjunto.');
                     }
-                } else {
-                    mostrarToastPremium('Error al eliminar adjunto.');
-                }
-            })
-            .catch(() => mostrarToastPremium('Error de conexión.'));
+                })
+                .catch(() => mostrarToastPremium('Error de conexión.'));
         } else {
             btn.closest('.adjunto-existente')?.remove();
         }
@@ -3710,8 +3751,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (btnToggle) {
             const deshabilitado = fila.dataset.estado === 'Deshabilitado';
-            const nuevoEstado   = deshabilitado ? 'Publicado' : 'Deshabilitado';
-            const nuevoValor    = deshabilitado ? 1 : 0;
+            const nuevoEstado = deshabilitado ? 'Publicado' : 'Deshabilitado';
+            const nuevoValor = deshabilitado ? 1 : 0;
 
             fetch('toggle_contenido.php', {
                 method: 'POST',
@@ -3720,24 +3761,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     estado: nuevoValor
                 })
             })
-            .then(r => r.json())
-            .then(data => {
-                if (data.ok) {
-                    fila.dataset.estado = nuevoEstado;
-                    actualizarFila(fila, false);
-                    filtrarContenidos();
-                    actualizarContadores();
+                .then(r => r.json())
+                .then(data => {
+                    if (data.ok) {
+                        fila.dataset.estado = nuevoEstado;
+                        actualizarFila(fila, false);
+                        filtrarContenidos();
+                        actualizarContadores();
 
-                } else {
-                    mostrarToastPremium('Error al cambiar estado.');
-                }
-            })
-            .catch(() => mostrarToastPremium('Error de conexión.'));
+                    } else {
+                        mostrarToastPremium('Error al cambiar estado.');
+                    }
+                })
+                .catch(() => mostrarToastPremium('Error de conexión.'));
         }
     });
     function actualizarContadores() {
         const filas = Array.from(tbody.querySelectorAll('tr:not(.contenido-empty)'));
-        const publicados     = filas.filter(f => f.dataset.estado === 'Publicado').length;
+        const publicados = filas.filter(f => f.dataset.estado === 'Publicado').length;
         const deshabilitados = filas.filter(f => f.dataset.estado === 'Deshabilitado').length;
 
         const metricas = document.querySelectorAll('.organizacion-metricas div strong');
@@ -3758,10 +3799,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const formData = new FormData(form);
         formData.set('id', campos.id.value || 0);
         formData.set('idCurso', document.getElementById('contenidoCursoId').value);
-        formData.set('titulo',      campos.titulo.value.trim());
+        formData.set('titulo', campos.titulo.value.trim());
         formData.set('descripcion', campos.descripcion.value.trim());
-        formData.set('fecha',       campos.fecha.value);
-        formData.set('estado',      campos.estado.value === 'Publicado' ? 1 : 0);
+        formData.set('fecha', campos.fecha.value);
+        formData.set('estado', campos.estado.value === 'Publicado' ? 1 : 0);
 
         try {
             const resp = await fetch('/OpusCore/guardar_contenido.php', {
@@ -3783,8 +3824,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Buscador y filtro estado
-if (buscar) buscar.addEventListener('input', filtrarContenidos);
-if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
+    if (buscar) buscar.addEventListener('input', filtrarContenidos);
+    if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
 });
 
 // Interacciones de gestion de tareas del docente.
@@ -3804,55 +3845,55 @@ document.addEventListener('DOMContentLoaded', function () {
     let filaEditando = null;
 
     const campos = {
-    id: document.getElementById('tareaId'),
-    cursoId: document.getElementById('tareaCursoId'),
-    titulo: document.getElementById('tareaTitulo'),
-    descripcion: document.getElementById('tareaDescripcion'),
-    fecha: document.getElementById('tareaFecha'),
-    puntaje: document.getElementById('tareaPuntaje'),
-    intentos: document.getElementById('tareaIntentos'),
-    estado: document.getElementById('tareaEstado'),
-    archivo: document.getElementById('tareaArchivo'),
-    modalTitulo: document.getElementById('tareaModalTitulo')
-};
+        id: document.getElementById('tareaId'),
+        cursoId: document.getElementById('tareaCursoId'),
+        titulo: document.getElementById('tareaTitulo'),
+        descripcion: document.getElementById('tareaDescripcion'),
+        fecha: document.getElementById('tareaFecha'),
+        puntaje: document.getElementById('tareaPuntaje'),
+        intentos: document.getElementById('tareaIntentos'),
+        estado: document.getElementById('tareaEstado'),
+        archivo: document.getElementById('tareaArchivo'),
+        modalTitulo: document.getElementById('tareaModalTitulo')
+    };
 
 
 
-   function abrirModalTarea(fila = null) {
-    form.reset();
-    limpiarValidacionTarea();
-    filaEditando = fila;
-    campos.modalTitulo.textContent = fila ? 'Editar tarea' : 'Nueva tarea';
-    if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
-     const selectSesion = document.getElementById('tareaSesion');
-     if(selectSesion) selectSesion.value = '';
-    if (campos.id) campos.id.value = '';
-
-    if (fila) {
-
-        if (campos.id) campos.id.value = fila.dataset.id || '';
-
-        campos.titulo.value      = fila.dataset.titulo      || '';
-        campos.descripcion.value = fila.dataset.descripcion || '';
-        campos.puntaje.value     = fila.dataset.puntaje     || '';
-        campos.intentos.value = fila.dataset.intentos || '1';
-        campos.estado.value = fila.dataset.estado === 'Activa' ? '1' : '0';
-        campos.fecha.value = (fila.dataset.fecha || '').replace(' ', 'T').substring(0, 16);
-
+    function abrirModalTarea(fila = null) {
+        form.reset();
+        limpiarValidacionTarea();
+        filaEditando = fila;
+        campos.modalTitulo.textContent = fila ? 'Editar tarea' : 'Nueva tarea';
+        if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
         const selectSesion = document.getElementById('tareaSesion');
-        if(selectSesion){
-            selectSesion.value = fila.dataset.sesionId || '';
+        if (selectSesion) selectSesion.value = '';
+        if (campos.id) campos.id.value = '';
+
+        if (fila) {
+
+            if (campos.id) campos.id.value = fila.dataset.id || '';
+
+            campos.titulo.value = fila.dataset.titulo || '';
+            campos.descripcion.value = fila.dataset.descripcion || '';
+            campos.puntaje.value = fila.dataset.puntaje || '';
+            campos.intentos.value = fila.dataset.intentos || '1';
+            campos.estado.value = fila.dataset.estado === 'Activa' ? '1' : '0';
+            campos.fecha.value = (fila.dataset.fecha || '').replace(' ', 'T').substring(0, 16);
+
+            const selectSesion = document.getElementById('tareaSesion');
+            if (selectSesion) {
+                selectSesion.value = fila.dataset.sesionId || '';
+            }
+
+            if (tareaArchivoTexto && fila.dataset.archivo) {
+                tareaArchivoTexto.textContent = fila.dataset.archivo;
+            }
         }
 
-        if (tareaArchivoTexto && fila.dataset.archivo) {
-            tareaArchivoTexto.textContent = fila.dataset.archivo;
-        }
+        modal.classList.add('activo');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
     }
-
-    modal.classList.add('activo');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-}
 
     function cerrarModalTarea() {
         modal.classList.remove('activo');
@@ -3865,61 +3906,61 @@ document.addEventListener('DOMContentLoaded', function () {
         form.querySelectorAll('.contenido-field').forEach(field => field.classList.remove('is-invalid'));
     }
 
-// VALIDAR FECHA
-   function validarTarea() {
-    limpiarValidacionTarea();
-    let valido = true;
-    let mensajeError = '';
+    // VALIDAR FECHA
+    function validarTarea() {
+        limpiarValidacionTarea();
+        let valido = true;
+        let mensajeError = '';
 
-    const requeridos = [
-        campos.titulo,
-        campos.descripcion,
-        campos.fecha,
-        campos.puntaje,
-        campos.estado
-    ];
+        const requeridos = [
+            campos.titulo,
+            campos.descripcion,
+            campos.fecha,
+            campos.puntaje,
+            campos.estado
+        ];
 
-    requeridos.forEach(campo => {
-        if (!campo) return;
-        const vacio          = !campo.value.trim();
-        const numeroInvalido = campo === campos.puntaje && parseInt(campo.value, 10) < 1;
+        requeridos.forEach(campo => {
+            if (!campo) return;
+            const vacio = !campo.value.trim();
+            const numeroInvalido = campo === campos.puntaje && parseInt(campo.value, 10) < 1;
 
-        if (vacio || numeroInvalido) {
-            campo.closest('.contenido-field')?.classList.add('is-invalid');
-            valido = false;
-            if (!mensajeError) mensajeError = 'Complete los campos obligatorios de la tarea';
+            if (vacio || numeroInvalido) {
+                campo.closest('.contenido-field')?.classList.add('is-invalid');
+                valido = false;
+                if (!mensajeError) mensajeError = 'Complete los campos obligatorios de la tarea';
+            }
+        });
+
+        if (campos.fecha.value) {
+            const partes = campos.fecha.value.split('T');
+            const [anio, mes, dia] = partes[0].split('-').map(Number);
+            const [hora, minuto] = partes[1] ? partes[1].split(':').map(Number) : [0, 0];
+
+            const fechaSel = new Date(anio, mes - 1, dia, hora, minuto, 0);
+            const esEdicion = campos.id && campos.id.value && campos.id.value !== '0';
+
+            const hoyInicio = new Date();
+            hoyInicio.setHours(0, 0, 0, 0);
+
+            console.log('fechaSel:', fechaSel);
+            console.log('hoyInicio:', hoyInicio);
+            console.log('fechaSel < hoyInicio:', fechaSel < hoyInicio);
+            console.log('esEdicion:', esEdicion);
+            console.log('valor raw:', campos.fecha.value);
+
+            if (fechaSel < hoyInicio) {
+                campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
+                mensajeError = esEdicion
+                    ? 'La fecha límite no puede ser de un día anterior a hoy'
+                    : 'La fecha límite no puede ser anterior a la fecha actual';
+                valido = false;
+            }
         }
-    });
 
-    if (campos.fecha.value) {
-        const partes           = campos.fecha.value.split('T');
-        const [anio, mes, dia] = partes[0].split('-').map(Number);
-        const [hora, minuto]   = partes[1] ? partes[1].split(':').map(Number) : [0, 0];
-
-        const fechaSel  = new Date(anio, mes - 1, dia, hora, minuto, 0);
-        const esEdicion = campos.id && campos.id.value && campos.id.value !== '0';
-
-        const hoyInicio = new Date();
-        hoyInicio.setHours(0, 0, 0, 0);
-
-        console.log('fechaSel:', fechaSel);
-        console.log('hoyInicio:', hoyInicio);
-        console.log('fechaSel < hoyInicio:', fechaSel < hoyInicio);
-        console.log('esEdicion:', esEdicion);
-        console.log('valor raw:', campos.fecha.value);
-
-        if (fechaSel < hoyInicio) {
-            campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
-            mensajeError = esEdicion
-                ? 'La fecha límite no puede ser de un día anterior a hoy'
-                : 'La fecha límite no puede ser anterior a la fecha actual';
-            valido = false;
-        }
+        if (!valido) mostrarToastPremium(mensajeError);
+        return valido;
     }
-
-    if (!valido) mostrarToastPremium(mensajeError);
-    return valido;
-}
 
     function escapeTarea(valor) {
         return String(valor || '').replace(/[&<>"']/g, caracter => ({
@@ -3969,29 +4010,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function guardarFilaTarea(idReal = null) {
-    const fila        = filaEditando || document.createElement('tr');
-    const archivoNuevo = campos.archivo.files?.[0]?.name || '';
+        const fila = filaEditando || document.createElement('tr');
+        const archivoNuevo = campos.archivo.files?.[0]?.name || '';
 
-    if (idReal && !filaEditando) {
-        fila.dataset.id = idReal;
+        if (idReal && !filaEditando) {
+            fila.dataset.id = idReal;
+        }
+
+        fila.dataset.titulo = campos.titulo.value.trim();
+        fila.dataset.descripcion = campos.descripcion.value.trim();
+        fila.dataset.fecha = campos.fecha.value;
+        fila.dataset.puntaje = campos.puntaje.value;
+        fila.dataset.intentos = campos.intentos.value;
+        fila.dataset.estado = campos.estado.value === '1' ? 'Activa' : 'Borrador';
+        fila.dataset.archivo = archivoNuevo || fila.dataset.archivo || '';
+        fila.dataset.sesionId = document.getElementById('tareaSesion')?.value || '';
+
+        renderFilaTarea(fila);
+
+        if (!filaEditando) {
+            tbody.prepend(fila);
+            if (total) total.textContent = String(tbody.querySelectorAll('tr').length);
+        }
     }
-
-    fila.dataset.titulo      = campos.titulo.value.trim();
-    fila.dataset.descripcion = campos.descripcion.value.trim();
-    fila.dataset.fecha       = campos.fecha.value;
-    fila.dataset.puntaje     = campos.puntaje.value;
-    fila.dataset.intentos = campos.intentos.value;
-    fila.dataset.estado      = campos.estado.value === '1' ? 'Activa' : 'Borrador';
-    fila.dataset.archivo     = archivoNuevo || fila.dataset.archivo || '';
-    fila.dataset.sesionId = document.getElementById('tareaSesion')?.value || '';
-
-    renderFilaTarea(fila);
-
-    if (!filaEditando) {
-        tbody.prepend(fila);
-        if (total) total.textContent = String(tbody.querySelectorAll('tr').length);
-    }
-}
     btnNueva?.addEventListener('click', () => abrirModalTarea());
     btnCerrar?.addEventListener('click', cerrarModalTarea);
     btnCancelar?.addEventListener('click', cerrarModalTarea);
@@ -4003,35 +4044,35 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     limpiarArchivoTarea?.addEventListener('click', async function () {
-    if (campos.archivo) campos.archivo.value = '';
-    if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
+        if (campos.archivo) campos.archivo.value = '';
+        if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
 
 
-    const idsArchivos = filaEditando?.dataset.idsArchivos || '';
-    if (!filaEditando || !idsArchivos) return;
+        const idsArchivos = filaEditando?.dataset.idsArchivos || '';
+        if (!filaEditando || !idsArchivos) return;
 
-    const idArchivo = idsArchivos.split(',')[0];
-    if (!idArchivo) return;
+        const idArchivo = idsArchivos.split(',')[0];
+        if (!idArchivo) return;
 
-    try {
-        const formData = new FormData();
-        formData.append('id', idArchivo);
+        try {
+            const formData = new FormData();
+            formData.append('id', idArchivo);
 
-        const res  = await fetch('eliminar-archivo-tarea.php', { method: 'POST', body: formData });
-        const data = await res.json();
+            const res = await fetch('eliminar-archivo-tarea.php', { method: 'POST', body: formData });
+            const data = await res.json();
 
-        if (data.ok) {
+            if (data.ok) {
 
-            filaEditando.dataset.archivo     = '';
-            filaEditando.dataset.idsArchivos = '';
-            mostrarToastPremium('Archivo eliminado correctamente', 'success');
-        } else {
-            mostrarToastPremium(data.mensaje || 'Error al eliminar el archivo', 'error');
+                filaEditando.dataset.archivo = '';
+                filaEditando.dataset.idsArchivos = '';
+                mostrarToastPremium('Archivo eliminado correctamente', 'success');
+            } else {
+                mostrarToastPremium(data.mensaje || 'Error al eliminar el archivo', 'error');
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión al eliminar el archivo', 'error');
         }
-    } catch {
-        mostrarToastPremium('Error de conexión al eliminar el archivo', 'error');
-    }
-});
+    });
 
     modal.addEventListener('click', function (e) {
         if (e.target === modal) cerrarModalTarea();
@@ -4043,54 +4084,54 @@ document.addEventListener('DOMContentLoaded', function () {
         abrirModalTarea(btnEditar.closest('tr'));
     });
 
-   form.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    if (!validarTarea()) return;
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (!validarTarea()) return;
 
-    const btnSubmit = form.querySelector('button[type="submit"]');
-    const textoOriginal = btnSubmit?.textContent || 'Guardar tarea';
-    if (btnSubmit) {
-        btnSubmit.disabled = true;
-        btnSubmit.textContent = 'Guardando...';
-    }
-
-    const formData = new FormData();
-    formData.append('id',            document.getElementById('tareaId')?.value || '0');
-    formData.append('idCurso',       document.getElementById('tareaCursoId')?.value || '');
-    formData.append('titulo',        document.getElementById('tareaTitulo')?.value?.trim() || '');
-    formData.append('descripcion',   document.getElementById('tareaDescripcion')?.value?.trim() || '');
-    formData.append('fechaLimite',   document.getElementById('tareaFecha')?.value || '');
-    formData.append('puntajeMaximo', document.getElementById('tareaPuntaje')?.value || '');
-    formData.append('intentos',      document.getElementById('tareaIntentos')?.value || '1');
-    formData.append('estado',        document.getElementById('tareaEstado')?.value || '0');
-    formData.append('idSesion',      document.getElementById('tareaSesion')?.value || '0');
-
-    const archivoInput = document.getElementById('tareaArchivo');
-    if (archivoInput?.files?.length > 0) {
-        formData.append('archivo', archivoInput.files[0]);
-    }
-
-    try {
-        const res  = await fetch('guardar-tarea.php', { method: 'POST', body: formData });
-        const data = await res.json();
-
-        if (data.error) {
-            mostrarToastPremium(data.mensaje, 'error');
-        } else {
-            guardarFilaTarea(data.id);
-            cerrarModalTarea();
-            mostrarToastPremium(data.mensaje, 'success');
-            setTimeout(() => window.location.reload(), 1500);
-        }
-    } catch {
-        mostrarToastPremium('Error de conexión al guardar la tarea', 'error');
-    } finally {
+        const btnSubmit = form.querySelector('button[type="submit"]');
+        const textoOriginal = btnSubmit?.textContent || 'Guardar tarea';
         if (btnSubmit) {
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = textoOriginal;
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'Guardando...';
         }
-    }
-});
+
+        const formData = new FormData();
+        formData.append('id', document.getElementById('tareaId')?.value || '0');
+        formData.append('idCurso', document.getElementById('tareaCursoId')?.value || '');
+        formData.append('titulo', document.getElementById('tareaTitulo')?.value?.trim() || '');
+        formData.append('descripcion', document.getElementById('tareaDescripcion')?.value?.trim() || '');
+        formData.append('fechaLimite', document.getElementById('tareaFecha')?.value || '');
+        formData.append('puntajeMaximo', document.getElementById('tareaPuntaje')?.value || '');
+        formData.append('intentos', document.getElementById('tareaIntentos')?.value || '1');
+        formData.append('estado', document.getElementById('tareaEstado')?.value || '0');
+        formData.append('idSesion', document.getElementById('tareaSesion')?.value || '0');
+
+        const archivoInput = document.getElementById('tareaArchivo');
+        if (archivoInput?.files?.length > 0) {
+            formData.append('archivo', archivoInput.files[0]);
+        }
+
+        try {
+            const res = await fetch('guardar-tarea.php', { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                guardarFilaTarea(data.id);
+                cerrarModalTarea();
+                mostrarToastPremium(data.mensaje, 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión al guardar la tarea', 'error');
+        } finally {
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = textoOriginal;
+            }
+        }
+    });
 });
 
 // Filtros visuales para la pagina de entregas del docente.
@@ -4131,9 +4172,9 @@ document.addEventListener('click', async function (e) {
     const btn = e.target.closest('.btn-calificar-tarea');
     if (!btn) return;
 
-    const fila      = btn.closest('tr');
-    const input     = fila?.querySelector('.tarea-calificacion input');
-    const nota      = parseFloat(input?.value ?? '');
+    const fila = btn.closest('tr');
+    const input = fila?.querySelector('.tarea-calificacion input');
+    const nota = parseFloat(input?.value ?? '');
     const idEntrega = btn.dataset.idEntrega || fila?.dataset.idEntrega;
 
     const max = parseFloat(input?.getAttribute('max') ?? '100');
@@ -4148,7 +4189,7 @@ document.addEventListener('click', async function (e) {
         return;
     }
 
-    btn.disabled    = true;
+    btn.disabled = true;
     btn.textContent = 'Guardando...';
 
     try {
@@ -4156,12 +4197,12 @@ document.addEventListener('click', async function (e) {
         formData.append('idEntrega', idEntrega);
         formData.append('nota', nota);
 
-        const res  = await fetch('calificar-entrega.php', { method: 'POST', body: formData });
+        const res = await fetch('calificar-entrega.php', { method: 'POST', body: formData });
         const data = await res.json();
 
         if (data.error) {
             mostrarToastPremium(data.mensaje, 'error');
-            btn.disabled    = false;
+            btn.disabled = false;
             btn.textContent = 'Calificar';
         } else {
             // Actualiza la interfaz despues de guardar la calificacion.
@@ -4183,7 +4224,7 @@ document.addEventListener('click', async function (e) {
         }
     } catch {
         mostrarToastPremium('Error de conexión al calificar', 'error');
-        btn.disabled    = false;
+        btn.disabled = false;
         btn.textContent = 'Calificar';
     }
 });
@@ -4422,18 +4463,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Si ambas notas están completas
         if (count === 2) {
-             const nota1 = parseFloat(inputsFila[0].value.trim());
+            const nota1 = parseFloat(inputsFila[0].value.trim());
             const nota2 = parseFloat(inputsFila[1].value.trim());
-            const prom  = parseFloat(((nota1 * 0.30) + (nota2 * 0.70)).toFixed(2));
+            const prom = parseFloat(((nota1 * 0.30) + (nota2 * 0.70)).toFixed(2));
             badge.textContent = prom.toFixed(2);
 
             if (prom >= 7.0) {
-            badge.classList.add('promedio-aprobado');
-        } else if (prom >= 6.0) {
-            badge.classList.add('promedio-alerta');
-        } else {
-            badge.classList.add('promedio-reprobado');
-        }
+                badge.classList.add('promedio-aprobado');
+            } else if (prom >= 6.0) {
+                badge.classList.add('promedio-alerta');
+            } else {
+                badge.classList.add('promedio-reprobado');
+            }
         } else {
             badge.textContent = '—';
             badge.classList.add('promedio-vacio');
@@ -4441,10 +4482,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Cargar promedio grupal real desde BD si existe
-if (typeof promedioGrupalInicial !== 'undefined' && promedioGrupalInicial !== null) {
-    const kpiPromedio = document.getElementById('kpi-promedio-grupal');
-    if (kpiPromedio) kpiPromedio.textContent = parseFloat(promedioGrupalInicial).toFixed(2);
-}
+    if (typeof promedioGrupalInicial !== 'undefined' && promedioGrupalInicial !== null) {
+        const kpiPromedio = document.getElementById('kpi-promedio-grupal');
+        if (kpiPromedio) kpiPromedio.textContent = parseFloat(promedioGrupalInicial).toFixed(2);
+    }
     // Recalcular todos los promedios
     function recalcularTodosLosPromedios() {
         inputs.forEach(inp => {
@@ -4454,146 +4495,146 @@ if (typeof promedioGrupalInicial !== 'undefined' && promedioGrupalInicial !== nu
         recalcularKPIs();
     }
     // Actualiza metricas generales del curso.
-function recalcularKPIs() {
-    const badges = document.querySelectorAll('[id^="promedio-"]');
+    function recalcularKPIs() {
+        const badges = document.querySelectorAll('[id^="promedio-"]');
 
-    let sumaPromedios = 0;
-    let aprobados = 0;
-    let promediosValidosCount = 0;
+        let sumaPromedios = 0;
+        let aprobados = 0;
+        let promediosValidosCount = 0;
 
-    badges.forEach(b => {
-        const text = b.textContent.trim();
+        badges.forEach(b => {
+            const text = b.textContent.trim();
 
-        if (text !== '—') {
-            const val = parseFloat(text);
-            sumaPromedios += val;
-            promediosValidosCount++;
+            if (text !== '—') {
+                const val = parseFloat(text);
+                sumaPromedios += val;
+                promediosValidosCount++;
 
-            if (val >= 7.00) aprobados++;
-        }
-    });
-
-    const kpiPromedio  = document.getElementById('kpi-promedio-grupal');
-    const kpiAprobacion = document.getElementById('kpi-porcentaje-aprobacion');
-
-    if (promediosValidosCount > 0) {
-        const promedioGrupal = (sumaPromedios / promediosValidosCount).toFixed(2);
-        const tasaAprobacion = Math.round((aprobados / promediosValidosCount) * 100);
-
-        if (kpiPromedio)   kpiPromedio.textContent   = promedioGrupal;
-        if (kpiAprobacion) kpiAprobacion.textContent = `${tasaAprobacion}%`;
-    } else {
-        if (kpiPromedio)   kpiPromedio.textContent   = '0.00';
-        if (kpiAprobacion) kpiAprobacion.textContent = '0%';
-    }
-}
-
-   // Acciones de guardado manual y edicion.
-document.querySelectorAll('.btn-nota-editar').forEach(btn => {
-    btn.addEventListener('click', function () {
-        if (!plazoActivo) {
-            mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
-            return;
-        }
-        const row = this.closest('tr');
-        row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
-        row.querySelectorAll('.nota-input')[0].focus();
-
-        const btnGuardar = row.querySelector('.btn-guardar-nota');
-        btnGuardar.disabled = false;
-        btnGuardar.style.display = '';
-        this.style.display = 'none';
-    });
-});
-
-// Botón Guardar
-document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
-    btn.addEventListener('click', function () {
-        if (!plazoActivo) {
-            mostrarToastPremium('El plazo de notas está cerrado. No se pueden guardar cambios.', 'error');
-            return;
-        }
-
-        const row = this.closest('tr');
-        const inputsFila = row.querySelectorAll('.nota-input');
-        const nota1 = inputsFila[0].value.trim();
-        const nota2 = inputsFila[1].value.trim();
-
-        if (nota1 === '' || nota2 === '') {
-            mostrarToastPremium('Debes ingresar ambas notas antes de guardar.', 'error');
-            return;
-        }
-
-        const estudianteId = inputsFila[0].dataset.estudianteId;
-        const inscId       = inputsFila[0].dataset.inscId;
-
-        this.disabled = true;
-        this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Guardando...';
-
-        fetch('guardar-nota.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                curso_id:      cursoId,
-                estudiante_id: parseInt(estudianteId),
-                actividades:   parseFloat(nota1),
-                examen_final:  parseFloat(nota2),
-                plazo_id:      plazoActivo.id
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                mostrarToastPremium(data.message, 'success');
-                inputsFila.forEach(inp => inp.setAttribute('readonly', true));
-
-                const badge = document.getElementById(`promedio-${inscId}`);
-                if (badge && data.nota_final !== undefined) {
-                    const nf = parseFloat(data.nota_final).toFixed(2);
-                    badge.textContent = nf;
-                    badge.className = 'promedio-badge';
-                    badge.classList.add(parseFloat(data.nota_final) >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
-                }
-
-
-                let btnEditar = row.querySelector('.btn-nota-editar');
-                if (!btnEditar) {
-                    btnEditar = document.createElement('button');
-                    btnEditar.className = 'btn-nota-editar';
-                    btnEditar.dataset.accion = 'editar';
-                    btnEditar.innerHTML = '<i class="fas fa-pen"></i> Editar';
-                    btnEditar.addEventListener('click', function () {
-                        if (!plazoActivo) {
-                            mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
-                            return;
-                        }
-                        row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
-                        row.querySelectorAll('.nota-input')[0].focus();
-                        row.querySelector('.btn-guardar-nota').disabled = false;
-                        this.style.display = 'none';
-                    });
-                    row.querySelector('.acciones-nota-group').prepend(btnEditar);
-                } else {
-                    btnEditar.style.display = '';
-                }
-                this.style.display = 'none';
-                this.disabled = true;
-                this.innerHTML = '<i class="fas fa-save"></i> Guardar';
-
-                recalcularKPIs();
-            } else {
-                mostrarToastPremium(data.message, 'error');
-                this.disabled = false;
-                this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                if (val >= 7.00) aprobados++;
             }
-        })
-        .catch(() => {
-            mostrarToastPremium('Error de conexión al guardar', 'error');
-            this.disabled = false;
-            this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+        });
+
+        const kpiPromedio = document.getElementById('kpi-promedio-grupal');
+        const kpiAprobacion = document.getElementById('kpi-porcentaje-aprobacion');
+
+        if (promediosValidosCount > 0) {
+            const promedioGrupal = (sumaPromedios / promediosValidosCount).toFixed(2);
+            const tasaAprobacion = Math.round((aprobados / promediosValidosCount) * 100);
+
+            if (kpiPromedio) kpiPromedio.textContent = promedioGrupal;
+            if (kpiAprobacion) kpiAprobacion.textContent = `${tasaAprobacion}%`;
+        } else {
+            if (kpiPromedio) kpiPromedio.textContent = '0.00';
+            if (kpiAprobacion) kpiAprobacion.textContent = '0%';
+        }
+    }
+
+    // Acciones de guardado manual y edicion.
+    document.querySelectorAll('.btn-nota-editar').forEach(btn => {
+        btn.addEventListener('click', function () {
+            if (!plazoActivo) {
+                mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
+                return;
+            }
+            const row = this.closest('tr');
+            row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
+            row.querySelectorAll('.nota-input')[0].focus();
+
+            const btnGuardar = row.querySelector('.btn-guardar-nota');
+            btnGuardar.disabled = false;
+            btnGuardar.style.display = '';
+            this.style.display = 'none';
         });
     });
-});
+
+    // Botón Guardar
+    document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
+        btn.addEventListener('click', function () {
+            if (!plazoActivo) {
+                mostrarToastPremium('El plazo de notas está cerrado. No se pueden guardar cambios.', 'error');
+                return;
+            }
+
+            const row = this.closest('tr');
+            const inputsFila = row.querySelectorAll('.nota-input');
+            const nota1 = inputsFila[0].value.trim();
+            const nota2 = inputsFila[1].value.trim();
+
+            if (nota1 === '' || nota2 === '') {
+                mostrarToastPremium('Debes ingresar ambas notas antes de guardar.', 'error');
+                return;
+            }
+
+            const estudianteId = inputsFila[0].dataset.estudianteId;
+            const inscId = inputsFila[0].dataset.inscId;
+
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Guardando...';
+
+            fetch('guardar-nota.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    curso_id: cursoId,
+                    estudiante_id: parseInt(estudianteId),
+                    actividades: parseFloat(nota1),
+                    examen_final: parseFloat(nota2),
+                    plazo_id: plazoActivo.id
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        mostrarToastPremium(data.message, 'success');
+                        inputsFila.forEach(inp => inp.setAttribute('readonly', true));
+
+                        const badge = document.getElementById(`promedio-${inscId}`);
+                        if (badge && data.nota_final !== undefined) {
+                            const nf = parseFloat(data.nota_final).toFixed(2);
+                            badge.textContent = nf;
+                            badge.className = 'promedio-badge';
+                            badge.classList.add(parseFloat(data.nota_final) >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
+                        }
+
+
+                        let btnEditar = row.querySelector('.btn-nota-editar');
+                        if (!btnEditar) {
+                            btnEditar = document.createElement('button');
+                            btnEditar.className = 'btn-nota-editar';
+                            btnEditar.dataset.accion = 'editar';
+                            btnEditar.innerHTML = '<i class="fas fa-pen"></i> Editar';
+                            btnEditar.addEventListener('click', function () {
+                                if (!plazoActivo) {
+                                    mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
+                                    return;
+                                }
+                                row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
+                                row.querySelectorAll('.nota-input')[0].focus();
+                                row.querySelector('.btn-guardar-nota').disabled = false;
+                                this.style.display = 'none';
+                            });
+                            row.querySelector('.acciones-nota-group').prepend(btnEditar);
+                        } else {
+                            btnEditar.style.display = '';
+                        }
+                        this.style.display = 'none';
+                        this.disabled = true;
+                        this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+
+                        recalcularKPIs();
+                    } else {
+                        mostrarToastPremium(data.message, 'error');
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                    }
+                })
+                .catch(() => {
+                    mostrarToastPremium('Error de conexión al guardar', 'error');
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                });
+        });
+    });
 });
 
 // --- PLAZOS DE NOTAS ---
@@ -4729,7 +4770,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const mesFin    = fin.substring(0, 7);
+            const mesFin = fin.substring(0, 7);
             const mesInicio = inicio.substring(0, 7);
 
             if (mesInicio !== mesFin) {
