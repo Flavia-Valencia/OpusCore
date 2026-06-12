@@ -489,6 +489,7 @@ BEFORE INSERT ON `cursos`
 FOR EACH ROW
 BEGIN
     DECLARE v_fecha_fin_ciclo DATE;
+    DECLARE v_fecha_inicio_ciclo DATE;
     IF NEW.fechaFin < NEW.fechaInicio THEN
         SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'Error: La fecha de fin no puede ser anterior a la de inicio';
@@ -514,13 +515,21 @@ BEFORE UPDATE ON `cursos`
 FOR EACH ROW
 BEGIN
     DECLARE v_fecha_fin_ciclo DATE;
+    DECLARE v_fecha_inicio_ciclo DATE;
     IF NEW.fechaFin < NEW.fechaInicio THEN
         SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'Error: La fecha de fin no puede ser anterior a la de inicio';
     END IF;
 
     IF NEW.idPeriodo IS NOT NULL THEN
-        SELECT fechaFinCiclo INTO v_fecha_fin_ciclo FROM `PeriodoInscripcion` WHERE id = NEW.idPeriodo;
+        SELECT fechaInicioCiclo, fechaFinCiclo INTO v_fecha_inicio_ciclo, v_fecha_fin_ciclo 
+        FROM `PeriodoInscripcion` WHERE id = NEW.idPeriodo;
+        
+        IF v_fecha_inicio_ciclo IS NOT NULL AND NEW.fechaInicio < v_fecha_inicio_ciclo THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Error: La fecha de inicio del curso no puede ser anterior a la fecha de inicio del ciclo';
+        END IF;
+
         IF v_fecha_fin_ciclo IS NOT NULL AND NEW.fechaFin > v_fecha_fin_ciclo THEN
             SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error: La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo';
@@ -604,6 +613,7 @@ DO
     SET i.estado_academico = 'Finalizado'
     WHERE c.fechaFin < CURDATE()
       AND i.estado_academico = 'Activo';
+//
 
 CREATE TRIGGER `tr_vencimiento_matricula_dinamico`
 BEFORE INSERT ON `matricula`
