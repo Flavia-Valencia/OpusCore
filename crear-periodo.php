@@ -27,6 +27,25 @@ try {
         exit();
     }
 
+    $dtInicio = new DateTime($fechaInicio);
+    $dtFin = new DateTime($fechaFin);
+    $dtInicioCiclo = new DateTime($fechaInicioCiclo);
+
+    if ($dtFin > $dtInicioCiclo) {
+        echo json_encode(['success' => false, 'error' => 'fin_inscripcion_excede_ciclo']);
+        exit();
+    }
+
+    $diff = $dtInicio->diff($dtInicioCiclo);
+    if ($diff->invert == 0 && $diff->days > 30) {
+        echo json_encode(['success' => false, 'error' => 'inicio_inscripcion_excede_30_dias']);
+        exit();
+    }
+    if ($dtInicio > $dtInicioCiclo) {
+        echo json_encode(['success' => false, 'error' => 'inicio_inscripcion_despues_ciclo']);
+        exit();
+    }
+
     // Evita registrar periodos con nombre duplicado.
     $sql_verificar = "SELECT id FROM PeriodoInscripcion WHERE LOWER(nombre) = LOWER('$nombre')";
     $resultado_verificar = mysqli_query($conexion, $sql_verificar);

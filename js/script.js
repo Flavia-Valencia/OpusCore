@@ -1400,6 +1400,27 @@ if (formPeriodo) {
             return;
         }
 
+        const dInicio = new Date(fechaInicio + 'T12:00:00');
+        const dFin = new Date(fechaFin + 'T12:00:00');
+        const dInicioCiclo = new Date(fechaInicioCiclo + 'T12:00:00');
+
+        if (dFin > dInicioCiclo) {
+            mostrarToastPremium('La fecha de fin de inscripción no puede sobrepasar la fecha de inicio del ciclo');
+            return;
+        }
+
+        const diffTime = dInicioCiclo - dInicio;
+        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+        if (diffDays > 30) {
+            mostrarToastPremium('El inicio de inscripción no puede ser más de 30 días antes del inicio del ciclo');
+            return;
+        }
+        if (diffDays < 0) {
+            mostrarToastPremium('El inicio de inscripción no puede ser posterior al inicio del ciclo');
+            return;
+        }
+
         const id = document.getElementById('periodo-id').value;
         const archivo = id ? 'editar-periodo.php' : 'crear-periodo.php';
 
@@ -1443,11 +1464,24 @@ if (formPeriodo) {
                 } else if (data.error === 'fechas') {
                     mostrarToastPremium('La fecha de fin no puede ser menor a la de inicio');
 
+                } else if (data.error === 'fin_inscripcion_excede_ciclo') {
+                    mostrarToastPremium('La fecha de fin de inscripción no puede sobrepasar la fecha de inicio del ciclo');
+
+                } else if (data.error === 'inicio_inscripcion_excede_30_dias') {
+                    mostrarToastPremium('El inicio de inscripción no puede ser más de 30 días antes del inicio del ciclo');
+
+                } else if (data.error === 'inicio_inscripcion_despues_ciclo') {
+                    mostrarToastPremium('El inicio de inscripción no puede ser posterior al inicio del ciclo');
+
                 } else if (data.error === 'traslape') {
                     mostrarToastPremium('Las fechas ingresadas coinciden con otro período existente. Intenta con otras fechas');
 
                 } else if (data.error === 'fecha_fin_ciclo_curso') {
                     mostrarToastPremium('No puedes reducir la fecha de fin del ciclo porque hay cursos activos que finalizan después de esa fecha.');
+
+                } else if (data.error === 'sql') {
+                    console.error(data);
+                    mostrarToastPremium(data.detalle || 'Error en la base de datos');
 
                 } else {
                     console.error(data);

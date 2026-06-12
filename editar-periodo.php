@@ -26,6 +26,25 @@ try {
         exit();
     }
 
+    $dtInicio = new DateTime($fechaInicio);
+    $dtFin = new DateTime($fechaFin);
+    $dtInicioCiclo = new DateTime($fechaInicioCiclo);
+
+    if ($dtFin > $dtInicioCiclo) {
+        echo json_encode(['success' => false, 'error' => 'fin_inscripcion_excede_ciclo']);
+        exit();
+    }
+
+    $diff = $dtInicio->diff($dtInicioCiclo);
+    if ($diff->invert == 0 && $diff->days > 30) {
+        echo json_encode(['success' => false, 'error' => 'inicio_inscripcion_excede_30_dias']);
+        exit();
+    }
+    if ($dtInicio > $dtInicioCiclo) {
+        echo json_encode(['success' => false, 'error' => 'inicio_inscripcion_despues_ciclo']);
+        exit();
+    }
+
      // Validar que la nueva fecha fin de ciclo no sea menor que la de sus cursos activos
     if ($fechaFinCiclo !== null) {
         $sql_cursos_activos = "SELECT COUNT(*) AS total FROM cursos WHERE idPeriodo = '$id' AND estado = 1 AND fechaFin > '$fechaFinCiclo'";
