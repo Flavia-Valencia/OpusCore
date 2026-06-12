@@ -395,6 +395,17 @@ BEGIN
     IF NEW.fechaFinCiclo < NEW.fechaInicioCiclo THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: La fecha de fin de periodo no puede ser anterior a la de inicio del periodo';
     END IF;
+
+    -- Valida que fecha inicio de periodo de inscripcion no esté fuera de fecha inicio periodo
+    IF NEW.fechaInicioCiclo > NEW.fechaInicio THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: La fecha inicio de inscripción no puede ser anterior a la de inicio del periodo';
+    END IF;
+
+    -- Valida que fecha fin de periodo de inscripcion no esté fuera de fecha fin periodo
+    IF NEW.fechaFinCiclo < NEW.fechaFin THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: La fecha fin de inscripción no puede ser posterior a la fecha fin del ciclo';
+    END IF;
+
     -- crea restricciones para insertar datos donde no se puede seleccionar un rango de algún periodo incripcion creado.
     IF EXISTS (
         SELECT 1 FROM `PeriodoInscripcion`
@@ -428,6 +439,16 @@ BEGIN
     -- Valida que fecha fin no sea menor a inicio en periodo
     IF NEW.fechaFinCiclo < NEW.fechaInicioCiclo THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: La fecha de fin de periodo no puede ser anterior a la de inicio del periodo';
+    END IF;
+
+    -- Valida que fecha inicio de periodo de inscripcion no esté fuera de fecha inicio periodo
+    IF NEW.fechaInicioCiclo > NEW.fechaInicio THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: La fecha inicio de inscripción no puede ser anterior a la de inicio del periodo';
+    END IF;
+
+    -- Valida que fecha fin de periodo de inscripcion no esté fuera de fecha fin periodo
+    IF NEW.fechaFinCiclo < NEW.fechaFin THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Error: La fecha fin de inscripción no puede ser posterior a la fecha fin del ciclo';
     END IF;
 
     -- crea restricciones para insertar y editar datos donde no se puede seleccionar un rango de algún periodo incripcion creado.
@@ -474,7 +495,14 @@ BEGIN
     END IF;
 
     IF NEW.idPeriodo IS NOT NULL THEN
-        SELECT fechaFinCiclo INTO v_fecha_fin_ciclo FROM `PeriodoInscripcion` WHERE id = NEW.idPeriodo;
+        SELECT fechaInicioCiclo, fechaFinCiclo INTO v_fecha_inicio_ciclo, v_fecha_fin_ciclo 
+        FROM `PeriodoInscripcion` WHERE id = NEW.idPeriodo;
+        
+        IF v_fecha_inicio_ciclo IS NOT NULL AND NEW.fechaInicio < v_fecha_inicio_ciclo THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Error: La fecha de inicio del curso no puede ser anterior a la fecha de inicio del ciclo';
+        END IF;
+
         IF v_fecha_fin_ciclo IS NOT NULL AND NEW.fechaFin > v_fecha_fin_ciclo THEN
             SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Error: La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo';
@@ -555,6 +583,27 @@ DO
     WHERE p.fechaFinCiclo < CURDATE()
       AND c.estado = 1;
 //
+-- Evento para desactivar plazo de notas cuyo periodo del ciclo (periodo) ya venció, se ejecuta diariamente a la medianoche
+CREATE EVENT `ev_desactivar_plazo_notas_vencido`
+ON SCHEDULE EVERY 1 DAY
+STARTS (CURRENT_DATE + INTERVAL 1 DAY)   -- arranca mañana a medianoche
+DO
+    UPDATE `PlazoNotas` c
+    INNER JOIN `PeriodoInscripcion` p ON p.id = c.idPeriodo
+    SET c.estado = 0
+    WHERE p.fechaFinCiclo < CURDATE()
+      AND c.estado = 1;
+//
+-- si el curso llega a su fecha fin el estudiante con su inscripcion queda como finalizado
+CREATE EVENT `ev_finalizar_inscripciones_curso_terminado`
+ON SCHEDULE EVERY 1 DAY
+STARTS (CURRENT_DATE + INTERVAL 1 DAY)
+DO
+    UPDATE `inscripciones` i
+    INNER JOIN `cursos` c ON c.id = i.idCurso
+    SET i.estado_academico = 'Finalizado'
+    WHERE c.fechaFin < CURDATE()
+      AND i.estado_academico = 'Activo';
 
 CREATE TRIGGER `tr_vencimiento_matricula_dinamico`
 BEFORE INSERT ON `matricula`
