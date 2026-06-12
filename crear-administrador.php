@@ -15,6 +15,11 @@ $estado = 1;  #envía el estado correctamente a la bd, cuando se modifique la bd
 
 header('Content-Type: application/json');
 
+if (!preg_match('/^[267][0-9]{3}-?[0-9]{4}$/', $telefono)) {
+    echo json_encode(['error' => true, 'mensaje' => 'Número validado con un tipo de insertacion con número salvadoreño']);
+    exit();
+}
+
 # Verifica que el año que ingresa sea validado con el año actual (mayor de 18 y mayor de 1950)
 $fechaNac = new DateTime($fecha_nacimiento);
 $hoy      = new DateTime();
