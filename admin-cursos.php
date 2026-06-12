@@ -203,7 +203,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
                     <select name="idPrerrequisitos"  id="nuevo-prerrequisitos" disabled>
                         <option value="">Ninguno</option>
                         <?php
-                        $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
+                        $query = "SELECT id, nombre FROM cursos ORDER BY nombre ASC";
                         $result = mysqli_query($conexion, $query);
                         while($curso = mysqli_fetch_assoc($result)) { ?>
                             <option value="<?php echo $curso['id']; ?>">
@@ -318,7 +318,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
                     <select name="idPrerrequisitos" id="edit-prerrequisitos" disabled>
                         <option value="">Ninguno</option>
                         <?php
-                        $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
+                        $query = "SELECT id, nombre FROM cursos ORDER BY nombre ASC";
                         $result = mysqli_query($conexion, $query);
                         while($curso = mysqli_fetch_assoc($result)) { ?>
                             <option value="<?php echo $curso['id']; ?>">
