@@ -19,6 +19,14 @@ try {
         exit();
     }
 
+    // Valida que la fecha de inicio del ciclo no sea de un año anterior al actual.
+    $anioActual = intval(date('Y'));
+    $anioInicioCiclo = intval(date('Y', strtotime($fechaInicioCiclo)));
+    if ($anioInicioCiclo < $anioActual) {
+        echo json_encode(['success' => false, 'error' => 'anio_anterior']);
+        exit();
+    }
+
     // Evita registrar periodos con nombre duplicado.
     $sql_verificar = "SELECT id FROM PeriodoInscripcion WHERE LOWER(nombre) = LOWER('$nombre')";
     $resultado_verificar = mysqli_query($conexion, $sql_verificar);

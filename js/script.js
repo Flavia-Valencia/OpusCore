@@ -1392,6 +1392,14 @@ if (formPeriodo) {
             return;
         }
 
+        // Validar que el año de inicio de ciclo no sea anterior al año actual
+        const anioActual = new Date().getFullYear();
+        const anioInicioCiclo = new Date(fechaInicioCiclo + 'T12:00:00').getFullYear();
+        if (anioInicioCiclo < anioActual) {
+            mostrarToastPremium('La fecha de inicio de ciclo no puede ser de un año anterior al actual (' + anioActual + ')');
+            return;
+        }
+
         const id = document.getElementById('periodo-id').value;
         const archivo = id ? 'editar-periodo.php' : 'crear-periodo.php';
 
@@ -1428,6 +1436,9 @@ if (formPeriodo) {
 
                 } else if (data.error === 'existe') {
                     mostrarToastPremium('Ya existe un período con este nombre: Intenta con otro nombre');
+
+                } else if (data.error === 'anio_anterior') {
+                    mostrarToastPremium('La fecha de inicio de ciclo no puede ser de un año anterior al actual');
 
                 } else if (data.error === 'fechas') {
                     mostrarToastPremium('La fecha de fin no puede ser menor a la de inicio');
