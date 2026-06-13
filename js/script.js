@@ -2554,181 +2554,257 @@ function inicializarTareasEstudiante() {
             mostrarToastPremium('Error de conexión: ' + err.message);
         }
     });
-
-    buscador?.addEventListener('input', aplicarFiltros);
-    estadoFiltro?.addEventListener('change', aplicarFiltros);
-    ordenFiltro?.addEventListener('change', aplicarFiltros);
 }
+// ─── TRÁMITES PENDIENTES: Selección múltiple con panel flotante ──────────────
+// El estudiante marca las cuotas que quiere pagar con checkboxes.
+// Un panel deslizante desde abajo muestra el resumen en tiempo real.
+// Al confirmar se abre el modal PayPal que envía el array de IDs al backend.
 
-// Abre el modal de pago para cancelar una mensualidad pendiente del estudiante.
-// Obtiene el id, nombre del curso y monto desde el botón seleccionado,
-// muestra el resumen en pantalla y prepara el botón de PayPal para procesar la cuota.
-function pagarTramitePendiente(btn) {
-    mensualidadSeleccionada = {
-        id: btn.dataset.id,
-        curso: btn.dataset.curso,
-        monto: parseFloat(btn.dataset.monto)
-    };
+document.addEventListener('DOMContentLoaded', function () {
+    const panel          = document.getElementById('tramites-panel');
+    if (!panel) return;  // Solo activo en la página de trámites pendientes
 
-    const modal = document.getElementById('modalPago');
-    const listaCursos = document.getElementById('pago-lista-cursos');
-    const totalPago = document.getElementById('pago-total');
+    const panelNumText   = document.getElementById('tramites-panel-num-text');
+    const panelTabCount  = document.getElementById('tramites-tab-count');
+    const panelLista     = document.getElementById('tramites-panel-lista');
+    const panelTotal     = document.getElementById('tramites-panel-total');
+    const panelPagarBtn  = document.getElementById('tramites-panel-pagar-btn');
+    const panelCancelar  = document.getElementById('tramites-panel-cancelar');
+    const panelTabBtn     = document.getElementById('tramites-panel-tab');
+    const checkAll       = document.getElementById('tramite-check-all');
 
-    listaCursos.innerHTML = `
-        <div class="pago-curso-item">
-            <span>${mensualidadSeleccionada.curso}</span>
-            <span>$${mensualidadSeleccionada.monto.toFixed(2)}</span>
-        </div>
-    `;
+    const modal          = document.getElementById('modalPagoTramites');
+    const modalLista     = document.getElementById('tramites-modal-lista');
+    const modalTotal     = document.getElementById('tramites-modal-total');
+    const modalCerrar    = document.getElementById('tramites-modal-cerrar');
+    const modalCancelar  = document.getElementById('tramites-modal-cancelar');
 
-    totalPago.textContent = `$${mensualidadSeleccionada.monto.toFixed(2)}`;
+    let tramitesSeleccionados = [];  // [{id, curso, monto}]
+    let paypalRendered = false;
 
-    modal.classList.add('activo');
-    document.body.style.overflow = 'hidden';
-    inicializarPayPalMensualidad();
-}
+    // ── Abre/cierra la gaveta lateral en móvil ──────────────────────────────
+    if (panelTabBtn) {
+        panelTabBtn.addEventListener('click', () => {
+            const abierta = panel.classList.toggle('abierta');
+            panelTabBtn.setAttribute('aria-expanded', abierta ? 'true' : 'false');
+        });
+    }
 
-function normalizarFuentePagoPayPal(data) {
-    const fuente = (data?.fundingSource || data?.paymentSource || '').toLowerCase();
-    if (!fuente) return '';
-    return ['card', 'credit'].includes(fuente) ? 'tarjeta' : 'paypal';
-}
+    // ── Actualiza el panel con los checkboxes marcados ──────────────────────
+    function actualizarPanel() {
+        const checks = document.querySelectorAll('.tramite-checkbox:checked');
+        tramitesSeleccionados = Array.from(checks).map(c => ({
+            id:     c.dataset.id,
+            curso:  c.dataset.curso,
+            monto:  parseFloat(c.dataset.monto)
+        }));
 
-// Inicializa el boton de PayPal para el pago de mensualidades.
-// Crea una orden con el id de la mensualidad y procesa el resultado aprobado.
-function inicializarPayPalMensualidad() {
-    const container = document.getElementById('paypal-button-container');
-    if (!container || container.dataset.rendered) return;
-    let metodoPagoSDK = 'paypal';
+        const n     = tramitesSeleccionados.length;
+        const total = tramitesSeleccionados.reduce((s, t) => s + t.monto, 0);
 
-    paypal.Buttons({
-
-        createOrder: async function (paypalData) {
-            metodoPagoSDK = normalizarFuentePagoPayPal(paypalData);
-            const res = await fetch('paypal-create-mensualidad.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    mensualidadId: mensualidadSeleccionada.id
-                })
-            });
-
-            const data = await res.json();
-
-            if (data.error) {
-                mostrarToast(data.error, 'error');
-                throw new Error(data.error);
-            }
-
-            return data.id;
-        },
-
-        onApprove: async function (data) {
-            metodoPagoSDK = normalizarFuentePagoPayPal(data) || metodoPagoSDK;
-            const res = await fetch('paypal-capture-mensualidad.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    orderID: data.orderID,
-                    metodoPago: metodoPagoSDK
-                })
-            });
-
-            const result = await res.json();
-
-            if (result.success) {
-                cerrarModalPago();
-                mostrarToast('¡Mensualidad pagada correctamente!', 'success');
-                setTimeout(() => window.location.reload(), 2000);
-            } else {
-                mostrarToast(result.error || 'Error al procesar pago', 'error');
-            }
-        },
-
-        onCancel: function () {
-            mostrarToast('Pago cancelado', 'error');
-        },
-
-        onError: function (err) {
-            console.error(err);
-            mostrarToast('Error de PayPal', 'error');
-        },
-
-        style: {
-            layout: 'vertical',
-            color: 'blue',
-            shape: 'pill',
-            label: 'pay'
+        if (n === 0) {
+            panel.classList.remove('visible', 'abierta');
+            document.body.classList.remove('inscripcion-barra-visible');
+            if (panelTabBtn) panelTabBtn.setAttribute('aria-expanded', 'false');
+            return;
         }
 
-    }).render('#paypal-button-container');
+        if (panelNumText)  panelNumText.textContent  = `${n} cuota${n === 1 ? '' : 's'} marcada${n === 1 ? '' : 's'}`;
+        if (panelTabCount) panelTabCount.textContent = `${n} cuota${n === 1 ? '' : 's'}`;
+        if (panelTotal)    panelTotal.textContent    = '$' + total.toFixed(2);
 
-    container.dataset.rendered = 'true';
-}
+        // Lista en el panel (chips compactos estilo badge)
+        if (panelLista) {
+            panelLista.innerHTML = tramitesSeleccionados
+                .map(t => `<span class="barra-curso-chip">${t.curso} ($${t.monto.toFixed(2)})</span>`)
+                .join('');
+        }
 
-function cerrarModalPagoCuota() {
-    const modal = document.getElementById('modalPagoCuota');
-    if (modal) {
+        panel.classList.add('visible');
+        document.body.classList.add('inscripcion-barra-visible');
+    }
+
+    // ── Escucha cambios en cualquier checkbox de trámite ────────────────────
+    document.querySelectorAll('.tramite-checkbox').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const total  = document.querySelectorAll('.tramite-checkbox').length;
+            const marcados = document.querySelectorAll('.tramite-checkbox:checked').length;
+            if (checkAll) checkAll.indeterminate = marcados > 0 && marcados < total;
+            if (checkAll) checkAll.checked = marcados === total;
+
+            const fila = cb.closest('.tramite-fila');
+            if (fila) fila.classList.toggle('tramite-fila-activa', cb.checked);
+
+            actualizarPanel();
+        });
+    });
+
+    // ── Seleccionar / deseleccionar todos (desktop checkbox) ────────────────
+    if (checkAll) {
+        checkAll.addEventListener('change', () => {
+            document.querySelectorAll('.tramite-checkbox').forEach(cb => {
+                cb.checked = checkAll.checked;
+                const fila = cb.closest('.tramite-fila');
+                if (fila) fila.classList.toggle('tramite-fila-activa', cb.checked);
+            });
+            actualizarPanel();
+            sincronizarBtnMovil();
+        });
+    }
+
+    // ── Botón "Seleccionar todas" en móvil ──────────────────────────────────
+    const mobileSelectAllBtn   = document.getElementById('tramite-mobile-select-all');
+    const mobileSelectAllLabel = document.getElementById('tramite-mobile-select-all-label');
+
+    function sincronizarBtnMovil() {
+        if (!mobileSelectAllBtn) return;
+        const total   = document.querySelectorAll('.tramite-checkbox').length;
+        const marcados = document.querySelectorAll('.tramite-checkbox:checked').length;
+        const todasMarcadas = marcados === total && total > 0;
+        if (mobileSelectAllLabel) {
+            mobileSelectAllLabel.textContent = todasMarcadas ? 'Deseleccionar todas' : 'Seleccionar todas';
+        }
+        mobileSelectAllBtn.querySelector('i').className = todasMarcadas
+            ? 'fas fa-times'
+            : 'fas fa-check-double';
+    }
+
+    if (mobileSelectAllBtn) {
+        mobileSelectAllBtn.addEventListener('click', () => {
+            const total   = document.querySelectorAll('.tramite-checkbox').length;
+            const marcados = document.querySelectorAll('.tramite-checkbox:checked').length;
+            const seleccionar = marcados < total;
+
+            document.querySelectorAll('.tramite-checkbox').forEach(cb => {
+                cb.checked = seleccionar;
+                const fila = cb.closest('.tramite-fila');
+                if (fila) fila.classList.toggle('tramite-fila-activa', seleccionar);
+            });
+            if (checkAll) {
+                checkAll.checked       = seleccionar;
+                checkAll.indeterminate = false;
+            }
+            actualizarPanel();
+            sincronizarBtnMovil();
+        });
+    }
+
+    // Sincronizar label del botón móvil cada vez que cambia un checkbox
+    document.querySelectorAll('.tramite-checkbox').forEach(cb => {
+        cb.addEventListener('change', sincronizarBtnMovil);
+    });
+
+    // ── Botón cancelar panel ────────────────────────────────────────────────
+    panelCancelar?.addEventListener('click', () => {
+        document.querySelectorAll('.tramite-checkbox').forEach(cb => {
+            cb.checked = false;
+            const fila = cb.closest('.tramite-fila');
+            if (fila) fila.classList.remove('tramite-fila-activa');
+        });
+        if (checkAll) { checkAll.checked = false; checkAll.indeterminate = false; }
+        tramitesSeleccionados = [];
+        panel.classList.remove('visible', 'abierta');
+        document.body.classList.remove('inscripcion-barra-visible');
+        if (panelTabBtn) panelTabBtn.setAttribute('aria-expanded', 'false');
+    });
+
+    // ── Botón Pagar ahora → abre el modal ──────────────────────────────────
+    panelPagarBtn?.addEventListener('click', () => {
+        if (!tramitesSeleccionados.length) return;
+
+        const total = tramitesSeleccionados.reduce((s, t) => s + t.monto, 0);
+
+        // Llena el modal
+        modalLista.innerHTML = tramitesSeleccionados.map(t => `
+            <div class="pago-curso-item">
+                <span>${t.curso}</span>
+                <span>$${t.monto.toFixed(2)}</span>
+            </div>
+        `).join('');
+        modalTotal.textContent = '$' + total.toFixed(2);
+
+        // Resetea el contenedor PayPal
+        const ppContainer = document.getElementById('tramites-paypal-container');
+        ppContainer.innerHTML = '';
+        paypalRendered = false;
+
+        modal.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+
+        inicializarPayPalTramites();
+    });
+
+    // ── Cerrar modal ────────────────────────────────────────────────────────
+    function cerrarModalTramites() {
         modal.classList.remove('activo');
         document.body.style.overflow = '';
     }
-}
+    modalCerrar?.addEventListener('click', cerrarModalTramites);
+    modalCancelar?.addEventListener('click', cerrarModalTramites);
+    modal?.addEventListener('click', e => { if (e.target === modal) cerrarModalTramites(); });
 
-function inicializarPayPalCuota() {
-    const container = document.getElementById('paypal-cuota-button-container');
-    if (!container || !tramitePendienteSeleccionado) return;
+    function normalizarFuentePagoPayPal(data) {
+        const fuente = (data?.fundingSource || data?.paymentSource || '').toLowerCase();
+        if (!fuente) return '';
+        return ['card', 'credit'].includes(fuente) ? 'tarjeta' : 'paypal';
+    }
 
-    // Limpia el contenedor para no duplicar botones si el modal se abre varias veces.
-    container.innerHTML = '';
+    // ── PayPal: crea y captura la orden con array de IDs ────────────────────
+    function inicializarPayPalTramites() {
+        const container = document.getElementById('tramites-paypal-container');
+        if (!container || paypalRendered) return;
+        paypalRendered = true;
 
-    paypal.Buttons({
-        createOrder: function (data, actions) {
-            const monto = parseFloat(tramitePendienteSeleccionado.monto || '0').toFixed(2);
+        let metodoPagoSDK = 'paypal';
 
-            // Crea la orden desde el SDK con el monto mostrado en pantalla.
-            // No llama endpoints PHP ni guarda datos en la base.
-            return actions.order.create({
-                purchase_units: [{
-                    description: `Cuota pendiente - ${tramitePendienteSeleccionado.curso}`,
-                    amount: {
-                        currency_code: 'USD',
-                        value: monto
-                    }
-                }],
-                application_context: {
-                    brand_name: 'Academia Futuro Digital',
-                    user_action: 'PAY_NOW'
+        paypal.Buttons({
+            createOrder: async function (paypalData) {
+                metodoPagoSDK = normalizarFuentePagoPayPal(paypalData);
+                const ids = tramitesSeleccionados.map(t => t.id);
+                const res = await fetch('paypal-create-mensualidad.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensualidadIds: ids })
+                });
+                const data = await res.json();
+                if (data.error) {
+                    mostrarToast(data.error, 'error');
+                    throw new Error(data.error);
                 }
-            });
-        },
+                return data.id;
+            },
 
-        onApprove: function (data, actions) {
-            return actions.order.capture().then(function () {
-                cerrarModalPagoCuota();
-                // Muestra el comprobante en pantalla despues de aprobar el pago.
-                mostrarToast('Pago aprobado en PayPal. Revisa tus tramites pendientes.', 'success');
-            });
-        },
+            onApprove: async function (data) {
+                metodoPagoSDK = normalizarFuentePagoPayPal(data) || metodoPagoSDK;
+                const res = await fetch('paypal-capture-mensualidad.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderID: data.orderID, metodoPago: metodoPagoSDK })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    cerrarModalTramites();
+                    panel.classList.remove('visible', 'abierta');
+                    document.body.classList.remove('inscripcion-barra-visible');
+                    mostrarToast('¡Pago realizado correctamente!', 'success');
+                    setTimeout(() => window.location.reload(), 2200);
+                } else {
+                    mostrarToast(result.error || 'Error al procesar el pago', 'error');
+                }
+            },
 
-        onCancel: function () {
-            mostrarToast('Cancelaste el pago. Podés intentarlo cuando quieras.', 'error');
-        },
+            onCancel: function () {
+                mostrarToast('Pago cancelado', 'error');
+            },
 
-        onError: function (err) {
-            console.error('PayPal cuota SDK error:', err);
-            mostrarToast('Error de PayPal. Intentá de nuevo.', 'error');
-        },
+            onError: function (err) {
+                console.error('PayPal tramites error:', err);
+                mostrarToast('Error de PayPal. Intentá de nuevo.', 'error');
+            },
 
-        style: { layout: 'vertical', color: 'blue', shape: 'pill', label: 'pay' }
-    }).render('#paypal-cuota-button-container');
-}
+            style: { layout: 'vertical', color: 'blue', shape: 'pill', label: 'pay' }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const modalPagoCuota = document.getElementById('modalPagoCuota');
-    if (modalPagoCuota) {
-        modalPagoCuota.addEventListener('click', function (e) {
-            if (e.target === this) cerrarModalPagoCuota();
-        });
+        }).render('#tramites-paypal-container');
     }
 });
 
