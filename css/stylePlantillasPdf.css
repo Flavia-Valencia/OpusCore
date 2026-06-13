@@ -1,0 +1,411 @@
+/* Plantillas PDF compartidas para facturas y constancias.
+   Usa reglas simples porque Dompdf no soporta todo el CSS moderno. */
+@page {
+    size: A4;
+    margin: 18px;
+}
+
+/* Base del documento renderizado */
+body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #111111;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+}
+
+/* Hoja principal del documento */
+.doc {
+    width: 100%;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111111;
+}
+
+/* Cabecera institucional reutilizable */
+.doc .header {
+    padding: 16px 20px 14px;
+    border-bottom: 2px solid #1f2937;
+    background: #ffffff;
+}
+
+.header-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.header-table td {
+    border: none;
+    vertical-align: top;
+}
+
+.logo-cell {
+    width: 62px;
+}
+
+.logo-cell img,
+.logo-placeholder {
+    width: 48px;
+    height: auto;
+}
+
+.logo-placeholder {
+    padding: 12px 0;
+    border: 1px solid #d1d5db;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Datos del emisor y bloque del numero de documento */
+.emisor-info {
+    padding: 0 16px 0 0;
+}
+
+.org-name {
+    color: #1f2937;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.org-sub {
+    margin-top: 3px;
+    color: #4b5563;
+    font-size: 9px;
+    letter-spacing: .2px;
+    text-transform: uppercase;
+}
+
+.org-meta {
+    margin-top: 6px;
+    color: #4b5563;
+    font-size: 8.5px;
+    line-height: 1.45;
+}
+
+.doc-badge {
+    width: 145px;
+    padding-left: 10px;
+    border-left: 1px solid #d1d5db;
+    text-align: right;
+}
+
+.doc-type {
+    color: #1f2937;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: .2px;
+    text-transform: uppercase;
+}
+
+.doc-num,
+.doc-fecha {
+    color: #374151;
+    font-size: 8.5px;
+}
+
+/* Estado del documento: pagado, pendiente, generado, etc. */
+.estado-badge {
+    display: inline-block;
+    margin-top: 7px;
+    padding: 2px 7px;
+    border: 1px solid #d1d5db;
+    background: #f3f4f6;
+    color: #1f2937;
+    font-size: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Secciones laterales de emisor/receptor */
+.partes {
+    width: 100%;
+    overflow: hidden;
+    border-bottom: 1px solid #d1d5db;
+    background: #f9fafb;
+}
+
+.parte {
+    float: left;
+    width: 50%;
+    min-height: 104px;
+    padding: 12px 18px;
+    box-sizing: border-box;
+}
+
+.parte + .parte {
+    border-left: 1px solid #d1d5db;
+}
+
+.parte-titulo {
+    margin-bottom: 7px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #d1d5db;
+    color: #1f2937;
+    font-size: 8px;
+    font-weight: bold;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.parte-fila {
+    margin-bottom: 3px;
+    color: #111111;
+    font-size: 9px;
+    line-height: 1.45;
+}
+
+.lbl {
+    display: inline-block;
+    width: 72px;
+    color: #374151;
+    font-weight: bold;
+}
+
+.tabla-wrap {
+    clear: both;
+    padding: 12px 18px 0;
+}
+
+table.items {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #d1d5db;
+    font-size: 8.5px;
+}
+
+table.items th,
+table.items td {
+    padding: 6px;
+    border-bottom: 1px solid #d1d5db;
+    vertical-align: top;
+}
+
+table.items th {
+    background: #1f2937;
+    color: #ffffff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+table.items td {
+    background: #ffffff;
+}
+
+.center {
+    text-align: center;
+}
+
+.num {
+    text-align: right;
+}
+
+.tipo-tag {
+    padding: 1px 5px;
+    border: 1px solid #d1d5db;
+    background: #f3f4f6;
+    color: #1f2937;
+    font-size: 7.5px;
+    font-weight: bold;
+}
+
+.sello {
+    margin: 6px 18px 0;
+    padding: 2px 8px;
+    border: 1px solid #6b7280;
+    color: #374151;
+    font-size: 9px;
+}
+
+.totales-wrap {
+    padding: 8px 18px 0;
+    text-align: right;
+}
+
+table.totales {
+    width: 230px;
+    margin-left: auto;
+    border-collapse: collapse;
+    font-size: 9px;
+}
+
+table.totales td {
+    padding: 5px 7px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.total-row {
+    background: #1f2937;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.observaciones {
+    margin: 10px 18px 0;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    font-size: 9px;
+}
+
+.letras {
+    margin-bottom: 6px;
+    color: #374151;
+    font-size: 9.5px;
+    font-weight: bold;
+}
+
+.obs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 4px;
+}
+
+.obs-table td {
+    width: 50%;
+    padding: 3px 6px 3px 0;
+    vertical-align: top;
+}
+
+.obs-lbl {
+    display: inline-block;
+    width: 95px;
+    color: #374151;
+    font-weight: bold;
+}
+
+.footer {
+    margin-top: 16px;
+    padding: 10px 18px 14px;
+    border-top: 1px solid #d1d5db;
+    color: #4b5563;
+    font-size: 8px;
+}
+
+.footer-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.footer-table td {
+    border: none;
+    vertical-align: top;
+}
+
+.footer-left {
+    width: 65%;
+    line-height: 1.45;
+}
+
+.footer-right {
+    width: 30%;
+    color: #6b7280;
+    text-align: right;
+    font-size: 8px;
+}
+
+.print-btn {
+    display: none;
+}
+
+/* ── Constancias administrativas ────────────────────────── */
+.constancia-doc .header {
+    border-bottom-color: #053170;
+}
+
+.constancia-hero {
+    padding: 30px 28px 24px;
+    border-bottom: 1px solid #d1d5db;
+    text-align: center;
+}
+
+.constancia-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 3px 9px;
+    border: 1px solid #d1d5db;
+    background: #f3f4f6;
+    color: #374151;
+    font-size: 7.5px;
+    font-weight: bold;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+}
+
+.constancia-hero h1 {
+    margin: 0;
+    color: #053170;
+    font-size: 22px;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+}
+
+.constancia-hero p {
+    margin: 8px 0 0;
+    color: #4b5563;
+    font-size: 9.5px;
+}
+
+.constancia-partes {
+    border-bottom: 1px solid #d1d5db;
+}
+
+.constancia-partes .parte {
+    width: 33.333%;
+    min-height: 132px;
+}
+
+.constancia-cuerpo {
+    padding: 30px 34px 20px;
+}
+
+.constancia-cuerpo p {
+    margin: 0 0 14px;
+    color: #1f2937;
+    font-size: 12px;
+    line-height: 1.75;
+    text-align: justify;
+}
+
+.constancia-validacion {
+    margin: 6px 28px 0;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+}
+
+.constancia-validacion table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.constancia-validacion td {
+    width: 33.33%;
+    padding: 10px 12px;
+    border-left: 1px solid #d1d5db;
+    vertical-align: top;
+}
+
+.constancia-validacion td:first-child {
+    border-left: 0;
+}
+
+.constancia-validacion span,
+.constancia-validacion strong {
+    display: block;
+}
+
+.constancia-validacion span {
+    color: #6b7280;
+    font-size: 7.5px;
+    font-weight: bold;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+.constancia-validacion strong {
+    margin-top: 4px;
+    color: #1f2937;
+    font-size: 9px;
+}

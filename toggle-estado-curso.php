@@ -1,7 +1,7 @@
 <?php
-# Recibe el ID de un curso y cambia su estado entre activo e inactivo.
-# Verifica que no existan estudiantes con inscripción activa antes de deshabilitarlo.
-# Al desactivar, elimina la asignación de docente y horarios, y devuelve el nuevo estado en JSON.
+// Cambia el estado de un curso entre activo e inactivo.
+// Antes de deshabilitarlo verifica que no tenga inscripciones activas.
+// Al desactivar, libera docente y horarios, y responde el nuevo estado en JSON.
 include("includes/conexion.php");
 
 $id = intval($_POST['id']);
@@ -27,6 +27,29 @@ if ($curso['estado'] == 1) {
 
     mysqli_query($conexion, "UPDATE cursos SET idDocente = NULL WHERE id = $id");
     mysqli_query($conexion, "DELETE FROM CursoHorario WHERE idCurso = $id");
+} else {
+    // Al intentar activar (estado actual = 0)
+    $sql_curso_periodo = "SELECT c.fechaFin, pi.estado AS estado_periodo, pi.fechaFinCiclo, pi.nombre AS nombre_periodo
+                          FROM cursos c
+                          LEFT JOIN PeriodoInscripcion pi ON c.idPeriodo = pi.id
+                          WHERE c.id = $id";
+    $res_curso_periodo = mysqli_query($conexion, $sql_curso_periodo);
+    if ($res_curso_periodo && $row = mysqli_fetch_assoc($res_curso_periodo)) {
+        if ($row['estado_periodo'] !== null && $row['estado_periodo'] == 0) {
+            echo json_encode([
+                'error' => true,
+                'mensaje' => 'No se puede activar el curso porque el período "' . $row['nombre_periodo'] . '" al que pertenece está inactivo.'
+            ]);
+            exit();
+        }
+        if ($row['fechaFinCiclo'] !== null && $row['fechaFin'] > $row['fechaFinCiclo']) {
+            echo json_encode([
+                'error' => true,
+                'mensaje' => 'No se puede activar el curso porque su fecha de fin supera la fecha de fin del ciclo.'
+            ]);
+            exit();
+        }
+    }
 }
 
 mysqli_query($conexion, "UPDATE cursos SET estado = IF(estado = 1, 0, 1) WHERE id = $id");

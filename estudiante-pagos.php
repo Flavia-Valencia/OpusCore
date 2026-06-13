@@ -38,12 +38,22 @@ $stmt = $conexion->prepare("
         p.estado AS estado_pago,
         p.fechaPago,
         p.monto,
-        mp.nombre AS metodo_pago
+        mp.nombre AS metodo_pago,
+        f.numeroFactura,
+        GROUP_CONCAT(DISTINCT c.nombre SEPARATOR ', ') AS curso,
+        pi.nombre AS periodo
     FROM pagos p
     INNER JOIN MetodosPago mp ON p.idMetodoPago = mp.id
+    LEFT JOIN facturas f ON f.idPago = p.id
+    LEFT JOIN detalle_facturas df ON df.idFactura = f.id AND df.tipoOrigen = 'Inscripcion'
+    LEFT JOIN cursos c ON c.id = df.idOrigen
+    LEFT JOIN inscripciones i ON i.idEstudiante = p.idEstudiante AND i.idCurso = c.id
+    LEFT JOIN PeriodoInscripcion pi ON i.idPeriodo = pi.id
     WHERE p.idEstudiante = ? AND p.estado = 'Completado'
+    GROUP BY p.id
     ORDER BY p.fechaPago DESC
 ");
+
 $stmt->bind_param('i', $idEstudiante);
 $stmt->execute();
 $pagosRealizados = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -97,7 +107,7 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                     <i class="fas fa-clipboard-list"></i>
                     <span>Inscripción</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="estudiante-calificaciones.php" class="nav-item">
                     <i class="fas fa-chart-line"></i>
                     <span>Calificaciones</span>
                 </a>
@@ -112,13 +122,9 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                         <a href="estudiante-tramites-pendientes.php">Trámites pendientes</a>
                     </div>
                 </div>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>Mensajes</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-gear"></i>
-                    <span>Configuración</span>
+                <a href="estudiante-constancias.php" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Constancias</span>
                 </a>
             </nav>
 
@@ -148,7 +154,7 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                     <p>Historial de transacciones completadas y comprobantes disponibles.</p>
                 </div>
                 <div class="banner-fecha">
-                    <strong><?= date('d/m/Y') ?></strong>
+                    <strong id="fecha-hoy"></strong>
                 </div>
             </div>
 
@@ -207,8 +213,8 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                                     ?>
                                     <tr>
                                         <td data-label="Código"><?= htmlspecialchars($codigo) ?></td>
-                                        <td data-label="Curso">"Espera Factura Electronica"</td> <!-- Esto se modificará cuando se implemente la facturación electronica-->
-                                        <td data-label="Periodo">Espera Factura Electronica</td> <!-- Esto se modificará cuando se implemente la facturación electronica-->
+                                        <td data-label="Curso"><?= htmlspecialchars($pago['curso'] ?? '—') ?></td>
+                                        <td data-label="Periodo"><?= htmlspecialchars($pago['periodo'] ?? '—') ?></td>
                                         <td data-label="Monto">$<?= number_format((float) $pago['monto'], 2) ?></td>
                                         <td data-label="Método"><?= htmlspecialchars($pago['metodo_pago'] ?: 'PayPal') ?></td>
                                         <td data-label="Fecha"><?= htmlspecialchars($fechaPago) ?></td>

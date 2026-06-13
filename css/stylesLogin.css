@@ -1,16 +1,16 @@
-/* Estilos para el login */
+/* Pantalla de login: panel visual izquierdo y formulario de acceso. */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Fuente importada de Google Fonts */
+/* Fuente base importada desde Google Fonts */
 .raleway-all {
-  font-family: "Raleway", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }
 
 /* ── LAYOUT PRINCIPAL: dos mitades lado a lado ───────────── */
@@ -19,18 +19,39 @@
     height: 100vh;
 }
 
-/* lado izquierdo con degradado animado */
+/* Panel izquierdo con degradado animado */
 .izquierda {
     width: 50%;
-    background: linear-gradient(400deg, #053170, #069DBF, #ffffff30);
+    background: linear-gradient(400deg, #053170, #069DBF, rgba(240, 240, 240, 0.35));
     background-size: 100% 200%;
-    animation: moverDegradado 10s ease-in-out infinite alternate;
     color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
     position: relative;
     padding: 80px;
+    overflow: hidden;
+    animation: moverDegradado 4.5s ease-in-out infinite alternate;
+}
+
+.izquierda::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.5) 0 1.6px, transparent 2.2px),
+        radial-gradient(circle, rgba(85, 226, 255, 0.65) 0 1.6px, transparent 2.2px);
+    background-position: 0 0, 38px 28px;
+    background-size: 76px 76px, 104px 104px;
+    opacity: 0.45;
+    animation: particulasLogin 16s ease-in-out infinite alternate;
+}
+
+.texto-arriba,
+.redes {
+    position: relative;
+    z-index: 1;
 }
 
 .texto-arriba h2 {
@@ -45,7 +66,7 @@
     line-height: 1.1;
 }
 
-/* íconos de redes centrados y pegados al fondo del lado izquierdo */
+/* Enlaces sociales centrados al fondo del panel izquierdo */
 .redes {
     position: absolute;
     bottom: 30px;
@@ -84,16 +105,32 @@
     border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* lado derecho: formulario centrado */
+/* Panel derecho: formulario centrado */
 .derecha {
     width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     background: #f0f0f0;
+    position: relative;
+    overflow: hidden;
 }
 
-/* tarjeta del formulario con animación de entrada */
+.derecha::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle, rgba(6, 157, 191, 0.22) 0 1.5px, transparent 2.2px),
+        radial-gradient(circle, rgba(5, 49, 112, 0.12) 0 1.5px, transparent 2.2px);
+    background-position: 12px 18px, 54px 48px;
+    background-size: 90px 90px, 124px 124px;
+    opacity: 0.55;
+    animation: particulasLoginClaro 18s ease-in-out infinite alternate;
+}
+
+/* Tarjeta del formulario con animacion de entrada */
 .contenedor-formulario {
     animation: fadeUp 0.8s ease 0.3s both;
     background: #FFFFFF;
@@ -138,7 +175,7 @@
     box-shadow: 0 0 0 3px rgba(6, 157, 191, 0.2);
 }
 
-/* mensaje de error al introducir usuario mal o inexistente */
+/* Mensaje de error de credenciales */
 .mensaje-error {
     background-color: #ffe0e0;
     color: #c0392b;
@@ -150,7 +187,7 @@
     text-align: center;
 }
 
-/* input de contraseña con espacio para el ícono del ojo */
+/* Input de contrasena con espacio para el icono de visibilidad */
 .input-password {
     position: relative;
 }
@@ -159,7 +196,7 @@
     padding-right: 42px;
 }
 
-/* ícono del ojo: invisible por defecto, aparece cuando el usuario escribe (manejado por JS) */
+/* Icono de visibilidad: aparece cuando JS detecta texto en el input */
 .ver-contrasena {
     position: absolute;
     right: 12px;
@@ -219,21 +256,61 @@
     transform: translateY(0);
 }
 
-/* animación del degradado del lado izquierdo */
+/* Animacion del degradado del panel izquierdo */
 @keyframes moverDegradado {
-    0%   { background-position: top; }
-    100% { background-position: bottom; }
+    0% {
+        background-position: top;
+    }
+
+    100% {
+        background-position: bottom;
+    }
 }
 
-/* entrada del formulario desde abajo con fade */
+@keyframes particulasLogin {
+    0% {
+        background-position: 0 0, 38px 28px;
+    }
+
+    50% {
+        background-position: 16px -10px, 20px 44px;
+    }
+
+    100% {
+        background-position: -14px 18px, 60px 8px;
+    }
+}
+
+@keyframes particulasLoginClaro {
+    0% {
+        background-position: 12px 18px, 54px 48px;
+    }
+
+    50% {
+        background-position: -8px 34px, 74px 26px;
+    }
+
+    100% {
+        background-position: 28px 0, 36px 68px;
+    }
+}
+
+/* Entrada del formulario desde abajo con fade */
 @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ── DISEÑO RESPONSIVO ───────────────────────────────────── */
 
-/* tablet: formulario con fondo semi-transparente y blur */
+/* Tablet: formulario con fondo semitransparente y blur */
 @media (max-width: 900px) {
     .izquierda {
         padding: 50px 40px;
@@ -243,7 +320,7 @@
         font-size: 36px;
     }
 
-    /* fondo blanco semitransparente con blur — el degradado se empieza a ver detrás */
+    /* Fondo translucido para dejar ver el degradado */
     .contenedor-formulario {
         max-width: 85%;
         width: 360px;
@@ -258,10 +335,10 @@
     }
 }
 
-/* móvil: el degradado cubre toda la pantalla y el formulario flota encima */
+/* Movil: el degradado cubre toda la pantalla y el formulario flota encima */
 @media (max-width: 640px) {
 
-    /* contenedor en columna con overflow hidden para que no se salga el degradado */
+    /* Evita que el degradado se salga del viewport */
     .contenedor {
         position: relative;
         flex-direction: column;
@@ -270,7 +347,7 @@
         overflow: hidden;
     }
 
-    /* .izquierda pasa a ser el fondo completo de la pantalla */
+    /* El panel izquierdo funciona como fondo completo */
     .izquierda {
         position: absolute;
         inset: 0;
@@ -278,14 +355,19 @@
         height: 100%;
         padding: 44px 28px 80px;
         justify-content: flex-start;
-        background: linear-gradient(400deg, #053170, #069DBF, #ffffff30);
-        background-size: 100% 300%;
-        animation: moverDegradado 10s ease-in-out infinite alternate;
+        background: linear-gradient(400deg, #053170, #069DBF, rgba(240, 240, 240, 0.35));
+        background-size: 100% 200%;
         z-index: 0;
+        animation: moverDegradado 7s ease-in-out infinite alternate;
     }
 
-    .texto-arriba h2 { font-size: 15px; }
-    .texto-arriba h1 { font-size: 26px; }
+    .texto-arriba h2 {
+        font-size: 15px;
+    }
+
+    .texto-arriba h1 {
+        font-size: 26px;
+    }
 
     .redes {
         position: absolute;
@@ -301,7 +383,7 @@
         padding: 4px 10px;
     }
 
-    /* .derecha transparent y encima del degradado gracias al z-index */
+    /* El panel derecho queda por encima del degradado */
     .derecha {
         position: relative;
         width: 100%;
@@ -339,12 +421,24 @@
     }
 }
 
-/* móvil pequeño: solo ajustes menores de fuente y padding */
+/* Movil pequeno: ajustes finos de fuente y padding */
 @media (max-width: 380px) {
-    .texto-arriba h1 { font-size: 22px; }
-    .contenedor-formulario { padding: 28px 18px; }
-    .iconos { gap: 4px; }
-    .iconos a { font-size: 10px; padding: 4px 8px; }
+    .texto-arriba h1 {
+        font-size: 22px;
+    }
+
+    .contenedor-formulario {
+        padding: 28px 18px;
+    }
+
+    .iconos {
+        gap: 4px;
+    }
+
+    .iconos a {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
 }
 
 .custom-modal-overlay {

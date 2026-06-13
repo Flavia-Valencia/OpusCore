@@ -9,7 +9,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!--PARA FUENTES-->
+    <!-- Fuente principal de la interfaz -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
 
 <body class="raleway-all">
     <div class="contenedor">
-        <!--Lado del degradado-->
+        <!-- Panel visual con marca y contactos -->
         <div class="izquierda">
             <div class="texto-arriba">
                 <h2>Bienvenido/a</h2>
@@ -30,14 +30,14 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
             <div class="redes">
                 <p>Contactos</p>
                 <div class="iconos">
-                    <a href="#">Facebook</a>
-                    <a href="#">WhatsApp</a>
-                    <a href="#">Instagram</a>
+                    <a href="https://www.instagram.com/academia.futuro.digital?igsh=bWw3a3F0ZW51MmFx" target="_blank">Facebook</a>
+                    <a href="https://wa.me/+50372034207" target="_blank">WhatsApp</a>
+                    <a href="https://www.instagram.com/academia.futuro.digital?igsh=bWw3a3F0ZW51MmFx" target="_blank">Instagram</a>
                 </div>
             </div>
         </div>
 
-        <!--Lado del formulario-->
+        <!-- Panel del formulario de acceso -->
         <div class="derecha">
             <div class="contenedor-formulario">
                 <form id="formulario-inicio" role="tabpanel" action="includes/procesar_login.php" method="POST" aria-labelledby="leyenda-inicio" autocomplete="on">
@@ -52,14 +52,15 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
                         <label for="contrasena">Contraseña</label>
                         <div class="input-password">
                             <input id="contrasena" name="contrasena" type="password" placeholder="••••••••" required />
-                            <!-- Ícono de ojo para mostrar u ocultar la contraseña -->
+                            <!-- Control para mostrar u ocultar la contrasena -->
                             <span class="ver-contrasena" onclick="toggleContrasena('contrasena', 'icono-ojo')">
                                 <img id="icono-ojo" src="img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20" />
                             </span>
                         </div>
                     </div>
                     
-                    <!-- <div class="pie">
+                    <!-- Recuperacion de contrasena pendiente de habilitar.
+                    <div class="pie">
                         <p>Olvidaste tu contraseña?</p><a href="#" class="enlace">Enviar solicitud de reestablecimiento</a>
                     </div> -->
 

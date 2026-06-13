@@ -1,4 +1,4 @@
-<?php                   #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
+<?php
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -11,7 +11,7 @@ if(!isset($_SESSION["usuario"])){
 }
 
 include("includes/conexion.php");
-// Carga docentes con su id de la tabla docentes y cuenta sus cursos activos
+// Lista docentes activos y cuenta sus cursos activos para validar el limite de asignaciones.
 $query_doc = "SELECT d.id, CONCAT(u.nombre, ' ', u.apellido) AS nombre_completo,
               COUNT(c.id) AS total_cursos
               FROM docentes d
@@ -24,7 +24,7 @@ $docentes = [];
 while($doc = mysqli_fetch_assoc($res_doc)) {
     $docentes[] = $doc;
 }
-// Carga todas las categorías disponibles -->
+// Carga las categorias disponibles para los selects de curso.
 $query_cat = "SELECT id, nombre FROM categorias ORDER BY nombre ASC";
 $res_cat = mysqli_query($conexion, $query_cat);
 $categorias = [];
@@ -39,7 +39,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!--PARA FUENTES-->
+    <!-- Fuentes e iconos de la interfaz -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -70,23 +70,24 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
         <label for="menu-toggle" class="menu-overlay"></label>
 
         <nav class="nav">
-            <!--Funciona para nombre en celu -->
+            <!-- Datos del usuario visibles dentro del menu movil -->
             <div class="menu-user">
                 <div class="menu-user-role">Admin</div>
                 <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
             </div>
-            <!-------------->
-
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
-            <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
-            <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
-            <a href="./admin-cursos.php" class="btn-nav active">Cursos</a>
+            <a href="./admin-admins.php" class="btn-nav">Administradores</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
+            <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
+            <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
+            <a href="./admin-cursos.php" class="btn-nav active">Cursos</a>
+            <a href="./admin-plazo.php" class="btn-nav">Plazo Notas</a>
             <a href="./admin-pagos.php" class="btn-nav">Pagos</a>
+            <a href="./admin-facturacion.php" class="btn-nav">Facturación</a>
+            <a href="./admin-constancias.php" class="btn-nav">Constancias</a>
         
-            <!--Boton para cerrar sesión en celu-->
+            <!-- Cierre de sesion dentro del menu movil -->
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
-            <!-------------->
 
             <a href="includes/logout.php" style="text-decoration:none;">
                 <div class="user-profile">
@@ -106,14 +107,20 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
             <button class="btn-nuevo">+ Nuevo Curso</button>
         </div>
 
-        <!--Mensaje de validación del curso-->
-       <?php if(isset($_GET['error'])): ?>
+        <!-- Mensajes enviados por crear-curso.php y editar-curso.php despues de validar datos -->
+        <?php if(isset($_GET['error'])): ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         <?php if($_GET['error'] == 'existe'): ?>
             mostrarToastPremium('El curso ya existe. Intenta con otro nombre.');
         <?php elseif($_GET['error'] == 'fechas'): ?>
             mostrarToastPremium('La fecha de fin no debe ser menor a la fecha de inicio. Intente con otras fechas');
+        <?php elseif($_GET['error'] == 'limite_docente'): ?>
+            mostrarToastPremium('El docente ya tiene el límite de cursos activos asignados.');
+        <?php elseif($_GET['error'] == 'fecha_fin_ciclo'): ?>
+            mostrarToastPremium('La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo.');
+        <?php elseif($_GET['error'] == 'general'): ?>
+            mostrarToastPremium('Ocurrió un error al guardar el curso. Verifica los datos e intenta de nuevo.');
         <?php endif; ?>
     });
 </script>
@@ -129,7 +136,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
         </div>
     </main>
 
-    <!-- MODAL NUEVO CURSO -->
+    <!-- Modal para crear cursos -->
 <div id="modalNuevoCurso" class="modal-overlay">
     <div class="modal-contenido">
         <button class="modal-cerrar" onclick="cerrarModalNuevoCurso()">
@@ -140,7 +147,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
             <i class="fas fa-book"></i> Nuevo Curso
         </h2>
 
-        <form method="POST" action="crear-curso.php">
+        <form id="formNuevoCurso" method="POST" action="crear-curso.php">
 
             <h3 class="modal-subtitulo">Detalles del curso</h3>
             <div class="modal-grid">
@@ -152,7 +159,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
                 
                 <div class="modal-campo full-width">
                     <label>Docente asignado</label>
-                    <!-- Select cargado desde BD, deshabilita docentes que ya tienen 4 cursos activos -->
+                    <!-- Deshabilita docentes que ya alcanzaron el limite de cursos activos -->
                     <select name="idDocente" required>
                         <option value="">Seleccione un docente</option>
                         <?php foreach($docentes as $doc): 
@@ -189,14 +196,14 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
                             <?php endforeach; ?>
                         </select>
                     </div>
-                <!-- Select para elegir prerrequisitos Carga cursos activos desde la BD y envía varios IDs al backend (luego lo arreglan)) --> 
+                <!-- Prerrequisito opcional cargado desde cursos activos -->
 
                 <div class="modal-campo" style="grid-column: span 2;">
                     <label>Prerrequisitos (opcional)</label>
                     <select name="idPrerrequisitos"  id="nuevo-prerrequisitos" disabled>
                         <option value="">Ninguno</option>
                         <?php
-                        $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
+                        $query = "SELECT id, nombre FROM cursos ORDER BY nombre ASC";
                         $result = mysqli_query($conexion, $query);
                         while($curso = mysqli_fetch_assoc($result)) { ?>
                             <option value="<?php echo $curso['id']; ?>">
@@ -239,7 +246,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
     </div>
 </div>
 
-<!-- MODAL EDITAR CURSO -->
+<!-- Modal para editar cursos -->
 <div id="modalEditarCurso" class="modal-overlay">
     <div class="modal-contenido">
         <button class="modal-cerrar" onclick="cerrarModalCurso()">
@@ -250,9 +257,9 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
             <i class="fas fa-edit"></i> Editar Curso
         </h2>
 
-        <form method="POST" action="editar-curso.php">
+        <form id="formEditarCurso" method="POST" action="editar-curso.php">
 
-            <!-- ID oculto -->
+            <!-- Identificador del curso que se esta editando -->
             <input type="hidden" name="id" id="edit-id-curso">
 
             <h3 class="modal-subtitulo">Detalles del curso</h3>
@@ -266,7 +273,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
 
                 <div class="modal-campo full-width">
                     <label>Docente asignado</label>
-                    <!-- Reutiliza el arreglo $docentes cargado arriba, deshabilita docentes con 4 cursos activos -->
+                    <!-- Reutiliza docentes activos y bloquea los que ya alcanzaron el limite -->
                     <select name="idDocente" id="edit-docente-curso" required>
                         <option value="">Seleccione un docente</option>
                         <?php foreach($docentes as $doc): 
@@ -311,7 +318,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
                     <select name="idPrerrequisitos" id="edit-prerrequisitos" disabled>
                         <option value="">Ninguno</option>
                         <?php
-                        $query = "SELECT id, nombre FROM cursos WHERE estado = 1";
+                        $query = "SELECT id, nombre FROM cursos ORDER BY nombre ASC";
                         $result = mysqli_query($conexion, $query);
                         while($curso = mysqli_fetch_assoc($result)) { ?>
                             <option value="<?php echo $curso['id']; ?>">
@@ -361,7 +368,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
     </div>
 </div>
 
-<!-- MODAL PARA HORARIOS CURSO -->
+<!-- Modal para administrar horarios del curso -->
 <div id="modalHorarios" class="modal-overlay">
     <div class="modal-contenido modal-horarios-premium">
         <button class="modal-cerrar" onclick="cerrarModalHorarios()">
@@ -375,10 +382,10 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
        <h3 class="modal-subtitulo">Configuracion de bloque</h3>
 
         <div id="bloques-horario-container">
-            <!-- Los bloques de horario se cargarán aquí dinámicamente -->
+            <!-- Contenedor donde JS inserta los bloques de horario guardados o nuevos -->
         </div>
 
-            <!-- Template para nuevos bloques de horario (oculto) -->
+            <!-- Plantilla oculta para agregar bloques de horario desde JS -->
             <template id="template-horario-card">
                 <div class="horario-card-registro" style="margin-top: 15px;">
                     <button type="button" class="horario-card-cerrar"><i class="fas fa-times"></i></button>
@@ -432,7 +439,7 @@ while($cat = mysqli_fetch_assoc($res_cat)) {
 
     </div>
 
-    <!-- Librería SweetAlert2 para mostrar alertas personalizadas en la interfaz -->
+    <!-- SweetAlert2 para alertas personalizadas -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script src="js/script.js"></script>

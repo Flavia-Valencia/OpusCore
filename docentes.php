@@ -1,4 +1,4 @@
-<?php #esto es para que cuando alguien inice sesion, la direccion de el correo cambie
+<?php
 session_start();
 
 header("Cache-Control: no-store, no-cache, must-revalidate");
@@ -17,7 +17,7 @@ if(!isset($_SESSION["usuario"])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--PARA FUENTES-->
+    <!-- Fuentes e iconos de la interfaz -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -51,17 +51,14 @@ if(!isset($_SESSION["usuario"])){
             <nav>
 
                 <ul>
-                    <li class="active">
+                    <li class="active" onclick="window.location.href='docentes.php'">
                         <i class="fas fa-book"></i> Mis Cursos
                     </li>
-                    <li>
-                        <i class="fas fa-chart-line"></i> Calificaciones
+                    <li onclick="window.location.href='docente-registro-notas.php'">
+                        <i class="fas fa-chart-line"></i> Registro de Notas
                     </li>
-                    <li>
-                        <i class="fas fa-envelope"></i> Mensajes
-                    </li>
-                    <li>
-                        <i class="fas fa-cog"></i> Configuración
+                    <li onclick="window.location.href='docente-constancias.php'">
+                        <i class="fas fa-file-alt"></i> Constancias
                     </li>
                 </ul>
             </nav>
@@ -80,7 +77,7 @@ if(!isset($_SESSION["usuario"])){
 
             <header class="header">
 
-                <!-- Para el menú hamburguesa -->
+                <!-- Control del menu movil -->
                 <label for="sidebar-toggle" class="menu-toggle">
                     <i class="fas fa-bars"></i>
                 </label>
@@ -114,7 +111,7 @@ if(!isset($_SESSION["usuario"])){
 
             <p class="section-title">Mis Cursos</p>
 
-            <!-- TARJETAS DE CURSOS -->
+            <!-- Cursos activos asignados al docente -->
             <section class="courses">
                 <?php
                 include("includes/conexion.php");
@@ -124,7 +121,12 @@ if(!isset($_SESSION["usuario"])){
 
                 if (!empty($cursos)):
                     foreach ($cursos as $curso): ?>
-                        <div class="card">
+                        <div
+                            class="card curso-card-docente"
+                            data-curso-id="<?= (int)$curso['id'] ?>"
+                            data-curso-nombre="<?= htmlspecialchars($curso['nombre']) ?>"
+                            tabindex="0"
+                        >
                             <div class="card-header">
                                 <h3 class="card-title"><?php echo htmlspecialchars($curso['nombre']); ?></h3>
 
@@ -152,9 +154,26 @@ if(!isset($_SESSION["usuario"])){
                                     <span class="meta-label">Inscritos</span>
                                     <span class="meta-value"><?php echo $curso['alumnos_inscritos']; ?> </span>
                                 </div>
-                                <div class="meta-item">
-                                    <span class="meta-label">Costo mensual</span>
-                                    <span class="meta-value price">$<?php echo number_format($curso['costoMensual'], 2); ?></span>
+                               
+                            </div>
+                            <!-- Accesos de gestion para el curso -->
+                            <div class="curso-acciones-panel">
+                                <p>¿Qué quieres gestionar?</p>
+                                <div class="curso-acciones-grid">
+                                    <a
+                                        class="card-action"
+                                        href="docente-organizacion-clases.php?curso_id=<?= urlencode($curso['id']) ?>&curso=<?= urlencode($curso['nombre']) ?>"
+                                    >
+                                        <i class="fas fa-folder-open"></i>
+                                        Organizar clases
+                                    </a>
+                                    <a
+                                        class="card-action card-action-secondary"
+                                        href="docente-gestion-tareas.php?curso_id=<?= urlencode($curso['id']) ?>&curso=<?= urlencode($curso['nombre']) ?>"
+                                    >
+                                        <i class="fas fa-clipboard-list"></i>
+                                        Gestionar tareas
+                                    </a>
                                 </div>
                             </div>
                         </div>

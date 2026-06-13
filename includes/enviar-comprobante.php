@@ -77,6 +77,17 @@ function enviarComprobante($emailDestino, $nombreDestino, $datosPago) {
             $pdfOutput = $dompdf->output();
             
             $mail->addStringAttachment($pdfOutput, 'comprobante-pago-' . $datosPago['captureId'] . '.pdf', 'base64', 'application/pdf');
+            // Adjuntar factura electrónica si se generó correctamente
+                if (!empty($datosPago['pdfFactura'])) {
+                     $nombreArchivoFactura = 'factura-' . ($datosPago['numeroFactura'] ?? $datosPago['captureId']) . '.pdf';
+                     $mail->addStringAttachment(
+                        $datosPago['pdfFactura'],
+                        $nombreArchivoFactura,
+                        'base64',
+                        'application/pdf'
+                );
+        }   
+
             error_log("PDF generado y adjuntado correctamente");
             
         } catch (Exception $e) {

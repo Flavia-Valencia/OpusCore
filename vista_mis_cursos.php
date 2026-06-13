@@ -20,12 +20,12 @@ require_once 'mis_cursos.php';
 
     <input type="checkbox" id="sidebar-toggle">
 
-    <!-- overlay para cerrar sidebar en móvil -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <!-- Overlay para cerrar el sidebar en movil -->
+    <div class="sidebar-overlay js-sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="layout">
 
-        <!-- sidebar -->
+        <!-- Sidebar de navegacion del estudiante -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
                 <img src="img/logo.svg" alt="Logo" class="logo-img">
@@ -34,7 +34,7 @@ require_once 'mis_cursos.php';
                     <div class="menu-user-role">Estudiante</div>
                     <div class="menu-user-email"><?php echo $_SESSION["usuario"]; ?></div>
                 </div>
-                <button type="button" class="sidebar-close" onclick="closeSidebar()" aria-label="Cerrar menu">
+                <button type="button" class="sidebar-close js-sidebar-close" aria-label="Cerrar menu">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -52,12 +52,12 @@ require_once 'mis_cursos.php';
                     <i class="fas fa-clipboard-list"></i>
                     <span>Inscripción</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="estudiante-calificaciones.php" class="nav-item">
                     <i class="fas fa-chart-line"></i>
                     <span>Calificaciones</span>
                 </a>
                 <div class="nav-dropdown">
-                    <button type="button" class="nav-item nav-dropdown-toggle" onclick="togglePagosOnline()">
+                    <button type="button" class="nav-item nav-dropdown-toggle js-pagos-toggle">
                         <i class="fas fa-credit-card"></i>
                         <span>Pagos en línea</span>
                         <i class="fas fa-chevron-down nav-arrow"></i>
@@ -67,13 +67,9 @@ require_once 'mis_cursos.php';
                         <a href="estudiante-tramites-pendientes.php">Trámites pendientes</a>
                     </div>
                 </div>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>Mensajes</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-gear"></i>
-                    <span>Configuración</span>
+                <a href="estudiante-constancias.php" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Constancias</span>
                 </a>
             </nav>
 
@@ -84,12 +80,12 @@ require_once 'mis_cursos.php';
 
         </aside>
 
-        <!-- contenido principal -->
+        <!-- Contenido principal de cursos inscritos -->
         <div class="content">
 
-            <!-- header -->
+            <!-- Barra superior del modulo -->
             <header class="header-panel">
-                <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+                <button class="hamburger js-sidebar-toggle" id="hamburgerBtn">
                     <i class="fas fa-bars"></i>
                 </button>
                 <a href="includes/logout.php" class="user-profile-panel">
@@ -101,7 +97,7 @@ require_once 'mis_cursos.php';
                 </a>
             </header>
 
-            <!-- banner -->
+            <!-- Banner de resumen academico -->
             <div class="banner">
                 <div class="banner-left">
                     <h1>Mis cursos 📚</h1>
@@ -114,7 +110,7 @@ require_once 'mis_cursos.php';
                     </p>
                 </div>
                 <div class="banner-fecha">
-                    <strong><?= date('d/m/Y') ?></strong>
+                    <strong id="fecha-hoy"></strong>
                 </div>
             </div>
 
@@ -126,7 +122,7 @@ require_once 'mis_cursos.php';
                     <?php else: ?>
                         <section class="courses-inscripcion">
                             <?php foreach ($cursos as $curso): ?>
-                             <div class="curso-card">
+                             <a class="curso-card curso-card-link" href="estudiante-detalle-curso.php?curso_id=<?= urlencode($curso['id']) ?>">
                                     <div class="curso-card-top">
                                         <h3 class="curso-nombre">
                                             <?= htmlspecialchars($curso['nombre']) ?>
@@ -172,7 +168,7 @@ require_once 'mis_cursos.php';
                                             </span>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             <?php endforeach; ?>
                         </section>
                 <?php endif; ?>
@@ -182,28 +178,5 @@ require_once 'mis_cursos.php';
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./js/script.js"></script>
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.getElementById('sidebar-toggle');
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-            if (toggle) {
-                toggle.checked = sidebar.classList.contains('open');
-            }
-        }
-
-        function closeSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const toggle = document.getElementById('sidebar-toggle');
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-            if (toggle) {
-                toggle.checked = false;
-            }
-        }
-    </script>
 </body>
 </html>

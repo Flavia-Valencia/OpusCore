@@ -30,7 +30,10 @@ Pasos detallados para instalar y ejecutar el proyecto en un entorno local.
 
 #### 1. Clonar el repositorio:
 En la terminal de Visual Studio Code ejecutar:
+
+```bash
 git clone https://github.com/Flavia-Valencia/OpusCore.git
+```
 
 #### 2. Iniciar el servidor local:
 Instalar XAMMP luego abrirlo y activar los siguientes servicios:
@@ -38,55 +41,35 @@ Instalar XAMMP luego abrirlo y activar los siguientes servicios:
 - MySQL
 
 #### 3. Mover la carpeta del proyecto a la siguiente ruta:
+
+```txt
 C:\xampp\htdocs\
+```
 
 #### 4. Configurar la base de datos:
-- Ingresar a: http://localhost/phpmyadmin/
-- Crear una nueva base de datos, con el siguiente nombre: db_academiadigital
+- Ingresar a:
+
+```txt
+http://localhost/phpmyadmin/
+```
+- Crear una nueva base de datos, con el siguiente nombre: 
+
+```txt
+db_academiadigital
+```
+
 - Importar desde el repositorio OpusCore el script de la base de datos:
-    script_completo.sql
+  
+```txt
+script_completo.sql
+```
   
 #### 5. Ejecutar el sistema:
 Abrir el navegador y acceder a:
+
+```txt
 http://localhost/OpusCore/login.php
-
-#### 6. Credenciales del Sistema:
-##### Administrador
-- **Correo:** sabrina@gmail.com
-- **Contraseña:** SabriAdmin-12
-
-##### Docente
-- **Correo:** karli@gmail.com
-- **Contraseña:** KarliDocente_22
-
-##### Estudiante
-- **Correo:** yamiiacademia3@gmail.com
-- **Contraseña:** YamiEstudiante-19
-
-#### Correo para verificación de comprobantes
-- **Cuenta Gmail:** yamiiacademia3@gmail.com
-- **Contraseña:** AcademiaFuturoDigital
-
-> Esta cuenta se utiliza para recibir y verificar comprobantes de pago enviados automáticamente por el sistema durante las pruebas de pagos en línea.
-
-#### Cuenta institucional de la academia
-- **Correo:** academiafuturodigital6@gmail.com
-- **Contraseña:** AcademiaFuturoDigital!3
-
-> Utilizada para pruebas de correos automáticos y recepción de comprobantes del sistema.
-
-### Acceso y seguridad
-- La cuenta institucional tiene **verificación en 2 pasos** habilitada.
-- Para acceder, primero debe iniciarse sesión con el correo y contraseña correspondientes.
-- Posteriormente, Google solicitará una validación de seguridad para autorizar el acceso.
-
-### Encargada de verificación
-- **Responsable:** Karla Morales  
-- **Contacto:**  7012-5338
-- **Correo:** [u20240731 @univo.edu.sv](mailto:u20240731@univo.edu.sv)
-
-> **Nota:** Una vez ingresadas las credenciales, la encargada deberá aprobar o proporcionar la verificación necesaria para completar el acceso a la cuenta.
-
+```
 ## 💳 Credenciales de Prueba — PayPal Sandbox
 
 #### Cuenta PayPal Sandbox (comprador)
@@ -146,7 +129,7 @@ En caso de dudas con la instalación, contactar a:
 ![Estudiante](Evidencias/docente.png)
 
 ## Version del Sistema
-v0.3 – Sprint 3
+v0.4 – Sprint 4 (Versión Final)
 
 ## Autor(es)
 OpusCore - Equipo de Desarollo

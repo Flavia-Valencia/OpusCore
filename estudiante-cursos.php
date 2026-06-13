@@ -40,7 +40,7 @@ $selectPeriodo = $tienePeriodoEnCursos ? "COALESCE(pi.nombre, 'Sin periodo asign
 $joinPeriodo = $tienePeriodoEnCursos ? "LEFT JOIN PeriodoInscripcion pi ON c.idPeriodo = pi.id" : "";
 $groupPeriodo = $tienePeriodoEnCursos ? ", pi.nombre" : "";
 
-// FRONTEND: modulo informativo para estudiantes. Lista todos los cursos sin filtrar por periodo activo.
+// Modulo informativo para estudiantes: lista todos los cursos sin filtrar por periodo activo.
 $sqlCursos = "
     SELECT c.id, c.nombre, c.descripcion, c.costoMensual, c.estado,
            COALESCE(cat.nombre, 'Sin categoria') AS categoria_nombre,
@@ -107,7 +107,7 @@ sort($categorias);
                     <i class="fas fa-clipboard-list"></i>
                     <span>Inscripción</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="estudiante-calificaciones.php" class="nav-item">
                     <i class="fas fa-chart-line"></i>
                     <span>Calificaciones</span>
                 </a>
@@ -122,13 +122,9 @@ sort($categorias);
                         <a href="estudiante-tramites-pendientes.php">Trámites pendientes</a>
                     </div>
                 </div>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>Mensajes</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <i class="fas fa-gear"></i>
-                    <span>Configuración</span>
+                <a href="estudiante-constancias.php" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Constancias</span>
                 </a>
             </nav>
 
@@ -158,7 +154,7 @@ sort($categorias);
                     <p>Explora los cursos que forman parte de la oferta académica.</p>
                 </div>
                 <div class="banner-fecha">
-                    <strong><?= date('d/m/Y') ?></strong>
+                    <strong id="fecha-hoy"></strong>
                 </div>
             </div>
 

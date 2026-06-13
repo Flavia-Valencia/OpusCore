@@ -11,9 +11,11 @@ if(!isset($_SESSION["usuario"])){
 }
 
 require_once 'includes/conexion.php';
-// conexión a la tabla de pagos
+
+// Historial de pagos con datos del estudiante y metodo usado.
 $sql = "
     SELECT 
+        p.id,
         CONCAT('PAY-', LPAD(p.id, 4, '0')) AS codigo,
         CONCAT(u.nombre, ' ', u.apellido) AS estudiante,
         u.correo,
@@ -80,12 +82,15 @@ $pagos = $result->fetch_all(MYSQLI_ASSOC);
             </div>
 
             <a href="./admin-inicio.php" class="btn-nav">Inicio</a>
-            <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
-            <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
-            <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
+            <a href="./admin-admins.php" class="btn-nav">Administradores</a>
             <a href="./admin-docentes.php" class="btn-nav">Docentes</a>
+            <a href="./admin-estudiantes.php" class="btn-nav">Estudiantes</a>
+            <a href="./admin-periodos.php" class="btn-nav">Periodos</a>
+            <a href="./admin-cursos.php" class="btn-nav">Cursos</a>
+            <a href="./admin-plazo.php" class="btn-nav">Plazo Notas</a>
             <a href="./admin-pagos.php" class="btn-nav active">Pagos</a>
-
+            <a href="./admin-facturacion.php" class="btn-nav">Facturación</a>
+            <a href="./admin-constancias.php" class="btn-nav">Constancias</a>
             <a href="includes/logout.php" class="btn-salir">Cerrar sesión</a>
 
             <a href="includes/logout.php" style="text-decoration:none;">
@@ -102,7 +107,7 @@ $pagos = $result->fetch_all(MYSQLI_ASSOC);
 
     <main class="main">
         <div class="page-header">
-            <h1 class="titulo">ADMINISTRACIÓN DE PAGOS</h1>
+            <h1 class="titulo">ADMINISTRAR PAGOS</h1>
         </div>
 
         <div class="card">
@@ -144,12 +149,9 @@ $pagos = $result->fetch_all(MYSQLI_ASSOC);
                                 </td>
                                 <td data-label="Comprobante" class="acciones-cell">
                                     <div class="acciones-texto">
-                                        <!-- FRONTEND: boton visual pendiente; backend definira que comprobante debe abrir/descargar. -->
                                         <a
                                             class="link-accion horarios"
-                                            href="#"
-                                            aria-disabled="true"
-                                            onclick="return false;"
+                                             href="comprobantes/descargar-comprobante-pago.php?pago_id=<?php echo $pago['id']; ?>"
                                         >
                                             <i class="fas fa-file-pdf"></i> PDF
                                         </a>

@@ -12,45 +12,76 @@ $idPeriodo = intval($_POST['idPeriodo']);
 $idCategoria = intval($_POST['idCategoria']);
 $estado       = 1;
 
-// Validación fechas incorrectas
-    if ($fechaFin <= $fechaInicio) {
-    header("Location: admin-cursos.php?error=fechas");
-    exit();
-}
-// Verifica si ya existe un curso con ese nombre
-$sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre')";
-$resultado_verificar = mysqli_query($conexion, $sql_verificar);
-if (mysqli_num_rows($resultado_verificar) > 0) {
-    header("Location: admin-cursos.php?error=existe");
+// Valida que la fecha de fin sea posterior a la fecha de inicio.
+if ($fechaFin <= $fechaInicio) {
+    echo json_encode(['error' => true, 'mensaje' => 'La fecha de fin no debe ser menor a la fecha de inicio.']);
     exit();
 }
 
-// Verifica que el docente no tenga ya 4 cursos activos
+// Obtener la fecha fin del ciclo/periodo
+$fechaFinCiclo = null;
+if ($idPeriodo > 0) {
+    $sql_periodo_info = "SELECT fechaFinCiclo FROM PeriodoInscripcion WHERE id = '$idPeriodo'";
+    $res_periodo_info = mysqli_query($conexion, $sql_periodo_info);
+    if ($res_periodo_info && $row_periodo = mysqli_fetch_assoc($res_periodo_info)) {
+        $fechaFinCiclo = $row_periodo['fechaFinCiclo'];
+    }
+}
+
+// Validar que la fecha de fin del curso no sea mayor a la del ciclo
+if ($fechaFinCiclo !== null && $fechaFin > $fechaFinCiclo) {
+      echo json_encode(['error' => true, 'mensaje' => 'La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo.']);
+    exit();
+}
+
+// Evita crear cursos con nombres duplicados.
+$sql_verificar = "SELECT id FROM cursos WHERE LOWER(nombre) = LOWER('$nombre')";
+$resultado_verificar = mysqli_query($conexion, $sql_verificar);
+if (mysqli_num_rows($resultado_verificar) > 0) {
+ echo json_encode(['error' => true, 'mensaje' => 'El curso ya existe. Intenta con otro nombre.']);
+    exit();
+}
+
+// Limita la asignacion a cuatro cursos activos por docente.
 $sql_limite = "SELECT COUNT(*) AS total FROM cursos WHERE idDocente = '$idDocente' AND estado = 1";
 $res_limite = mysqli_query($conexion, $sql_limite);
 $row_limite = mysqli_fetch_assoc($res_limite);
 if ($row_limite['total'] >= 4) {
-    header("Location: admin-cursos.php?error=limite_docente");
+ echo json_encode(['error' => true, 'mensaje' => 'El docente ya tiene el límite de cursos activos asignados.']);
     exit();
 }
 
 
-// Insertar curso
-$sql_curso = "INSERT INTO cursos (nombre, descripcion, costoMensual, cupos, fechaInicio, fechaFin, estado, idDocente, idCategoria, idPeriodo)
-              VALUES ('$nombre', '$descripcion', '$costoMensual', '$cupos', '$fechaInicio', '$fechaFin', '$estado', '$idDocente','$idCategoria', '$idPeriodo')";
-mysqli_query($conexion, $sql_curso);
+try {
+    // Crea el curso con sus datos academicos y comerciales.
+    $sql_curso = "INSERT INTO cursos (nombre, descripcion, costoMensual, cupos, fechaInicio, fechaFin, estado, idDocente, idCategoria, idPeriodo)
+                  VALUES ('$nombre', '$descripcion', '$costoMensual', '$cupos', '$fechaInicio', '$fechaFin', '$estado', '$idDocente','$idCategoria', '$idPeriodo')";
+    mysqli_query($conexion, $sql_curso);
 
-// Obtener el ID del curso recién creado
-$idCursoNuevo = mysqli_insert_id($conexion);
+    // Obtiene el ID generado para registrar dependencias relacionadas.
+    $idCursoNuevo = mysqli_insert_id($conexion);
 
-// guarda prerrequisito si se seleccionó alguno
-$idPrerrequisito = isset($_POST['idPrerrequisitos']) ? intval($_POST['idPrerrequisitos']) : 0;
-if ($idPrerrequisito > 0 && $idPrerrequisito != $idCursoNuevo) {
-    $sql_pre = "INSERT INTO prerrequisitos (idCursoActual, idCursoPrevio) 
-                VALUES ('$idCursoNuevo', '$idPrerrequisito')";
-    mysqli_query($conexion, $sql_pre);
+    // Registra el prerrequisito si se selecciono un curso previo valido.
+    $idPrerrequisito = isset($_POST['idPrerrequisitos']) ? intval($_POST['idPrerrequisitos']) : 0;
+    if ($idPrerrequisito > 0 && $idPrerrequisito != $idCursoNuevo) {
+        $sql_pre = "INSERT INTO prerrequisitos (idCursoActual, idCursoPrevio)
+                    VALUES ('$idCursoNuevo', '$idPrerrequisito')";
+        mysqli_query($conexion, $sql_pre);
+    }
+
+    echo json_encode(['error' => false, 'mensaje' => 'Curso creado exitosamente']);
+    exit();
+
+} catch (Exception $e) {
+    $msg = $e->getMessage();
+    if (strpos($msg, 'fecha') !== false || strpos($msg, 'ciclo') !== false) {
+         echo json_encode(['error' => true, 'mensaje' => 'La fecha de fin del curso no puede ser mayor a la fecha de fin del ciclo.']);
+             
+    }else{
+        echo json_encode(['error' => true, 'mensaje' => 'Ocurrió un error al guardar el curso. Verifica los datos e intenta de nuevo.']);
+
+
+    }
+    exit();
 }
-
-header("Location: admin-cursos.php");
-exit();
 ?>

@@ -43,14 +43,10 @@ $periodo = $periodoStmt->fetch_assoc();
 
 $cursos = [];
 if ($periodo) {
-    // Solo mostramos cursos del período activo que el estudiante aún no tiene inscritos
-    // y cuyos prerrequisitos hayan sido completados.
-    // IMPORTANTE: el límite de 5 cursos por período NO se aplica aquí.
-    // Ese límite se valida más adelante en validar-inscripcion.php cuando el usuario confirma.
-    // FRONTEND: se agregaron LEFT JOINs para traer docente, horario, aula y días directamente
-    // en la misma consulta, evitando peticiones AJAX adicionales al abrir el modal.
-    // Si en el futuro se mueve esto a una API REST, estos campos ya están disponibles aquí.
-    // Columnas nuevas: docente_nombre, horarios_etiqueta, aulas_nombre, dias_semana
+    // Muestra cursos del periodo activo que el estudiante aun no tiene inscritos
+    // y cuyos prerrequisitos ya fueron completados.
+    // El limite de 5 cursos se valida al confirmar en validar-inscripcion.php.
+    // La consulta incluye docente, horario, aula y dias para evitar peticiones extra en el modal.
     $stmt = $conexion->prepare("
         SELECT c.id, c.nombre, c.descripcion, c.costoMensual, c.cupos, c.fechaInicio, c.fechaFin,
                CONCAT(u.nombre, ' ', u.apellido) AS docente_nombre,
@@ -69,9 +65,9 @@ if ($periodo) {
             SELECT 1 FROM prerrequisitos pr
             WHERE pr.idCursoActual = c.id
             AND pr.idCursoPrevio NOT IN (
-                SELECT i.idCurso FROM inscripciones i
-                WHERE i.idEstudiante = ?
-                AND i.estado_academico = 'Finalizado'
+                SELECT rn.idCurso FROM RegistroNotas rn
+                WHERE rn.idEstudiante = ?
+                AND rn.estadoEstudiante = 'Aprobado'
             )
         )
         AND c.id NOT IN(

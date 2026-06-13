@@ -1,10 +1,5 @@
-<!-- Este archivo procesa el inicio de sesión:
-     - Recibe los datos enviados desde el formulario (correo y contraseña)
-     - Consulta la base de datos para verificar si el usuario existe
-     - Valida la contraseña
-     - Crea la sesión del usuario
-     - Redirige según su rol (admin, estudiante o docente) -->
 <?php
+// Procesa el inicio de sesion, crea la sesion y redirige segun el rol del usuario.
 session_start();
 include("conexion.php");
 
@@ -22,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
         
-        if ($contrasena === $usuario['password_hash']) {
+        if (password_verify($contrasena, $usuario['password_hash']) || $contrasena === $usuario['password_hash']) {
             $_SESSION["usuario"] = $usuario["correo"];
             $_SESSION["rol_id"] = $usuario["rol_id"];
             $_SESSION["nombre"] = $usuario["nombre"];
@@ -30,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($usuario["rol_id"] == 1) {
                 header("Location: ../admin-inicio.php");
             } elseif ($usuario["rol_id"] == 2) {
-                // Yahir: el estudiante entra primero a Mis cursos para ver su estado académico.
+                // El estudiante inicia en Mis cursos para revisar su estado academico.
                 header("Location: ../vista_mis_cursos.php");
             } elseif ($usuario["rol_id"] == 3) {
                 header("Location: ../docentes.php"); 

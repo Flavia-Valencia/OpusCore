@@ -17,7 +17,7 @@ if(!isset($_SESSION["usuario"])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--PARA FUENTES-->
+    <!-- Fuentes e iconos de la interfaz -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -35,7 +35,7 @@ if(!isset($_SESSION["usuario"])){
             <img src="img/logo.svg" alt="Logo" class="logo-img">
             <div class="logo-text">
                 <span>¡Bienvenido/a!</span>
-                <!--Para que se coloque el nombre del usuario de la credencial-->
+                <!-- Nombre tomado de la sesion del estudiante -->
                 <h2 class="user-nombre"><?php echo $_SESSION["nombre"];?></h2>
             </div>
         </div>
@@ -64,7 +64,7 @@ if(!isset($_SESSION["usuario"])){
                 <span>Inscribirme a cursos</span>
             </a>
 
-            <a href="#" class="card-opcion">
+            <a href="estudiante-calificaciones.php" class="card-opcion">
                 <i class="fas fa-graduation-cap icono"></i>
                 <span>Ver calificaciones</span>
             </a>

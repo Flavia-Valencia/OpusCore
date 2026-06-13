@@ -1,7 +1,9 @@
 <?php
 // Procesa la confirmación del pago aprobado desde PayPal.
-// Verifica que la orden se haya completado correctamente y registra la transacción en la BD.
-// Actualiza la mensualidad como pagada y finaliza el flujo limpiando la sesión temporal.
+// Soporta pago de múltiples mensualidades en una sola transacción.
+// Verifica que la orden se haya completado correctamente, registra el pago,
+// actualiza cada mensualidad como pagada, genera la factura con detalles
+// individuales y envía el comprobante consolidado por correo.
 session_start();
 header('Content-Type: application/json');
 
@@ -70,15 +72,24 @@ if ($httpCode !== 201 || ($result['status'] ?? '') !== 'COMPLETED') {
 }
 
 $pending = $_SESSION['paypal_mensualidad'];
+$mensualidadIds = $pending['mensualidadIds'] ?? [];
+$idEstudiante = (int)($pending['idEstudiante'] ?? 0);
+$monto = (float)($pending['monto'] ?? 0);
 
-$mensualidadId = (int)$pending['mensualidadId'];
-$idEstudiante = (int)$pending['idEstudiante'];
-$monto = (float)$pending['monto'];
+// Compatibilidad: si todavía viene un ID único, conviértelo a array
+if (empty($mensualidadIds) && isset($pending['mensualidadId'])) {
+    $mensualidadIds = [(int)$pending['mensualidadId']];
+}
+
+if (empty($mensualidadIds) || !$idEstudiante) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Datos de sesión inválidos']);
+    exit;
+}
 
 $captureId = $result['purchase_units'][0]['payments']['captures'][0]['id'] ?? '';
 
-// Yahir: se detecta la fuente real del pago para registrar correctamente
-// si la mensualidad fue pagada con PayPal o tarjeta.
+// Detecta la fuente real del pago para registrar PayPal o tarjeta correctamente.
 $paymentSource = $result['payment_source'] ?? [];
 if (isset($paymentSource['card'])) {
     $idMetodoPago = 2;
@@ -90,11 +101,37 @@ $nombreMetodoPago = match ($idMetodoPago) {
     default => 'PayPal',
 };
 
+// ── Obtiene datos de cada mensualidad para el comprobante ───────────────────
+// Se hace antes de la transacción para evitar bloqueos prolongados en la BD
+$placeholders = implode(',', array_fill(0, count($mensualidadIds), '?'));
+$types = str_repeat('i', count($mensualidadIds));
+
+$stmtMens = $conexion->prepare("
+    SELECT m.id, c.nombre AS curso_nombre, c.costoMensual,
+           pi.nombre AS periodo_nombre,
+           m.mesPagado,
+           GROUP_CONCAT(DISTINCT CONCAT(ch.dia, ' - ', h.etiqueta) SEPARATOR ', ') AS horario,
+           GROUP_CONCAT(DISTINCT a.aula SEPARATOR ', ') AS aula
+    FROM mensualidades m
+    INNER JOIN cursos c ON m.idCurso = c.id
+    INNER JOIN PeriodoInscripcion pi ON m.idPeriodo = pi.id
+    LEFT JOIN CursoHorario ch ON c.id = ch.idCurso
+    LEFT JOIN horarios h ON ch.idHorario = h.id
+    LEFT JOIN aulas a ON ch.idAula = a.id
+    WHERE m.id IN ($placeholders)
+    GROUP BY m.id
+");
+$stmtMens->bind_param($types, ...$mensualidadIds);
+$stmtMens->execute();
+$datosMensualidades = $stmtMens->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmtMens->close();
+
+$periodoNombre = $datosMensualidades[0]['periodo_nombre'] ?? 'Periodo actual';
+
 $conexion->begin_transaction();
 
 try {
-
-    // Registrar pago
+    // 1) Registra el pago global
     $stmtPago = $conexion->prepare("
         INSERT INTO pagos (
             idEstudiante,
@@ -104,7 +141,6 @@ try {
             estado
         ) VALUES (?, ?, ?, ?, 'Completado')
     ");
-
     $stmtPago->bind_param(
         "iids",
         $idEstudiante,
@@ -112,32 +148,90 @@ try {
         $monto,
         $captureId
     );
-
     $stmtPago->execute();
+    $idPago = $conexion->insert_id;
+    $stmtPago->close();
 
-    // Actualizar mensualidad
+    // 2) Marca cada mensualidad seleccionada como 'Pagado'
     $stmtMensualidad = $conexion->prepare("
         UPDATE mensualidades
         SET estado = 'Pagado'
         WHERE id = ?
     ");
+    foreach ($mensualidadIds as $mId) {
+        $stmtMensualidad->bind_param("i", $mId);
+        $stmtMensualidad->execute();
+    }
+    $stmtMensualidad->close();
 
-    $stmtMensualidad->bind_param("i", $mensualidadId);
-    $stmtMensualidad->execute();
+    // 3) Genera factura única
+    $anio = date('Y');
+    $stmtUltima = $conexion->prepare("
+        SELECT COUNT(*) AS total FROM facturas WHERE YEAR(fechaEmision) = ?
+    ");
+    $stmtUltima->bind_param('i', $anio);
+    $stmtUltima->execute();
+    $totalFacturas = $stmtUltima->get_result()->fetch_assoc()['total'] ?? 0;
+    $stmtUltima->close();
+    $numeroFactura = 'ADFE-' . $anio . '-' . str_pad($totalFacturas + 1, 6, '0', STR_PAD_LEFT);
+
+    $nombreMetodoPagoFact = match ($idMetodoPago) {
+        2       => 'Tarjeta de Crédito/Débito',
+        default => 'PayPal',
+    };
+
+    $observaciones = count($mensualidadIds) > 1 
+        ? 'Pago de ' . count($mensualidadIds) . ' mensualidades.' 
+        : 'Pago de mensualidad.';
+
+    $stmtFact = $conexion->prepare("
+        INSERT INTO facturas 
+            (numeroFactura, tipoFactura, idReceptor, tipoReceptor, idPago,
+             metodoPago, noReferencia, observaciones, total, estado, generadoPor)
+        VALUES (?, 'Estudiante', ?, 'Estudiante', ?, ?, ?, ?, ?, 'Emitida', ?)
+    ");
+    $stmtFact->bind_param(
+        'siisssdi',
+        $numeroFactura,
+        $idEstudiante,
+        $idPago,          
+        $nombreMetodoPagoFact,
+        $captureId,
+        $observaciones,
+        $monto,
+        $idEstudiante
+    );
+    $stmtFact->execute();
+    $idFactura = $conexion->insert_id;
+    $stmtFact->close();
+
+    // 4) Inserta los detalles individuales para cada mensualidad en la factura
+    $stmtDetFact = $conexion->prepare("
+        INSERT INTO detalle_facturas
+            (idFactura, tipoOrigen, idOrigen, descripcion, cantidad, precioUnitario, subtotal)
+        VALUES (?, 'Mensualidad', ?, ?, 1, ?, ?)
+    ");
+    foreach ($datosMensualidades as $dm) {
+        $mId = (int)$dm['id'];
+        $descMens = ($dm['curso_nombre'] ?? 'Curso') . ' — ' . ($dm['mesPagado'] ?? '') . ' / ' . ($dm['periodo_nombre'] ?? '');
+        $precioUnit = (float)($dm['costoMensual'] ?? 0);
+        $stmtDetFact->bind_param('iisdd', $idFactura, $mId, $descMens, $precioUnit, $precioUnit);
+        $stmtDetFact->execute();
+    }
+    $stmtDetFact->close();
 
     $conexion->commit();
 
 } catch (Throwable $e) {
-
     $conexion->rollback();
-
     http_response_code(500);
     echo json_encode([
         'error' => 'Error guardando pago: ' . $e->getMessage()
     ]);
     exit;
 }
-// Obtener datos del estudiante para el correo
+
+// Obtiene datos del estudiante para enviar el comprobante.
 $stmtDatos = $conexion->prepare("
     SELECT u.correo, u.nombre, u.apellido
     FROM usuarios u
@@ -149,42 +243,26 @@ $stmtDatos->execute();
 $datosEst = $stmtDatos->get_result()->fetch_assoc();
 $stmtDatos->close();
 
-// Obtener datos de la mensualidad para el comprobante
-$stmtMens = $conexion->prepare("
-    SELECT c.nombre AS curso_nombre, c.costoMensual,
-           pi.nombre AS periodo_nombre,
-           m.mesPagado,
-           GROUP_CONCAT(DISTINCT CONCAT(ch.dia, ' - ', h.etiqueta) SEPARATOR ', ') AS horario,
-           GROUP_CONCAT(DISTINCT a.aula SEPARATOR ', ') AS aula
-    FROM mensualidades m
-    INNER JOIN cursos c ON m.idCurso = c.id
-    INNER JOIN PeriodoInscripcion pi ON m.idPeriodo = pi.id
-    LEFT JOIN CursoHorario ch ON c.id = ch.idCurso
-    LEFT JOIN horarios h ON ch.idHorario = h.id
-    LEFT JOIN aulas a ON ch.idAula = a.id
-    WHERE m.id = ?
-    GROUP BY m.id
-");
-$stmtMens->bind_param('i', $mensualidadId);
-$stmtMens->execute();
-$datosMens = $stmtMens->get_result()->fetch_assoc();
-$stmtMens->close();
-
-// Enviar comprobante por correo
+// Envia el comprobante de pago por correo.
 require_once 'includes/enviar-comprobante.php';
+
+$cursosCorreo = [];
+foreach ($datosMensualidades as $dm) {
+    $cursosCorreo[] = [
+        'nombre'  => ($dm['curso_nombre'] ?? 'Curso') . ' — ' . ($dm['mesPagado'] ?? ''),
+        'costo'   => (float)($dm['costoMensual'] ?? 0),
+        'horario' => $dm['horario'] ?? 'No asignado',
+        'aula'    => $dm['aula'] ?? 'N/A',
+    ];
+}
 
 $datosCorreo = [
     'total'          => $monto,
     'captureId'      => $captureId,
     'estado'         => 'Completado',
     'metodoPago'     => $nombreMetodoPago,
-    'periodo_nombre' => $datosMens['periodo_nombre'] ?? 'Periodo actual',
-    'cursos'         => [[
-        'nombre'  => ($datosMens['curso_nombre'] ?? 'Curso') . ' — ' . ($datosMens['mesPagado'] ?? ''),
-        'costo'   => $monto,
-        'horario' => $datosMens['horario'] ?? 'No asignado',
-        'aula'    => $datosMens['aula'] ?? 'N/A',
-    ]],
+    'periodo_nombre' => $periodoNombre,
+    'cursos'         => $cursosCorreo,
 ];
 
 $nombreEst = trim(($datosEst['nombre'] ?? '') . ' ' . ($datosEst['apellido'] ?? ''));
