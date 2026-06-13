@@ -132,17 +132,19 @@ if(!isset($_SESSION["usuario"])){
                 <h3 class="modal-subtitulo">Acceso al sistema</h3>
                 <div class="modal-grid">
                     <div class="modal-campo"><label>Correo</label><input type="email" name="correo" id="edita-correo" required></div>
-                    <div class="modal-campo"><label>Contraseña</label>
+                    <div class="modal-campo">
+                        <label>Contraseña</label>
                         <div class="input-password">
-                            <input type="text" name="password_hash" id="edita-password_hash" placeholder="Dejar vacío si no cambiará la contraseña"
+                            <input type="text" name="password_hash" id="edita-password_hash"
                                 autocomplete="off"
                                 style="-webkit-text-security: disc;"
                                 data-modal="true">
                             <!-- Ícono de ojo para mostrar u ocultar la contraseña -->
-                            <span class="ver-contrasena-admin" onclick="toggleContrasena('edita-password_hash', 'icono-ojo-admin')">
+                            <span class="ver-contrasena-admin" style="display:none;" onclick="toggleContrasena('edita-password_hash', 'icono-ojo-admin')">
                                 <img id="icono-ojo-admin" src="img/ojo-cerrado.svg" alt="Mostrar contraseña" width="20" height="20">
                             </span>
                         </div>
+                        <small class="input-note">Dejar vacío si no se cambiará la contraseña</small>
                     </div>
 
                          <div class="modal-campo" style="display: none;"><label>Estado</label>

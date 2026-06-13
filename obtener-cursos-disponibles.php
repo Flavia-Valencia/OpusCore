@@ -65,9 +65,9 @@ if ($periodo) {
             SELECT 1 FROM prerrequisitos pr
             WHERE pr.idCursoActual = c.id
             AND pr.idCursoPrevio NOT IN (
-                SELECT i.idCurso FROM inscripciones i
-                WHERE i.idEstudiante = ?
-                AND i.estado_academico = 'Finalizado'
+                SELECT rn.idCurso FROM RegistroNotas rn
+                WHERE rn.idEstudiante = ?
+                AND rn.estadoEstudiante = 'Aprobado'
             )
         )
         AND c.id NOT IN(

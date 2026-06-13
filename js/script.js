@@ -50,7 +50,7 @@ document.querySelectorAll('.abrir-modal-docente').forEach(btn => {
 });
 
 // MODULO CONSTANCIAS ADMINISTRATIVAS
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const solicitudesWrap = document.getElementById('constanciasSolicitudes');
     if (!solicitudesWrap) return;
 
@@ -296,7 +296,7 @@ if (modalNuevo) {
 const formEditarEstudiante = document.querySelector('#modalEditar form');
 if (formEditarEstudiante) {
     formEditarEstudiante.addEventListener('submit', async function (e) {
-    e.preventDefault();
+        e.preventDefault();
 
         const nombre = document.getElementById('edit-nombre').value.trim();
         const apellido = document.getElementById('edit-apellido').value.trim();
@@ -310,11 +310,17 @@ if (formEditarEstudiante) {
             e.preventDefault();
             mostrarToastPremium('Complete todos los campos');
             return;
-
         }
-        const hoy      = new Date();
+
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1940-01-01');
+        const minima = new Date('1940-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -343,7 +349,7 @@ if (formEditarEstudiante) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('editar-estudiante.php', { method: 'POST', body: formData });
+            const res = await fetch('editar-estudiante.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -379,9 +385,16 @@ if (formNuevoEstudiante) {
             mostrarToastPremium('Complete todos los campos');
             return;
         }
-        const hoy      = new Date();
+
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1940-01-01');
+        const minima = new Date('1940-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -410,7 +423,7 @@ if (formNuevoEstudiante) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('crear-estudiante.php', { method: 'POST', body: formData });
+            const res = await fetch('crear-estudiante.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -447,9 +460,16 @@ if (formEditarDocente) {
             return;
         }
 
-        const hoy      = new Date();
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1950-01-01');
+        const minima = new Date('1950-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -478,7 +498,7 @@ if (formEditarDocente) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('editar-docente.php', { method: 'POST', body: formData });
+            const res = await fetch('editar-docente.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -515,9 +535,16 @@ if (formNuevoDocente) {
             return;
         }
 
-        const hoy      = new Date();
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1950-01-01');
+        const minima = new Date('1950-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -546,7 +573,7 @@ if (formNuevoDocente) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('crear-docente.php', { method: 'POST', body: formData });
+            const res = await fetch('crear-docente.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -646,9 +673,16 @@ if (formEditarAdministrador) {
             return;
         }
 
-        const hoy      = new Date();
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1950-01-01');
+        const minima = new Date('1950-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -677,7 +711,7 @@ if (formEditarAdministrador) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('editar-administrador.php', { method: 'POST', body: formData });
+            const res = await fetch('editar-administrador.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -713,9 +747,16 @@ if (formNuevoAdministrador) {
             return;
         }
 
-        const hoy      = new Date();
+        const svPhoneRegex = /^[267]\d{3}-?\d{4}$/;
+        if (!svPhoneRegex.test(telefono)) {
+            e.preventDefault();
+            mostrarToastPremium('Ingresa un número salvadoreño válido');
+            return;
+        }
+
+        const hoy = new Date();
         const nacimiento = new Date(fechaNac);
-        const minima   = new Date('1950-01-01');
+        const minima = new Date('1950-01-01');
 
         const anio = nacimiento.getFullYear();
         if (anio < 1000 || anio > 9999) {
@@ -744,7 +785,7 @@ if (formNuevoAdministrador) {
 
         const formData = new FormData(this);
         try {
-            const res  = await fetch('crear-administrador.php', { method: 'POST', body: formData });
+            const res = await fetch('crear-administrador.php', { method: 'POST', body: formData });
             const data = await res.json();
             if (data.error) {
                 mostrarToastPremium(data.mensaje, 'error');
@@ -835,7 +876,7 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
             ? this.dataset.prerrequisitos.split(",")
             : [];
 
-            if (document.getElementById('edit-estado-curso')) {
+        if (document.getElementById('edit-estado-curso')) {
             const estadoTexto = this.dataset.estado == 1 ? 'Activo' : 'Inactivo';
             document.getElementById('edit-estado-curso').value = estadoTexto;
         }
@@ -850,7 +891,7 @@ document.querySelectorAll('.abrir-modal-curso').forEach(btn => {
 });
 
 const selectCategoriaNuevo = document.getElementById('nuevo-categoria-curso');
-const selectPreNuevo       = document.getElementById('nuevo-prerrequisitos');
+const selectPreNuevo = document.getElementById('nuevo-prerrequisitos');
 
 if (selectCategoriaNuevo && selectPreNuevo) {
     selectCategoriaNuevo.addEventListener('change', async function () {
@@ -862,7 +903,7 @@ if (selectCategoriaNuevo && selectPreNuevo) {
             return;
         }
 
-        const res    = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}`);
+        const res = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}`);
         const cursos = await res.json();
 
         selectPreNuevo.innerHTML = '<option value="">Ninguno</option>';
@@ -878,11 +919,11 @@ if (selectCategoriaNuevo && selectPreNuevo) {
 }
 
 const selectCategoriaEditar = document.getElementById('edit-categoria-curso');
-const selectPreEditar        = document.getElementById('edit-prerrequisitos');
+const selectPreEditar = document.getElementById('edit-prerrequisitos');
 
 if (selectCategoriaEditar && selectPreEditar) {
     selectCategoriaEditar.addEventListener('change', async function () {
-        const idCategoria   = this.value;
+        const idCategoria = this.value;
         const idCursoActual = document.getElementById('edit-id-curso').value;
 
         if (!idCategoria) {
@@ -891,7 +932,7 @@ if (selectCategoriaEditar && selectPreEditar) {
             return;
         }
 
-        const res    = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}&idCursoActual=${idCursoActual}`);
+        const res = await fetch(`obtener-cursos-por-categoria.php?idCategoria=${idCategoria}&idCursoActual=${idCursoActual}`);
         const cursos = await res.json();
 
         selectPreEditar.innerHTML = '<option value="">Ninguno</option>';
@@ -1351,6 +1392,31 @@ if (formPeriodo) {
             return;
         }
 
+        // Validar que el año de inicio de ciclo no sea anterior al año actual
+        const anioActual = new Date().getFullYear();
+        const anioInicioCiclo = new Date(fechaInicioCiclo + 'T12:00:00').getFullYear();
+        if (anioInicioCiclo < anioActual) {
+            mostrarToastPremium('La fecha de inicio de ciclo no puede ser de un año anterior al actual (' + anioActual + ')');
+            return;
+        }
+
+        const dInicio = new Date(fechaInicio + 'T12:00:00');
+        const dFin = new Date(fechaFin + 'T12:00:00');
+        const dInicioCiclo = new Date(fechaInicioCiclo + 'T12:00:00');
+
+        if (dInicio < dInicioCiclo) {
+            mostrarToastPremium('El inicio de inscripción no puede ser anterior al inicio del ciclo');
+            return;
+        }
+
+        const diffTimeFin = dFin - dInicioCiclo;
+        const diffDaysFin = diffTimeFin / (1000 * 60 * 60 * 24);
+
+        if (diffDaysFin > 30) {
+            mostrarToastPremium('El fin de inscripción no puede ser posterior a 30 días del inicio del ciclo');
+            return;
+        }
+
         const id = document.getElementById('periodo-id').value;
         const archivo = id ? 'editar-periodo.php' : 'crear-periodo.php';
 
@@ -1388,14 +1454,27 @@ if (formPeriodo) {
                 } else if (data.error === 'existe') {
                     mostrarToastPremium('Ya existe un período con este nombre: Intenta con otro nombre');
 
+                } else if (data.error === 'anio_anterior') {
+                    mostrarToastPremium('La fecha de inicio de ciclo no puede ser de un año anterior al actual');
+
                 } else if (data.error === 'fechas') {
                     mostrarToastPremium('La fecha de fin no puede ser menor a la de inicio');
+
+                } else if (data.error === 'inicio_inscripcion_antes_ciclo') {
+                    mostrarToastPremium('El inicio de inscripción no puede ser anterior al inicio del ciclo');
+
+                } else if (data.error === 'fin_inscripcion_excede_30_dias') {
+                    mostrarToastPremium('El fin de inscripción no puede ser posterior a 30 días del inicio del ciclo');
 
                 } else if (data.error === 'traslape') {
                     mostrarToastPremium('Las fechas ingresadas coinciden con otro período existente. Intenta con otras fechas');
 
                 } else if (data.error === 'fecha_fin_ciclo_curso') {
                     mostrarToastPremium('No puedes reducir la fecha de fin del ciclo porque hay cursos activos que finalizan después de esa fecha.');
+
+                } else if (data.error === 'sql') {
+                    console.error(data);
+                    mostrarToastPremium(data.detalle || 'Error en la base de datos');
 
                 } else {
                     console.error(data);
@@ -1502,6 +1581,25 @@ function toggleContrasena(inputId, iconoId) {
             icono.src = 'img/ojo-cerrado.svg';
         }
     }
+}
+
+function inicializarOjoPassword(inputId, iconoImgId) {
+    const input = document.getElementById(inputId);
+    const iconoImg = document.getElementById(iconoImgId);
+    const iconoSpan = iconoImg?.parentElement;
+    if (!input || !iconoImg || !iconoSpan) return;
+
+    const actualizarOjo = () => {
+        const tieneTexto = input.value.trim() !== '';
+        iconoSpan.style.display = tieneTexto ? 'flex' : 'none';
+        if (!tieneTexto) {
+            input.style.webkitTextSecurity = 'disc';
+            iconoImg.src = 'img/ojo-cerrado.svg';
+        }
+    };
+
+    input.addEventListener('input', actualizarOjo);
+    actualizarOjo();
 }
 
 // Muestra u oculta el ícono del ojo según si hay texto escrito en el campo contraseña
@@ -1833,14 +1931,14 @@ if (btnGuardarHorarios) {
 // -- MODAL INSCRIPCIÓN
 // Lee todos los datos desde data-* del botón (el PHP los inyecta en render time).
 // No requiere fetch adicional: evita una petición extra por cada clic.
-let cursoInscripcionId  = null;
+let cursoInscripcionId = null;
 let btnInscripcionActual = null;
 
 function abrirModalInscripcion(btn) {
-    cursoInscripcionId  = btn.dataset.id;
+    cursoInscripcionId = btn.dataset.id;
     btnInscripcionActual = btn;
 
-    document.getElementById('modalCursoNombre').textContent      = btn.dataset.nombre     || '';
+    document.getElementById('modalCursoNombre').textContent = btn.dataset.nombre || '';
     document.getElementById('modalCursoDescripcion').textContent = btn.dataset.descripcion || '';
 
     const elDocente = document.getElementById('modalCursoDocente');
@@ -1851,10 +1949,10 @@ function abrirModalInscripcion(btn) {
     const elDias = document.getElementById('modalCursoDias');
     if (elDias) elDias.textContent = btn.dataset.dias || '—';
 
-    document.getElementById('modalCursoAula').textContent    = btn.dataset.aula  || 'Sin aula asignada';
-    document.getElementById('modalCursoFecha').textContent   = btn.dataset.fecha || '';
-    document.getElementById('modalCursoCosto').textContent   = btn.dataset.costo || '';
-    document.getElementById('modalCursoCupos').textContent   = btn.dataset.cupos || '';
+    document.getElementById('modalCursoAula').textContent = btn.dataset.aula || 'Sin aula asignada';
+    document.getElementById('modalCursoFecha').textContent = btn.dataset.fecha || '';
+    document.getElementById('modalCursoCosto').textContent = btn.dataset.costo || '';
+    document.getElementById('modalCursoCupos').textContent = btn.dataset.cupos || '';
 
     const modal = document.getElementById('modalInscripcion');
     if (!modal) return;
@@ -1991,6 +2089,9 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarFiltrosContenidosEstudiante();
     inicializarModalContenidosEstudiante();
     inicializarTareasEstudiante();
+    inicializarOjoPassword('edita-password_hash', 'icono-ojo-admin');
+    inicializarOjoPassword('editd-password_hash', 'icono-ojo-docente');
+    inicializarOjoPassword('edit-password_hash', 'icono-ojo-estudiante');
 });
 
 function inicializarFiltrosContenidosEstudiante() {
@@ -2429,7 +2530,7 @@ function inicializarTareasEstudiante() {
                 if (archivo) formData.append('archivos[]', archivo);
             } else {
                 const nombre = item.querySelector('.entrega-enlace-nombre')?.value.trim() || 'Enlace adjunto';
-                const url    = item.querySelector('.entrega-enlace-url')?.value.trim();
+                const url = item.querySelector('.entrega-enlace-url')?.value.trim();
                 if (url) {
                     formData.append('enlace', url);
                     formData.append('nombreEnlace', nombre);
@@ -2454,7 +2555,7 @@ function inicializarTareasEstudiante() {
                 if (tareaActiva) {
                     tareaActiva.dataset.status = 'entregada';
                     const estado = tareaActiva.querySelector('.tarea-estado');
-                    const boton  = tareaActiva.querySelector('.btn-entregar-tarea');
+                    const boton = tareaActiva.querySelector('.btn-entregar-tarea');
                     const intentosBadge = tareaActiva.querySelector('.tarea-intentos');
                     const fechaBadge = tareaActiva.querySelector('.tarea-fecha-entrega');
                     if (estado) { estado.textContent = 'Entregada'; estado.className = 'tarea-estado entregada'; }
@@ -2491,181 +2592,257 @@ function inicializarTareasEstudiante() {
             mostrarToastPremium('Error de conexión: ' + err.message);
         }
     });
-
-    buscador?.addEventListener('input', aplicarFiltros);
-    estadoFiltro?.addEventListener('change', aplicarFiltros);
-    ordenFiltro?.addEventListener('change', aplicarFiltros);
 }
+// ─── TRÁMITES PENDIENTES: Selección múltiple con panel flotante ──────────────
+// El estudiante marca las cuotas que quiere pagar con checkboxes.
+// Un panel deslizante desde abajo muestra el resumen en tiempo real.
+// Al confirmar se abre el modal PayPal que envía el array de IDs al backend.
 
-// Abre el modal de pago para cancelar una mensualidad pendiente del estudiante.
-// Obtiene el id, nombre del curso y monto desde el botón seleccionado,
-// muestra el resumen en pantalla y prepara el botón de PayPal para procesar la cuota.
-function pagarTramitePendiente(btn) {
-    mensualidadSeleccionada = {
-        id: btn.dataset.id,
-        curso: btn.dataset.curso,
-        monto: parseFloat(btn.dataset.monto)
-    };
+document.addEventListener('DOMContentLoaded', function () {
+    const panel          = document.getElementById('tramites-panel');
+    if (!panel) return;  // Solo activo en la página de trámites pendientes
 
-    const modal = document.getElementById('modalPago');
-    const listaCursos = document.getElementById('pago-lista-cursos');
-    const totalPago = document.getElementById('pago-total');
+    const panelNumText   = document.getElementById('tramites-panel-num-text');
+    const panelTabCount  = document.getElementById('tramites-tab-count');
+    const panelLista     = document.getElementById('tramites-panel-lista');
+    const panelTotal     = document.getElementById('tramites-panel-total');
+    const panelPagarBtn  = document.getElementById('tramites-panel-pagar-btn');
+    const panelCancelar  = document.getElementById('tramites-panel-cancelar');
+    const panelTabBtn     = document.getElementById('tramites-panel-tab');
+    const checkAll       = document.getElementById('tramite-check-all');
 
-    listaCursos.innerHTML = `
-        <div class="pago-curso-item">
-            <span>${mensualidadSeleccionada.curso}</span>
-            <span>$${mensualidadSeleccionada.monto.toFixed(2)}</span>
-        </div>
-    `;
+    const modal          = document.getElementById('modalPagoTramites');
+    const modalLista     = document.getElementById('tramites-modal-lista');
+    const modalTotal     = document.getElementById('tramites-modal-total');
+    const modalCerrar    = document.getElementById('tramites-modal-cerrar');
+    const modalCancelar  = document.getElementById('tramites-modal-cancelar');
 
-    totalPago.textContent = `$${mensualidadSeleccionada.monto.toFixed(2)}`;
+    let tramitesSeleccionados = [];  // [{id, curso, monto}]
+    let paypalRendered = false;
 
-    modal.classList.add('activo');
-    document.body.style.overflow = 'hidden';
-    inicializarPayPalMensualidad();
-}
+    // ── Abre/cierra la gaveta lateral en móvil ──────────────────────────────
+    if (panelTabBtn) {
+        panelTabBtn.addEventListener('click', () => {
+            const abierta = panel.classList.toggle('abierta');
+            panelTabBtn.setAttribute('aria-expanded', abierta ? 'true' : 'false');
+        });
+    }
 
-function normalizarFuentePagoPayPal(data) {
-    const fuente = (data?.fundingSource || data?.paymentSource || '').toLowerCase();
-    if (!fuente) return '';
-    return ['card', 'credit'].includes(fuente) ? 'tarjeta' : 'paypal';
-}
+    // ── Actualiza el panel con los checkboxes marcados ──────────────────────
+    function actualizarPanel() {
+        const checks = document.querySelectorAll('.tramite-checkbox:checked');
+        tramitesSeleccionados = Array.from(checks).map(c => ({
+            id:     c.dataset.id,
+            curso:  c.dataset.curso,
+            monto:  parseFloat(c.dataset.monto)
+        }));
 
-// Inicializa el boton de PayPal para el pago de mensualidades.
-// Crea una orden con el id de la mensualidad y procesa el resultado aprobado.
-function inicializarPayPalMensualidad() {
-    const container = document.getElementById('paypal-button-container');
-    if (!container || container.dataset.rendered) return;
-    let metodoPagoSDK = 'paypal';
+        const n     = tramitesSeleccionados.length;
+        const total = tramitesSeleccionados.reduce((s, t) => s + t.monto, 0);
 
-    paypal.Buttons({
-
-        createOrder: async function (paypalData) {
-            metodoPagoSDK = normalizarFuentePagoPayPal(paypalData);
-            const res = await fetch('paypal-create-mensualidad.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    mensualidadId: mensualidadSeleccionada.id
-                })
-            });
-
-            const data = await res.json();
-
-            if (data.error) {
-                mostrarToast(data.error, 'error');
-                throw new Error(data.error);
-            }
-
-            return data.id;
-        },
-
-        onApprove: async function (data) {
-            metodoPagoSDK = normalizarFuentePagoPayPal(data) || metodoPagoSDK;
-            const res = await fetch('paypal-capture-mensualidad.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    orderID: data.orderID,
-                    metodoPago: metodoPagoSDK
-                })
-            });
-
-            const result = await res.json();
-
-            if (result.success) {
-                cerrarModalPago();
-                mostrarToast('¡Mensualidad pagada correctamente!', 'success');
-                setTimeout(() => window.location.reload(), 2000);
-            } else {
-                mostrarToast(result.error || 'Error al procesar pago', 'error');
-            }
-        },
-
-        onCancel: function () {
-            mostrarToast('Pago cancelado', 'error');
-        },
-
-        onError: function (err) {
-            console.error(err);
-            mostrarToast('Error de PayPal', 'error');
-        },
-
-        style: {
-            layout: 'vertical',
-            color: 'blue',
-            shape: 'pill',
-            label: 'pay'
+        if (n === 0) {
+            panel.classList.remove('visible', 'abierta');
+            document.body.classList.remove('inscripcion-barra-visible');
+            if (panelTabBtn) panelTabBtn.setAttribute('aria-expanded', 'false');
+            return;
         }
 
-    }).render('#paypal-button-container');
+        if (panelNumText)  panelNumText.textContent  = `${n} cuota${n === 1 ? '' : 's'} marcada${n === 1 ? '' : 's'}`;
+        if (panelTabCount) panelTabCount.textContent = `${n} cuota${n === 1 ? '' : 's'}`;
+        if (panelTotal)    panelTotal.textContent    = '$' + total.toFixed(2);
 
-    container.dataset.rendered = 'true';
-}
+        // Lista en el panel (chips compactos estilo badge)
+        if (panelLista) {
+            panelLista.innerHTML = tramitesSeleccionados
+                .map(t => `<span class="barra-curso-chip">${t.curso} ($${t.monto.toFixed(2)})</span>`)
+                .join('');
+        }
 
-function cerrarModalPagoCuota() {
-    const modal = document.getElementById('modalPagoCuota');
-    if (modal) {
+        panel.classList.add('visible');
+        document.body.classList.add('inscripcion-barra-visible');
+    }
+
+    // ── Escucha cambios en cualquier checkbox de trámite ────────────────────
+    document.querySelectorAll('.tramite-checkbox').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const total  = document.querySelectorAll('.tramite-checkbox').length;
+            const marcados = document.querySelectorAll('.tramite-checkbox:checked').length;
+            if (checkAll) checkAll.indeterminate = marcados > 0 && marcados < total;
+            if (checkAll) checkAll.checked = marcados === total;
+
+            const fila = cb.closest('.tramite-fila');
+            if (fila) fila.classList.toggle('tramite-fila-activa', cb.checked);
+
+            actualizarPanel();
+        });
+    });
+
+    // ── Seleccionar / deseleccionar todos (desktop checkbox) ────────────────
+    if (checkAll) {
+        checkAll.addEventListener('change', () => {
+            document.querySelectorAll('.tramite-checkbox').forEach(cb => {
+                cb.checked = checkAll.checked;
+                const fila = cb.closest('.tramite-fila');
+                if (fila) fila.classList.toggle('tramite-fila-activa', cb.checked);
+            });
+            actualizarPanel();
+            sincronizarBtnMovil();
+        });
+    }
+
+    // ── Botón "Seleccionar todas" en móvil ──────────────────────────────────
+    const mobileSelectAllBtn   = document.getElementById('tramite-mobile-select-all');
+    const mobileSelectAllLabel = document.getElementById('tramite-mobile-select-all-label');
+
+    function sincronizarBtnMovil() {
+        if (!mobileSelectAllBtn) return;
+        const total   = document.querySelectorAll('.tramite-checkbox').length;
+        const marcados = document.querySelectorAll('.tramite-checkbox:checked').length;
+        const todasMarcadas = marcados === total && total > 0;
+        if (mobileSelectAllLabel) {
+            mobileSelectAllLabel.textContent = todasMarcadas ? 'Deseleccionar todas' : 'Seleccionar todas';
+        }
+        mobileSelectAllBtn.querySelector('i').className = todasMarcadas
+            ? 'fas fa-times'
+            : 'fas fa-check-double';
+    }
+
+    if (mobileSelectAllBtn) {
+        mobileSelectAllBtn.addEventListener('click', () => {
+            const total   = document.querySelectorAll('.tramite-checkbox').length;
+            const marcados = document.querySelectorAll('.tramite-checkbox:checked').length;
+            const seleccionar = marcados < total;
+
+            document.querySelectorAll('.tramite-checkbox').forEach(cb => {
+                cb.checked = seleccionar;
+                const fila = cb.closest('.tramite-fila');
+                if (fila) fila.classList.toggle('tramite-fila-activa', seleccionar);
+            });
+            if (checkAll) {
+                checkAll.checked       = seleccionar;
+                checkAll.indeterminate = false;
+            }
+            actualizarPanel();
+            sincronizarBtnMovil();
+        });
+    }
+
+    // Sincronizar label del botón móvil cada vez que cambia un checkbox
+    document.querySelectorAll('.tramite-checkbox').forEach(cb => {
+        cb.addEventListener('change', sincronizarBtnMovil);
+    });
+
+    // ── Botón cancelar panel ────────────────────────────────────────────────
+    panelCancelar?.addEventListener('click', () => {
+        document.querySelectorAll('.tramite-checkbox').forEach(cb => {
+            cb.checked = false;
+            const fila = cb.closest('.tramite-fila');
+            if (fila) fila.classList.remove('tramite-fila-activa');
+        });
+        if (checkAll) { checkAll.checked = false; checkAll.indeterminate = false; }
+        tramitesSeleccionados = [];
+        panel.classList.remove('visible', 'abierta');
+        document.body.classList.remove('inscripcion-barra-visible');
+        if (panelTabBtn) panelTabBtn.setAttribute('aria-expanded', 'false');
+    });
+
+    // ── Botón Pagar ahora → abre el modal ──────────────────────────────────
+    panelPagarBtn?.addEventListener('click', () => {
+        if (!tramitesSeleccionados.length) return;
+
+        const total = tramitesSeleccionados.reduce((s, t) => s + t.monto, 0);
+
+        // Llena el modal
+        modalLista.innerHTML = tramitesSeleccionados.map(t => `
+            <div class="pago-curso-item">
+                <span>${t.curso}</span>
+                <span>$${t.monto.toFixed(2)}</span>
+            </div>
+        `).join('');
+        modalTotal.textContent = '$' + total.toFixed(2);
+
+        // Resetea el contenedor PayPal
+        const ppContainer = document.getElementById('tramites-paypal-container');
+        ppContainer.innerHTML = '';
+        paypalRendered = false;
+
+        modal.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+
+        inicializarPayPalTramites();
+    });
+
+    // ── Cerrar modal ────────────────────────────────────────────────────────
+    function cerrarModalTramites() {
         modal.classList.remove('activo');
         document.body.style.overflow = '';
     }
-}
+    modalCerrar?.addEventListener('click', cerrarModalTramites);
+    modalCancelar?.addEventListener('click', cerrarModalTramites);
+    modal?.addEventListener('click', e => { if (e.target === modal) cerrarModalTramites(); });
 
-function inicializarPayPalCuota() {
-    const container = document.getElementById('paypal-cuota-button-container');
-    if (!container || !tramitePendienteSeleccionado) return;
+    function normalizarFuentePagoPayPal(data) {
+        const fuente = (data?.fundingSource || data?.paymentSource || '').toLowerCase();
+        if (!fuente) return '';
+        return ['card', 'credit'].includes(fuente) ? 'tarjeta' : 'paypal';
+    }
 
-    // Limpia el contenedor para no duplicar botones si el modal se abre varias veces.
-    container.innerHTML = '';
+    // ── PayPal: crea y captura la orden con array de IDs ────────────────────
+    function inicializarPayPalTramites() {
+        const container = document.getElementById('tramites-paypal-container');
+        if (!container || paypalRendered) return;
+        paypalRendered = true;
 
-    paypal.Buttons({
-        createOrder: function (data, actions) {
-            const monto = parseFloat(tramitePendienteSeleccionado.monto || '0').toFixed(2);
+        let metodoPagoSDK = 'paypal';
 
-            // Crea la orden desde el SDK con el monto mostrado en pantalla.
-            // No llama endpoints PHP ni guarda datos en la base.
-            return actions.order.create({
-                purchase_units: [{
-                    description: `Cuota pendiente - ${tramitePendienteSeleccionado.curso}`,
-                    amount: {
-                        currency_code: 'USD',
-                        value: monto
-                    }
-                }],
-                application_context: {
-                    brand_name: 'Academia Futuro Digital',
-                    user_action: 'PAY_NOW'
+        paypal.Buttons({
+            createOrder: async function (paypalData) {
+                metodoPagoSDK = normalizarFuentePagoPayPal(paypalData);
+                const ids = tramitesSeleccionados.map(t => t.id);
+                const res = await fetch('paypal-create-mensualidad.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensualidadIds: ids })
+                });
+                const data = await res.json();
+                if (data.error) {
+                    mostrarToast(data.error, 'error');
+                    throw new Error(data.error);
                 }
-            });
-        },
+                return data.id;
+            },
 
-        onApprove: function (data, actions) {
-            return actions.order.capture().then(function () {
-                cerrarModalPagoCuota();
-                // Muestra el comprobante en pantalla despues de aprobar el pago.
-                mostrarToast('Pago aprobado en PayPal. Revisa tus tramites pendientes.', 'success');
-            });
-        },
+            onApprove: async function (data) {
+                metodoPagoSDK = normalizarFuentePagoPayPal(data) || metodoPagoSDK;
+                const res = await fetch('paypal-capture-mensualidad.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderID: data.orderID, metodoPago: metodoPagoSDK })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    cerrarModalTramites();
+                    panel.classList.remove('visible', 'abierta');
+                    document.body.classList.remove('inscripcion-barra-visible');
+                    mostrarToast('¡Pago realizado correctamente!', 'success');
+                    setTimeout(() => window.location.reload(), 2200);
+                } else {
+                    mostrarToast(result.error || 'Error al procesar el pago', 'error');
+                }
+            },
 
-        onCancel: function () {
-            mostrarToast('Cancelaste el pago. Podés intentarlo cuando quieras.', 'error');
-        },
+            onCancel: function () {
+                mostrarToast('Pago cancelado', 'error');
+            },
 
-        onError: function (err) {
-            console.error('PayPal cuota SDK error:', err);
-            mostrarToast('Error de PayPal. Intentá de nuevo.', 'error');
-        },
+            onError: function (err) {
+                console.error('PayPal tramites error:', err);
+                mostrarToast('Error de PayPal. Intentá de nuevo.', 'error');
+            },
 
-        style: { layout: 'vertical', color: 'blue', shape: 'pill', label: 'pay' }
-    }).render('#paypal-cuota-button-container');
-}
+            style: { layout: 'vertical', color: 'blue', shape: 'pill', label: 'pay' }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const modalPagoCuota = document.getElementById('modalPagoCuota');
-    if (modalPagoCuota) {
-        modalPagoCuota.addEventListener('click', function (e) {
-            if (e.target === this) cerrarModalPagoCuota();
-        });
+        }).render('#tramites-paypal-container');
     }
 });
 
@@ -2738,7 +2915,7 @@ function seleccionarCurso(button) {
 
 // Agregar curso a la lista de seleccionados y actualizar totales
 function agregarCursoSeleccionado(id, nombre, costo) {
-    cursosSeleccionados.push({id, nombre, costo});
+    cursosSeleccionados.push({ id, nombre, costo });
     totalCursos++;
     totalCosto += costo;
     actualizarBarraInscripcion(); // Refleja cambios en la barra inferior
@@ -2848,7 +3025,7 @@ function confirmarInscripcion() {
 
 //  Abrir modal de pago con resumen de cursos y total
 // Prepara los datos que necesita el boton de PayPal.
-async function abrirModalPago(){
+async function abrirModalPago() {
     const modal = document.getElementById('modalPago');
     if (!modal) return;
 
@@ -2856,7 +3033,7 @@ async function abrirModalPago(){
     const totalPago = document.getElementById('pago-total');
     const lineaMatricula = document.getElementById('linea-matricula');
 
-        // Consultar si ya pagó matrícula
+    // Consultar si ya pagó matrícula
     const ids = cursosSeleccionados.map(c => parseInt(c.id));
     const res = await fetch('verificar-matricula.php', {
         method: 'POST',
@@ -2942,9 +3119,9 @@ function inicializarPayPal() {
             metodoPagoSDK = normalizarFuentePagoPayPal(paypalData);
             const ids = cursosSeleccionados.map(c => parseInt(c.id));
             const res = await fetch('paypal-create-order.php', {
-                method:  'POST',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ cursos: ids }),
+                body: JSON.stringify({ cursos: ids }),
             });
             const data = await res.json();
             if (data.error) {
@@ -2958,9 +3135,9 @@ function inicializarPayPal() {
         onApprove: async function (data) {
             metodoPagoSDK = normalizarFuentePagoPayPal(data) || metodoPagoSDK;
             const res = await fetch('paypal-capture-order.php', {
-                method:  'POST',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ orderID: data.orderID, metodoPago: metodoPagoSDK }),
+                body: JSON.stringify({ orderID: data.orderID, metodoPago: metodoPagoSDK }),
             });
             const result = await res.json();
 
@@ -2969,7 +3146,7 @@ function inicializarPayPal() {
                 cancelarInscripcion();
                 mostrarToast(
                     '¡Pago completado! Inscrito en ' + result.cursos + ' curso(s). Total: $' + result.totalCursos,
-                     'success'
+                    'success'
                 );
                 setTimeout(() => window.location.reload(), 2500);
             } else {
@@ -3064,65 +3241,65 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // recoger ítems de la tabla
-const filas = document.querySelectorAll('#detalleBody tr');
-const items = [];
-filas.forEach(fila => {
-    const inputs  = fila.querySelectorAll('input');
-    const desc    = inputs[0]?.value.trim();
-    const cantidad = inputs[1]?.value;
-    const precio  = inputs[2]?.value;
-    if (desc && parseFloat(precio) > 0) {
-        items.push({ descripcion: desc, cantidad, precio });
-    }
-});
+            const filas = document.querySelectorAll('#detalleBody tr');
+            const items = [];
+            filas.forEach(fila => {
+                const inputs = fila.querySelectorAll('input');
+                const desc = inputs[0]?.value.trim();
+                const cantidad = inputs[1]?.value;
+                const precio = inputs[2]?.value;
+                if (desc && parseFloat(precio) > 0) {
+                    items.push({ descripcion: desc, cantidad, precio });
+                }
+            });
 
-if (items.length === 0) {
-    mostrarToastPremium('Agrega al menos un ítem con monto válido');
-    return;
-}
+            if (items.length === 0) {
+                mostrarToastPremium('Agrega al menos un ítem con monto válido');
+                return;
+            }
 
-const idDocente    = document.getElementById('factura-docente-id').value;
-const metodoPago   = document.getElementById('factura-metodo').value.trim();
-const noReferencia = document.getElementById('factura-referencia').value.trim();
-const observ       = document.getElementById('factura-observaciones').value.trim();
-const fechaEmis    = document.getElementById('factura-fecha').value;
+            const idDocente = document.getElementById('factura-docente-id').value;
+            const metodoPago = document.getElementById('factura-metodo').value.trim();
+            const noReferencia = document.getElementById('factura-referencia').value.trim();
+            const observ = document.getElementById('factura-observaciones').value.trim();
+            const fechaEmis = document.getElementById('factura-fecha').value;
 
-const fd = new FormData();
-fd.append('idDocente',     idDocente);
-fd.append('metodoPago',    metodoPago);
-fd.append('noReferencia',  noReferencia);
-fd.append('observaciones', observ);
-fd.append('fechaEmision',  fechaEmis);
-items.forEach((it, i) => {
-    fd.append(`items[${i}][descripcion]`, it.descripcion);
-    fd.append(`items[${i}][cantidad]`,    it.cantidad);
-    fd.append(`items[${i}][precio]`,      it.precio);
-});
+            const fd = new FormData();
+            fd.append('idDocente', idDocente);
+            fd.append('metodoPago', metodoPago);
+            fd.append('noReferencia', noReferencia);
+            fd.append('observaciones', observ);
+            fd.append('fechaEmision', fechaEmis);
+            items.forEach((it, i) => {
+                fd.append(`items[${i}][descripcion]`, it.descripcion);
+                fd.append(`items[${i}][cantidad]`, it.cantidad);
+                fd.append(`items[${i}][precio]`, it.precio);
+            });
 
-const btnSubmit = formNuevaFactura.querySelector('button[type="submit"]');
-if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.textContent = 'Generando...'; }
+            const btnSubmit = formNuevaFactura.querySelector('button[type="submit"]');
+            if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.textContent = 'Generando...'; }
 
-fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            cerrarModalFactura();
-            Swal.fire({
-                icon: 'success',
-                title: '¡Factura generada!',
-                html: `<b>${data.numeroFactura}</b><br>Total: $${data.total}<br>${data.mensaje}`,
-            }).then(() => location.reload());
-        } else {
-            mostrarToastPremium(data.error || 'Error al generar la factura');
-        }
-    })
-    .catch(err => mostrarToastPremium('Error de red: ' + err.message))
-    .finally(() => {
-        if (btnSubmit) {
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = '<i class="fas fa-file-circle-plus"></i> Generar factura';
-        }
-    });
+            fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        cerrarModalFactura();
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Factura generada!',
+                            html: `<b>${data.numeroFactura}</b><br>Total: $${data.total}<br>${data.mensaje}`,
+                        }).then(() => location.reload());
+                    } else {
+                        mostrarToastPremium(data.error || 'Error al generar la factura');
+                    }
+                })
+                .catch(err => mostrarToastPremium('Error de red: ' + err.message))
+                .finally(() => {
+                    if (btnSubmit) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<i class="fas fa-file-circle-plus"></i> Generar factura';
+                    }
+                });
 
 
         });
@@ -3244,9 +3421,9 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
 
     // Recalcula subtotal de una fila y actualiza el total general
     window.recalcFila = function (id) {
-        const cant   = parseFloat(document.getElementById('cant-'   + id)?.value) || 0;
+        const cant = parseFloat(document.getElementById('cant-' + id)?.value) || 0;
         const precio = parseFloat(document.getElementById('precio-' + id)?.value) || 0;
-        const celda  = document.getElementById('sub-' + id);
+        const celda = document.getElementById('sub-' + id);
         if (celda) celda.textContent = '$' + (cant * precio).toFixed(2);
         recalcTotal();
     };
@@ -3263,7 +3440,7 @@ fetch('includes/generar-factura-docente.php', { method: 'POST', body: fd })
     // Agrega una nueva fila
     window.agregarFila = function () {
         filaId++;
-        const id    = filaId;
+        const id = filaId;
         const tbody = document.getElementById('detalleBody');
         if (!tbody) return;
 
@@ -3355,20 +3532,20 @@ document.addEventListener('DOMContentLoaded', function () {
         campos.id.value = '';
         campos.modalTitulo.textContent = modo === 'editar' ? 'Editar contenido' : 'Nuevo contenido';
 
-        if(modo === 'crear'){
+        if (modo === 'crear') {
             const totalSesiones = tbody.querySelectorAll('tr:not(.contenido-empty)').length;
             const siguienteNumero = totalSesiones + 1;
             campos.sesion.value = `Sesión ${String(siguienteNumero).padStart(2, '0')}`;
         }
 
         if (fila) {
-            campos.id.value        = fila.dataset.id || '';
-            campos.curso.value     = fila.dataset.curso || '';
-            campos.sesion.value    = fila.dataset.sesion || '';
-            campos.titulo.value    = fila.dataset.titulo || '';
+            campos.id.value = fila.dataset.id || '';
+            campos.curso.value = fila.dataset.curso || '';
+            campos.sesion.value = fila.dataset.sesion || '';
+            campos.titulo.value = fila.dataset.titulo || '';
             campos.descripcion.value = fila.dataset.descripcion || '';
-            campos.fecha.value     = fila.dataset.fecha || '';
-            campos.estado.value    = fila.dataset.estado || 'Publicado';
+            campos.fecha.value = fila.dataset.fecha || '';
+            campos.estado.value = fila.dataset.estado || 'Publicado';
             renderAdjuntosActuales(fila);
         }
 
@@ -3390,33 +3567,33 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function validarContenido() {
-    limpiarValidacionContenido();
-    let valido = true;
-    let mensajeError = '';
+        limpiarValidacionContenido();
+        let valido = true;
+        let mensajeError = '';
 
-    const requeridos = [campos.curso, campos.sesion, campos.titulo, campos.descripcion, campos.fecha, campos.estado];
-    requeridos.forEach(campo => {
-        if (!campo.value.trim()) {
-            campo.closest('.contenido-field')?.classList.add('is-invalid');
-            valido = false;
-            if (!mensajeError) mensajeError = 'Complete los campos obligatorios del contenido';
-        }
-    });
+        const requeridos = [campos.curso, campos.sesion, campos.titulo, campos.descripcion, campos.fecha, campos.estado];
+        requeridos.forEach(campo => {
+            if (!campo.value.trim()) {
+                campo.closest('.contenido-field')?.classList.add('is-invalid');
+                valido = false;
+                if (!mensajeError) mensajeError = 'Complete los campos obligatorios del contenido';
+            }
+        });
 
-    if (campos.fecha.value) {
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
-        const fechaSel = new Date(campos.fecha.value + 'T00:00:00');
-        if (fechaSel < hoy) {
-            campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
-            mensajeError = 'La fecha de la publicación no puede ser menor que la fecha actual';
-            valido = false;
+        if (campos.fecha.value) {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+            const fechaSel = new Date(campos.fecha.value + 'T00:00:00');
+            if (fechaSel < hoy) {
+                campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
+                mensajeError = 'La fecha de la publicación no puede ser menor que la fecha actual';
+                valido = false;
+            }
         }
+
+        if (!valido) mostrarToastPremium(mensajeError);
+        return valido;
     }
-
-    if (!valido) mostrarToastPremium(mensajeError);
-    return valido;
-}
 
     function crearBadgeEstado(estado) {
         const clase = estado.toLowerCase();
@@ -3435,12 +3612,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function obtenerAdjuntosFila(fila) {
         const nombresArchivos = (fila?.dataset.archivo || '').split(',').map(s => s.trim()).filter(Boolean);
-        const idsArchivos     = (fila?.dataset.archivoIds || '').split(',').map(s => s.trim()).filter(Boolean);
-        const nombresEnlaces  = (fila?.dataset.enlaces || '').split(',').map(s => s.trim()).filter(Boolean);
-        const idsEnlaces      = (fila?.dataset.enlaceIds || '').split(',').map(s => s.trim()).filter(Boolean);
+        const idsArchivos = (fila?.dataset.archivoIds || '').split(',').map(s => s.trim()).filter(Boolean);
+        const nombresEnlaces = (fila?.dataset.enlaces || '').split(',').map(s => s.trim()).filter(Boolean);
+        const idsEnlaces = (fila?.dataset.enlaceIds || '').split(',').map(s => s.trim()).filter(Boolean);
 
         const archivos = nombresArchivos.map((nombre, i) => ({ tipo: 'Archivo', nombre, id: idsArchivos[i] || '' }));
-        const enlaces  = nombresEnlaces.map((nombre, i) => ({ tipo: 'Enlace', nombre, id: idsEnlaces[i] || '' }));
+        const enlaces = nombresEnlaces.map((nombre, i) => ({ tipo: 'Enlace', nombre, id: idsEnlaces[i] || '' }));
 
         return [...archivos, ...enlaces];
     }
@@ -3480,41 +3657,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function actualizarFila(fila, usarFormulario = true) {
         if (usarFormulario) {
-            fila.dataset.curso       = campos.curso.value;
-            fila.dataset.sesion      = formatearSesion(campos.sesion.value);
-            fila.dataset.titulo      = campos.titulo.value.trim();
+            fila.dataset.curso = campos.curso.value;
+            fila.dataset.sesion = formatearSesion(campos.sesion.value);
+            fila.dataset.titulo = campos.titulo.value.trim();
             fila.dataset.descripcion = campos.descripcion.value.trim();
-            fila.dataset.fecha       = campos.fecha.value;
-            fila.dataset.estado      = campos.estado.value;
+            fila.dataset.fecha = campos.fecha.value;
+            fila.dataset.estado = campos.estado.value;
 
         }
         if (fila.dataset.estado === 'Deshabilitado') {
-    fila.classList.add('fila-deshabilitada');
-    tbody.appendChild(fila);
-} else {
-    fila.classList.remove('fila-deshabilitada');
+            fila.classList.add('fila-deshabilitada');
+            tbody.appendChild(fila);
+        } else {
+            fila.classList.remove('fila-deshabilitada');
 
-    const filasActivas = Array.from(
-        tbody.querySelectorAll('tr:not(.contenido-empty):not(.fila-deshabilitada)')
-    ).filter(f => f !== fila);
+            const filasActivas = Array.from(
+                tbody.querySelectorAll('tr:not(.contenido-empty):not(.fila-deshabilitada)')
+            ).filter(f => f !== fila);
 
-    let insertado = false;
+            let insertado = false;
 
-    for (const otraFila of filasActivas) {
-        const idActual = parseInt(fila.dataset.id);
-        const otroId = parseInt(otraFila.dataset.id);
+            for (const otraFila of filasActivas) {
+                const idActual = parseInt(fila.dataset.id);
+                const otroId = parseInt(otraFila.dataset.id);
 
-        if (idActual < otroId) {
-            tbody.insertBefore(fila, otraFila);
-            insertado = true;
-            break;
+                if (idActual < otroId) {
+                    tbody.insertBefore(fila, otraFila);
+                    insertado = true;
+                    break;
+                }
+            }
+
+            if (!insertado) {
+                tbody.appendChild(fila);
+            }
         }
-    }
-
-    if (!insertado) {
-        tbody.appendChild(fila);
-    }
-}
 
         const archivo = fila.dataset.archivo || '';
 
@@ -3608,10 +3785,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         <i class="fas fa-times"></i>
                     </button>`;
 
-                div.querySelector('.adjunto-file-input').addEventListener('change', function () {
-                    const texto = div.querySelector('.adjunto-file-texto');
-                    texto.textContent = this.files[0]?.name || 'Seleccionar archivo';
-                });
+            div.querySelector('.adjunto-file-input').addEventListener('change', function () {
+                const texto = div.querySelector('.adjunto-file-texto');
+                texto.textContent = this.files[0]?.name || 'Seleccionar archivo';
+            });
         } else {
             div.innerHTML = `
                 <span class="adjunto-tipo"><i class="fas fa-link"></i> Enlace</span>
@@ -3651,18 +3828,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'POST',
                 body: new URLSearchParams({ id: idArchivo })
             })
-            .then(r => r.json())
-            .then(data => {
-                if (data.ok) {
-                    btn.closest('.adjunto-existente')?.remove();
-                    if (!adjuntosActuales.querySelector('.adjunto-existente')) {
-                        adjuntosActuales.innerHTML = '<span class="contenido-muted">Sin adjuntos guardados</span>';
+                .then(r => r.json())
+                .then(data => {
+                    if (data.ok) {
+                        btn.closest('.adjunto-existente')?.remove();
+                        if (!adjuntosActuales.querySelector('.adjunto-existente')) {
+                            adjuntosActuales.innerHTML = '<span class="contenido-muted">Sin adjuntos guardados</span>';
+                        }
+                    } else {
+                        mostrarToastPremium('Error al eliminar adjunto.');
                     }
-                } else {
-                    mostrarToastPremium('Error al eliminar adjunto.');
-                }
-            })
-            .catch(() => mostrarToastPremium('Error de conexión.'));
+                })
+                .catch(() => mostrarToastPremium('Error de conexión.'));
         } else {
             btn.closest('.adjunto-existente')?.remove();
         }
@@ -3688,8 +3865,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (btnToggle) {
             const deshabilitado = fila.dataset.estado === 'Deshabilitado';
-            const nuevoEstado   = deshabilitado ? 'Publicado' : 'Deshabilitado';
-            const nuevoValor    = deshabilitado ? 1 : 0;
+            const nuevoEstado = deshabilitado ? 'Publicado' : 'Deshabilitado';
+            const nuevoValor = deshabilitado ? 1 : 0;
 
             fetch('toggle_contenido.php', {
                 method: 'POST',
@@ -3698,24 +3875,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     estado: nuevoValor
                 })
             })
-            .then(r => r.json())
-            .then(data => {
-                if (data.ok) {
-                    fila.dataset.estado = nuevoEstado;
-                    actualizarFila(fila, false);
-                    filtrarContenidos();
-                    actualizarContadores();
+                .then(r => r.json())
+                .then(data => {
+                    if (data.ok) {
+                        fila.dataset.estado = nuevoEstado;
+                        actualizarFila(fila, false);
+                        filtrarContenidos();
+                        actualizarContadores();
 
-                } else {
-                    mostrarToastPremium('Error al cambiar estado.');
-                }
-            })
-            .catch(() => mostrarToastPremium('Error de conexión.'));
+                    } else {
+                        mostrarToastPremium('Error al cambiar estado.');
+                    }
+                })
+                .catch(() => mostrarToastPremium('Error de conexión.'));
         }
     });
     function actualizarContadores() {
         const filas = Array.from(tbody.querySelectorAll('tr:not(.contenido-empty)'));
-        const publicados     = filas.filter(f => f.dataset.estado === 'Publicado').length;
+        const publicados = filas.filter(f => f.dataset.estado === 'Publicado').length;
         const deshabilitados = filas.filter(f => f.dataset.estado === 'Deshabilitado').length;
 
         const metricas = document.querySelectorAll('.organizacion-metricas div strong');
@@ -3736,10 +3913,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const formData = new FormData(form);
         formData.set('id', campos.id.value || 0);
         formData.set('idCurso', document.getElementById('contenidoCursoId').value);
-        formData.set('titulo',      campos.titulo.value.trim());
+        formData.set('titulo', campos.titulo.value.trim());
         formData.set('descripcion', campos.descripcion.value.trim());
-        formData.set('fecha',       campos.fecha.value);
-        formData.set('estado',      campos.estado.value === 'Publicado' ? 1 : 0);
+        formData.set('fecha', campos.fecha.value);
+        formData.set('estado', campos.estado.value === 'Publicado' ? 1 : 0);
 
         try {
             const resp = await fetch('/OpusCore/guardar_contenido.php', {
@@ -3761,8 +3938,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Buscador y filtro estado
-if (buscar) buscar.addEventListener('input', filtrarContenidos);
-if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
+    if (buscar) buscar.addEventListener('input', filtrarContenidos);
+    if (filtroEstado) filtroEstado.addEventListener('change', filtrarContenidos);
 });
 
 // Interacciones de gestion de tareas del docente.
@@ -3782,55 +3959,55 @@ document.addEventListener('DOMContentLoaded', function () {
     let filaEditando = null;
 
     const campos = {
-    id: document.getElementById('tareaId'),
-    cursoId: document.getElementById('tareaCursoId'),
-    titulo: document.getElementById('tareaTitulo'),
-    descripcion: document.getElementById('tareaDescripcion'),
-    fecha: document.getElementById('tareaFecha'),
-    puntaje: document.getElementById('tareaPuntaje'),
-    intentos: document.getElementById('tareaIntentos'),
-    estado: document.getElementById('tareaEstado'),
-    archivo: document.getElementById('tareaArchivo'),
-    modalTitulo: document.getElementById('tareaModalTitulo')
-};
+        id: document.getElementById('tareaId'),
+        cursoId: document.getElementById('tareaCursoId'),
+        titulo: document.getElementById('tareaTitulo'),
+        descripcion: document.getElementById('tareaDescripcion'),
+        fecha: document.getElementById('tareaFecha'),
+        puntaje: document.getElementById('tareaPuntaje'),
+        intentos: document.getElementById('tareaIntentos'),
+        estado: document.getElementById('tareaEstado'),
+        archivo: document.getElementById('tareaArchivo'),
+        modalTitulo: document.getElementById('tareaModalTitulo')
+    };
 
 
 
-   function abrirModalTarea(fila = null) {
-    form.reset();
-    limpiarValidacionTarea();
-    filaEditando = fila;
-    campos.modalTitulo.textContent = fila ? 'Editar tarea' : 'Nueva tarea';
-    if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
-     const selectSesion = document.getElementById('tareaSesion');
-     if(selectSesion) selectSesion.value = '';
-    if (campos.id) campos.id.value = '';
-
-    if (fila) {
-
-        if (campos.id) campos.id.value = fila.dataset.id || '';
-
-        campos.titulo.value      = fila.dataset.titulo      || '';
-        campos.descripcion.value = fila.dataset.descripcion || '';
-        campos.puntaje.value     = fila.dataset.puntaje     || '';
-        campos.intentos.value = fila.dataset.intentos || '1';
-        campos.estado.value = fila.dataset.estado === 'Activa' ? '1' : '0';
-        campos.fecha.value = (fila.dataset.fecha || '').replace(' ', 'T').substring(0, 16);
-
+    function abrirModalTarea(fila = null) {
+        form.reset();
+        limpiarValidacionTarea();
+        filaEditando = fila;
+        campos.modalTitulo.textContent = fila ? 'Editar tarea' : 'Nueva tarea';
+        if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
         const selectSesion = document.getElementById('tareaSesion');
-        if(selectSesion){
-            selectSesion.value = fila.dataset.sesionId || '';
+        if (selectSesion) selectSesion.value = '';
+        if (campos.id) campos.id.value = '';
+
+        if (fila) {
+
+            if (campos.id) campos.id.value = fila.dataset.id || '';
+
+            campos.titulo.value = fila.dataset.titulo || '';
+            campos.descripcion.value = fila.dataset.descripcion || '';
+            campos.puntaje.value = fila.dataset.puntaje || '';
+            campos.intentos.value = fila.dataset.intentos || '1';
+            campos.estado.value = fila.dataset.estado === 'Activa' ? '1' : '0';
+            campos.fecha.value = (fila.dataset.fecha || '').replace(' ', 'T').substring(0, 16);
+
+            const selectSesion = document.getElementById('tareaSesion');
+            if (selectSesion) {
+                selectSesion.value = fila.dataset.sesionId || '';
+            }
+
+            if (tareaArchivoTexto && fila.dataset.archivo) {
+                tareaArchivoTexto.textContent = fila.dataset.archivo;
+            }
         }
 
-        if (tareaArchivoTexto && fila.dataset.archivo) {
-            tareaArchivoTexto.textContent = fila.dataset.archivo;
-        }
+        modal.classList.add('activo');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
     }
-
-    modal.classList.add('activo');
-    modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-}
 
     function cerrarModalTarea() {
         modal.classList.remove('activo');
@@ -3843,61 +4020,61 @@ document.addEventListener('DOMContentLoaded', function () {
         form.querySelectorAll('.contenido-field').forEach(field => field.classList.remove('is-invalid'));
     }
 
-// VALIDAR FECHA
-   function validarTarea() {
-    limpiarValidacionTarea();
-    let valido = true;
-    let mensajeError = '';
+    // VALIDAR FECHA
+    function validarTarea() {
+        limpiarValidacionTarea();
+        let valido = true;
+        let mensajeError = '';
 
-    const requeridos = [
-        campos.titulo,
-        campos.descripcion,
-        campos.fecha,
-        campos.puntaje,
-        campos.estado
-    ];
+        const requeridos = [
+            campos.titulo,
+            campos.descripcion,
+            campos.fecha,
+            campos.puntaje,
+            campos.estado
+        ];
 
-    requeridos.forEach(campo => {
-        if (!campo) return;
-        const vacio          = !campo.value.trim();
-        const numeroInvalido = campo === campos.puntaje && parseInt(campo.value, 10) < 1;
+        requeridos.forEach(campo => {
+            if (!campo) return;
+            const vacio = !campo.value.trim();
+            const numeroInvalido = campo === campos.puntaje && parseInt(campo.value, 10) < 1;
 
-        if (vacio || numeroInvalido) {
-            campo.closest('.contenido-field')?.classList.add('is-invalid');
-            valido = false;
-            if (!mensajeError) mensajeError = 'Complete los campos obligatorios de la tarea';
+            if (vacio || numeroInvalido) {
+                campo.closest('.contenido-field')?.classList.add('is-invalid');
+                valido = false;
+                if (!mensajeError) mensajeError = 'Complete los campos obligatorios de la tarea';
+            }
+        });
+
+        if (campos.fecha.value) {
+            const partes = campos.fecha.value.split('T');
+            const [anio, mes, dia] = partes[0].split('-').map(Number);
+            const [hora, minuto] = partes[1] ? partes[1].split(':').map(Number) : [0, 0];
+
+            const fechaSel = new Date(anio, mes - 1, dia, hora, minuto, 0);
+            const esEdicion = campos.id && campos.id.value && campos.id.value !== '0';
+
+            const hoyInicio = new Date();
+            hoyInicio.setHours(0, 0, 0, 0);
+
+            console.log('fechaSel:', fechaSel);
+            console.log('hoyInicio:', hoyInicio);
+            console.log('fechaSel < hoyInicio:', fechaSel < hoyInicio);
+            console.log('esEdicion:', esEdicion);
+            console.log('valor raw:', campos.fecha.value);
+
+            if (fechaSel < hoyInicio) {
+                campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
+                mensajeError = esEdicion
+                    ? 'La fecha límite no puede ser de un día anterior a hoy'
+                    : 'La fecha límite no puede ser anterior a la fecha actual';
+                valido = false;
+            }
         }
-    });
 
-    if (campos.fecha.value) {
-        const partes           = campos.fecha.value.split('T');
-        const [anio, mes, dia] = partes[0].split('-').map(Number);
-        const [hora, minuto]   = partes[1] ? partes[1].split(':').map(Number) : [0, 0];
-
-        const fechaSel  = new Date(anio, mes - 1, dia, hora, minuto, 0);
-        const esEdicion = campos.id && campos.id.value && campos.id.value !== '0';
-
-        const hoyInicio = new Date();
-        hoyInicio.setHours(0, 0, 0, 0);
-
-        console.log('fechaSel:', fechaSel);
-        console.log('hoyInicio:', hoyInicio);
-        console.log('fechaSel < hoyInicio:', fechaSel < hoyInicio);
-        console.log('esEdicion:', esEdicion);
-        console.log('valor raw:', campos.fecha.value);
-
-        if (fechaSel < hoyInicio) {
-            campos.fecha.closest('.contenido-field')?.classList.add('is-invalid');
-            mensajeError = esEdicion
-                ? 'La fecha límite no puede ser de un día anterior a hoy'
-                : 'La fecha límite no puede ser anterior a la fecha actual';
-            valido = false;
-        }
+        if (!valido) mostrarToastPremium(mensajeError);
+        return valido;
     }
-
-    if (!valido) mostrarToastPremium(mensajeError);
-    return valido;
-}
 
     function escapeTarea(valor) {
         return String(valor || '').replace(/[&<>"']/g, caracter => ({
@@ -3947,29 +4124,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function guardarFilaTarea(idReal = null) {
-    const fila        = filaEditando || document.createElement('tr');
-    const archivoNuevo = campos.archivo.files?.[0]?.name || '';
+        const fila = filaEditando || document.createElement('tr');
+        const archivoNuevo = campos.archivo.files?.[0]?.name || '';
 
-    if (idReal && !filaEditando) {
-        fila.dataset.id = idReal;
+        if (idReal && !filaEditando) {
+            fila.dataset.id = idReal;
+        }
+
+        fila.dataset.titulo = campos.titulo.value.trim();
+        fila.dataset.descripcion = campos.descripcion.value.trim();
+        fila.dataset.fecha = campos.fecha.value;
+        fila.dataset.puntaje = campos.puntaje.value;
+        fila.dataset.intentos = campos.intentos.value;
+        fila.dataset.estado = campos.estado.value === '1' ? 'Activa' : 'Borrador';
+        fila.dataset.archivo = archivoNuevo || fila.dataset.archivo || '';
+        fila.dataset.sesionId = document.getElementById('tareaSesion')?.value || '';
+
+        renderFilaTarea(fila);
+
+        if (!filaEditando) {
+            tbody.prepend(fila);
+            if (total) total.textContent = String(tbody.querySelectorAll('tr').length);
+        }
     }
-
-    fila.dataset.titulo      = campos.titulo.value.trim();
-    fila.dataset.descripcion = campos.descripcion.value.trim();
-    fila.dataset.fecha       = campos.fecha.value;
-    fila.dataset.puntaje     = campos.puntaje.value;
-    fila.dataset.intentos = campos.intentos.value;
-    fila.dataset.estado      = campos.estado.value === '1' ? 'Activa' : 'Borrador';
-    fila.dataset.archivo     = archivoNuevo || fila.dataset.archivo || '';
-    fila.dataset.sesionId = document.getElementById('tareaSesion')?.value || '';
-
-    renderFilaTarea(fila);
-
-    if (!filaEditando) {
-        tbody.prepend(fila);
-        if (total) total.textContent = String(tbody.querySelectorAll('tr').length);
-    }
-}
     btnNueva?.addEventListener('click', () => abrirModalTarea());
     btnCerrar?.addEventListener('click', cerrarModalTarea);
     btnCancelar?.addEventListener('click', cerrarModalTarea);
@@ -3981,35 +4158,35 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     limpiarArchivoTarea?.addEventListener('click', async function () {
-    if (campos.archivo) campos.archivo.value = '';
-    if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
+        if (campos.archivo) campos.archivo.value = '';
+        if (tareaArchivoTexto) tareaArchivoTexto.textContent = 'Seleccionar archivo';
 
 
-    const idsArchivos = filaEditando?.dataset.idsArchivos || '';
-    if (!filaEditando || !idsArchivos) return;
+        const idsArchivos = filaEditando?.dataset.idsArchivos || '';
+        if (!filaEditando || !idsArchivos) return;
 
-    const idArchivo = idsArchivos.split(',')[0];
-    if (!idArchivo) return;
+        const idArchivo = idsArchivos.split(',')[0];
+        if (!idArchivo) return;
 
-    try {
-        const formData = new FormData();
-        formData.append('id', idArchivo);
+        try {
+            const formData = new FormData();
+            formData.append('id', idArchivo);
 
-        const res  = await fetch('eliminar-archivo-tarea.php', { method: 'POST', body: formData });
-        const data = await res.json();
+            const res = await fetch('eliminar-archivo-tarea.php', { method: 'POST', body: formData });
+            const data = await res.json();
 
-        if (data.ok) {
+            if (data.ok) {
 
-            filaEditando.dataset.archivo     = '';
-            filaEditando.dataset.idsArchivos = '';
-            mostrarToastPremium('Archivo eliminado correctamente', 'success');
-        } else {
-            mostrarToastPremium(data.mensaje || 'Error al eliminar el archivo', 'error');
+                filaEditando.dataset.archivo = '';
+                filaEditando.dataset.idsArchivos = '';
+                mostrarToastPremium('Archivo eliminado correctamente', 'success');
+            } else {
+                mostrarToastPremium(data.mensaje || 'Error al eliminar el archivo', 'error');
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión al eliminar el archivo', 'error');
         }
-    } catch {
-        mostrarToastPremium('Error de conexión al eliminar el archivo', 'error');
-    }
-});
+    });
 
     modal.addEventListener('click', function (e) {
         if (e.target === modal) cerrarModalTarea();
@@ -4021,54 +4198,54 @@ document.addEventListener('DOMContentLoaded', function () {
         abrirModalTarea(btnEditar.closest('tr'));
     });
 
-   form.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    if (!validarTarea()) return;
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (!validarTarea()) return;
 
-    const btnSubmit = form.querySelector('button[type="submit"]');
-    const textoOriginal = btnSubmit?.textContent || 'Guardar tarea';
-    if (btnSubmit) {
-        btnSubmit.disabled = true;
-        btnSubmit.textContent = 'Guardando...';
-    }
-
-    const formData = new FormData();
-    formData.append('id',            document.getElementById('tareaId')?.value || '0');
-    formData.append('idCurso',       document.getElementById('tareaCursoId')?.value || '');
-    formData.append('titulo',        document.getElementById('tareaTitulo')?.value?.trim() || '');
-    formData.append('descripcion',   document.getElementById('tareaDescripcion')?.value?.trim() || '');
-    formData.append('fechaLimite',   document.getElementById('tareaFecha')?.value || '');
-    formData.append('puntajeMaximo', document.getElementById('tareaPuntaje')?.value || '');
-    formData.append('intentos',      document.getElementById('tareaIntentos')?.value || '1');
-    formData.append('estado',        document.getElementById('tareaEstado')?.value || '0');
-    formData.append('idSesion',      document.getElementById('tareaSesion')?.value || '0');
-
-    const archivoInput = document.getElementById('tareaArchivo');
-    if (archivoInput?.files?.length > 0) {
-        formData.append('archivo', archivoInput.files[0]);
-    }
-
-    try {
-        const res  = await fetch('guardar-tarea.php', { method: 'POST', body: formData });
-        const data = await res.json();
-
-        if (data.error) {
-            mostrarToastPremium(data.mensaje, 'error');
-        } else {
-            guardarFilaTarea(data.id);
-            cerrarModalTarea();
-            mostrarToastPremium(data.mensaje, 'success');
-            setTimeout(() => window.location.reload(), 1500);
-        }
-    } catch {
-        mostrarToastPremium('Error de conexión al guardar la tarea', 'error');
-    } finally {
+        const btnSubmit = form.querySelector('button[type="submit"]');
+        const textoOriginal = btnSubmit?.textContent || 'Guardar tarea';
         if (btnSubmit) {
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = textoOriginal;
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'Guardando...';
         }
-    }
-});
+
+        const formData = new FormData();
+        formData.append('id', document.getElementById('tareaId')?.value || '0');
+        formData.append('idCurso', document.getElementById('tareaCursoId')?.value || '');
+        formData.append('titulo', document.getElementById('tareaTitulo')?.value?.trim() || '');
+        formData.append('descripcion', document.getElementById('tareaDescripcion')?.value?.trim() || '');
+        formData.append('fechaLimite', document.getElementById('tareaFecha')?.value || '');
+        formData.append('puntajeMaximo', document.getElementById('tareaPuntaje')?.value || '');
+        formData.append('intentos', document.getElementById('tareaIntentos')?.value || '1');
+        formData.append('estado', document.getElementById('tareaEstado')?.value || '0');
+        formData.append('idSesion', document.getElementById('tareaSesion')?.value || '0');
+
+        const archivoInput = document.getElementById('tareaArchivo');
+        if (archivoInput?.files?.length > 0) {
+            formData.append('archivo', archivoInput.files[0]);
+        }
+
+        try {
+            const res = await fetch('guardar-tarea.php', { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (data.error) {
+                mostrarToastPremium(data.mensaje, 'error');
+            } else {
+                guardarFilaTarea(data.id);
+                cerrarModalTarea();
+                mostrarToastPremium(data.mensaje, 'success');
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch {
+            mostrarToastPremium('Error de conexión al guardar la tarea', 'error');
+        } finally {
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = textoOriginal;
+            }
+        }
+    });
 });
 
 // Filtros visuales para la pagina de entregas del docente.
@@ -4109,9 +4286,9 @@ document.addEventListener('click', async function (e) {
     const btn = e.target.closest('.btn-calificar-tarea');
     if (!btn) return;
 
-    const fila      = btn.closest('tr');
-    const input     = fila?.querySelector('.tarea-calificacion input');
-    const nota      = parseFloat(input?.value ?? '');
+    const fila = btn.closest('tr');
+    const input = fila?.querySelector('.tarea-calificacion input');
+    const nota = parseFloat(input?.value ?? '');
     const idEntrega = btn.dataset.idEntrega || fila?.dataset.idEntrega;
 
     const max = parseFloat(input?.getAttribute('max') ?? '100');
@@ -4126,7 +4303,7 @@ document.addEventListener('click', async function (e) {
         return;
     }
 
-    btn.disabled    = true;
+    btn.disabled = true;
     btn.textContent = 'Guardando...';
 
     try {
@@ -4134,12 +4311,12 @@ document.addEventListener('click', async function (e) {
         formData.append('idEntrega', idEntrega);
         formData.append('nota', nota);
 
-        const res  = await fetch('calificar-entrega.php', { method: 'POST', body: formData });
+        const res = await fetch('calificar-entrega.php', { method: 'POST', body: formData });
         const data = await res.json();
 
         if (data.error) {
             mostrarToastPremium(data.mensaje, 'error');
-            btn.disabled    = false;
+            btn.disabled = false;
             btn.textContent = 'Calificar';
         } else {
             // Actualiza la interfaz despues de guardar la calificacion.
@@ -4161,7 +4338,7 @@ document.addEventListener('click', async function (e) {
         }
     } catch {
         mostrarToastPremium('Error de conexión al calificar', 'error');
-        btn.disabled    = false;
+        btn.disabled = false;
         btn.textContent = 'Calificar';
     }
 });
@@ -4400,18 +4577,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Si ambas notas están completas
         if (count === 2) {
-             const nota1 = parseFloat(inputsFila[0].value.trim());
+            const nota1 = parseFloat(inputsFila[0].value.trim());
             const nota2 = parseFloat(inputsFila[1].value.trim());
-            const prom  = parseFloat(((nota1 * 0.30) + (nota2 * 0.70)).toFixed(2));
+            const prom = parseFloat(((nota1 * 0.30) + (nota2 * 0.70)).toFixed(2));
             badge.textContent = prom.toFixed(2);
 
             if (prom >= 7.0) {
-            badge.classList.add('promedio-aprobado');
-        } else if (prom >= 6.0) {
-            badge.classList.add('promedio-alerta');
-        } else {
-            badge.classList.add('promedio-reprobado');
-        }
+                badge.classList.add('promedio-aprobado');
+            } else if (prom >= 6.0) {
+                badge.classList.add('promedio-alerta');
+            } else {
+                badge.classList.add('promedio-reprobado');
+            }
         } else {
             badge.textContent = '—';
             badge.classList.add('promedio-vacio');
@@ -4419,10 +4596,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Cargar promedio grupal real desde BD si existe
-if (typeof promedioGrupalInicial !== 'undefined' && promedioGrupalInicial !== null) {
-    const kpiPromedio = document.getElementById('kpi-promedio-grupal');
-    if (kpiPromedio) kpiPromedio.textContent = parseFloat(promedioGrupalInicial).toFixed(2);
-}
+    if (typeof promedioGrupalInicial !== 'undefined' && promedioGrupalInicial !== null) {
+        const kpiPromedio = document.getElementById('kpi-promedio-grupal');
+        if (kpiPromedio) kpiPromedio.textContent = parseFloat(promedioGrupalInicial).toFixed(2);
+    }
     // Recalcular todos los promedios
     function recalcularTodosLosPromedios() {
         inputs.forEach(inp => {
@@ -4432,146 +4609,146 @@ if (typeof promedioGrupalInicial !== 'undefined' && promedioGrupalInicial !== nu
         recalcularKPIs();
     }
     // Actualiza metricas generales del curso.
-function recalcularKPIs() {
-    const badges = document.querySelectorAll('[id^="promedio-"]');
+    function recalcularKPIs() {
+        const badges = document.querySelectorAll('[id^="promedio-"]');
 
-    let sumaPromedios = 0;
-    let aprobados = 0;
-    let promediosValidosCount = 0;
+        let sumaPromedios = 0;
+        let aprobados = 0;
+        let promediosValidosCount = 0;
 
-    badges.forEach(b => {
-        const text = b.textContent.trim();
+        badges.forEach(b => {
+            const text = b.textContent.trim();
 
-        if (text !== '—') {
-            const val = parseFloat(text);
-            sumaPromedios += val;
-            promediosValidosCount++;
+            if (text !== '—') {
+                const val = parseFloat(text);
+                sumaPromedios += val;
+                promediosValidosCount++;
 
-            if (val >= 7.00) aprobados++;
-        }
-    });
-
-    const kpiPromedio  = document.getElementById('kpi-promedio-grupal');
-    const kpiAprobacion = document.getElementById('kpi-porcentaje-aprobacion');
-
-    if (promediosValidosCount > 0) {
-        const promedioGrupal = (sumaPromedios / promediosValidosCount).toFixed(2);
-        const tasaAprobacion = Math.round((aprobados / promediosValidosCount) * 100);
-
-        if (kpiPromedio)   kpiPromedio.textContent   = promedioGrupal;
-        if (kpiAprobacion) kpiAprobacion.textContent = `${tasaAprobacion}%`;
-    } else {
-        if (kpiPromedio)   kpiPromedio.textContent   = '0.00';
-        if (kpiAprobacion) kpiAprobacion.textContent = '0%';
-    }
-}
-
-   // Acciones de guardado manual y edicion.
-document.querySelectorAll('.btn-nota-editar').forEach(btn => {
-    btn.addEventListener('click', function () {
-        if (!plazoActivo) {
-            mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
-            return;
-        }
-        const row = this.closest('tr');
-        row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
-        row.querySelectorAll('.nota-input')[0].focus();
-
-        const btnGuardar = row.querySelector('.btn-guardar-nota');
-        btnGuardar.disabled = false;
-        btnGuardar.style.display = '';
-        this.style.display = 'none';
-    });
-});
-
-// Botón Guardar
-document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
-    btn.addEventListener('click', function () {
-        if (!plazoActivo) {
-            mostrarToastPremium('El plazo de notas está cerrado. No se pueden guardar cambios.', 'error');
-            return;
-        }
-
-        const row = this.closest('tr');
-        const inputsFila = row.querySelectorAll('.nota-input');
-        const nota1 = inputsFila[0].value.trim();
-        const nota2 = inputsFila[1].value.trim();
-
-        if (nota1 === '' || nota2 === '') {
-            mostrarToastPremium('Debes ingresar ambas notas antes de guardar.', 'error');
-            return;
-        }
-
-        const estudianteId = inputsFila[0].dataset.estudianteId;
-        const inscId       = inputsFila[0].dataset.inscId;
-
-        this.disabled = true;
-        this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Guardando...';
-
-        fetch('guardar-nota.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                curso_id:      cursoId,
-                estudiante_id: parseInt(estudianteId),
-                actividades:   parseFloat(nota1),
-                examen_final:  parseFloat(nota2),
-                plazo_id:      plazoActivo.id
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                mostrarToastPremium(data.message, 'success');
-                inputsFila.forEach(inp => inp.setAttribute('readonly', true));
-
-                const badge = document.getElementById(`promedio-${inscId}`);
-                if (badge && data.nota_final !== undefined) {
-                    const nf = parseFloat(data.nota_final).toFixed(2);
-                    badge.textContent = nf;
-                    badge.className = 'promedio-badge';
-                    badge.classList.add(parseFloat(data.nota_final) >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
-                }
-
-
-                let btnEditar = row.querySelector('.btn-nota-editar');
-                if (!btnEditar) {
-                    btnEditar = document.createElement('button');
-                    btnEditar.className = 'btn-nota-editar';
-                    btnEditar.dataset.accion = 'editar';
-                    btnEditar.innerHTML = '<i class="fas fa-pen"></i> Editar';
-                    btnEditar.addEventListener('click', function () {
-                        if (!plazoActivo) {
-                            mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
-                            return;
-                        }
-                        row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
-                        row.querySelectorAll('.nota-input')[0].focus();
-                        row.querySelector('.btn-guardar-nota').disabled = false;
-                        this.style.display = 'none';
-                    });
-                    row.querySelector('.acciones-nota-group').prepend(btnEditar);
-                } else {
-                    btnEditar.style.display = '';
-                }
-                this.style.display = 'none';
-                this.disabled = true;
-                this.innerHTML = '<i class="fas fa-save"></i> Guardar';
-
-                recalcularKPIs();
-            } else {
-                mostrarToastPremium(data.message, 'error');
-                this.disabled = false;
-                this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                if (val >= 7.00) aprobados++;
             }
-        })
-        .catch(() => {
-            mostrarToastPremium('Error de conexión al guardar', 'error');
-            this.disabled = false;
-            this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+        });
+
+        const kpiPromedio = document.getElementById('kpi-promedio-grupal');
+        const kpiAprobacion = document.getElementById('kpi-porcentaje-aprobacion');
+
+        if (promediosValidosCount > 0) {
+            const promedioGrupal = (sumaPromedios / promediosValidosCount).toFixed(2);
+            const tasaAprobacion = Math.round((aprobados / promediosValidosCount) * 100);
+
+            if (kpiPromedio) kpiPromedio.textContent = promedioGrupal;
+            if (kpiAprobacion) kpiAprobacion.textContent = `${tasaAprobacion}%`;
+        } else {
+            if (kpiPromedio) kpiPromedio.textContent = '0.00';
+            if (kpiAprobacion) kpiAprobacion.textContent = '0%';
+        }
+    }
+
+    // Acciones de guardado manual y edicion.
+    document.querySelectorAll('.btn-nota-editar').forEach(btn => {
+        btn.addEventListener('click', function () {
+            if (!plazoActivo) {
+                mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
+                return;
+            }
+            const row = this.closest('tr');
+            row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
+            row.querySelectorAll('.nota-input')[0].focus();
+
+            const btnGuardar = row.querySelector('.btn-guardar-nota');
+            btnGuardar.disabled = false;
+            btnGuardar.style.display = '';
+            this.style.display = 'none';
         });
     });
-});
+
+    // Botón Guardar
+    document.querySelectorAll('.btn-guardar-nota').forEach(btn => {
+        btn.addEventListener('click', function () {
+            if (!plazoActivo) {
+                mostrarToastPremium('El plazo de notas está cerrado. No se pueden guardar cambios.', 'error');
+                return;
+            }
+
+            const row = this.closest('tr');
+            const inputsFila = row.querySelectorAll('.nota-input');
+            const nota1 = inputsFila[0].value.trim();
+            const nota2 = inputsFila[1].value.trim();
+
+            if (nota1 === '' || nota2 === '') {
+                mostrarToastPremium('Debes ingresar ambas notas antes de guardar.', 'error');
+                return;
+            }
+
+            const estudianteId = inputsFila[0].dataset.estudianteId;
+            const inscId = inputsFila[0].dataset.inscId;
+
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Guardando...';
+
+            fetch('guardar-nota.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    curso_id: cursoId,
+                    estudiante_id: parseInt(estudianteId),
+                    actividades: parseFloat(nota1),
+                    examen_final: parseFloat(nota2),
+                    plazo_id: plazoActivo.id
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        mostrarToastPremium(data.message, 'success');
+                        inputsFila.forEach(inp => inp.setAttribute('readonly', true));
+
+                        const badge = document.getElementById(`promedio-${inscId}`);
+                        if (badge && data.nota_final !== undefined) {
+                            const nf = parseFloat(data.nota_final).toFixed(2);
+                            badge.textContent = nf;
+                            badge.className = 'promedio-badge';
+                            badge.classList.add(parseFloat(data.nota_final) >= 6 ? 'promedio-aprobado' : 'promedio-reprobado');
+                        }
+
+
+                        let btnEditar = row.querySelector('.btn-nota-editar');
+                        if (!btnEditar) {
+                            btnEditar = document.createElement('button');
+                            btnEditar.className = 'btn-nota-editar';
+                            btnEditar.dataset.accion = 'editar';
+                            btnEditar.innerHTML = '<i class="fas fa-pen"></i> Editar';
+                            btnEditar.addEventListener('click', function () {
+                                if (!plazoActivo) {
+                                    mostrarToastPremium('El plazo de notas está cerrado. No se puede editar.', 'error');
+                                    return;
+                                }
+                                row.querySelectorAll('.nota-input').forEach(inp => inp.removeAttribute('readonly'));
+                                row.querySelectorAll('.nota-input')[0].focus();
+                                row.querySelector('.btn-guardar-nota').disabled = false;
+                                this.style.display = 'none';
+                            });
+                            row.querySelector('.acciones-nota-group').prepend(btnEditar);
+                        } else {
+                            btnEditar.style.display = '';
+                        }
+                        this.style.display = 'none';
+                        this.disabled = true;
+                        this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+
+                        recalcularKPIs();
+                    } else {
+                        mostrarToastPremium(data.message, 'error');
+                        this.disabled = false;
+                        this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                    }
+                })
+                .catch(() => {
+                    mostrarToastPremium('Error de conexión al guardar', 'error');
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-save"></i> Guardar';
+                });
+        });
+    });
 });
 
 // --- PLAZOS DE NOTAS ---
@@ -4652,6 +4829,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (inputPeriodo) inputPeriodo.value = btn.dataset.idperiodo || '';
         if (inputInicio) inputInicio.value = btn.dataset.plazoInicio || '';
         if (inputFin) inputFin.value = btn.dataset.plazoFin || '';
+        modalPlazo.dataset.fechaFinCiclo = btn.dataset.fechaFinCiclo || '';
 
         abrirModal();
     });
@@ -4677,6 +4855,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 inputInicio.max = data.fin;
                 inputFin.max = data.fin;
+
+                modalPlazo.dataset.fechaFinCiclo = data.fin;
 
             } catch (err) {
                 console.error(err);
@@ -4707,12 +4887,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const mesFin    = fin.substring(0, 7);
-            const mesInicio = inicio.substring(0, 7);
+            const fechaFinCiclo = modalPlazo.dataset.fechaFinCiclo;
+            if (fechaFinCiclo) {
+                const dInicio = new Date(inicio + 'T12:00:00');
+                const dFinCiclo = new Date(fechaFinCiclo + 'T12:00:00');
+                const diffTime = dFinCiclo - dInicio;
+                const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-            if (mesInicio !== mesFin) {
-                mostrarToastPremium('El inicio del plazo debe ser dentro del mes de cierre del período');
-                return;
+                if (diffDays > 30) {
+                    mostrarToastPremium('El inicio del plazo no puede ser más de 30 días antes del fin del ciclo (' + fechaFinCiclo + ')');
+                    return;
+                }
+                if (diffDays < 0) {
+                    mostrarToastPremium('El inicio del plazo no puede ser después del fin del ciclo (' + fechaFinCiclo + ')');
+                    return;
+                }
+
+                const dFin = new Date(fin + 'T12:00:00');
+                if (dFin > dFinCiclo) {
+                    mostrarToastPremium('El fin del plazo no puede ser después del fin del ciclo (' + fechaFinCiclo + ')');
+                    return;
+                }
             }
 
             const body = new URLSearchParams({

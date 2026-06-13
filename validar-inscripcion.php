@@ -110,8 +110,8 @@ foreach ($prerrequisitos as $pre) {
     $idCursoPrevio = $pre['idCursoPrevio'];
 
     $stmt = $conexion->prepare("
-        SELECT id FROM inscripciones
-        WHERE idEstudiante = ? AND idCurso = ? AND estado_academico = 'Finalizado'
+        SELECT id FROM RegistroNotas
+        WHERE idEstudiante = ? AND idCurso = ? AND estadoEstudiante = 'Aprobado'
     ");
     $stmt->bind_param("ii", $idEstudiante, $idCursoPrevio);
     $stmt->execute();

@@ -942,6 +942,14 @@ body {
     padding-right: 42px;
 }
 
+.input-password .input-note {
+    display: block;
+    margin-top: 8px;
+    color: #657488;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
 .ver-contrasena-docente,
 .ver-contrasena-estudiante,
 .ver-contrasena-admin {
@@ -1392,9 +1400,9 @@ body {
 
 .constancias-metricas {
     display: grid;
-    grid-template-columns: repeat(3, minmax(110px, 1fr));
+    grid-template-columns: repeat(3, minmax(90px, 1fr));
     gap: 12px;
-    min-width: min(430px, 100%);
+    min-width: min(380px, 100%);
 }
 
 .constancias-metricas article {
@@ -1642,11 +1650,37 @@ body {
 @media (max-width: 1100px) {
     .constancias-banner {
         flex-direction: column;
+        padding: 24px 22px;
+        gap: 18px;
     }
 
-    .constancias-metricas,
+    /* Métricas: mantener siempre 3 columnas lado a lado, más compactas */
+    .constancias-metricas {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        min-width: 0;
+    }
+
+    .constancias-metricas article {
+        padding: 10px 12px;
+        border-radius: 10px;
+    }
+
+    .constancias-metricas span {
+        font-size: 10px;
+        margin-bottom: 4px;
+    }
+
+    .constancias-metricas strong {
+        font-size: 20px;
+    }
+
     .constancias-filtros {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .constancias-filtros .input-buscar {
+        grid-column: 1 / -1;
     }
 }
 
