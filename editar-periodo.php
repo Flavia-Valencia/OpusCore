@@ -30,18 +30,14 @@ try {
     $dtFin = new DateTime($fechaFin);
     $dtInicioCiclo = new DateTime($fechaInicioCiclo);
 
-    if ($dtFin > $dtInicioCiclo) {
-        echo json_encode(['success' => false, 'error' => 'fin_inscripcion_excede_ciclo']);
+    if ($dtInicio < $dtInicioCiclo) {
+        echo json_encode(['success' => false, 'error' => 'inicio_inscripcion_antes_ciclo']);
         exit();
     }
 
-    $diff = $dtInicio->diff($dtInicioCiclo);
-    if ($diff->invert == 0 && $diff->days > 30) {
-        echo json_encode(['success' => false, 'error' => 'inicio_inscripcion_excede_30_dias']);
-        exit();
-    }
-    if ($dtInicio > $dtInicioCiclo) {
-        echo json_encode(['success' => false, 'error' => 'inicio_inscripcion_despues_ciclo']);
+    $diffFin = $dtInicioCiclo->diff($dtFin);
+    if ($diffFin->invert == 0 && $diffFin->days > 30) {
+        echo json_encode(['success' => false, 'error' => 'fin_inscripcion_excede_30_dias']);
         exit();
     }
 

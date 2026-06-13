@@ -1404,20 +1404,16 @@ if (formPeriodo) {
         const dFin = new Date(fechaFin + 'T12:00:00');
         const dInicioCiclo = new Date(fechaInicioCiclo + 'T12:00:00');
 
-        if (dFin > dInicioCiclo) {
-            mostrarToastPremium('La fecha de fin de inscripción no puede sobrepasar la fecha de inicio del ciclo');
+        if (dInicio < dInicioCiclo) {
+            mostrarToastPremium('El inicio de inscripción no puede ser anterior al inicio del ciclo');
             return;
         }
 
-        const diffTime = dInicioCiclo - dInicio;
-        const diffDays = diffTime / (1000 * 60 * 60 * 24);
+        const diffTimeFin = dFin - dInicioCiclo;
+        const diffDaysFin = diffTimeFin / (1000 * 60 * 60 * 24);
 
-        if (diffDays > 30) {
-            mostrarToastPremium('El inicio de inscripción no puede ser más de 30 días antes del inicio del ciclo');
-            return;
-        }
-        if (diffDays < 0) {
-            mostrarToastPremium('El inicio de inscripción no puede ser posterior al inicio del ciclo');
+        if (diffDaysFin > 30) {
+            mostrarToastPremium('El fin de inscripción no puede ser posterior a 30 días del inicio del ciclo');
             return;
         }
 
@@ -1464,14 +1460,11 @@ if (formPeriodo) {
                 } else if (data.error === 'fechas') {
                     mostrarToastPremium('La fecha de fin no puede ser menor a la de inicio');
 
-                } else if (data.error === 'fin_inscripcion_excede_ciclo') {
-                    mostrarToastPremium('La fecha de fin de inscripción no puede sobrepasar la fecha de inicio del ciclo');
+                } else if (data.error === 'inicio_inscripcion_antes_ciclo') {
+                    mostrarToastPremium('El inicio de inscripción no puede ser anterior al inicio del ciclo');
 
-                } else if (data.error === 'inicio_inscripcion_excede_30_dias') {
-                    mostrarToastPremium('El inicio de inscripción no puede ser más de 30 días antes del inicio del ciclo');
-
-                } else if (data.error === 'inicio_inscripcion_despues_ciclo') {
-                    mostrarToastPremium('El inicio de inscripción no puede ser posterior al inicio del ciclo');
+                } else if (data.error === 'fin_inscripcion_excede_30_dias') {
+                    mostrarToastPremium('El fin de inscripción no puede ser posterior a 30 días del inicio del ciclo');
 
                 } else if (data.error === 'traslape') {
                     mostrarToastPremium('Las fechas ingresadas coinciden con otro período existente. Intenta con otras fechas');
