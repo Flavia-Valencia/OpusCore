@@ -1,6 +1,6 @@
 <?php
-// Crea una orden PayPal para pagar una mensualidad pendiente.
-// Guarda en sesion los datos necesarios para completar la captura.
+// Crea una orden PayPal para pagar una o múltiples mensualidades pendientes.
+// Guarda en sesión los datos necesarios para completar la captura.
 session_start();
 header('Content-Type: application/json');
 
@@ -13,50 +13,68 @@ if (!isset($_SESSION['usuario'])) {
 require_once 'includes/conexion.php';
 require_once 'includes/paypal-config.php';
 
-
 $body = json_decode(file_get_contents('php://input'), true);
-$mensualidadId = (int)($body['mensualidadId'] ?? 0);
 
-if (!$mensualidadId) {
+// Soporta tanto array "mensualidadIds" como id individual "mensualidadId"
+$mensualidadIds = $body['mensualidadIds'] ?? [];
+if (!is_array($mensualidadIds) && !empty($body['mensualidadId'])) {
+    $mensualidadIds = [(int)$body['mensualidadId']];
+}
+
+if (empty($mensualidadIds)) {
     http_response_code(400);
-    echo json_encode(['error' => 'Mensualidad inválida']);
+    echo json_encode(['error' => 'Mensualidades inválidas']);
     exit;
 }
 
+$mensualidadIds = array_map('intval', $mensualidadIds);
+$placeholders = implode(',', array_fill(0, count($mensualidadIds), '?'));
+$types = str_repeat('i', count($mensualidadIds));
 
 $stmt = $conexion->prepare("
     SELECT id, idEstudiante, monto, estado
     FROM mensualidades
-    WHERE id = ?
+    WHERE id IN ($placeholders)
 ");
 
-$stmt->bind_param("i", $mensualidadId);
+$stmt->bind_param($types, ...$mensualidadIds);
 $stmt->execute();
 $resultado = $stmt->get_result();
-$mensualidad = $resultado->fetch_assoc();
+$mensualidades = $resultado->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 
-if (!$mensualidad) {
+if (count($mensualidades) !== count($mensualidadIds)) {
     http_response_code(404);
-    echo json_encode(['error' => 'Mensualidad no encontrada']);
+    echo json_encode(['error' => 'Una o más mensualidades no fueron encontradas']);
     exit;
 }
 
-if ($mensualidad['estado'] === 'Pagado') {
-    http_response_code(400);
-    echo json_encode(['error' => 'Esta mensualidad ya fue pagada']);
-    exit;
+$montoTotal = 0.0;
+$idEstudiante = null;
+
+foreach ($mensualidades as $mensualidad) {
+    if ($mensualidad['estado'] === 'Pagado') {
+        http_response_code(400);
+        echo json_encode(['error' => 'Una o más mensualidades ya fueron pagadas']);
+        exit;
+    }
+    if ($idEstudiante === null) {
+        $idEstudiante = (int)$mensualidad['idEstudiante'];
+    } elseif ($idEstudiante !== (int)$mensualidad['idEstudiante']) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Las mensualidades deben pertenecer al mismo estudiante']);
+        exit;
+    }
+    $montoTotal += (float)$mensualidad['monto'];
 }
 
-$idEstudiante = (int)$mensualidad['idEstudiante'];
-$monto = number_format((float)$mensualidad['monto'], 2, '.', '');
-
+$monto = number_format($montoTotal, 2, '.', '');
 
 $_SESSION['paypal_mensualidad'] = [
-    'mensualidadId' => $mensualidadId,
+    'mensualidadIds' => $mensualidadIds,
     'idEstudiante' => $idEstudiante,
     'monto' => $monto
 ];
-
 
 try {
     $token = paypalGetAccessToken();
@@ -66,7 +84,6 @@ try {
     exit;
 }
 
-
 $orderData = [
     'intent' => 'CAPTURE',
     'purchase_units' => [[
@@ -74,7 +91,7 @@ $orderData = [
             'currency_code' => 'USD',
             'value' => $monto
         ],
-        'description' => 'Pago de mensualidad'
+        'description' => 'Pago de mensualidad(es)'
     ]]
 ];
 
