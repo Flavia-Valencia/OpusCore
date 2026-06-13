@@ -31,7 +31,7 @@ $result_activo = mysqli_query($conexion, $sql_activo);
 $plazo_activo = mysqli_fetch_assoc($result_activo);
 
 $periodos = [];
-$resPeriodos = mysqli_query($conexion, "SELECT id, nombre FROM PeriodoInscripcion ORDER BY id DESC");
+$resPeriodos = mysqli_query($conexion, "SELECT id, nombre FROM PeriodoInscripcion WHERE estado = 1 ORDER BY id DESC");
 if ($resPeriodos) {
     while ($rowP = mysqli_fetch_assoc($resPeriodos)) {
         $periodos[] = $rowP;

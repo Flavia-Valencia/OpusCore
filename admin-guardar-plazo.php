@@ -58,6 +58,15 @@ if ($inicioDT < $inicioCicloDT || $finDT > $finCicloDT) {
     exit();
 }
 
+$interval = $inicioDT->diff($finCicloDT);
+if ($interval->invert == 0 && $interval->days > 30) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'El inicio del plazo no puede ser mayor a 30 días antes del fin del ciclo.'
+    ]);
+    exit();
+}
+
 $stmt = mysqli_prepare($conexion, "
     SELECT id FROM PlazoNotas WHERE nombre = ?
 ");
