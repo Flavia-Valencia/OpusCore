@@ -1392,6 +1392,31 @@ if (formPeriodo) {
             return;
         }
 
+        // Validar que el año de inicio de ciclo no sea anterior al año actual
+        const anioActual = new Date().getFullYear();
+        const anioInicioCiclo = new Date(fechaInicioCiclo + 'T12:00:00').getFullYear();
+        if (anioInicioCiclo < anioActual) {
+            mostrarToastPremium('La fecha de inicio de ciclo no puede ser de un año anterior al actual (' + anioActual + ')');
+            return;
+        }
+
+        const dInicio = new Date(fechaInicio + 'T12:00:00');
+        const dFin = new Date(fechaFin + 'T12:00:00');
+        const dInicioCiclo = new Date(fechaInicioCiclo + 'T12:00:00');
+
+        if (dInicio < dInicioCiclo) {
+            mostrarToastPremium('El inicio de inscripción no puede ser anterior al inicio del ciclo');
+            return;
+        }
+
+        const diffTimeFin = dFin - dInicioCiclo;
+        const diffDaysFin = diffTimeFin / (1000 * 60 * 60 * 24);
+
+        if (diffDaysFin > 30) {
+            mostrarToastPremium('El fin de inscripción no puede ser posterior a 30 días del inicio del ciclo');
+            return;
+        }
+
         const id = document.getElementById('periodo-id').value;
         const archivo = id ? 'editar-periodo.php' : 'crear-periodo.php';
 
@@ -1429,14 +1454,27 @@ if (formPeriodo) {
                 } else if (data.error === 'existe') {
                     mostrarToastPremium('Ya existe un período con este nombre: Intenta con otro nombre');
 
+                } else if (data.error === 'anio_anterior') {
+                    mostrarToastPremium('La fecha de inicio de ciclo no puede ser de un año anterior al actual');
+
                 } else if (data.error === 'fechas') {
                     mostrarToastPremium('La fecha de fin no puede ser menor a la de inicio');
+
+                } else if (data.error === 'inicio_inscripcion_antes_ciclo') {
+                    mostrarToastPremium('El inicio de inscripción no puede ser anterior al inicio del ciclo');
+
+                } else if (data.error === 'fin_inscripcion_excede_30_dias') {
+                    mostrarToastPremium('El fin de inscripción no puede ser posterior a 30 días del inicio del ciclo');
 
                 } else if (data.error === 'traslape') {
                     mostrarToastPremium('Las fechas ingresadas coinciden con otro período existente. Intenta con otras fechas');
 
                 } else if (data.error === 'fecha_fin_ciclo_curso') {
                     mostrarToastPremium('No puedes reducir la fecha de fin del ciclo porque hay cursos activos que finalizan después de esa fecha.');
+
+                } else if (data.error === 'sql') {
+                    console.error(data);
+                    mostrarToastPremium(data.detalle || 'Error en la base de datos');
 
                 } else {
                     console.error(data);
@@ -4715,6 +4753,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (inputPeriodo) inputPeriodo.value = btn.dataset.idperiodo || '';
         if (inputInicio) inputInicio.value = btn.dataset.plazoInicio || '';
         if (inputFin) inputFin.value = btn.dataset.plazoFin || '';
+        modalPlazo.dataset.fechaFinCiclo = btn.dataset.fechaFinCiclo || '';
 
         abrirModal();
     });
@@ -4740,6 +4779,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 inputInicio.max = data.fin;
                 inputFin.max = data.fin;
+
+                modalPlazo.dataset.fechaFinCiclo = data.fin;
 
             } catch (err) {
                 console.error(err);
@@ -4770,12 +4811,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const mesFin = fin.substring(0, 7);
-            const mesInicio = inicio.substring(0, 7);
+            const fechaFinCiclo = modalPlazo.dataset.fechaFinCiclo;
+            if (fechaFinCiclo) {
+                const dInicio = new Date(inicio + 'T12:00:00');
+                const dFinCiclo = new Date(fechaFinCiclo + 'T12:00:00');
+                const diffTime = dFinCiclo - dInicio;
+                const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-            if (mesInicio !== mesFin) {
-                mostrarToastPremium('El inicio del plazo debe ser dentro del mes de cierre del período');
-                return;
+                if (diffDays > 30) {
+                    mostrarToastPremium('El inicio del plazo no puede ser más de 30 días antes del fin del ciclo (' + fechaFinCiclo + ')');
+                    return;
+                }
+                if (diffDays < 0) {
+                    mostrarToastPremium('El inicio del plazo no puede ser después del fin del ciclo (' + fechaFinCiclo + ')');
+                    return;
+                }
+
+                const dFin = new Date(fin + 'T12:00:00');
+                if (dFin > dFinCiclo) {
+                    mostrarToastPremium('El fin del plazo no puede ser después del fin del ciclo (' + fechaFinCiclo + ')');
+                    return;
+                }
             }
 
             const body = new URLSearchParams({

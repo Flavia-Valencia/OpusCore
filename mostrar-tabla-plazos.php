@@ -12,7 +12,7 @@ $tienePlazo = in_array('plazoInicio', $columnasPlazo, true) && in_array('plazoFi
 $selectPlazo = $tienePlazo ? ', pn.plazoInicio, pn.plazoFin' : ", NULL AS plazoInicio, NULL AS plazoFin";
 
 // Mantiene compatibilidad con bases que aun no tienen rango de plazo.
-$sql = "SELECT pn.id, pn.idPeriodo, pn.nombre, pi.nombre AS periodo_nombre, pn.estado $selectPlazo
+$sql = "SELECT pn.id, pn.idPeriodo, pn.nombre, pi.nombre AS periodo_nombre, pn.estado, pi.fechaFinCiclo AS fecha_fin_ciclo $selectPlazo
         FROM PlazoNotas pn
         INNER JOIN PeriodoInscripcion pi ON pn.idPeriodo = pi.id
         ORDER BY pn.estado DESC, pn.id DESC";
@@ -59,6 +59,7 @@ if (mysqli_num_rows($resultado) > 0):
                         data-idperiodo="<?php echo $p['idPeriodo']; ?>"
                         data-plazo-inicio="<?php echo htmlspecialchars($p['plazoInicio']); ?>"
                         data-plazo-fin="<?php echo htmlspecialchars($p['plazoFin']); ?>"
+                        data-fecha-fin-ciclo="<?php echo htmlspecialchars($p['fecha_fin_ciclo']); ?>"
                         onclick="return false;"
                     >
                         Editar

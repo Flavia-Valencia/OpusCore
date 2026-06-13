@@ -17,20 +17,43 @@ if (!isset($estudiante)) {
 
         require_once __DIR__ . '/../includes/conexion.php';
 
-        // Valida que el pago pertenezca al estudiante autenticado.
-        $stmtPago = $conexion->prepare("
-            SELECT p.id, p.monto, p.idTransaccionPasarela, p.estado, p.fechaPago,
-                   mp.nombre AS metodo_pago,
-                   CONCAT(u.nombre, ' ', u.apellido) AS nombre_estudiante,
-                   u.correo,
-                   e.id AS idEstudiante
-            FROM pagos p
-            INNER JOIN MetodosPago mp ON p.idMetodoPago = mp.id
-            INNER JOIN estudiantes e ON p.idEstudiante = e.id
-            INNER JOIN usuarios u ON e.usuario_id = u.id
-            WHERE p.id = ? AND u.correo = ?
-        ");
-        $stmtPago->bind_param('is', $pagoId, $_SESSION['usuario']);
+        $esAdmin = isset($_SESSION['rol_id']) && $_SESSION['rol_id'] == 1;
+
+        if ($esAdmin) {
+            // El admin puede ver cualquier comprobante
+            $stmtPago = $conexion->prepare("
+                SELECT p.id, p.monto, p.idTransaccionPasarela, p.estado, p.fechaPago,
+                       mp.nombre AS metodo_pago,
+                       CONCAT(u.nombre, ' ', u.apellido) AS nombre_estudiante,
+                       u.correo,
+                       e.id AS idEstudiante,
+                       f.id AS factura_id
+                FROM pagos p
+                INNER JOIN MetodosPago mp ON p.idMetodoPago = mp.id
+                INNER JOIN estudiantes e ON p.idEstudiante = e.id
+                INNER JOIN usuarios u ON e.usuario_id = u.id
+                LEFT JOIN facturas f ON f.idPago = p.id
+                WHERE p.id = ?
+            ");
+            $stmtPago->bind_param('i', $pagoId);
+        } else {
+            // El estudiante solo puede ver los propios
+            $stmtPago = $conexion->prepare("
+                SELECT p.id, p.monto, p.idTransaccionPasarela, p.estado, p.fechaPago,
+                       mp.nombre AS metodo_pago,
+                       CONCAT(u.nombre, ' ', u.apellido) AS nombre_estudiante,
+                       u.correo,
+                       e.id AS idEstudiante,
+                       f.id AS factura_id
+                FROM pagos p
+                INNER JOIN MetodosPago mp ON p.idMetodoPago = mp.id
+                INNER JOIN estudiantes e ON p.idEstudiante = e.id
+                INNER JOIN usuarios u ON e.usuario_id = u.id
+                LEFT JOIN facturas f ON f.idPago = p.id
+                WHERE p.id = ? AND u.correo = ?
+            ");
+            $stmtPago->bind_param('is', $pagoId, $_SESSION['usuario']);
+        }
         $stmtPago->execute();
         $datosPago = $stmtPago->get_result()->fetch_assoc();
         $stmtPago->close();
@@ -39,31 +62,98 @@ if (!isset($estudiante)) {
             die('Comprobante no encontrado o no tienes permiso para verlo.');
         }
 
-        // Obtiene los cursos vinculados al pago para detallar el comprobante.
-        $stmtCursos = $conexion->prepare("
-            SELECT c.nombre, c.costoMensual AS costo,
-                   pi.nombre AS periodo_nombre,
-                   GROUP_CONCAT(DISTINCT CONCAT(ch.dia, ' - ', h.etiqueta) SEPARATOR ', ') AS horario,
-                   GROUP_CONCAT(DISTINCT a.aula SEPARATOR ', ') AS aula
-            FROM inscripciones i
-            INNER JOIN cursos c ON i.idCurso = c.id
-            INNER JOIN PeriodoInscripcion pi ON i.idPeriodo = pi.id
-            LEFT JOIN CursoHorario ch ON c.id = ch.idCurso
-            LEFT JOIN horarios h ON ch.idHorario = h.id
-            LEFT JOIN aulas a ON ch.idAula = a.id
-            WHERE i.idFactura = ?
-            GROUP BY c.id
-        ");
-        $stmtCursos->bind_param('i', $pagoId);
-        $stmtCursos->execute();
-        $cursos = $stmtCursos->get_result()->fetch_all(MYSQLI_ASSOC);
-        $stmtCursos->close();
+        $cursos = [];
+        $facturaId = $datosPago['factura_id'];
+        if ($facturaId) {
+            $stmtCursos = $conexion->prepare("
+                SELECT 
+                    df.descripcion AS descripcion,
+                    df.precioUnitario AS costo,
+                    CASE 
+                        WHEN df.tipoOrigen = 'Inscripcion' THEN c_ins.nombre
+                        WHEN df.tipoOrigen = 'Mensualidad' THEN CONCAT(c_men.nombre, ' (Mensualidad - ', m.mesPagado, ')')
+                        WHEN df.tipoOrigen = 'Matricula' THEN 'Matrícula'
+                        ELSE df.descripcion
+                    END AS nombre,
+                    CASE 
+                        WHEN df.tipoOrigen = 'Inscripcion' THEN pi_ins.nombre
+                        WHEN df.tipoOrigen = 'Mensualidad' THEN pi_men.nombre
+                        ELSE ''
+                    END AS periodo_nombre,
+                    CASE 
+                        WHEN df.tipoOrigen = 'Inscripcion' THEN COALESCE(GROUP_CONCAT(DISTINCT CONCAT(ch_ins.dia, ' - ', h_ins.etiqueta) SEPARATOR ', '), 'No asignado')
+                        WHEN df.tipoOrigen = 'Mensualidad' THEN COALESCE(GROUP_CONCAT(DISTINCT CONCAT(ch_men.dia, ' - ', h_men.etiqueta) SEPARATOR ', '), 'No asignado')
+                        ELSE 'No asignado'
+                    END AS horario,
+                    CASE 
+                        WHEN df.tipoOrigen = 'Inscripcion' THEN COALESCE(GROUP_CONCAT(DISTINCT a_ins.aula SEPARATOR ', '), 'N/A')
+                        WHEN df.tipoOrigen = 'Mensualidad' THEN COALESCE(GROUP_CONCAT(DISTINCT a_men.aula SEPARATOR ', '), 'N/A')
+                        ELSE 'N/A'
+                    END AS aula
+                FROM detalle_facturas df
+                LEFT JOIN cursos c_ins ON (df.tipoOrigen = 'Inscripcion' AND df.idOrigen = c_ins.id)
+                LEFT JOIN PeriodoInscripcion pi_ins ON c_ins.idPeriodo = pi_ins.id
+                LEFT JOIN CursoHorario ch_ins ON c_ins.id = ch_ins.idCurso
+                LEFT JOIN horarios h_ins ON ch_ins.idHorario = h_ins.id
+                LEFT JOIN aulas a_ins ON ch_ins.idAula = a_ins.id
+                
+                LEFT JOIN mensualidades m ON (df.tipoOrigen = 'Mensualidad' AND df.idOrigen = m.id)
+                LEFT JOIN cursos c_men ON m.idCurso = c_men.id
+                LEFT JOIN PeriodoInscripcion pi_men ON m.idPeriodo = pi_men.id
+                LEFT JOIN CursoHorario ch_men ON c_men.id = ch_men.idCurso
+                LEFT JOIN horarios h_men ON ch_men.idHorario = h_men.id
+                LEFT JOIN aulas a_men ON ch_men.idAula = a_men.id
+                WHERE df.idFactura = ?
+                GROUP BY df.id
+            ");
+            if ($stmtCursos) {
+                $stmtCursos->bind_param('i', $facturaId);
+                $stmtCursos->execute();
+                $cursos = $stmtCursos->get_result()->fetch_all(MYSQLI_ASSOC);
+                $stmtCursos->close();
+            }
+        }
+
+        // Fallback para retrocompatibilidad si no hay detalle_facturas
+        if (empty($cursos)) {
+            $stmtCursosFallback = $conexion->prepare("
+                SELECT c.nombre, c.costoMensual AS costo,
+                       pi.nombre AS periodo_nombre,
+                       GROUP_CONCAT(DISTINCT CONCAT(ch.dia, ' - ', h.etiqueta) SEPARATOR ', ') AS horario,
+                       GROUP_CONCAT(DISTINCT a.aula SEPARATOR ', ') AS aula
+                FROM inscripciones i
+                INNER JOIN cursos c ON i.idCurso = c.id
+                INNER JOIN PeriodoInscripcion pi ON i.idPeriodo = pi.id
+                LEFT JOIN CursoHorario ch ON c.id = ch.idCurso
+                LEFT JOIN horarios h ON ch.idHorario = h.id
+                LEFT JOIN aulas a ON ch.idAula = a.id
+                WHERE i.idEstudiante = ?
+                GROUP BY c.id
+            ");
+            if ($stmtCursosFallback) {
+                $idEstudiante = (int) $datosPago['idEstudiante'];
+                $stmtCursosFallback->bind_param("i", $idEstudiante);
+                $stmtCursosFallback->execute();
+                $cursos = $stmtCursosFallback->get_result()->fetch_all(MYSQLI_ASSOC);
+                $stmtCursosFallback->close();
+            }
+        }
+
+        if (empty($cursos)) {
+            $cursos = [[
+                'nombre' => 'Curso no especificado',
+                'periodo_nombre' => 'No especificado',
+                'horario' => 'No asignado',
+                'aula' => 'N/A',
+                'costo' => (float)$datosPago['monto']
+            ]];
+        }
 
         $estudiante = $datosPago['nombre_estudiante'];
         $correo     = $datosPago['correo'];
         $metodoPago = $datosPago['metodo_pago'];
         $estado     = $datosPago['estado'];
-        $transaccion = $datosPago['idTransaccionPasarela'];
+        $transaccion = $datosPago['idTransaccionPasarela'] ?: 'PAY-' . str_pad((string)$datosPago['id'], 5, '0', STR_PAD_LEFT);
         $total      = $datosPago['monto'];
         $periodo    = !empty($cursos) ? $cursos[0]['periodo_nombre'] : '—';
         $fecha      = date('d/m/Y', strtotime($datosPago['fechaPago']));
@@ -161,7 +251,7 @@ $total       = isset($total) ? (float)$total : 0;
             <tr>
                 <td><?= $contador++ ?></td>
                 <td><?= htmlspecialchars($curso['nombre']) ?></td>
-                <td><?= htmlspecialchars($periodo) ?></td>
+                <td><?= htmlspecialchars($curso['periodo_nombre'] ?? $periodo) ?></td>
                 <td><?= htmlspecialchars($curso['horario'] ?? 'No asignado') ?></td>
                 <td><?= htmlspecialchars($curso['aula'] ?? 'N/A') ?></td>
                 <td><?= htmlspecialchars($metodoPago) ?></td>
