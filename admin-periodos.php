@@ -188,16 +188,6 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
                     </div>
 
                     <div class="modal-campo">
-                        <label>Inicio de inscripción</label>
-                        <input type="date" name="fecha_inicio" id="periodo-fecha-inicio" required>
-                    </div>
-
-                    <div class="modal-campo">
-                        <label>Fin de inscripción</label>
-                        <input type="date" name="fecha_fin" id="periodo-fecha-fin" required>
-                    </div>
-
-                    <div class="modal-campo">
                         <label>Inicio del ciclo</label>
                         <input type="date" name="fecha_inicio_ciclo" id="periodo-fecha-inicio-ciclo" required>
                     </div>
@@ -205,6 +195,16 @@ $periodo_activo = mysqli_fetch_assoc($result_activo);
                     <div class="modal-campo">
                         <label>Fin del ciclo</label>
                         <input type="date" name="fecha_fin_ciclo" id="periodo-fecha-fin-ciclo" required>
+                    </div>
+
+                    <div class="modal-campo">
+                        <label>Inicio de inscripción</label>
+                        <input type="date" name="fecha_inicio" id="periodo-fecha-inicio" required>
+                    </div>
+
+                    <div class="modal-campo">
+                        <label>Fin de inscripción</label>
+                        <input type="date" name="fecha_fin" id="periodo-fecha-fin" required>
                     </div>
 
                 </div>
