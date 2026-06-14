@@ -3116,7 +3116,7 @@ function inicializarPayPal() {
 
         // Crea la orden de PayPal para el pago mostrado en el modal.
         createOrder: async function (paypalData) {
-            metodoPagoSDK = normalizarFuentePagoPayPal(paypalData);
+            metodoPagoSDK = 'paypal';
             const ids = cursosSeleccionados.map(c => parseInt(c.id));
             const res = await fetch('paypal-create-order.php', {
                 method: 'POST',
@@ -3133,7 +3133,6 @@ function inicializarPayPal() {
 
         // El comprador aprobó el pago en el popup de PayPal
         onApprove: async function (data) {
-            metodoPagoSDK = normalizarFuentePagoPayPal(data) || metodoPagoSDK;
             const res = await fetch('paypal-capture-order.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
