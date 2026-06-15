@@ -38,12 +38,32 @@ $stmt = $conexion->prepare("
         p.estado AS estado_pago,
         p.fechaPago,
         p.monto,
-        mp.nombre AS metodo_pago
+        mp.nombre AS metodo_pago,
+        f.numeroFactura,
+        GROUP_CONCAT(
+            DISTINCT COALESCE(c_insc.nombre, c_mens.nombre)
+            ORDER BY COALESCE(c_insc.nombre, c_mens.nombre)
+            SEPARATOR ', '
+        ) AS curso,
+        COALESCE(pi_insc.nombre, pi_mens.nombre) AS periodo
     FROM pagos p
     INNER JOIN MetodosPago mp ON p.idMetodoPago = mp.id
+    LEFT JOIN facturas f ON f.idPago = p.id
+    -- Pagos de inscripción
+    LEFT JOIN detalle_facturas df_insc ON df_insc.idFactura = f.id AND df_insc.tipoOrigen = 'Inscripcion'
+    LEFT JOIN cursos c_insc ON c_insc.id = df_insc.idOrigen
+    LEFT JOIN inscripciones i ON i.idEstudiante = p.idEstudiante AND i.idCurso = c_insc.id
+    LEFT JOIN PeriodoInscripcion pi_insc ON i.idPeriodo = pi_insc.id
+    -- Pagos de mensualidad
+    LEFT JOIN detalle_facturas df_mens ON df_mens.idFactura = f.id AND df_mens.tipoOrigen = 'Mensualidad'
+    LEFT JOIN mensualidades m ON m.id = df_mens.idOrigen
+    LEFT JOIN cursos c_mens ON c_mens.id = m.idCurso
+    LEFT JOIN PeriodoInscripcion pi_mens ON m.idPeriodo = pi_mens.id
     WHERE p.idEstudiante = ? AND p.estado = 'Completado'
+    GROUP BY p.id
     ORDER BY p.fechaPago DESC
 ");
+
 $stmt->bind_param('i', $idEstudiante);
 $stmt->execute();
 $pagosRealizados = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -203,8 +223,8 @@ $totalPagado = array_sum(array_map(fn($pago) => (float) $pago['monto'], $pagosRe
                                     ?>
                                     <tr>
                                         <td data-label="Código"><?= htmlspecialchars($codigo) ?></td>
-                                        <td data-label="Curso">"Espera Factura Electronica"</td> <!-- Placeholder hasta enlazar el detalle de factura electronica. -->
-                                        <td data-label="Periodo">Espera Factura Electronica</td> <!-- Placeholder hasta enlazar el periodo desde factura electronica. -->
+                                        <td data-label="Curso"><?= htmlspecialchars($pago['curso'] ?? '—') ?></td>
+                                        <td data-label="Periodo"><?= htmlspecialchars($pago['periodo'] ?? '—') ?></td>
                                         <td data-label="Monto">$<?= number_format((float) $pago['monto'], 2) ?></td>
                                         <td data-label="Método"><?= htmlspecialchars($pago['metodo_pago'] ?: 'PayPal') ?></td>
                                         <td data-label="Fecha"><?= htmlspecialchars($fechaPago) ?></td>

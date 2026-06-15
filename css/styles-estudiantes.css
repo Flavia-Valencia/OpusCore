@@ -8,10 +8,10 @@
 
 /* Fuente base importada desde Google Fonts */
 .raleway-all {
-  font-family: "Raleway", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }
 
 body {
@@ -163,6 +163,7 @@ body {
     overflow: hidden;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    transition: transform 0.3s ease;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -322,7 +323,7 @@ body {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.4);
-    z-index: 99;
+    z-index: 999;
 }
 
 .sidebar-overlay.active {
@@ -363,6 +364,21 @@ body {
     font-size: 20px;
     cursor: pointer;
     margin-right: auto;
+    padding: 8px;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.hamburger:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.hamburger:active {
+    transform: scale(0.95);
 }
 
 /* Perfil en la barra superior de modulos internos */
@@ -446,8 +462,8 @@ body {
     font-weight: 900;
 }
 
-.periodo-banner p + p {
-  margin-top: 6px;
+.periodo-banner p+p {
+    margin-top: 6px;
 }
 
 @media (min-width: 769px) {
@@ -495,6 +511,7 @@ body {
     background: rgba(255, 255, 255, 0.68);
     box-shadow: 0 14px 34px rgba(5, 49, 112, 0.14), 0 0 0 4px rgba(6, 157, 191, 0.12);
 }
+
 /* Selector de categorias para filtrar cursos */
 .inscripcion-filtro {
     padding: 13px 36px 13px 18px;
@@ -951,6 +968,8 @@ body {
     font-size: 13px;
     line-height: 1.55;
     margin: 14px 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .detalle-tags {
@@ -1007,22 +1026,37 @@ body {
     font-size: 14px;
 }
 
-.detalle-item-icon.icon-1 { background: #1d8fe1; }
-.detalle-item-icon.icon-2 { background: #22c58b; }
-.detalle-item-icon.icon-3 { background: #8f5cf6; }
-.detalle-item-icon.icon-4 { background: #ff9f2e; }
+.detalle-item-icon.icon-1 {
+    background: #1d8fe1;
+}
+
+.detalle-item-icon.icon-2 {
+    background: #22c58b;
+}
+
+.detalle-item-icon.icon-3 {
+    background: #8f5cf6;
+}
+
+.detalle-item-icon.icon-4 {
+    background: #ff9f2e;
+}
 
 .detalle-lista-item strong {
     color: #0d3672;
     display: block;
     font-size: 13px;
     margin-bottom: 3px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .detalle-lista-item p {
     color: #607086;
     font-size: 12px;
     line-height: 1.35;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .detalle-lista-item time {
@@ -1127,12 +1161,16 @@ body {
     display: block;
     font-size: 13px;
     margin-bottom: 4px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .contenido-publicado-body p {
     color: #607086;
     font-size: 12px;
     line-height: 1.35;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .contenido-publicado-body small {
@@ -1771,7 +1809,7 @@ body {
     gap: 10px;
     margin-top: auto;
     padding: 14px 12px;
-    border: 1px solid rgba(255,255,255,0.16);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 9px;
     color: rgba(255, 255, 255, 0.78);
     text-decoration: none;
@@ -2028,6 +2066,7 @@ body {
     box-shadow: 0 6px 16px rgba(5, 49, 112, 0.3);
     transform: translateY(-1px);
 }
+
 /* MÓDULO CONSTANCIAS ESTUDIANTE */
 
 .constancias-page {
@@ -2319,10 +2358,25 @@ body {
     padding: 6px 12px;
 }
 
-.constancia-badge.pendiente  { background: #fff3d6; color: #9a5b00; }
-.constancia-badge.generada   { background: #dff7e8; color: #176b3a; }
-.constancia-badge.rechazada  { background: #ffe8ec; color: #d6293f; }
-.constancia-badge.sin-sol    { background: #f1f4f8; color: #5a6a82; }
+.constancia-badge.pendiente {
+    background: #fff3d6;
+    color: #9a5b00;
+}
+
+.constancia-badge.generada {
+    background: #dff7e8;
+    color: #176b3a;
+}
+
+.constancia-badge.rechazada {
+    background: #ffe8ec;
+    color: #d6293f;
+}
+
+.constancia-badge.sin-sol {
+    background: #f1f4f8;
+    color: #5a6a82;
+}
 
 /* Botón solicitar */
 .constancia-generar-btn {
@@ -2526,7 +2580,7 @@ body {
         text-align: right;
     }
 
-    .constancias-tabla td + td {
+    .constancias-tabla td+td {
         border-top: 1px solid #eef3f9;
     }
 
@@ -2614,6 +2668,7 @@ body {
 }
 
 @media (max-width: 480px) {
+
     .constancias-banner,
     .constancias-card {
         margin-inline: -2px;
@@ -2632,6 +2687,7 @@ body {
         padding: 13px 14px;
     }
 }
+
 /* ── RESPONSIVE ──────────────────────────────────────────── */
 @media (max-width: 1180px) {
     .detalle-resumen {
@@ -2648,6 +2704,7 @@ body {
     /* ocultar sidebar por defecto en móvil */
     .sidebar {
         transform: translateX(-100%);
+        padding-top: 0;
     }
 
     /* mostrar sidebar cuando tiene clase open */
@@ -2662,7 +2719,12 @@ body {
 
     /* mostrar botón hamburguesa */
     .hamburger {
-        display: block;
+        display: inline-flex;
+    }
+
+    /* Ajustar padding del header en movil */
+    .header-panel {
+        padding: 10px 16px;
     }
 
     /* banner en columna en pantallas pequeñas */
@@ -2689,7 +2751,8 @@ body {
         margin-bottom: 16px;
         flex-wrap: wrap;
         gap: 10px;
-        padding-right: 42px;
+        padding-top: 66px;
+        padding-right: 10px;
     }
 
     /* sidebar mobile: nav list reset */
@@ -2732,16 +2795,29 @@ body {
     }
 
     .sidebar-close {
-    display: block;
-    margin-left: auto;
-    position: absolute;
-    background: none;
-    border: 0;
-    color: inherit;
-    font-size: 20px;
-    cursor: pointer;
-    top: 10px;
-    right: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        background: rgba(255, 255, 255, 0.12);
+        border: 0;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        top: 12px;
+        left: 10px;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .sidebar-close:hover {
+        background-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .sidebar-close:active {
+        transform: scale(0.95);
     }
 
     .menu-user {
@@ -2782,7 +2858,7 @@ body {
         gap: 10px;
         margin-top: auto;
         padding: 14px 12px;
-        border: 1px solid rgba(255,255,255,0.16);
+        border: 1px solid rgba(255, 255, 255, 0.16);
         border-radius: 9px;
         text-decoration: none;
         color: rgba(255, 255, 255, 0.78);
@@ -2818,13 +2894,18 @@ body {
 
     .detalle-resumen,
     .detalle-grid,
-    .contenidos-toolbar,
-    .contenido-publicado-item {
+    .contenidos-toolbar {
         grid-template-columns: 1fr;
     }
 
+    .detalle-info-item:nth-child(2) {
+        grid-column: auto;
+    }
+
     .contenido-publicado-item {
+        grid-template-columns: 42px minmax(0, 1fr);
         align-items: flex-start;
+        gap: 12px 16px;
     }
 
     .tarea-estudiante-item {
@@ -2851,7 +2932,7 @@ body {
     .contenido-publicado-item time,
     .contenido-tipo,
     .contenido-ver {
-        grid-column: 1;
+        grid-column: 2;
         justify-self: flex-start;
     }
 
@@ -3549,10 +3630,25 @@ body.inscripcion-barra-visible .content {
     width: 54px;
 }
 
-.stat-cursos { background: #eaf2ff; color: #1d64d8; }
-.stat-promedio { background: #e4f8f2; color: #03996f; }
-.stat-aprobadas { background: #e8f7ed; color: #15803d; }
-.stat-reprobadas { background: #ffedf0; color: #df2f45; }
+.stat-cursos {
+    background: #eaf2ff;
+    color: #1d64d8;
+}
+
+.stat-promedio {
+    background: #e4f8f2;
+    color: #03996f;
+}
+
+.stat-aprobadas {
+    background: #e8f7ed;
+    color: #15803d;
+}
+
+.stat-reprobadas {
+    background: #ffedf0;
+    color: #df2f45;
+}
 
 .calificacion-stat span:not(.stat-icon) {
     color: #637083;
@@ -3724,10 +3820,21 @@ body.inscripcion-barra-visible .content {
     width: 38px;
 }
 
-.calificacion-course-icon.icon-1 { background: #1d64d8; }
-.calificacion-course-icon.icon-2 { background: #7c3aed; }
-.calificacion-course-icon.icon-3 { background: #f59e0b; }
-.calificacion-course-icon.icon-4 { background: #0891b2; }
+.calificacion-course-icon.icon-1 {
+    background: #1d64d8;
+}
+
+.calificacion-course-icon.icon-2 {
+    background: #7c3aed;
+}
+
+.calificacion-course-icon.icon-3 {
+    background: #f59e0b;
+}
+
+.calificacion-course-icon.icon-4 {
+    background: #0891b2;
+}
 
 .calificacion-final {
     color: #0d6efd !important;
@@ -3925,4 +4032,205 @@ body.inscripcion-barra-visible .content {
     .calificaciones-tabla td:first-child::before {
         display: none;
     }
+}
+
+/* ── TRAMITES PENDIENTES: SELECCIÓN MÚLTIPLE ───────────────────────────── */
+
+/* Desktop: checkbox column */
+.col-check {
+    width: 48px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0 8px !important;
+}
+
+.tramite-checkbox,
+.tramite-checkbox-all {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #069dbf;
+    vertical-align: middle;
+    border-radius: 4px;
+    transition: transform 0.15s ease;
+}
+.tramite-checkbox:hover,
+.tramite-checkbox-all:hover {
+    transform: scale(1.2);
+}
+
+/* Row highlight when checked */
+.tramite-fila-activa {
+    background: rgba(6, 157, 191, 0.07) !important;
+}
+.tramite-fila-activa td {
+    color: #069dbf !important;
+}
+
+/* Mobile: pill card per item ─────────────────────────────────────────── */
+.tramite-mobile-pill-cell {
+    display: none; /* hidden by default; shown on mobile via media query */
+    padding: 0 !important;
+    border-top: 0 !important;
+}
+
+.tramite-mobile-pill {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+    border-radius: 12px;
+    transition: background 0.18s ease, box-shadow 0.18s ease;
+}
+.tramite-mobile-pill:active {
+    background: rgba(6, 157, 191, 0.07);
+}
+
+/* Check circle icon */
+.tramite-pill-icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2.5px solid #d0d9e8;
+    background: #fff;
+    color: transparent;
+    font-size: 14px;
+    transition: border-color 0.18s, background 0.18s, color 0.18s;
+}
+
+/* Info block */
+.tramite-pill-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.tramite-pill-info strong {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1d3355;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.tramite-pill-info span {
+    font-size: 12px;
+    color: #6b7a97;
+}
+
+/* Right side: amount + badge */
+.tramite-pill-right {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+.tramite-pill-monto {
+    font-size: 16px;
+    font-weight: 800;
+    color: #1d3355;
+}
+.tramite-pill-estado {
+    min-width: auto !important;
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+}
+
+/* Checked state for the pill */
+.tramite-fila-activa .tramite-mobile-pill {
+    background: rgba(6, 157, 191, 0.06);
+    box-shadow: inset 0 0 0 1.5px rgba(6, 157, 191, 0.35);
+}
+.tramite-fila-activa .tramite-pill-icon {
+    border-color: #069dbf;
+    background: #069dbf;
+    color: #fff;
+}
+.tramite-fila-activa .tramite-pill-info strong,
+.tramite-fila-activa .tramite-pill-monto {
+    color: #069dbf;
+}
+
+/* Mobile overrides ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    /* Show pill cards, hide desktop cells and checkbox column */
+    .tramite-mobile-pill-cell {
+        display: block !important;
+    }
+    .tramite-desktop-cell {
+        display: none !important;
+    }
+    /* Hide native checkbox column but keep it functional via label */
+    .pagos-tabla-admin td.col-check {
+        display: none !important;
+    }
+    /* Each row = one card, no inner flex layout quirks */
+    .pagos-tabla-admin .tramite-fila {
+        padding: 6px 12px;
+        border-radius: 14px;
+        margin: 4px 0;
+        border-top: 0;
+        border-bottom: 1px solid #f0f5fb;
+    }
+    /* Remove the generic td flex that was applying to pill cell */
+    .pagos-tabla-admin .tramite-mobile-pill-cell {
+        display: block !important;
+        justify-content: unset;
+        padding: 0 !important;
+        border-top: 0 !important;
+    }
+    .pagos-tabla-admin .tramite-mobile-pill-cell::before {
+        display: none !important;
+    }
+    /* Mobile header: show a "Seleccionar todo" pill-button instead of the table header */
+    .pagos-tabla thead {
+        display: none;
+    }
+    .tramites-mobile-header {
+        display: flex !important;
+    }
+}
+
+/* "Seleccionar todo" button shown above the list on mobile */
+.tramites-mobile-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px 6px;
+    gap: 10px;
+}
+.tramites-mobile-header-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1d3355;
+}
+.tramites-mobile-seleccion-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: #f0f5fb;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    color: #069dbf;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    font-family: inherit;
+}
+.tramites-mobile-seleccion-btn:hover {
+    background: rgba(6, 157, 191, 0.12);
+}
+.tramites-mobile-seleccion-btn i {
+    font-size: 14px;
 }

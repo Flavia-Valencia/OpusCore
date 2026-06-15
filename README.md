@@ -70,50 +70,6 @@ Abrir el navegador y acceder a:
 ```txt
 http://localhost/OpusCore/login.php
 ```
-
-#### 6. Credenciales del Sistema:
-##### Administrador
-- **Correo:** sabrina@gmail.com
-- **Contraseña:** SabriAdmin-12
-
-##### Docente
-- **Correo:** karladocente19@gmail.com
-- **Contraseña:** KarliDocente_22
-
-##### Estudiante
-- **Correo:** yamiiacademia3@gmail.com
-- **Contraseña:** YamiEstudiante-19
-
-#### Correo para verificación de Facturación en docente
-- **Cuenta Gmail:** karladocente19@gmail.com
-- **Contraseña:** KarlaDocenteAcadem!a19
-
-> Esta cuenta se utiliza para recibir y verificar facturas de pago enviados manualmente desde admintrador del sistema.
-
-#### Correo para verificación de comprobantes de estudiantes
-- **Cuenta Gmail:** yamiiacademia3@gmail.com
-- **Contraseña:** AcademiaFuturoDigital
-
-> Esta cuenta se utiliza para recibir y verificar comprobantes de pago enviados automáticamente por el sistema durante las pruebas de pagos en línea.
-
-#### Cuenta institucional de la academia
-- **Correo:** academiafuturodigital6@gmail.com
-- **Contraseña:** AcademiaFuturoDigital!3
-
-> Utilizada para pruebas de correos automáticos y recepción de comprobantes del sistema.
-
-### Acceso y seguridad
-- La cuenta institucional tiene **verificación en 2 pasos** habilitada.
-- Para acceder, primero debe iniciarse sesión con el correo y contraseña correspondientes.
-- Posteriormente, Google solicitará una validación de seguridad para autorizar el acceso.
-
-### Encargada de verificación
-- **Responsable:** Karla Morales  
-- **Contacto:**  7012-5338
-- **Correo:** [u20240731@univo.edu.sv](mailto:u20240731@univo.edu.sv)
-
-> **Nota:** Una vez ingresadas las credenciales, la encargada deberá aprobar o proporcionar la verificación necesaria para completar el acceso a la cuenta.
-
 ## 💳 Credenciales de Prueba — PayPal Sandbox
 
 #### Cuenta PayPal Sandbox (comprador)

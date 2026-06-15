@@ -7,10 +7,10 @@
 
 /* Fuente base importada desde Google Fonts */
 .raleway-all {
-  font-family: "Raleway", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+    font-family: "Raleway", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
 }
 
 /* ── LAYOUT PRINCIPAL: dos mitades lado a lado ───────────── */
@@ -22,7 +22,7 @@
 /* Panel izquierdo con degradado animado */
 .izquierda {
     width: 50%;
-    background: linear-gradient(400deg, #053170, #069DBF, #ffffff30);
+    background: linear-gradient(400deg, #053170, #069DBF, rgba(240, 240, 240, 0.35));
     background-size: 100% 200%;
     color: white;
     display: flex;
@@ -31,6 +31,7 @@
     position: relative;
     padding: 80px;
     overflow: hidden;
+    animation: moverDegradado 4.5s ease-in-out infinite alternate;
 }
 
 .izquierda::before {
@@ -39,8 +40,8 @@
     inset: 0;
     pointer-events: none;
     background:
-        radial-gradient(circle, rgba(255,255,255,0.5) 0 1.6px, transparent 2.2px),
-        radial-gradient(circle, rgba(85,226,255,0.65) 0 1.6px, transparent 2.2px);
+        radial-gradient(circle, rgba(255, 255, 255, 0.5) 0 1.6px, transparent 2.2px),
+        radial-gradient(circle, rgba(85, 226, 255, 0.65) 0 1.6px, transparent 2.2px);
     background-position: 0 0, 38px 28px;
     background-size: 76px 76px, 104px 104px;
     opacity: 0.45;
@@ -121,8 +122,8 @@
     inset: 0;
     pointer-events: none;
     background:
-        radial-gradient(circle, rgba(6,157,191,0.22) 0 1.5px, transparent 2.2px),
-        radial-gradient(circle, rgba(5,49,112,0.12) 0 1.5px, transparent 2.2px);
+        radial-gradient(circle, rgba(6, 157, 191, 0.22) 0 1.5px, transparent 2.2px),
+        radial-gradient(circle, rgba(5, 49, 112, 0.12) 0 1.5px, transparent 2.2px);
     background-position: 12px 18px, 54px 48px;
     background-size: 90px 90px, 124px 124px;
     opacity: 0.55;
@@ -257,26 +258,54 @@
 
 /* Animacion del degradado del panel izquierdo */
 @keyframes moverDegradado {
-    0%   { background-position: top; }
-    100% { background-position: bottom; }
+    0% {
+        background-position: top;
+    }
+
+    100% {
+        background-position: bottom;
+    }
 }
 
 @keyframes particulasLogin {
-    0%   { background-position: 0 0, 38px 28px; }
-    50%  { background-position: 16px -10px, 20px 44px; }
-    100% { background-position: -14px 18px, 60px 8px; }
+    0% {
+        background-position: 0 0, 38px 28px;
+    }
+
+    50% {
+        background-position: 16px -10px, 20px 44px;
+    }
+
+    100% {
+        background-position: -14px 18px, 60px 8px;
+    }
 }
 
 @keyframes particulasLoginClaro {
-    0%   { background-position: 12px 18px, 54px 48px; }
-    50%  { background-position: -8px 34px, 74px 26px; }
-    100% { background-position: 28px 0, 36px 68px; }
+    0% {
+        background-position: 12px 18px, 54px 48px;
+    }
+
+    50% {
+        background-position: -8px 34px, 74px 26px;
+    }
+
+    100% {
+        background-position: 28px 0, 36px 68px;
+    }
 }
 
 /* Entrada del formulario desde abajo con fade */
 @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ── DISEÑO RESPONSIVO ───────────────────────────────────── */
@@ -326,13 +355,19 @@
         height: 100%;
         padding: 44px 28px 80px;
         justify-content: flex-start;
-        background: linear-gradient(400deg, #053170, #069DBF, #ffffff30);
-        background-size: 100% 300%;
+        background: linear-gradient(400deg, #053170, #069DBF, rgba(240, 240, 240, 0.35));
+        background-size: 100% 200%;
         z-index: 0;
+        animation: moverDegradado 7s ease-in-out infinite alternate;
     }
 
-    .texto-arriba h2 { font-size: 15px; }
-    .texto-arriba h1 { font-size: 26px; }
+    .texto-arriba h2 {
+        font-size: 15px;
+    }
+
+    .texto-arriba h1 {
+        font-size: 26px;
+    }
 
     .redes {
         position: absolute;
@@ -388,10 +423,22 @@
 
 /* Movil pequeno: ajustes finos de fuente y padding */
 @media (max-width: 380px) {
-    .texto-arriba h1 { font-size: 22px; }
-    .contenedor-formulario { padding: 28px 18px; }
-    .iconos { gap: 4px; }
-    .iconos a { font-size: 10px; padding: 4px 8px; }
+    .texto-arriba h1 {
+        font-size: 22px;
+    }
+
+    .contenedor-formulario {
+        padding: 28px 18px;
+    }
+
+    .iconos {
+        gap: 4px;
+    }
+
+    .iconos a {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
 }
 
 .custom-modal-overlay {

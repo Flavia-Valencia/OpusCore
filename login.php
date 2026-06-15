@@ -30,9 +30,9 @@ $error = isset($_GET['error']) ? $_GET['error'] : '';
             <div class="redes">
                 <p>Contactos</p>
                 <div class="iconos">
-                    <a href="#">Facebook</a>
-                    <a href="#">WhatsApp</a>
-                    <a href="#">Instagram</a>
+                    <a href="https://www.instagram.com/academia.futuro.digital?igsh=bWw3a3F0ZW51MmFx" target="_blank">Facebook</a>
+                    <a href="https://wa.me/+50372034207" target="_blank">WhatsApp</a>
+                    <a href="https://www.instagram.com/academia.futuro.digital?igsh=bWw3a3F0ZW51MmFx" target="_blank">Instagram</a>
                 </div>
             </div>
         </div>
