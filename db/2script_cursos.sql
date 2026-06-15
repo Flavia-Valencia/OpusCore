@@ -8,7 +8,7 @@ CREATE TABLE `horarios` (
     `horaFin` time COLLATE utf8mb4_general_ci NOT NULL, 
     `etiqueta` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
+loool
 CREATE TABLE `aulas` ( 
     `id` int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
     `aula` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
